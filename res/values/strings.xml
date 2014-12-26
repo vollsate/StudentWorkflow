@@ -9,5 +9,6 @@
     <string name="task_desc">Se på gjeldende oppgaver</string>
     <string name="title_activity_elev_liste">ElevListeActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_student_info">StudentInfoActivity</string>
 
 </resources>

@@ -25,6 +25,8 @@ public class StudentListActivity extends ActionBarActivity implements
 		StudentBean[] testData = StudentBeanData.CreateTestData();
 		StudentListAdapter adapter = new StudentListAdapter( this, testData );
 		listView.setAdapter( adapter );
+		
+		StudentListAdapter.SetInstance( adapter );
 //		listView.setOnClickListener( this );
 	}
 

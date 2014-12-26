@@ -13,7 +13,10 @@ public class StudentBeanData {
 		StudentBean[] beans = new StudentBean[15];
 		
 		for ( int i = 0; i < beans.length; i++ ) {
-			beans[i] = CreateOne();
+			if ( i%2 == 0 )
+				beans[i] = CreateOne();
+			else
+				beans[i] = CreateTwo();
 		}
 		
 		return beans;
@@ -23,6 +26,10 @@ public class StudentBeanData {
 	
 	private static StudentBean CreateOne() {
 		return new StudentBean("Glenn", "Vollsæter", "1974");
+	}
+
+	private static StudentBean CreateTwo() {
+		return new StudentBean("Victoria", "Gaarder", "1982");
 	}
 
 }
