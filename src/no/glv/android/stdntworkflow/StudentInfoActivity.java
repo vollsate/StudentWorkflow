@@ -1,6 +1,6 @@
 package no.glv.android.stdntworkflow;
 
-import no.glv.android.stdntworkflow.base.StudentBean;
+import no.glv.android.stdntworkflow.core.Student;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -26,7 +26,7 @@ public class StudentInfoActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate( R.menu.student_info, menu );
+		getMenuInflater().inflate( R.menu.menu_student_info, menu );
 		return true;
 	}
 
@@ -47,9 +47,14 @@ public class StudentInfoActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
+		/**
+		 * 
+		 */
 		public PlaceholderFragment() {
+			super();
 		}
 
+		
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState ) {
@@ -58,8 +63,8 @@ public class StudentInfoActivity extends ActionBarActivity {
 			
 			TextView textView = ( TextView ) rootView.findViewById( R.id.textview_StudentName );
 			Bundle bundle = getActivity().getIntent().getExtras();
-			int id = bundle.getInt( StudentListAdapter.EXTRA_STUDENTBEAN );
-			StudentBean bean = StudentListAdapter.GetInstance().getBean( id );
+			int id = bundle.getInt( StudentListHandler.EXTRA_STUDENTBEAN );
+			Student bean = StudentListHandler.GetInstance().getBean( id );
 			
 			textView.setText( bean.getFirstName() + " " + bean.getLastname() );
 			

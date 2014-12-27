@@ -1,6 +1,6 @@
 package no.glv.android.stdntworkflow.test;
 
-import no.glv.android.stdntworkflow.base.*;;
+import no.glv.android.stdntworkflow.core.StudentBean;
 
 public class StudentBeanData {
 

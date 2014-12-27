@@ -1,6 +1,6 @@
 package no.glv.android.stdntworkflow;
 
-import no.glv.android.stdntworkflow.base.StudentBean;
+import no.glv.android.stdntworkflow.core.StudentBean;
 import no.glv.android.stdntworkflow.test.StudentBeanData;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -23,10 +23,10 @@ public class StudentListActivity extends ActionBarActivity implements
 
 		ListView listView = (ListView) findViewById( R.id.student_listview );
 		StudentBean[] testData = StudentBeanData.CreateTestData();
-		StudentListAdapter adapter = new StudentListAdapter( this, testData );
+		StudentListHandler adapter = new StudentListHandler( this, testData );
 		listView.setAdapter( adapter );
 		
-		StudentListAdapter.SetInstance( adapter );
+		StudentListHandler.SetInstance( adapter );
 //		listView.setOnClickListener( this );
 	}
 
@@ -41,7 +41,7 @@ public class StudentListActivity extends ActionBarActivity implements
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate( R.menu.student_list, menu );
+		getMenuInflater().inflate( R.menu.menu_student_list, menu );
 		return true;
 	}
 
@@ -52,9 +52,13 @@ public class StudentListActivity extends ActionBarActivity implements
 		// as you specify a parent activity in AndroidManifest.xml.
 
 		int id = item.getItemId();
-		if ( id == R.id.action_settings ) {
+		
+		switch ( id ) {
+		case R.id.action_settings:
 			return true;
+
+		default:
+			return super.onOptionsItemSelected( item );
 		}
-		return super.onOptionsItemSelected( item );
 	}
 }
