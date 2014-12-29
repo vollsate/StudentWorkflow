@@ -2,6 +2,9 @@ package no.glv.android.stdntworkflow.core;
 
 public interface Student {
 	
+	public static final String EXTRA_STUDENTNAME =  BaseValues.EXTRA_BASEPARAM +  "StudentName";
+	public static final String EXTRA_STUDENTCLASS =  BaseValues.EXTRA_BASEPARAM +  "StudentClass";
+
 	public String getFirstName();
 	
 	public String getBirthYear();
@@ -21,5 +24,9 @@ public interface Student {
 	public String getAdress();
 	
 	public String getPostalCode();
+	
+	public String getGrade();
+	
+	public String getStudentClass();
 
 }

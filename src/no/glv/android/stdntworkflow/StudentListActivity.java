@@ -1,7 +1,7 @@
 package no.glv.android.stdntworkflow;
 
-import no.glv.android.stdntworkflow.core.StudentBean;
-import no.glv.android.stdntworkflow.test.StudentBeanData;
+import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -22,12 +22,14 @@ public class StudentListActivity extends ActionBarActivity implements
 		setContentView( R.layout.activity_student_list );
 
 		ListView listView = (ListView) findViewById( R.id.student_listview );
-		StudentBean[] testData = StudentBeanData.CreateTestData();
-		StudentListHandler adapter = new StudentListHandler( this, testData );
-		listView.setAdapter( adapter );
+		Bundle bundle = getIntent().getExtras();
+		String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
+		StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( className );
 		
-		StudentListHandler.SetInstance( adapter );
-//		listView.setOnClickListener( this );
+		StudentListAdapter adapter = new StudentListAdapter( this, stdClass.toList() );
+		listView.setAdapter( adapter );
+
+	//		listView.setOnClickListener( this );
 	}
 
 	

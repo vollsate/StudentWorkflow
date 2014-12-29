@@ -10,21 +10,21 @@
     tools:context="no.glv.android.stdntworkflow.LodaDataActivity$PlaceholderFragment" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/TV.loadClassHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/loadDataInfo.title"
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/textview_LoadDataInfo"
+        android:id="@+id/TV.LoadDataInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/loadDataInfo" />
 
 
     <Button
-        android:id="@+id/loadFile"
+        android:id="@+id/BTN.loadFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Last inn fra fil" />

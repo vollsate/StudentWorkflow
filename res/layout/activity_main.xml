@@ -8,5 +8,68 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="no.glv.android.stdntworkflow.MainActivity" >
 
+    <TextView
+        android:id="@+id/TV.header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:text="@string/TV.header.text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/TV.maininfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/TV.header"
+        android:layout_marginTop="13dp"
+        android:text="@string/TV.maininfo.text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/listview.classes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/TV.maininfo"
+        android:layout_marginTop="22dp" >
+    </ListView>
+
+    <ListView
+        android:id="@+id/listview.tasks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/TV.maininfo"
+        android:layout_marginTop="22dp" >
+    </ListView>
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/listview.tasks"
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="95dp" />
+
+    <Button
+        android:id="@+id/BTN.newclass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/listview.tasks"
+        android:text="Load new class" />
+
+    <Button
+        android:id="@+id/BTN.newtask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/BTN.newclass"
+        android:onClick="btnNewTask"
+        android:text="Create new task" />
 
 </RelativeLayout>

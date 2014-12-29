@@ -1,6 +1,8 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.Student;
+import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -63,8 +65,12 @@ public class StudentInfoActivity extends ActionBarActivity {
 			
 			TextView textView = ( TextView ) rootView.findViewById( R.id.textview_StudentName );
 			Bundle bundle = getActivity().getIntent().getExtras();
-			int id = bundle.getInt( StudentListHandler.EXTRA_STUDENTBEAN );
-			Student bean = StudentListHandler.GetInstance().getBean( id );
+			
+			String sName = bundle.getString( Student.EXTRA_STUDENTNAME );
+			String sClass = bundle.getString( Student.EXTRA_STUDENTCLASS );
+			
+			StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( sClass );
+			Student bean = stdClass.getStudentByFirstName( sName );
 			
 			textView.setText( bean.getFirstName() + " " + bean.getLastname() );
 			

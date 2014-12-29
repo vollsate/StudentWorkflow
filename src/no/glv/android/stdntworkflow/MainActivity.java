@@ -1,17 +1,28 @@
 package no.glv.android.stdntworkflow;
 
-import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnClickListener {
+	
+	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
+		
+		Button btn = ( Button ) findViewById( R.id.BTN_newclass );
+		btn.setOnClickListener( this );
+		btn = ( Button ) findViewById( R.id.BTN_newtask );
+		btn.setOnClickListener( this );
 	}
 
 	@Override
@@ -23,9 +34,6 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		Intent intent = null;
 		
@@ -44,5 +52,24 @@ public class MainActivity extends ActionBarActivity {
 		
 		startActivity( intent );
 		return true;
+	}
+	
+
+	@Override
+	public void onClick( View v ) {
+		int id = v.getId();
+		Intent intent = null;
+		
+		switch ( id ) {
+		case R.id.BTN_newtask:
+			//intent = new Intent(this, StudentListActivity.class);
+			break;
+						
+		case R.id.BTN_newclass:
+			intent = new Intent( this, LoadDataActivity.class );
+			break;
+		}
+		
+		startActivity( intent );
 	}
 }

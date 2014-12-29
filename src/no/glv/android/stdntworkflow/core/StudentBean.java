@@ -1,13 +1,14 @@
 package no.glv.android.stdntworkflow.core;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 public class StudentBean implements Student {
 	
-	private String fName;
-	private String lName;
-	private String bYear;
-	private Date birth;
+	String fName;
+	String lName;
+	String bYear;
+	Date birth;
 	
 	String parent1Name;
 	String parent1Phone;
@@ -19,14 +20,16 @@ public class StudentBean implements Student {
 	
 	String adress;
 	String postalCode;
+	String grade;
 	
-	public StudentBean()  {
+	private String studentClass;
+	
+	private StudentBean()  {
 	}
 
-	public StudentBean(String firstName, String lastName, String birthYear)  {
-		fName = firstName;
-		lName = lastName;
-		bYear = birthYear;
+	public StudentBean(String stdClass)  {
+		this();
+		this.studentClass = stdClass;
 	}
 
 	@Override
@@ -89,6 +92,26 @@ public class StudentBean implements Student {
 	@Override
 	public String getPostalCode() {
 		return postalCode;
+	}
+	
+	public String getGrade() {
+		return grade;
+	}
+	
+	String birhtToString() {
+		return DateFormat.getDateInstance().format( birth );
+	}
+	
+	void setFullName(String fullName) {
+		String[] name = fullName.split( "," );
+		
+		lName = name[0].trim();
+		fName = name[1].trim();
+	}
+
+	@Override
+	public String getStudentClass() {
+		return studentClass;
 	}
 
 }

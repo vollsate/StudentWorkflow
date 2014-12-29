@@ -1,10 +1,6 @@
 package no.glv.android.stdntworkflow;
 
-import no.glv.android.stdntworkflow.R;
-import no.glv.android.stdntworkflow.R.id;
-import no.glv.android.stdntworkflow.R.layout;
 import no.glv.android.stdntworkflow.core.Student;
-import no.glv.android.stdntworkflow.core.StudentBean;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -20,45 +16,28 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public class StudentListHandler extends ArrayAdapter<StudentBean> {
+public class StudentListAdapter extends ArrayAdapter<Student> {
 	
 	/**  */
-	private static final String TAG = StudentListHandler.class.getSimpleName();
+	private static final String TAG = StudentListAdapter.class.getSimpleName();
 	
 	/** */
 	private Context context;
+
 	/** */
 	private Student[] beans;
-	/**  */
-	public static final String EXTRA_STUDENTBEAN = "no.glv.android.stdntworkflow.StudentBean";
-	
-	/**  */
-	private static StudentListHandler instance;
-	
-	
-	
-	public static final StudentListHandler GetInstance() {
-		return instance;
-	}
-	
-	static final void SetInstance(StudentListHandler adapter) {
-		instance = adapter;
-	}
-	
-	
-	
+
 	/**
 	 * 
 	 * @param context
 	 * @param objects
 	 */
-	public StudentListHandler( Context context, StudentBean[] objects ) {
+	public StudentListAdapter( Context context, Student[] objects ) {
 		super(context, R.layout.student_list_row, objects );
 		
 		this.context = context;
-		this.beans = objects;
+		this.beans = objects;		
 	}
-	
 	
 	/**
 	 * 
@@ -92,7 +71,7 @@ public class StudentListHandler extends ArrayAdapter<StudentBean> {
 		ViewHolder holder = new ViewHolder();
 		
 		ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
-		imgInfoView.setTag( Integer.valueOf( position) );
+		imgInfoView.setTag( beans[position] );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
@@ -100,9 +79,10 @@ public class StudentListHandler extends ArrayAdapter<StudentBean> {
 				Log.d( TAG, "" + v.getTag() );
 				
 				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
-				Integer id = (Integer)v.getTag();
-				intent.putExtra ( EXTRA_STUDENTBEAN, id.intValue());
-				StudentListHandler.this.getContext().startActivity( intent );
+				Student std = ( Student ) v.getTag();
+				intent.putExtra ( Student.EXTRA_STUDENTNAME, std.getFirstName());
+				intent.putExtra ( Student.EXTRA_STUDENTCLASS, std.getStudentClass());
+				StudentListAdapter.this.getContext().startActivity( intent );
 			}
 		});
 		
@@ -115,9 +95,10 @@ public class StudentListHandler extends ArrayAdapter<StudentBean> {
 				Log.d( TAG, "" + v.getTag() );
 				
 				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
-				Integer id = (Integer)v.getTag();
-				intent.putExtra ( EXTRA_STUDENTBEAN, id.intValue());
-				StudentListHandler.this.getContext().startActivity( intent );
+				Student std = (Student ) v.getTag();
+				intent.putExtra ( Student.EXTRA_STUDENTNAME, std.getFirstName());
+				intent.putExtra ( Student.EXTRA_STUDENTCLASS, std.getStudentClass());
+				StudentListAdapter.this.getContext().startActivity( intent );
 			}
 		});
 
@@ -135,6 +116,11 @@ public class StudentListHandler extends ArrayAdapter<StudentBean> {
 	}
 	
 	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public Student getBean( int id ) {
 		return beans[ id ];
 	}

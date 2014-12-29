@@ -14,4 +14,9 @@
     <string name="title_activity_student_info">Informasjon om {elev}</string>
     <string name="title_activity_loda_data">Installer ny klasse</string>
 
+    
+    <string name="TV.header.text">Student work flow</string>
+    <string name="TV.maininfo.text">
+        Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 
+        Gå inn på settings eller historikk for å se på oppgaver som er avsluttet, eller for å se på statistikk</string>
 </resources>

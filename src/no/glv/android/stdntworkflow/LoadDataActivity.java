@@ -1,5 +1,12 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.ArrayList;
+
+import no.glv.android.stdntworkflow.core.LoadDataHandler;
+import no.glv.android.stdntworkflow.core.Student;
+import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.StudentClassHandler;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -7,14 +14,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-public class LoadDataActivity extends ActionBarActivity {
+public class LoadDataActivity extends ActionBarActivity implements OnClickListener {
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_loda_data );
+		setContentView( R.layout.activity_load_data );
 		if ( savedInstanceState == null ) {
 			getSupportFragmentManager().beginTransaction()
 					.add( R.id.container, new PlaceholderFragment() ).commit();
@@ -39,6 +48,17 @@ public class LoadDataActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected( item );
 	}
+	
+	
+	@Override
+	public void onClick( View v ) {
+		StudentClass stdClass = LoadDataHandler.LoadStudentClassFromDownloadDir( this, "" );
+		StudentClassHandler.GetInstance().addStudentClass( stdClass );
+		
+		Intent intent = new Intent( this, StudentListActivity.class );
+		intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, stdClass.getName() );
+		startActivity( intent );
+	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -53,6 +73,10 @@ public class LoadDataActivity extends ActionBarActivity {
 				Bundle savedInstanceState ) {
 			View rootView = inflater.inflate( R.layout.fragment_load_data,
 					container, false );
+			
+			Button btn = (Button) rootView.findViewById( R.id.BTN_loadFile );
+			btn.setOnClickListener( (OnClickListener) getActivity() );
+			
 			return rootView;
 		}
 	}
