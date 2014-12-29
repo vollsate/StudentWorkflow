@@ -14,6 +14,8 @@
     <string name="title_activity_student_info">Informasjon om {elev}</string>
     <string name="title_activity_loda_data">Installer ny klasse</string>
 
+    <string name="action_writeToLocal">Lagre klassen lokalt</string>
+    <string name="TV.installedClasses.text">Registrerte klasser</string>
     
     <string name="TV.header.text">Student work flow</string>
     <string name="TV.maininfo.text">

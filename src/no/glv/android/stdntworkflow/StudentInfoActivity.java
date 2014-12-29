@@ -20,8 +20,7 @@ public class StudentInfoActivity extends ActionBarActivity {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_student_info );
 		if ( savedInstanceState == null ) {
-			getSupportFragmentManager().beginTransaction()
-					.add( R.id.container, new PlaceholderFragment() ).commit();
+			getSupportFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment() ).commit();
 		}
 	}
 
@@ -56,24 +55,21 @@ public class StudentInfoActivity extends ActionBarActivity {
 			super();
 		}
 
-		
 		@Override
-		public View onCreateView( LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState ) {
-			View rootView = inflater.inflate( R.layout.fragment_student_info,
-					container, false );
-			
-			TextView textView = ( TextView ) rootView.findViewById( R.id.textview_StudentName );
+		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+			View rootView = inflater.inflate( R.layout.fragment_student_info, container, false );
+
+			TextView textView = (TextView) rootView.findViewById( R.id.textview_StudentName );
 			Bundle bundle = getActivity().getIntent().getExtras();
-			
+
 			String sName = bundle.getString( Student.EXTRA_STUDENTNAME );
 			String sClass = bundle.getString( Student.EXTRA_STUDENTCLASS );
-			
+
 			StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( sClass );
 			Student bean = stdClass.getStudentByFirstName( sName );
-			
+
 			textView.setText( bean.getFirstName() + " " + bean.getLastname() );
-			
+
 			return rootView;
 		}
 	}

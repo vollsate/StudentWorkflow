@@ -4,6 +4,12 @@
     tools:context=".StudentListActivity" >
 
     <item
+        android:id="@+id/action_writeToLocal"
+        android:orderInCategory="10"
+        android:title="@string/action_writeToLocal"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

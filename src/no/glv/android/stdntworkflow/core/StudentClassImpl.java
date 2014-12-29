@@ -92,4 +92,9 @@ public class StudentClassImpl implements StudentClass {
 		return beans;
 	}
 
+	@Override
+	public Iterator<Student> iterator() {
+		return students.iterator();
+	}
+
 }

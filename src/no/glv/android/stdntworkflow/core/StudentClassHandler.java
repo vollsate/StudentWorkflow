@@ -45,6 +45,11 @@ public class StudentClassHandler {
 		classes.put( stdClass.getName(), stdClass );
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public StudentClass getStudentClass( String name ) {
 		return ( StudentClass ) classes.get( name );
 	}

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textSize="30sp" />
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/info"

@@ -1,6 +1,7 @@
 package no.glv.android.stdntworkflow.core;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class holds all the student classes in the system.
@@ -26,5 +27,7 @@ public interface StudentClass  {
 	public void addAll (Student[] stds );
 	
 	public Student[] toList();
+	
+	public Iterator<Student> iterator();
 
 }

@@ -1,9 +1,6 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-
 import no.glv.android.stdntworkflow.core.LoadDataHandler;
-import no.glv.android.stdntworkflow.core.Student;
 import no.glv.android.stdntworkflow.core.StudentClass;
 import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import android.content.Intent;
@@ -20,13 +17,15 @@ import android.widget.Button;
 
 public class LoadDataActivity extends ActionBarActivity implements OnClickListener {
 
+	private StudentClass stdClass;
+
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
+
 		setContentView( R.layout.activity_load_data );
 		if ( savedInstanceState == null ) {
-			getSupportFragmentManager().beginTransaction()
-					.add( R.id.container, new PlaceholderFragment() ).commit();
+			getSupportFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment() ).commit();
 		}
 	}
 
@@ -39,22 +38,27 @@ public class LoadDataActivity extends ActionBarActivity implements OnClickListen
 
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
+
+		switch ( id ) {
+		case R.id.action_writeToLocal:
+			break;
+
+		default:
+			break;
+		}
+
 		if ( id == R.id.action_settings ) {
 			return true;
 		}
 		return super.onOptionsItemSelected( item );
 	}
-	
-	
+
 	@Override
 	public void onClick( View v ) {
-		StudentClass stdClass = LoadDataHandler.LoadStudentClassFromDownloadDir( this, "" );
+		stdClass = LoadDataHandler.LoadStudentClassFromDownloadDir( this, "" );
 		StudentClassHandler.GetInstance().addStudentClass( stdClass );
-		
+
 		Intent intent = new Intent( this, StudentListActivity.class );
 		intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, stdClass.getName() );
 		startActivity( intent );
@@ -69,14 +73,12 @@ public class LoadDataActivity extends ActionBarActivity implements OnClickListen
 		}
 
 		@Override
-		public View onCreateView( LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState ) {
-			View rootView = inflater.inflate( R.layout.fragment_load_data,
-					container, false );
-			
+		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+			View rootView = inflater.inflate( R.layout.fragment_load_data, container, false );
+
 			Button btn = (Button) rootView.findViewById( R.id.BTN_loadFile );
 			btn.setOnClickListener( (OnClickListener) getActivity() );
-			
+
 			return rootView;
 		}
 	}

@@ -28,8 +28,18 @@
         android:text="@string/TV.maininfo.text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/TV.installedClasses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.header"
+        android:layout_below="@+id/TV.maininfo"
+        android:layout_marginTop="13dp"
+        android:text="@string/TV.installedClasses.text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <ListView
-        android:id="@+id/listview.classes"
+        android:id="@+id/LV.classes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/TV.header"
@@ -38,29 +48,20 @@
     </ListView>
 
     <ListView
-        android:id="@+id/listview.tasks"
+        android:id="@+id/LV.tasks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/TV.header"
-        android:layout_below="@+id/TV.maininfo"
+        android:layout_below="@+id/LV.classes"
         android:layout_marginTop="22dp" >
     </ListView>
-
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_below="@+id/listview.tasks"
-        android:layout_marginLeft="38dp"
-        android:layout_marginTop="95dp" />
 
     <Button
         android:id="@+id/BTN.newclass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/TV.header"
-        android:layout_below="@+id/listview.tasks"
+        android:layout_below="@+id/LV.tasks"
         android:text="Load new class" />
 
     <Button

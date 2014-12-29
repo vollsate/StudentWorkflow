@@ -4,21 +4,9 @@
     tools:context="no.glv.android.stdntworkflow.MainActivity" >
 
     <item
-        android:id="@+id/menu.installData"
-        android:orderInCategory="10"
-        android:title="@string/loadDataInfo.menu.install"
-        app:showAsAction="never"/>
-    
-    <item
         android:id="@+id/menu.settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>
-    
-    <item
-        android:id="@+id/menu.students"
-        android:orderInCategory="100"
-        android:title="@string/action_list"
         app:showAsAction="never"/>
     
 </menu>
