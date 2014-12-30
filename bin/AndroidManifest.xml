@@ -25,20 +25,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ElevListeActivity"
-            android:label="@string/title_activity_elev_liste" >
-        </activity>
-        <activity
             android:name=".StudentListActivity"
-            android:label="@string/title_activity_elev_liste" >
+            android:label="@string/activity.studentList.title" >
         </activity>
         <activity
             android:name=".StudentInfoActivity"
-            android:label="@string/title_activity_student_info" >
+            android:label="@string/activity.studentInfo.title" >
         </activity>
         <activity
             android:name=".LoadDataActivity"
-            android:label="@string/title_activity_loda_data" >
+            android:label="@string/activity.loadData.title" >
         </activity>
     </application>
 

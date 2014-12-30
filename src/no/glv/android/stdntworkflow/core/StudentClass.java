@@ -19,6 +19,8 @@ public interface StudentClass  {
 	public int getSize();
 	
 	public Student getStudentByFirstName(String name);
+
+	public Student getStudentByIdent(String name);
 	
 	public void add( Student std );
 	

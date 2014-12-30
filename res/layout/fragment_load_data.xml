@@ -11,6 +11,7 @@
 
     <TextView
         android:id="@+id/TV.loadClassHeader"
+        style="@style/TV.header1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/loadDataInfo.title"
@@ -18,12 +19,15 @@
 
     <TextView
         android:id="@+id/TV.LoadDataInfo"
-        android:layout_width="wrap_content"
+        style="@style/TV.std"
+        android:layout_marginTop="13dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/loadDataInfo" />
 
 
     <Button
+        style="@style/BTN"
         android:id="@+id/BTN.loadFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

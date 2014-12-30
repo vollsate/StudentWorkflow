@@ -9,9 +9,78 @@
     tools:context="no.glv.android.stdntworkflow.StudentInfoActivity$PlaceholderFragment" >
 
     <TextView
-        android:id="@+id/textview_StudentName"
+        android:id="@+id/TV.info.firstName"
+        style="@style/TV.std.L"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:layout_below="@+id/TV.info.header"
+        android:layout_marginTop="30sp"
+        android:text="Fornavn" />
+
+    <EditText
+        android:id="@+id/ET.info.firstName"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:layout_alignBottom="@+id/TV.info.firstName"
+        android:layout_toRightOf="@+id/TV.info.firstName"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.lastName"
+        style="@style/TV.std"
+        android:layout_marginTop="10sp"
+        android:layout_below="@+id/TV.info.firstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Etternavn" />
+
+    <EditText
+        android:id="@+id/ET.info.LastName"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:layout_alignBottom="@+id/TV.info.lastName"
+        android:layout_toRightOf="@+id/TV.info.lastName"
+        android:ems="10" >
+    </EditText>
+
+    
+<!-- This section covers the It's Learing ident. It's important that this one is correct! -->
+    
+    <TextView
+        android:id="@+id/TV.info.ident"
+        style="@style/TV.std"
+        android:layout_marginTop="10sp"
+        android:layout_below="@+id/TV.info.lastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ident" />
+
+    <EditText
+        android:id="@+id/ET.info.ident"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30sp"
+        android:layout_alignBottom="@+id/TV.info.ident"
+        android:layout_toRightOf="@+id/TV.info.ident"
+        android:ems="10" >
+    </EditText>
+
+    <Button
+        android:id="@+id/BTN.info.update"
+        style="@style/BTN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TV.info.header"
+        android:layout_below="@+id/ET.info.ident"
+        android:layout_marginTop="20sp"
+        android:text="Oppdater!" />
 
 </RelativeLayout>

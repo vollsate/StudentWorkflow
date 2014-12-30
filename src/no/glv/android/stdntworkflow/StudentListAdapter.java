@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.Student;
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +23,11 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	private static final String TAG = StudentListAdapter.class.getSimpleName();
 	
 	/** */
-	private Context context;
-
-	/** */
 	private Student[] beans;
+	
+	private Context context;
+	
+	private BaseActivity baseActivity;
 
 	/**
 	 * 
@@ -35,8 +37,12 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	public StudentListAdapter( Context context, Student[] objects ) {
 		super(context, R.layout.student_list_row, objects );
 		
+		this.beans = objects;
 		this.context = context;
-		this.beans = objects;		
+	}
+	
+	void setBaseActivity( BaseActivity baseActivity ) {
+		this.baseActivity = baseActivity;
 	}
 	
 	/**
@@ -46,13 +52,14 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	public View getView( int position, View convertView, ViewGroup parent ) {
 		View myView = convertView;
 		
-		if (myView == null) {
+/*		
+ 		if (myView == null) {
 			myView = createView( context, parent, position );
 		}
-		
+*/	
+		myView = createView( context, parent, position );
 		ViewHolder holder = (ViewHolder) myView.getTag();
 		Student bean = beans[position];
-		
 		holder.textView.setText( bean.getFirstName() );
 		
 		return myView;
@@ -69,9 +76,10 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		View myView = inflater.inflate( R.layout.student_list_row, parent, false );
 		ViewHolder holder = new ViewHolder();
+		Student student = beans[position];
 		
 		ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
-		imgInfoView.setTag( beans[position] );
+		imgInfoView.setTag( student );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
@@ -79,15 +87,16 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 				Log.d( TAG, "" + v.getTag() );
 				
 				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
+				
 				Student std = ( Student ) v.getTag();
-				intent.putExtra ( Student.EXTRA_STUDENTNAME, std.getFirstName());
-				intent.putExtra ( Student.EXTRA_STUDENTCLASS, std.getStudentClass());
+				baseActivity.putIdentExtra( std, intent );
+
 				StudentListAdapter.this.getContext().startActivity( intent );
 			}
 		});
 		
 		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
-		imgTaskView.setTag( Integer.valueOf( position) );
+		imgTaskView.setTag( student );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
@@ -96,14 +105,15 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 				
 				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
 				Student std = (Student ) v.getTag();
-				intent.putExtra ( Student.EXTRA_STUDENTNAME, std.getFirstName());
-				intent.putExtra ( Student.EXTRA_STUDENTCLASS, std.getStudentClass());
+				baseActivity.putIdentExtra( std, intent );
 				StudentListAdapter.this.getContext().startActivity( intent );
 			}
 		});
 
 		
-		TextView textView = (TextView) myView.findViewById( R.id.studentlistName );
+		TextView textView = (TextView) myView.findViewById( R.id.TV_stdlist_name );
+		textView.setTag( student );
+		
 		
 		holder.textView = textView;
 		holder.imgInfoView = imgInfoView;

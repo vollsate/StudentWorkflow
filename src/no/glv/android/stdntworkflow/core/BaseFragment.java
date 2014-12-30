@@ -3,20 +3,31 @@
  */
 package no.glv.android.stdntworkflow.core;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+
 
 /**
  * @author GleVoll
  *
  */
 public class BaseFragment extends Fragment {
+	
+	private final BaseActivity baseActivity ;
 
 	/**
 	 * 
 	 */
-	public BaseFragment() {
-		// TODO Auto-generated constructor stub
+	public BaseFragment(BaseActivity base) {
+		super();
+		
+		this.baseActivity = base;
 	}
+	
+	
+	protected BaseActivity getBaseActivity() {
+		return baseActivity;
+	}
+	
 	
 
 }

@@ -4,5 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="no.glv.android.stdntworkflow.StudentInfoActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
 
+    <TextView
+        android:id="@+id/TV.info.header"
+        style="@style/TV.header1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Student"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    
+</FrameLayout>

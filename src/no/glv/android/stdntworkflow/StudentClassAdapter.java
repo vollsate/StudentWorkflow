@@ -2,6 +2,7 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.StudentClass;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,8 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 	private static final String TAG = StudentClassAdapter.class.getSimpleName();
 
 	private List<String> mClasses;
+	
+	private BaseActivity baseActivity;
 
 	
 	/**
@@ -32,6 +35,10 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 	 */
 	private StudentClassAdapter( Context context, int resource ) {
 		super( context, resource );
+	}
+	
+	void setBaseActivity( BaseActivity base ) {
+		this.baseActivity = base;
 	}
 
 	
@@ -83,7 +90,7 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 
 				Intent intent = new Intent( getContext(), StudentListActivity.class );
 				String studentClass = (String) v.getTag();
-				intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, studentClass );
+				baseActivity.putStudentClassExtra( studentClass, intent );
 				StudentClassAdapter.this.getContext().startActivity( intent );
 			}
 		} );

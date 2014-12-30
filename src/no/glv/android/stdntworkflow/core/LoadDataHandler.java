@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -75,7 +74,7 @@ public class LoadDataHandler {
 
 			String stdLine;
 			while ( (stdLine = buff.readLine()) != null )
-				list.add( CreateStudentFromString( stdLine, stdClassName ) );
+				list.add( CreateStudentFromString( stdLine, stdClassName, "dd.MM.yyyy" ) );
 		}
 		catch ( IOException ioe ) {
 			Log.e( TAG, "LoadStudentClass(): Error loading file: " + fName, ioe );
@@ -100,7 +99,7 @@ public class LoadDataHandler {
 	 * @param stdString
 	 * @return
 	 */
-	private static Student CreateStudentFromString( String stdString, String className ) {
+	private static Student CreateStudentFromString( String stdString, String className, String datePattern ) {
 		StudentBean bean = new StudentBean( className );
 
 		String[] params = stdString.split( ";" );
@@ -114,7 +113,7 @@ public class LoadDataHandler {
 
 			case 1:
 				try {
-					bean.birth = new SimpleDateFormat( "dd.MM.yyyy", Locale.getDefault() ).parse( param );
+					bean.birth = new SimpleDateFormat( datePattern ).parse( param );
 
 				}
 				catch ( Exception e ) {
@@ -163,7 +162,29 @@ public class LoadDataHandler {
 			}
 		}
 
+		bean.mIdent = CreateStudentIdent( bean );
+
 		return bean;
+	}
+
+	/**
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	private static String CreateStudentIdent( Student bean ) {
+		String ident = null;
+
+		String fName = bean.getFirstName().substring( 0, 3 );
+		String lName = bean.getLastname().substring( 0, 4 );
+
+		String year = bean.getBirth();
+		year = year.substring( 2, 4 );
+
+		ident = year + fName + lName;
+
+		Log.d( TAG, "Creating ident: " + ident );
+		return ident;
 	}
 
 	/**
@@ -193,7 +214,7 @@ public class LoadDataHandler {
 			String stdString = StudentToDataString( std );
 			try {
 				bw.write( stdString );
-				bw.write( "\n" );
+				bw.newLine();
 			}
 			catch ( IOException e ) {
 				Log.e( TAG, "WriteStudentClass: Cannot write to file " + fileName, e );
@@ -202,6 +223,8 @@ public class LoadDataHandler {
 		}
 
 		try {
+			bw.flush();
+			bw.close();
 			fos.close();
 		}
 		catch ( IOException e2 ) {
@@ -279,14 +302,12 @@ public class LoadDataHandler {
 	public static void LoadLocalStudentClasses( Activity activity ) {
 		if ( islocalStudentClassesLoaded ) return;
 
-		List<String> files = GetLocalStudentClasses( activity );
-		Iterator<String> it = files.iterator();
-		String stdClassName;
-		String classFile = null;
+		File[] files = activity.getFilesDir().listFiles();
+		String stdClassName, classFile = null;
 
 		try {
-			while ( it.hasNext() ) {
-				classFile = it.next();
+			for ( int i = 0; i < files.length; i++ ) {
+				classFile = files[i].getName();
 				stdClassName = classFile.substring( 0, classFile.length() - FILE_SUFFIX.length() );
 				StudentClass stdClass = new StudentClassImpl( stdClassName );
 
@@ -295,7 +316,7 @@ public class LoadDataHandler {
 
 				String readLine;
 				while ( (readLine = reader.readLine()) != null ) {
-					Student student = CreateStudentFromString( readLine, stdClassName );
+					Student student = CreateStudentFromString( readLine, stdClassName, BaseValues.DATE_PATTERN );
 					stdClass.add( student );
 				}
 

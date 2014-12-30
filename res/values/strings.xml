@@ -4,19 +4,21 @@
     <string name="app_name">StudentWorkflow</string>
     <string name="action_settings">Settings</string>
     <string name="action_list">Elevliste</string>
-    <string name="title_activity_student_list">Elever</string>
     <string name="info_desc">Informasjon om elev</string>
     <string name="task_desc">Se på gjeldende oppgaver</string>
-    <string name="title_activity_elev_liste">Elever i klasse {klasse}</string>
+    <string name="activity.studentList.title">Klasse {klasse}</string>
     <string name="loadDataInfo.title">Installere ny klasse</string>
     <string name="loadDataInfo.menu.install">Installere ny klasse</string>
     <string name="loadDataInfo">Her skal du finne et Excel regneark med data om din klasse. Sørg for at dataene følger korrekt oppset. Se hjelp for mer informasjon</string>
-    <string name="title_activity_student_info">Informasjon om {elev}</string>
-    <string name="title_activity_loda_data">Installer ny klasse</string>
+    <string name="activity.studentInfo.title">{elev}</string>
+    <string name="activity.loadData.title">Installer ny klasse</string>
 
-    <string name="action_writeToLocal">Lagre klassen lokalt</string>
+    <string name="action_writeToLocal">Lagre</string>
+
+    <string name="BTN.loadNewClass.text">Installer ny klasse</string>
+    <string name="BTN.loadNewTask.text">Lag en ny oppgave</string>
+
     <string name="TV.installedClasses.text">Registrerte klasser</string>
-    
     <string name="TV.header.text">Student work flow</string>
     <string name="TV.maininfo.text">
         Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 

@@ -1,15 +1,19 @@
 package no.glv.android.stdntworkflow.core;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StudentBean implements Student {
-	
+
+	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN );
+
+	String mIdent;
+
 	String fName;
 	String lName;
 	String bYear;
 	Date birth;
-	
+
 	String parent1Name;
 	String parent1Phone;
 	String parent1Mail;
@@ -17,17 +21,17 @@ public class StudentBean implements Student {
 	String parent2Name;
 	String parent2Phone;
 	String parent2Mail;
-	
+
 	String adress;
 	String postalCode;
 	String grade;
-	
+
 	private String studentClass;
-	
-	private StudentBean()  {
+
+	private StudentBean() {
 	}
 
-	public StudentBean(String stdClass)  {
+	public StudentBean( String stdClass ) {
 		this();
 		this.studentClass = stdClass;
 	}
@@ -35,6 +39,18 @@ public class StudentBean implements Student {
 	@Override
 	public String getFirstName() {
 		return fName;
+	}
+	
+	public void setFirstName(String nn ) {
+		this.fName = nn;
+	}
+
+	public void setLastName(String nn ) {
+		this.lName = nn;
+	}
+
+	public void setIdent(String nn ) {
+		this.mIdent = nn;
 	}
 
 	@Override
@@ -79,9 +95,11 @@ public class StudentBean implements Student {
 
 	@Override
 	public String getBirth() {
-		return java.text.DateFormat.getDateInstance().format( birth );
-		//return birth.toString(); //DateFormat.format( "", birth ).toString():
-		
+		return sdf.format( birth );
+
+		// return java.text.DateFormat.getDateInstance().format( birth );
+		// return birth.toString(); //DateFormat.format( "", birth ).toString():
+
 	}
 
 	@Override
@@ -93,18 +111,18 @@ public class StudentBean implements Student {
 	public String getPostalCode() {
 		return postalCode;
 	}
-	
+
 	public String getGrade() {
 		return grade;
 	}
-	
+
 	String birhtToString() {
-		return DateFormat.getDateInstance().format( birth );
+		return sdf.format( birth );
 	}
-	
-	void setFullName(String fullName) {
+
+	void setFullName( String fullName ) {
 		String[] name = fullName.split( "," );
-		
+
 		lName = name[0].trim();
 		fName = name[1].trim();
 	}
@@ -112,6 +130,15 @@ public class StudentBean implements Student {
 	@Override
 	public String getStudentClass() {
 		return studentClass;
+	}
+
+	@Override
+	public String getIdent() {
+		return mIdent;
+	}
+	
+	public String toString() {
+		return "Student IDENT: " + mIdent;
 	}
 
 }

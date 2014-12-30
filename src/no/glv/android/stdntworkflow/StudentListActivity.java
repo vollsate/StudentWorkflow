@@ -1,13 +1,9 @@
 package no.glv.android.stdntworkflow;
 
+import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.LoadDataHandler;
 import no.glv.android.stdntworkflow.core.StudentClass;
-import no.glv.android.stdntworkflow.core.StudentClassHandler;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +17,11 @@ import android.widget.ListView;
  * @author GleVoll
  *
  */
-public class StudentListActivity extends ActionBarActivity implements OnClickListener {
+public class StudentListActivity extends BaseActivity implements OnClickListener {
 
 	private static final String TAG = StudentListActivity.class.getSimpleName();
+	
+	private static final String CLASS_REPLACE = "{klasse}";
 
 	/**  */
 	private StudentClass stdClass;
@@ -34,11 +32,15 @@ public class StudentListActivity extends ActionBarActivity implements OnClickLis
 		setContentView( R.layout.activity_student_list );
 
 		ListView listView = (ListView) findViewById( R.id.student_listview );
-		Bundle bundle = getIntent().getExtras();
-		String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
-		stdClass = StudentClassHandler.GetInstance().getStudentClass( className );
+		stdClass = getStudentClass();
+		
+		String title = getResources().getString( R.string.activity_studentList_title );
+		title = title.replace( CLASS_REPLACE, stdClass.getName() );
+		
+		setTitle( title );
 
 		StudentListAdapter adapter = new StudentListAdapter( this, stdClass.toList() );
+		adapter.setBaseActivity( this );
 		listView.setAdapter( adapter );
 	}
 

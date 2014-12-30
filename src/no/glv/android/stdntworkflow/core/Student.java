@@ -2,8 +2,8 @@ package no.glv.android.stdntworkflow.core;
 
 public interface Student {
 	
+	public static final String EXTRA_IDENT =  BaseValues.EXTRA_BASEPARAM +  "Ident";
 	public static final String EXTRA_STUDENTNAME =  BaseValues.EXTRA_BASEPARAM +  "StudentName";
-	public static final String EXTRA_STUDENTCLASS =  BaseValues.EXTRA_BASEPARAM +  "StudentClass";
 
 	public String getFirstName();
 	
@@ -28,5 +28,9 @@ public interface Student {
 	public String getGrade();
 	
 	public String getStudentClass();
+	
+	
+	/** @return The unique identity used on It's Learning and Google */
+	public String getIdent();
 
 }

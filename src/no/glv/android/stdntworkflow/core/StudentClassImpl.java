@@ -59,6 +59,27 @@ public class StudentClassImpl implements StudentClass {
 		while ( it.hasNext() ) {
 			bean = it.next();
 			if ( bean.getFirstName().equals( name ) ) break;
+			else bean = null;
+		}
+
+		return bean;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public Student getStudentByIdent( String name ) {
+		Student bean = null;
+		Iterator<Student> it = students.iterator();
+
+		while ( it.hasNext() ) {
+			bean = it.next();
+			if ( bean.getIdent().equals( name ) ) 
+				break;
+			else
+				bean = null;
 		}
 
 		return bean;

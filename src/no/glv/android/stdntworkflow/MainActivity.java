@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.LoadDataHandler;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class MainActivity extends ActionBarActivity implements OnClickListener {
+public class MainActivity extends BaseActivity implements OnClickListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -25,9 +26,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
 
-		Button btn = (Button) findViewById( R.id.BTN_newclass );
+		Button btn = (Button) findViewById( R.id.BTN_loadNewtask );
 		btn.setOnClickListener( this );
-		btn = (Button) findViewById( R.id.BTN_newtask );
+		btn = (Button) findViewById( R.id.BTN_loadNewClass );
 		btn.setOnClickListener( this );
 
 		LoadDataHandler.LoadLocalStudentClasses( this );
@@ -54,6 +55,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		}
 
 		StudentClassAdapter adapter = new StudentClassAdapter( this, R.layout.classes_list_row, mClasses );
+		adapter.setBaseActivity( this );
 		listView.setAdapter( adapter );
 	}
 
@@ -93,11 +95,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		Intent intent = null;
 
 		switch ( id ) {
-		case R.id.BTN_newtask:
+		case R.id.BTN_loadNewtask:
 			// intent = new Intent(this, StudentListActivity.class);
 			break;
 
-		case R.id.BTN_newclass:
+		case R.id.BTN_loadNewClass:
 			intent = new Intent( this, LoadDataActivity.class );
 			break;
 		}
