@@ -52,7 +52,7 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		buildAdapter( rootView );
 		buildButton( rootView );
 		
-		getDialog().setTitle( task.getName() );
+		getDialog().setTitle( "Add students to: " + task.getName() );
 		
 		return rootView;
 	}

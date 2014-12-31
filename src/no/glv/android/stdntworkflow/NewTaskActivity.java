@@ -155,8 +155,6 @@ public class NewTaskActivity extends Activity {
 		 * @return
 		 */
 		private boolean createNewTask( View v ) {
-			//View rootView = v.getRootView();
-
 			EditText editText = (EditText) rootView.findViewById( R.id.ET_newTask_name );
 			String taskName = editText.getText().toString();
 
