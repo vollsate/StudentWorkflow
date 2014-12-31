@@ -12,15 +12,21 @@
     <string name="loadDataInfo">Her skal du finne et Excel regneark med data om din klasse. Sørg for at dataene følger korrekt oppset. Se hjelp for mer informasjon</string>
     <string name="activity.studentInfo.title">{elev}</string>
     <string name="activity.loadData.title">Installer ny klasse</string>
-
     <string name="action_writeToLocal">Lagre</string>
-
     <string name="BTN.loadNewClass.text">Installer ny klasse</string>
     <string name="BTN.loadNewTask.text">Lag en ny oppgave</string>
-
     <string name="TV.installedClasses.text">Registrerte klasser</string>
+    <string name="TV.installedTasks.text">Registrerte oppgaver</string>
     <string name="TV.header.text">Student work flow</string>
-    <string name="TV.maininfo.text">
-        Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 
+    <string name="TV.maininfo.text">        Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 
         Gå inn på settings eller historikk for å se på oppgaver som er avsluttet, eller for å se på statistikk</string>
+    
+    <string name="TV.task.info.text">        
+        Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en 
+        korrekt innleveringsdato.
+    </string>
+    
+    <string name="title_activity_new_task">NewTaskActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

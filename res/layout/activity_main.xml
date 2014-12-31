@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,78 +8,92 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="no.glv.android.stdntworkflow.MainActivity" >
 
-    <TextView
-        android:id="@+id/TV.header"
-        style="@style/TV.header1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:text="@string/TV.header.text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/TV.maininfo"
-        style="@style/TV.std"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_alignStart="@+id/TV.header"
-        android:layout_below="@+id/TV.header"
-        android:layout_marginTop="13dp"
-        android:text="@string/TV.maininfo.text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/TV.installedClasses"
-        style="@style/TV.header2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_below="@+id/TV.maininfo"
-        android:layout_marginTop="13dp"
-        android:text="@string/TV.installedClasses.text" />
+        <TextView
+            android:id="@+id/TV.header"
+            style="@style/TV.header1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/TV.header.text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <ListView
-        android:id="@+id/LV.classes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_below="@+id/TV.installedClasses"
-        android:layout_marginTop="10dp" >
-    </ListView>
+        <TextView
+            android:id="@+id/TV.maininfo"
+            style="@style/TV.std"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
+            android:layout_below="@+id/TV.header"
+            android:layout_marginTop="13dp"
+            android:text="@string/TV.maininfo.text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ListView
-        android:id="@+id/LV.tasks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_below="@+id/LV.classes"
-        android:layout_marginTop="22dp" >
-    </ListView>
+        <TextView
+            android:id="@+id/TV.installedClasses"
+            style="@style/TV.header2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_below="@+id/TV.maininfo"
+            android:layout_marginTop="13dp"
+            android:text="@string/TV.installedClasses.text" />
 
-    <Button
-        style="@style/BTN"
-        android:id="@+id/BTN.loadNewClass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_alignStart="@+id/TV.header"
-        android:layout_below="@+id/LV.tasks"
-        android:text="@string/BTN.loadNewClass.text" />
+        <ListView
+            android:id="@+id/LV.classes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_below="@+id/TV.installedClasses"
+            android:layout_marginTop="10dp" >
+        </ListView>
 
+        <TextView
+            android:id="@+id/TV.installedTasks"
+            style="@style/TV.header2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_below="@+id/LV.classes"
+            android:layout_marginTop="13dp"
+            android:text="@string/TV.installedTasks.text" />
 
-    <Button
-        style="@style/BTN"
-        android:id="@+id/BTN.loadNewtask"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.header"
-        android:layout_alignStart="@+id/TV.header"
-        android:layout_below="@+id/BTN.loadNewClass"
-        android:text="@string/BTN.loadNewTask.text" />
+        <ListView
+            android:id="@+id/LV.tasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_below="@+id/TV.installedTasks"
+            android:layout_marginTop="22dp" >
+        </ListView>
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/BTN.loadNewClass"
+            style="@style/BTN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
+            android:layout_below="@+id/LV.tasks"
+            android:text="@string/BTN.loadNewClass.text" />
+
+        <Button
+            android:id="@+id/BTN.loadNewtask"
+            style="@style/BTN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
+            android:layout_below="@+id/BTN.loadNewClass"
+            android:text="@string/BTN.loadNewTask.text" />
+    </RelativeLayout>
+
+</ScrollView>

@@ -31,7 +31,7 @@ public class StudentInfoActivity extends BaseActivity {
 		}
 
 		TextView textView = (TextView) findViewById( R.id.TV_info_header );
-		Student student = getStudentByIdent();
+		Student student = getStudentByIdentExtra();
 		textView.setText( student.getFirstName() );
 		
 		String name = student.getIdent();
@@ -70,7 +70,7 @@ public class StudentInfoActivity extends BaseActivity {
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			View rootView = inflater.inflate( R.layout.fragment_student_info, container, false );
- 			Student bean = getBaseActivity().getStudentByIdent();
+ 			Student bean = getBaseActivity().getStudentByIdentExtra();
  			
  			EditText editText = ( EditText ) rootView.findViewById( R.id.ET_info_firstName );
  			editText.setText( bean.getFirstName() );
@@ -100,7 +100,7 @@ public class StudentInfoActivity extends BaseActivity {
 		 			editText = ( EditText ) rootView.findViewById( R.id.ET_info_ident );
 		 			bean.setIdent( editText.getText().toString() );
 		 			
-		 			LoadDataHandler.WriteStudentClass( stdClass, getActivity() );
+		 			LoadDataHandler.WriteLocalStudentClass( stdClass, getActivity() );
 				}
 			});
 

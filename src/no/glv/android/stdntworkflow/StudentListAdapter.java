@@ -35,7 +35,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	 * @param objects
 	 */
 	public StudentListAdapter( Context context, Student[] objects ) {
-		super(context, R.layout.student_list_row, objects );
+		super(context, R.layout.row_student_list, objects );
 		
 		this.beans = objects;
 		this.context = context;
@@ -74,7 +74,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	 */
 	private View createView(Context context, ViewGroup parent, int position) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.student_list_row, parent, false );
+		View myView = inflater.inflate( R.layout.row_student_list, parent, false );
 		ViewHolder holder = new ViewHolder();
 		Student student = beans[position];
 		

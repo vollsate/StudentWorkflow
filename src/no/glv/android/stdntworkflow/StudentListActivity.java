@@ -32,7 +32,7 @@ public class StudentListActivity extends BaseActivity implements OnClickListener
 		setContentView( R.layout.activity_student_list );
 
 		ListView listView = (ListView) findViewById( R.id.student_listview );
-		stdClass = getStudentClass();
+		stdClass = getStudentClassExtra();
 		
 		String title = getResources().getString( R.string.activity_studentList_title );
 		title = title.replace( CLASS_REPLACE, stdClass.getName() );
@@ -66,7 +66,7 @@ public class StudentListActivity extends BaseActivity implements OnClickListener
 			return true;
 
 		case R.id.action_writeToLocal:
-			LoadDataHandler.WriteStudentClass( stdClass, this );
+			LoadDataHandler.WriteLocalStudentClass( stdClass, this );
 			return true;
 
 		default:

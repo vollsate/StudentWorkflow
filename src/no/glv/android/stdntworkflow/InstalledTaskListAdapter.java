@@ -18,12 +18,12 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public class StudentClassAdapter extends ArrayAdapter<String> {
+public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 
 	/**  */
-	private static final String TAG = StudentClassAdapter.class.getSimpleName();
+	private static final String TAG = InstalledTaskListAdapter.class.getSimpleName();
 
-	private List<String> mClasses;
+	private List<String> mTasks;
 	
 	private BaseActivity baseActivity;
 
@@ -33,7 +33,7 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 	 * @param context
 	 * @param resource
 	 */
-	private StudentClassAdapter( Context context, int resource ) {
+	private InstalledTaskListAdapter( Context context, int resource ) {
 		super( context, resource );
 	}
 	
@@ -48,9 +48,9 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 	 * @param resource
 	 * @param objects
 	 */
-	public StudentClassAdapter( Context context, int resource, List<String> objects ) {
+	public InstalledTaskListAdapter( Context context, int resource, List<String> objects ) {
 		super( context, resource, objects );
-		mClasses = objects;
+		mTasks = objects;
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 		}
 
 		StudentClassHolder holder = (StudentClassHolder) convertView.getTag();
-		holder.textView.setText( mClasses.get( position ).toString() );
+		holder.textView.setText( mTasks.get( position ).toString() );
 		holder.ID = position;
 
 		return convertView;
@@ -75,23 +75,24 @@ public class StudentClassAdapter extends ArrayAdapter<String> {
 	 */
 	private View createView( Context context, ViewGroup parent, int position ) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.classes_list_row, parent, false );
+		View myView = inflater.inflate( R.layout.row_tasks_list, parent, false );
 		StudentClassHolder holder = new StudentClassHolder();
 
-		TextView textView = (TextView) myView.findViewById( R.id.TV_studentClassName );
+		TextView textView = (TextView) myView.findViewById( R.id.TV_main_taskName );
 
 		// Setting the StudentClassname as a TAG for this view
-		textView.setTag( mClasses.get( position ) );
+		textView.setTag( mTasks.get( position ) );
 		textView.setOnClickListener( new View.OnClickListener() {
 
 			@Override
 			public void onClick( View v ) {
 				Log.d( TAG, "" + v.getTag() );
-
+/*
 				Intent intent = new Intent( getContext(), StudentListActivity.class );
 				String studentClass = (String) v.getTag();
 				baseActivity.putStudentClassExtra( studentClass, intent );
-				StudentClassAdapter.this.getContext().startActivity( intent );
+				InstalledTaskListAdapter.this.getContext().startActivity( intent );
+*/
 			}
 		} );
 

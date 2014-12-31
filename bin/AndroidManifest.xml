@@ -4,10 +4,10 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 
     <application
@@ -30,11 +30,18 @@
         </activity>
         <activity
             android:name=".StudentInfoActivity"
-            android:label="@string/activity.studentInfo.title" >
+            android:label="@string/activity.studentInfo.title" 
+            android:parentActivityName=".StudentListActivity">
         </activity>
         <activity
             android:name=".LoadDataActivity"
-            android:label="@string/activity.loadData.title" >
+            android:label="@string/activity.loadData.title" 
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".NewTaskActivity"
+            android:label="@string/title_activity_new_task" 
+            android:parentActivityName=".MainActivity">
         </activity>
     </application>
 

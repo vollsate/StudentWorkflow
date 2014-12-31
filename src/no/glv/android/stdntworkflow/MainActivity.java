@@ -1,25 +1,35 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.LoadDataHandler;
+import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.StudentClassHandler;
+import no.glv.android.stdntworkflow.core.StudentClassHandler.OnStudentClassChangeListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends BaseActivity implements OnClickListener {
+/**
+ * 
+ * @author GleVoll
+ *
+ */
+public class MainActivity extends BaseActivity implements OnClickListener, OnStudentClassChangeListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
+
+	List<String> mClasses;
+
+	List<String> mTasks;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -32,6 +42,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		btn.setOnClickListener( this );
 
 		LoadDataHandler.LoadLocalStudentClasses( this );
+		LoadDataHandler.LoadTasks( this );
+		StudentClassHandler.GetInstance().setOnStudentClassChangeListener( this );
+		updateLists();
 		createListView();
 	}
 
@@ -40,23 +53,28 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	 */
 	private void createListView() {
 		Log.d( TAG, "Creating ListView" );
-		List<String> filesList = LoadDataHandler.GetLocalStudentClasses( this );
 
-		if ( filesList.isEmpty() ) return;
-
-		ListView listView = (ListView) findViewById( R.id.LV_classes );
-		List<String> mClasses = new ArrayList<String>();
-		Iterator<String> it = filesList.iterator();
-
-		while ( it.hasNext() ) {
-			String fileName = it.next();
-			fileName = fileName.substring( 0, fileName.length() - 4 );
-			mClasses.add( fileName );
+		ListView listView;
+		if ( !mClasses.isEmpty() ) {
+			listView = (ListView) findViewById( R.id.LV_classes );
+			InstalledStudentClassListAdapter classAdapter = new InstalledStudentClassListAdapter( this,
+					R.layout.row_classes_list, mClasses );
+			classAdapter.setBaseActivity( this );
+			listView.setAdapter( classAdapter );
 		}
 
-		StudentClassAdapter adapter = new StudentClassAdapter( this, R.layout.classes_list_row, mClasses );
-		adapter.setBaseActivity( this );
-		listView.setAdapter( adapter );
+		if ( !mTasks.isEmpty() ) {
+			listView = (ListView) findViewById( R.id.LV_tasks );
+			InstalledTaskListAdapter taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list,
+					mClasses );
+			taskAdapter.setBaseActivity( this );
+			listView.setAdapter( taskAdapter );
+		}
+	}
+
+	private void updateLists() {
+		mClasses = GetListOfLocalClasses( this );
+		mTasks = GetTasks( this );
 	}
 
 	/**
@@ -96,7 +114,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 		switch ( id ) {
 		case R.id.BTN_loadNewtask:
-			// intent = new Intent(this, StudentListActivity.class);
+			intent = new Intent( this, NewTaskActivity.class );
 			break;
 
 		case R.id.BTN_loadNewClass:
@@ -105,5 +123,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		}
 
 		startActivity( intent );
+	}
+
+	@Override
+	public void onStudentClassChange( StudentClass stdClass ) {
+		updateLists();
 	}
 }

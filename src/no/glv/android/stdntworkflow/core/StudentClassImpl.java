@@ -5,6 +5,7 @@ package no.glv.android.stdntworkflow.core;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author GleVoll
@@ -116,6 +117,17 @@ public class StudentClassImpl implements StudentClass {
 	@Override
 	public Iterator<Student> iterator() {
 		return students.iterator();
+	}
+
+	@Override
+	public List<Student> getStudents() {
+		List<Student> list = new ArrayList<Student>( students.size() );
+		
+		for ( int i = 0; i < students.size(); i++ ) {
+			list.add( students.get( i )  );
+		}
+		
+		return list;
 	}
 
 }

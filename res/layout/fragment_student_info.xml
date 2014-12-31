@@ -78,7 +78,6 @@
         style="@style/BTN"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TV.info.header"
         android:layout_below="@+id/ET.info.ident"
         android:layout_marginTop="20sp"
         android:text="Oppdater!" />

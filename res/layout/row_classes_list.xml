@@ -13,5 +13,4 @@
         android:singleLine="true"
         android:textSize="20sp" />
 
- 
 </LinearLayout>
