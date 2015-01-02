@@ -5,17 +5,14 @@ package no.glv.android.stdntworkflow.core;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,7 +45,7 @@ public class BaseActivity extends ActionBarActivity {
 		String sName = bundle.getString( Student.EXTRA_STUDENTNAME );
 		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
-		StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( sClass );
+		StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
 		Student bean = stdClass.getStudentByFirstName( sName );
 
 		return bean;

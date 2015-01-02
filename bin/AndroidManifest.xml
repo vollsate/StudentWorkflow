@@ -25,13 +25,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StudentListActivity"
+            android:name=".StudentClassListActivity"
             android:label="@string/activity.studentList.title" >
         </activity>
         <activity
             android:name=".StudentInfoActivity"
             android:label="@string/activity.studentInfo.title" 
-            android:parentActivityName=".StudentListActivity">
+            android:parentActivityName=".StudentClassListActivity">
         </activity>
         <activity
             android:name=".LoadDataActivity"

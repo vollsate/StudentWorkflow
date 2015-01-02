@@ -2,6 +2,8 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.util.Log;
@@ -81,11 +83,11 @@ public class AddClassToNewTaskAdapter extends ArrayAdapter<String> {
 	 */
 	private View createView( Context context, ViewGroup parent, int position ) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.row_addedstudents_newtask, parent, false );
+		View myView = inflater.inflate( R.layout.row_newtask_addclasses, parent, false );
 		ViewHolder holder = new ViewHolder();
 
-		TextView textView = (TextView) myView.findViewById( R.id.TV_newTask_studentIdent );
-		CheckBox chBox = (CheckBox) myView.findViewById( R.id.CB_newTask_addStudent );
+		TextView textView = (TextView) myView.findViewById( R.id.TV_newTask_className );
+		CheckBox chBox = (CheckBox) myView.findViewById( R.id.CB_newTask_addClass );
 
 		// Setting the StudentClassname as a TAG for this view
 		textView.setTag( mClasses.get( position ) );
@@ -103,9 +105,10 @@ public class AddClassToNewTaskAdapter extends ArrayAdapter<String> {
 			@Override
 			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
 				String name = (String) buttonView.getTag();
+				StudentClass stdcClass = DataHandler.GetInstance().getStudentClass( name );
 
-				if ( isChecked ) task.addClass( name );
-				else task.removeClass( name );
+				if ( isChecked ) task.addClass( stdcClass );
+				else task.removeClass( stdcClass );
 			}
 		} );
 

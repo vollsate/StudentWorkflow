@@ -6,9 +6,9 @@ import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTaskChangedListener;
-import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import no.glv.android.stdntworkflow.sql.Database;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +61,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 		
 		updateLists();
 		createListView();
+		needUpdate = false;
 	}
 
 	/**
@@ -87,10 +88,10 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void updateLists() {
-//		mClasses = GetListOfLocalClasses( this );
-	//	mTasks = GetTasks( this );
-		
 		mClasses = dataHandler.getStudentClassNames();
 		mTasks = dataHandler.getTaskNames();
 	}

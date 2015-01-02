@@ -5,6 +5,7 @@ import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -129,7 +130,8 @@ public class LoadableFilesFragment extends DialogFragment {
 		public void onClick( View v ) {
 			String fileName = v.getTag().toString();
 			try {
-				DataHandler.LoadStudentClassFromDownloadDir( getContext(), fileName );
+				StudentClass stdClass = DataHandler.LoadStudentClassFromDownloadDir( getContext(), fileName );
+				DataHandler.GetInstance().addStudentClass( stdClass );
 			}
 			catch ( IOException e ) {
 				Log.d( "", e.toString() );

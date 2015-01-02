@@ -42,6 +42,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TV.std.S" parent="TV.standard">
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="TV.std.L" parent="TV.standard">
         <item name="android:textSize">20sp</item>
     </style>

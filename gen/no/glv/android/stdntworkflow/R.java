@@ -1647,7 +1647,8 @@ containing a value of this type.
         public static final int BTN_newTask_create=0x7f090059;
         public static final int BTN_newTask_date=0x7f090056;
         public static final int BTN_newTask_verifyStudents=0x7f090062;
-        public static final int CB_newTask_addStudent=0x7f090066;
+        public static final int CB_newTask_addClass=0x7f090065;
+        public static final int CB_newTask_addStudent=0x7f090067;
         public static final int ET_info_LastName=0x7f09005d;
         public static final int ET_info_firstName=0x7f09005b;
         public static final int ET_info_ident=0x7f09005f;
@@ -1668,17 +1669,19 @@ containing a value of this type.
         public static final int TV_installedClasses=0x7f090042;
         public static final int TV_installedTasks=0x7f090044;
         public static final int TV_loadClassHeader=0x7f09004a;
-        public static final int TV_loadData_fileName=0x7f090065;
-        public static final int TV_main_taskName=0x7f09006a;
+        public static final int TV_loadData_fileName=0x7f090064;
+        public static final int TV_main_taskName=0x7f09006d;
         public static final int TV_maininfo=0x7f090041;
+        public static final int TV_newTask_className=0x7f090066;
         public static final int TV_newTask_date=0x7f090055;
         public static final int TV_newTask_desc=0x7f090053;
         public static final int TV_newTask_header=0x7f09004f;
         public static final int TV_newTask_info=0x7f090050;
         public static final int TV_newTask_name=0x7f090051;
-        public static final int TV_newTask_studentIdent=0x7f090063;
-        public static final int TV_stdlist_name=0x7f090067;
-        public static final int TV_studentClassName=0x7f090064;
+        public static final int TV_newTask_studentIdent=0x7f090068;
+        public static final int TV_stdlist_ident=0x7f09006a;
+        public static final int TV_stdlist_name=0x7f090069;
+        public static final int TV_studentClassName=0x7f090063;
         public static final int action_bar=0x7f090031;
         public static final int action_bar_activity_content=0x7f090003;
         public static final int action_bar_container=0x7f090030;
@@ -1692,8 +1695,8 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09002e;
         public static final int action_mode_bar_stub=0x7f09002d;
         public static final int action_mode_close_button=0x7f090020;
-        public static final int action_settings=0x7f09006b;
-        public static final int action_writeToLocal=0x7f09006d;
+        public static final int action_settings=0x7f09006e;
+        public static final int action_writeToLocal=0x7f090070;
         public static final int activity_chooser_view_content=0x7f090021;
         public static final int always=0x7f090014;
         public static final int beginning=0x7f09001b;
@@ -1714,10 +1717,10 @@ containing a value of this type.
         public static final int icon=0x7f090026;
         public static final int ifRoom=0x7f090016;
         public static final int image=0x7f090023;
-        public static final int info=0x7f090068;
+        public static final int info=0x7f09006b;
         public static final int listMode=0x7f09000a;
         public static final int list_item=0x7f090025;
-        public static final int menu_settings=0x7f09006c;
+        public static final int menu_settings=0x7f09006f;
         public static final int middle=0x7f09001d;
         public static final int never=0x7f090017;
         public static final int none=0x7f09000f;
@@ -1743,7 +1746,7 @@ containing a value of this type.
         public static final int student_listview=0x7f090049;
         public static final int submit_area=0x7f09003c;
         public static final int tabMode=0x7f09000c;
-        public static final int task=0x7f090069;
+        public static final int task=0x7f09006c;
         public static final int title=0x7f090027;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
@@ -1803,20 +1806,19 @@ containing a value of this type.
         public static final int activity_main=0x7f030018;
         public static final int activity_new_task=0x7f030019;
         public static final int activity_student_info=0x7f03001a;
-        public static final int activity_student_list=0x7f03001b;
-        public static final int fragment_elev_liste=0x7f03001c;
-        public static final int fragment_loaddata=0x7f03001d;
-        public static final int fragment_loaddata_files=0x7f03001e;
-        public static final int fragment_new_task=0x7f03001f;
-        public static final int fragment_student_info=0x7f030020;
-        public static final int fragment_students_newtask=0x7f030021;
-        public static final int row_addedstudents_newtask=0x7f030022;
-        public static final int row_classes_list=0x7f030023;
-        public static final int row_loaddata_files=0x7f030024;
-        public static final int row_newtask_students=0x7f030025;
-        public static final int row_student_list=0x7f030026;
-        public static final int row_tasks_list=0x7f030027;
-        public static final int support_simple_spinner_dropdown_item=0x7f030028;
+        public static final int activity_studentclass_list=0x7f03001b;
+        public static final int fragment_loaddata=0x7f03001c;
+        public static final int fragment_loaddata_files=0x7f03001d;
+        public static final int fragment_new_task=0x7f03001e;
+        public static final int fragment_student_info=0x7f03001f;
+        public static final int fragment_students_newtask=0x7f030020;
+        public static final int row_classes_list=0x7f030021;
+        public static final int row_loaddata_files=0x7f030022;
+        public static final int row_newtask_addclasses=0x7f030023;
+        public static final int row_newtask_students=0x7f030024;
+        public static final int row_student_list=0x7f030025;
+        public static final int row_tasks_list=0x7f030026;
+        public static final int support_simple_spinner_dropdown_item=0x7f030027;
     }
     public static final class menu {
         public static final int menu_load_data=0x7f0c0000;
@@ -1934,7 +1936,7 @@ containing a value of this type.
         /**  Application theme. 
          */
         public static final int AppTheme=0x7f0b00ec;
-        public static final int BTN=0x7f0b00f6;
+        public static final int BTN=0x7f0b00f7;
         public static final int Base_TextAppearance_AppCompat=0x7f0b0098;
         public static final int Base_TextAppearance_AppCompat_Body1=0x7f0b00a3;
         public static final int Base_TextAppearance_AppCompat_Body2=0x7f0b00a2;
@@ -2079,8 +2081,8 @@ containing a value of this type.
     
          */
         public static final int Base_Widget_AppCompat_Toolbar_Button_Navigation=0x7f0b0090;
-        public static final int ET=0x7f0b00f4;
-        public static final int ET_task=0x7f0b00f5;
+        public static final int ET=0x7f0b00f5;
+        public static final int ET_task=0x7f0b00f6;
         public static final int Platform_AppCompat=0x7f0b00c9;
         public static final int Platform_AppCompat_Dialog=0x7f0b00cb;
         public static final int Platform_AppCompat_Light=0x7f0b00ca;
@@ -2101,8 +2103,9 @@ containing a value of this type.
         public static final int TV_header2=0x7f0b00ef;
         public static final int TV_standard=0x7f0b00ed;
         public static final int TV_std=0x7f0b00f0;
-        public static final int TV_std_L=0x7f0b00f2;
-        public static final int TV_std_L_blue=0x7f0b00f3;
+        public static final int TV_std_L=0x7f0b00f3;
+        public static final int TV_std_L_blue=0x7f0b00f4;
+        public static final int TV_std_S=0x7f0b00f2;
         public static final int TV_std_bold=0x7f0b00f1;
         /**  Text styles 
          */
@@ -2259,7 +2262,7 @@ containing a value of this type.
          */
         public static final int Widget_AppCompat_Toolbar=0x7f0b0034;
         public static final int Widget_AppCompat_Toolbar_Button_Navigation=0x7f0b0035;
-        public static final int actionBar=0x7f0b00f7;
+        public static final int actionBar=0x7f0b00f8;
     }
     public static final class styleable {
         /**  ============================================ 

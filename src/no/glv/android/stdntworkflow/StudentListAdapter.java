@@ -1,6 +1,7 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
+ * This Adapter will list all the student in a given StudentClass. This class
+ * will load a XML layout row: row_student_list.
+ * 
+ * This list MUST display the first name of every student, and the 
+ * 
  * 
  * @author GleVoll
  *
@@ -59,7 +65,13 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		myView = createView( context, parent, position );
 		ViewHolder holder = (ViewHolder) myView.getTag();
 		Student bean = beans[position];
-		holder.textView.setText( bean.getFirstName() );
+		
+		if ( DataHandler.GetInstance().getSettingsManager().isShowFullname() )
+			holder.textView.setText( bean.getFirstName() + " " + bean.getLastname() );
+		else
+			holder.textView.setText( bean.getFirstName() );
+			
+		holder.identText.setText( bean.getIdent() );
 
 		return myView;
 	}
@@ -110,8 +122,11 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
 		TextView textView = (TextView) myView.findViewById( R.id.TV_stdlist_name );
 		textView.setTag( student );
-
 		holder.textView = textView;
+
+		textView = (TextView) myView.findViewById( R.id.TV_stdlist_ident );
+		holder.identText = textView;
+		
 		holder.imgInfoView = imgInfoView;
 		holder.imgTaskView = imgTaskView;
 		holder.id = position;
@@ -134,6 +149,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		int id;
 
 		TextView textView;
+		TextView identText;
 		ImageView imgInfoView;
 		ImageView imgTaskView;
 

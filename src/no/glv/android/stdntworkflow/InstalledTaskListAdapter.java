@@ -3,9 +3,7 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,24 +22,9 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	private static final String TAG = InstalledTaskListAdapter.class.getSimpleName();
 
 	private List<String> mTasks;
-	
+
 	private BaseActivity baseActivity;
 
-	
-	/**
-	 * 
-	 * @param context
-	 * @param resource
-	 */
-	private InstalledTaskListAdapter( Context context, int resource ) {
-		super( context, resource );
-	}
-	
-	void setBaseActivity( BaseActivity base ) {
-		this.baseActivity = base;
-	}
-
-	
 	/**
 	 * 
 	 * @param context
@@ -51,6 +34,14 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	public InstalledTaskListAdapter( Context context, int resource, List<String> objects ) {
 		super( context, resource, objects );
 		mTasks = objects;
+	}
+
+	/**
+	 * 
+	 * @param base
+	 */
+	void setBaseActivity( BaseActivity base ) {
+		this.baseActivity = base;
 	}
 
 	@Override
@@ -87,12 +78,14 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 			@Override
 			public void onClick( View v ) {
 				Log.d( TAG, "" + v.getTag() );
-/*
-				Intent intent = new Intent( getContext(), StudentListActivity.class );
-				String studentClass = (String) v.getTag();
-				baseActivity.putStudentClassExtra( studentClass, intent );
-				InstalledTaskListAdapter.this.getContext().startActivity( intent );
-*/
+				/*
+				 * Intent intent = new Intent( getContext(),
+				 * StudentListActivity.class ); String studentClass = (String)
+				 * v.getTag(); baseActivity.putStudentClassExtra( studentClass,
+				 * intent );
+				 * InstalledTaskListAdapter.this.getContext().startActivity(
+				 * intent );
+				 */
 			}
 		} );
 
@@ -103,8 +96,6 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 		return myView;
 	}
 
-	
-	
 	/**
 	 * 
 	 * @author GleVoll

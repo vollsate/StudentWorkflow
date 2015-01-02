@@ -120,6 +120,18 @@ public class Database extends SQLiteOpenHelper {
 	// TASK
 	// --------------------------------------------------------------------------------------------------------
 
+	/**
+	 * 
+	 * @return
+	 */
+	public Task createNewTask() {
+		return new TaskImpl();
+	}
+	
+	/**
+	 * 
+	 * @param task
+	 */
 	public void writeTask( Task task ) {
 
 	}

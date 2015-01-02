@@ -43,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
             android:layout_below="@+id/TV.maininfo"
             android:layout_marginTop="13dp"
             android:text="@string/TV.installedClasses.text" />
@@ -52,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
             android:layout_below="@+id/TV.installedClasses"
             android:layout_marginTop="10dp" >
         </ListView>
@@ -62,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
             android:layout_below="@+id/LV.classes"
             android:layout_marginTop="13dp"
             android:text="@string/TV.installedTasks.text" />
@@ -71,6 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/TV.header"
+            android:layout_alignStart="@+id/TV.header"
             android:layout_below="@+id/TV.installedTasks"
             android:layout_marginTop="10dp" >
         </ListView>

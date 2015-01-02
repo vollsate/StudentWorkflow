@@ -25,6 +25,7 @@ import no.glv.android.stdntworkflow.sql.Database;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
+import no.glv.android.stdntworkflow.sql.TaskImpl;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
@@ -45,7 +46,6 @@ public class DataHandler {
 	private static final String STUDENT_IN_TASK_DELIM = ",";
 
 	private static String STDCLASS_FILE_SUFFIX = ".csv";
-	private static String TASKS_FILE_SUFFIX = ".tsk";
 
 	/** A map of all the tasks the students are involved in */
 	private static HashMap<String, StudentTaskImpl> studentInTasks;
@@ -53,6 +53,7 @@ public class DataHandler {
 	private static boolean islocalStudentClassesLoaded = false;
 
 	private Database db;
+	private SettingsManager sManager;
 
 	private Map<String, StudentClass> stdClasses;
 	private Map<String, Task> tasks;
@@ -102,6 +103,8 @@ public class DataHandler {
 	 */
 	private DataHandler( Database db ) {
 		this.db = db;
+		
+		sManager = new SettingsManager();
 
 		stdClassChangeListeners = new ArrayList<DataHandler.OnStudentClassChangeListener>( 2 );
 		stdChangeListeners = new ArrayList<DataHandler.OnStudentChangedListener>( 2 );
@@ -138,6 +141,18 @@ public class DataHandler {
 			stdClass.addAll( db.loadStudentsFromClass( stdClass.getName() ) );
 		}
 
+	}
+	
+	public Task createTask() {
+		return db.createNewTask();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public SettingsManager getSettingsManager() {
+		return sManager;
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -349,7 +364,7 @@ public class DataHandler {
 	 * @param stdClass
 	 */
 	private void notifyStudentClassChange( StudentClass stdClass, int mode ) {
-		if ( stdChangeListeners.isEmpty() ) return;
+		if ( stdClassChangeListeners.isEmpty() ) return;
 
 		Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.iterator();
 		while ( it.hasNext() )
@@ -547,7 +562,7 @@ public class DataHandler {
 		ident = ident.replace( 'å', 'a' );
 
 		Log.d( TAG, "Creating ident: " + ident );
-		return ident.toLowerCase();
+		return ident.toLowerCase( Locale.getDefault() );
 	}
 
 	/**
@@ -635,7 +650,7 @@ public class DataHandler {
 						}
 					}
 
-					StudentClassHandler.GetInstance().addStudentClass( stdClass );
+					GetInstance().addStudentClass( stdClass );
 				}
 			}
 		}

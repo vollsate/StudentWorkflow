@@ -6,24 +6,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.R.id;
-import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class TaskImpl implements Task {
-	
+
 	private String mName;
 	private String mDesc;
 	private Date mExpirationDate;
 	private int mType;
-	
+
 	private HashMap<String, StudentTask> studentsMap;
 
 	private HashMap<String, StudentTask> studentsMapPending;
-	
+
 	private List<String> mClasses;
 
 	TaskImpl() {
@@ -46,7 +44,7 @@ public class TaskImpl implements Task {
 	public int getType() {
 		return mType;
 	}
-	
+
 	@Override
 	public void setType( int type ) {
 		this.mType = type;
@@ -56,11 +54,11 @@ public class TaskImpl implements Task {
 	public List<String> getStudentsHandedIn() {
 		List<String> list = new ArrayList<String>();
 		Iterator<String> it = studentsMap.keySet().iterator();
-		
-		while (it.hasNext()) {
+
+		while ( it.hasNext() ) {
 			list.add( it.next() );
 		}
-		
+
 		return list;
 	}
 
@@ -72,29 +70,29 @@ public class TaskImpl implements Task {
 	@Override
 	public List<String> getClasses() {
 		List<String> list = new ArrayList<String>( mClasses.size() );
-		
+
 		for ( int i = 0; i < mClasses.size(); i++ ) {
 			list.add( mClasses.get( i ) );
 		}
-		
+
 		return list;
 	}
 
 	@Override
 	public void addClass( StudentClass stdClass ) {
 		mClasses.add( stdClass.getName() );
-		
+
 		Iterator<Student> it = stdClass.iterator();
-		while (it.hasNext() ) {
+		while ( it.hasNext() ) {
 			Student std = it.next();
-			
+
 			StudentTaskImpl tImpl = new StudentTaskImpl();
 			tImpl.ident = std.getIdent();
 			tImpl.task = mName;
-			
+
 			studentsMapPending.put( stdClass.getName(), tImpl );
 		}
-		
+
 	}
 
 	@Override
@@ -103,46 +101,35 @@ public class TaskImpl implements Task {
 	}
 
 	@Override
-	public void removeClass( String name ) {
-		if ( ! mClasses.contains( name ) )
-			return;
-		
-		mClasses.remove( name );
-		StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( name );
+	public void removeClass( StudentClass stdClass ) {
+		if ( !mClasses.contains( stdClass.getName() ) ) return;
+
+		mClasses.remove( stdClass.getName() );
 		List<Student> list = stdClass.getStudents();
 		Iterator<Student> it = list.iterator();
-		while (it.hasNext()) {
+		while ( it.hasNext() ) {
 			Student std = it.next();
-//			studentsMap.remove( std.getIdent() );
+			// studentsMap.remove( std.getIdent() );
 			studentsMapPending.remove( std.getIdent() );
 		}
-		
+
 	}
 
 	@Override
-	public boolean removeStudent( String ident ){
-		if (studentsMapPending.containsKey( ident ) ) {
+	public boolean removeStudent( String ident ) {
+		if ( studentsMapPending.containsKey( ident ) ) {
 			studentsMapPending.remove( ident );
 			return true;
 		}
-		
+
 		return false;
 	}
 
-	@Override
-	public void addClass( String name ) {
-		StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( name );
-		addClass( stdClass );
-	}
-
-
-
 	static class StudentTaskImpl implements StudentTask {
-		
+
 		String ident;
 		String task;
 		Date handInDate;
-		
 
 		@Override
 		public String getIdent() {
@@ -158,30 +145,24 @@ public class TaskImpl implements Task {
 		public Date getHandInDate() {
 			return handInDate;
 		}
-		
+
 		public static StudentTask CreateFromStudent( String taskName, Student std ) {
 			StudentTaskImpl impl = new StudentTaskImpl();
-			
+
 			impl.ident = std.getIdent();
 			impl.task = taskName;
-			
+
 			return impl;
 		}
-		
+
 	}
 
-
-
 	@Override
-	public boolean addStudent( String ident ) {
-		if (ident == null ) return false;
-		if (studentsMap.containsKey( ident ) ) return true;
-		
-		Student std = StudentClassHandler.GetInstance().getStudentById( ident );
-		
-		if (std == null ) return false; 
-		
-		studentsMapPending.put( ident, StudentTaskImpl.CreateFromStudent( mName, std ) );
+	public boolean addStudent( Student std ) {
+		if ( std == null ) return false;
+		if ( studentsMap.containsKey( std.getIdent() ) ) return true;
+
+		studentsMapPending.put( std.getIdent(), StudentTaskImpl.CreateFromStudent( mName, std ) );
 
 		return true;
 	}
@@ -193,18 +174,17 @@ public class TaskImpl implements Task {
 
 	boolean hasStudent( List<StudentTask> list, String ident ) {
 		Iterator<StudentTask> it = list.iterator();
-		while (it.hasNext()) {
-			if ( it.next().getIdent().equals( ident ) )
-				return true;
+		while ( it.hasNext() ) {
+			if ( it.next().getIdent().equals( ident ) ) return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
 	public boolean hasStudent( String ident ) {
 		if ( studentsMap.containsKey( ident ) ) return true;
-		if ( studentsMapPending.containsKey( ident) ) return true;
+		if ( studentsMapPending.containsKey( ident ) ) return true;
 
 		return false;
 	}
@@ -212,10 +192,10 @@ public class TaskImpl implements Task {
 	@Override
 	public List<String> getStudents() {
 		List<String> stds = new ArrayList<String>();
-		
+
 		stds.addAll( studentsMap.keySet() );
 		stds.addAll( studentsMapPending.keySet() );
-		
+
 		return stds;
 	}
 

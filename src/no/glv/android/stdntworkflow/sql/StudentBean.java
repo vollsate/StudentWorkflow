@@ -2,26 +2,32 @@ package no.glv.android.stdntworkflow.sql;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.util.Log;
 
+/**
+ * 
+ * @author GleVoll
+ *
+ */
 public class StudentBean implements Student {
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN );
+	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
 
 	public String mIdent;
 	public int mID;
 
-	public 	String fName;
+	public String fName;
 	public String lName;
 	public String bYear;
 	public Date birth;
 
 	public String parent1Name;
 	public String parent1Phone;
-	public 	String parent1Mail;
+	public String parent1Mail;
 
 	public String parent2Name;
 	public String parent2Phone;
@@ -45,16 +51,16 @@ public class StudentBean implements Student {
 	public String getFirstName() {
 		return fName;
 	}
-	
-	public void setFirstName(String nn ) {
+
+	public void setFirstName( String nn ) {
 		this.fName = nn;
 	}
 
-	public void setLastName(String nn ) {
+	public void setLastName( String nn ) {
 		this.lName = nn;
 	}
 
-	public void setIdent(String nn ) {
+	public void setIdent( String nn ) {
 		this.mIdent = nn;
 	}
 
@@ -141,7 +147,7 @@ public class StudentBean implements Student {
 	public String getIdent() {
 		return mIdent;
 	}
-	
+
 	public String toString() {
 		return "Student IDENT: " + mIdent;
 	}

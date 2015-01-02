@@ -6,11 +6,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="no.glv.android.stdntworkflow.ElevListeActivity$PlaceholderFragment" >
+    tools:context=".StudentClassListActivity" >
 
-    <ListView 
+    <ListView
         android:id="@+id/student_listview"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     
 </RelativeLayout>

@@ -1,14 +1,11 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,7 +66,7 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener {
 	 * 
 	 */
 	public void startStudentListActivity() {
-		Intent intent = new Intent( this, StudentListActivity.class );
+		Intent intent = new Intent( this, StudentClassListActivity.class );
 		putStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
 	}

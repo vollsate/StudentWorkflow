@@ -85,7 +85,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 			public void onClick( View v ) {
 				Log.d( TAG, "" + v.getTag() );
 
-				Intent intent = new Intent( getContext(), StudentListActivity.class );
+				Intent intent = new Intent( getContext(), StudentClassListActivity.class );
 				String studentClass = (String) v.getTag();
 				baseActivity.putStudentClassExtra( studentClass, intent );
 				InstalledStudentClassListAdapter.this.getContext().startActivity( intent );

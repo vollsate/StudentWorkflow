@@ -43,7 +43,7 @@ public class NewTaskActivity extends Activity {
 
 		if ( savedInstanceState == null ) {
 			fragment = new NewTaskFragment( );
-			fragment.setTask( task );
+			fragment.setTask( DataHandler.GetInstance().createTask() );
 			getFragmentManager().beginTransaction().add( R.id.container, fragment ).commit();
 		}		
 	}
@@ -108,7 +108,7 @@ public class NewTaskActivity extends Activity {
 		private void createListView( View v) {
 			ListView listView = (ListView) v.findViewById( R.id.LV_newTask_classes );
 			List<String> mClasses = DataHandler.GetInstance().getStudentClassNames(); 
-			adapter = new AddClassToNewTaskAdapter( getActivity(), R.layout.row_addedstudents_newtask, mClasses );
+			adapter = new AddClassToNewTaskAdapter( getActivity(), R.layout.row_newtask_addclasses, mClasses );
 			adapter.setTask( task );
 			listView.setAdapter( adapter );
 		}

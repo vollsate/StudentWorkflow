@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.StudentClassHandler;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
@@ -97,7 +97,7 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		Iterator<String> it = mClasses.iterator();
 		while ( it.hasNext() ) {
 			String className = it.next();
-			StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( className );
+			StudentClass stdClass = DataHandler.GetInstance().getStudentClass( className );
 			students.addAll( stdClass.getStudents() );
 		}
 		
@@ -128,23 +128,23 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		@Override
 		public View getView( int position, View convertView, ViewGroup parent ) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-			View myView = inflater.inflate( R.layout.row_addedstudents_newtask, parent, false );
-			
+			if ( convertView == null ) {
+				convertView = inflater.inflate( R.layout.row_newtask_addclasses, parent, false );
+			}
 			Student std = students.get( position ); 
 			String tag = std.getIdent();
 
-			TextView textView = (TextView) myView.findViewById( R.id.TV_newTask_studentIdent );
+			TextView textView = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );
 			textView.setTag( std.getFirstName() );
 			textView.setText( tag );
 			
-			CheckBox cBox = ( CheckBox ) myView.findViewById( R.id.CB_newTask_addStudent );
+			CheckBox cBox = ( CheckBox ) convertView.findViewById( R.id.CB_newTask_addStudent );
 			cBox.setTag( tag );
 			cBox.setChecked( true );
 			cBox.setOnCheckedChangeListener( this );
 
 			
-			return myView;
-			
+			return convertView;
 		}
 
 

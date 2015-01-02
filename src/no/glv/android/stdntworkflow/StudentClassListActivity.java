@@ -1,7 +1,6 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.sql.Database;
 import android.os.Bundle;
@@ -14,13 +13,18 @@ import android.widget.ListView;
 
 
 /**
+ * This activity will show all the students in a certain class. 
+ * 
+ * The activity should be able to:
+ * 		- Update the name of the class TODO
+ * 		- Delete the class
  * 
  * @author GleVoll
  *
  */
-public class StudentListActivity extends BaseActivity implements OnClickListener {
+public class StudentClassListActivity extends BaseActivity implements OnClickListener {
 
-	private static final String TAG = StudentListActivity.class.getSimpleName();
+	private static final String TAG = StudentClassListActivity.class.getSimpleName();
 	
 	private static final String CLASS_REPLACE = "{klasse}";
 
@@ -30,7 +34,7 @@ public class StudentListActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_student_list );
+		setContentView( R.layout.activity_studentclass_list );
 
 		ListView listView = (ListView) findViewById( R.id.student_listview );
 		stdClass = getStudentClassExtra();

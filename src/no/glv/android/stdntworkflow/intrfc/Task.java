@@ -55,9 +55,7 @@ public interface Task {
 
 	public void addClass( StudentClass stdClass );
 
-	public void addClass( String name );
-
-	public void removeClass( String name );
+	public void removeClass( StudentClass stdClass );
 	
 	public void setDate( Date date );
 	
@@ -72,7 +70,7 @@ public interface Task {
 	 */
 	public boolean removeStudent( String ident );
 
-	public boolean addStudent( String ident );
+	public boolean addStudent( Student ident );
 
 	public boolean hasClass( String className );
 
