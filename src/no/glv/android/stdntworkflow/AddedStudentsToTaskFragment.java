@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.BaseValues;
-import no.glv.android.stdntworkflow.core.Student;
-import no.glv.android.stdntworkflow.core.StudentClass;
 import no.glv.android.stdntworkflow.core.StudentClassHandler;
-import no.glv.android.stdntworkflow.core.Task;
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;

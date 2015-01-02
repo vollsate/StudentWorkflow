@@ -1,4 +1,4 @@
-package no.glv.android.stdntworkflow.core;
+package no.glv.android.stdntworkflow.sql;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.R.id;
+import no.glv.android.stdntworkflow.core.StudentClassHandler;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class TaskImpl implements Task {
 	

@@ -2,11 +2,11 @@ package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.BaseFragment;
-import no.glv.android.stdntworkflow.core.LoadDataHandler;
-import no.glv.android.stdntworkflow.core.Student;
-import no.glv.android.stdntworkflow.core.StudentBean;
-import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.StudentClassHandler;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.sql.StudentBean;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -88,7 +88,7 @@ public class StudentInfoActivity extends BaseActivity {
 				@Override
 				public void onClick( View v ) {
 					StudentBean bean = ( StudentBean ) v.getTag();
-					StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( bean.getStudentClass() );
+					StudentClass stdClass = DataHandler.GetInstance().getStudentClass( bean.getStudentClass() );
 					View rootView = v.getRootView();
 					
 		 			EditText editText = ( EditText ) rootView.findViewById( R.id.ET_info_firstName );
@@ -98,9 +98,10 @@ public class StudentInfoActivity extends BaseActivity {
 		 			bean.setLastName( editText.getText().toString() );
 		 			
 		 			editText = ( EditText ) rootView.findViewById( R.id.ET_info_ident );
+		 			String oldIdent = bean.getIdent();
 		 			bean.setIdent( editText.getText().toString() );
 		 			
-		 			LoadDataHandler.WriteLocalStudentClass( stdClass, getActivity() );
+		 			DataHandler.GetInstance().updateStudent( bean, oldIdent );
 				}
 			});
 

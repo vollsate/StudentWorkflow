@@ -1,4 +1,4 @@
-package no.glv.android.stdntworkflow.core;
+package no.glv.android.stdntworkflow.intrfc;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,7 +25,7 @@ public interface StudentClass  {
 	
 	public void add( Student std );
 	
-	public void addAll( ArrayList<Student> list );
+	public void addAll( List<Student> list );
 	
 	public void addAll (Student[] stds );
 	

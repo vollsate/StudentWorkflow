@@ -1,8 +1,9 @@
 package no.glv.android.stdntworkflow;
 
-import no.glv.android.stdntworkflow.core.LoadDataHandler;
-import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.StudentClassHandler;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class LoadDataActivity extends ActionBarActivity implements OnClickListener {
+public class LoadDataActivity extends BaseActivity implements OnClickListener {
 
 	private StudentClass stdClass;
 
@@ -56,11 +57,13 @@ public class LoadDataActivity extends ActionBarActivity implements OnClickListen
 
 	@Override
 	public void onClick( View v ) {
-		stdClass = LoadDataHandler.LoadStudentClassFromDownloadDir( this, "" );
-		StudentClassHandler.GetInstance().addStudentClass( stdClass );
-
+		stdClass = DataHandler.LoadStudentClassFromDownloadDir( this, "7B - 2013.csv" );
+		DataHandler.GetInstance().addStudentClass( stdClass );
+		stdClass = DataHandler.LoadStudentClassFromDownloadDir( this, "7A - 2013.csv" );
+		DataHandler.GetInstance().addStudentClass( stdClass );
+		
 		Intent intent = new Intent( this, StudentListActivity.class );
-		intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, stdClass.getName() );
+		putStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
 	}
 

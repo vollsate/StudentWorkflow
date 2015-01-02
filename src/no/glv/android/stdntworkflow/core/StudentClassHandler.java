@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.util.Log;
 
 public class StudentClassHandler {
@@ -22,7 +24,7 @@ public class StudentClassHandler {
 	/**
 	 * 
 	 */
-	private StudentClassHandler() {
+	StudentClassHandler() {
 		classes = new HashMap<String, StudentClass>( 3 );
 		listeners = new ArrayList<StudentClassHandler.OnStudentClassChangeListener>(3);
 	}

@@ -12,6 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -52,30 +55,8 @@ public class BaseActivity extends ActionBarActivity {
 	}
 
 	
-	/**
-	 * 
-	 */
-	public static List<String> GetListOfLocalClasses(Activity activity ) {
-		List<String> filesList = LoadDataHandler.GetLocalStudentClasses( activity );
-
-		if ( filesList.isEmpty() ) return filesList;
-
-		List<String> mClasses = new ArrayList<String>();
-		Iterator<String> it = filesList.iterator();
-
-		while ( it.hasNext() ) {
-			String fileName = it.next();
-			// Remove the .csv filesuffix
-			fileName = fileName.substring( 0, fileName.length() - 4 );
-			mClasses.add( fileName );
-		}
-		
-		return mClasses;
-	}
-	
 	public static List<String> GetTasks( Context ctx ) {
-		LoadDataHandler.LoadTasks( ctx );
-		return TaskHandler.GetInstance().getTasks();
+		return DataHandler.GetInstance().getTaskNames();
 	}
 	
 	
@@ -98,7 +79,7 @@ public class BaseActivity extends ActionBarActivity {
 		Bundle bundle = getIntent().getExtras();
 		String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
-		return StudentClassHandler.GetInstance().getStudentClass( className );
+		return DataHandler.GetInstance().getStudentClass( className );
 	}
 	
 	/**
@@ -111,7 +92,7 @@ public class BaseActivity extends ActionBarActivity {
 		String sName = bundle.getString( Student.EXTRA_IDENT );
 		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
-		StudentClass stdClass = StudentClassHandler.GetInstance().getStudentClass( sClass );
+		StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
 		Student bean = stdClass.getStudentByIdent( sName );
 
 		return bean;

@@ -1,30 +1,35 @@
-package no.glv.android.stdntworkflow.core;
+package no.glv.android.stdntworkflow.sql;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import android.util.Log;
 
 public class StudentBean implements Student {
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN );
 
-	String mIdent;
+	public String mIdent;
+	public int mID;
 
-	String fName;
-	String lName;
-	String bYear;
-	Date birth;
+	public 	String fName;
+	public String lName;
+	public String bYear;
+	public Date birth;
 
-	String parent1Name;
-	String parent1Phone;
-	String parent1Mail;
+	public String parent1Name;
+	public String parent1Phone;
+	public 	String parent1Mail;
 
-	String parent2Name;
-	String parent2Phone;
-	String parent2Mail;
+	public String parent2Name;
+	public String parent2Phone;
+	public String parent2Mail;
 
-	String adress;
-	String postalCode;
-	String grade;
+	public String adress;
+	public String postalCode;
+	public String grade;
 
 	private String studentClass;
 
@@ -116,11 +121,11 @@ public class StudentBean implements Student {
 		return grade;
 	}
 
-	String birhtToString() {
+	public String birhtToString() {
 		return sdf.format( birth );
 	}
 
-	void setFullName( String fullName ) {
+	public void setFullName( String fullName ) {
 		String[] name = fullName.split( "," );
 
 		lName = name[0].trim();
@@ -139,6 +144,76 @@ public class StudentBean implements Student {
 	
 	public String toString() {
 		return "Student IDENT: " + mIdent;
+	}
+
+	@Override
+	public int getID() {
+		return mID;
+	}
+
+	@Override
+	public void setParent1Name( String val ) {
+		parent1Name = val;
+	}
+
+	@Override
+	public void setParent1Phone( String val ) {
+		parent1Phone = val;
+	}
+
+	@Override
+	public void setParent1Mail( String val ) {
+		parent1Mail = val;
+	}
+
+	@Override
+	public void setParent2Name( String val ) {
+		parent2Name = val;
+	}
+
+	@Override
+	public void setParent2Phone( String val ) {
+		parent2Phone = val;
+	}
+
+	@Override
+	public void setParent2Mail( String val ) {
+		parent2Mail = val;
+	}
+
+	@Override
+	public void setBirth( String val ) {
+		try {
+			birth = sdf.parse( val );
+		}
+		catch ( Exception e ) {
+			Log.e( getClass().getSimpleName(), "Error parsing date: " + val, e );
+		}
+	}
+
+	@Override
+	public void setAdress( String val ) {
+		adress = val;
+	}
+
+	@Override
+	public void setPostalCode( String val ) {
+		postalCode = val;
+	}
+
+	@Override
+	public void setGrade( String val ) {
+		grade = val;
+	}
+
+	@Override
+	public void setStudentClass( String val ) {
+		studentClass = val;
+	}
+
+	@Override
+	public void setID( int val ) {
+		mID = val;
 	}
 
 }

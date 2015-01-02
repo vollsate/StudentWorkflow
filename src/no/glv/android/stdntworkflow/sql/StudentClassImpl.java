@@ -1,11 +1,14 @@
 /**
  * 
  */
-package no.glv.android.stdntworkflow.core;
+package no.glv.android.stdntworkflow.sql;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 /**
  * @author GleVoll
@@ -92,7 +95,7 @@ public class StudentClassImpl implements StudentClass {
 	}
 
 	@Override
-	public void addAll( ArrayList<Student> list ) {
+	public void addAll( List<Student> list ) {
 		students.addAll( list );
 	}
 

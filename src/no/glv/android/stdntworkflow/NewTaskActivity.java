@@ -6,8 +6,8 @@ import java.util.List;
 
 import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.Task;
-import no.glv.android.stdntworkflow.core.TaskHandler;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -40,8 +40,6 @@ public class NewTaskActivity extends Activity {
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_new_task );
-
-		task = TaskHandler.GetInstance().createTask();
 
 		if ( savedInstanceState == null ) {
 			fragment = new NewTaskFragment( );
@@ -109,7 +107,7 @@ public class NewTaskActivity extends Activity {
 		 */
 		private void createListView( View v) {
 			ListView listView = (ListView) v.findViewById( R.id.LV_newTask_classes );
-			List<String> mClasses = BaseActivity.GetListOfLocalClasses( getActivity() ); 
+			List<String> mClasses = DataHandler.GetInstance().getStudentClassNames(); 
 			adapter = new AddClassToNewTaskAdapter( getActivity(), R.layout.row_addedstudents_newtask, mClasses );
 			adapter.setTask( task );
 			listView.setAdapter( adapter );
@@ -187,7 +185,7 @@ public class NewTaskActivity extends Activity {
 
 		@Override
 		public void onStudentsVerified( Task task ) {
-			TaskHandler.GetInstance().addTask( task ).commit( getActivity() );
+			DataHandler.GetInstance().addTask( task ).commitTasks();
 			
 			getActivity().finish();
 		}

@@ -3,10 +3,12 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.LoadDataHandler;
-import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
+import no.glv.android.stdntworkflow.core.DataHandler.OnTaskChangedListener;
 import no.glv.android.stdntworkflow.core.StudentClassHandler;
-import no.glv.android.stdntworkflow.core.StudentClassHandler.OnStudentClassChangeListener;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 /**
@@ -23,13 +24,16 @@ import android.widget.ListView;
  * @author GleVoll
  *
  */
-public class MainActivity extends BaseActivity implements OnClickListener, OnStudentClassChangeListener {
+public class MainActivity extends BaseActivity implements OnClickListener, OnStudentClassChangeListener, OnTaskChangedListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	List<String> mClasses;
-
 	List<String> mTasks;
+	
+	private boolean needUpdate = false;
+	
+	DataHandler dataHandler;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -41,9 +45,20 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 		btn = (Button) findViewById( R.id.BTN_loadNewClass );
 		btn.setOnClickListener( this );
 
-		LoadDataHandler.LoadLocalStudentClasses( this );
-		LoadDataHandler.LoadTasks( this );
-		StudentClassHandler.GetInstance().setOnStudentClassChangeListener( this );
+		//Database.GetInstance( getApplicationContext() ).runCreate();
+		dataHandler = DataHandler.Init( getApplicationContext() );
+		dataHandler.addStudentClassChangeListener( this );
+		
+		updateLists();
+		createListView();
+	}
+	
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+
+		if ( ! needUpdate ) return;
+		
 		updateLists();
 		createListView();
 	}
@@ -66,15 +81,18 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 		if ( !mTasks.isEmpty() ) {
 			listView = (ListView) findViewById( R.id.LV_tasks );
 			InstalledTaskListAdapter taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list,
-					mClasses );
+					mTasks );
 			taskAdapter.setBaseActivity( this );
 			listView.setAdapter( taskAdapter );
 		}
 	}
 
 	private void updateLists() {
-		mClasses = GetListOfLocalClasses( this );
-		mTasks = GetTasks( this );
+//		mClasses = GetListOfLocalClasses( this );
+	//	mTasks = GetTasks( this );
+		
+		mClasses = dataHandler.getStudentClassNames();
+		mTasks = dataHandler.getTaskNames();
 	}
 
 	/**
@@ -126,7 +144,13 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 	}
 
 	@Override
-	public void onStudentClassChange( StudentClass stdClass ) {
-		updateLists();
+	public void onStudentClassUpdate( StudentClass stdClass, int mode ) {
+		needUpdate = true;
 	}
+
+	@Override
+	public void onTaskChange( Task newTask, int mode ) {
+		needUpdate = true;
+	}
+
 }

@@ -1,8 +1,9 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.LoadDataHandler;
-import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.sql.Database;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -66,7 +67,8 @@ public class StudentListActivity extends BaseActivity implements OnClickListener
 			return true;
 
 		case R.id.action_writeToLocal:
-			LoadDataHandler.WriteLocalStudentClass( stdClass, this );
+			Database.GetInstance( getApplicationContext() ).insertStudentClass( stdClass );
+			DataHandler.WriteLocalStudentClass( stdClass, this );
 			return true;
 
 		default:

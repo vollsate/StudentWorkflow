@@ -1,7 +1,7 @@
 /**
  * 
  */
-package no.glv.android.stdntworkflow.core;
+package no.glv.android.stdntworkflow.intrfc;
 
 /**
  * @author GleVoll

@@ -50,7 +50,7 @@
         <ListView
             android:id="@+id/LV.classes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_alignLeft="@+id/TV.header"
             android:layout_below="@+id/TV.installedClasses"
             android:layout_marginTop="10dp" >
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/TV.header"
             android:layout_below="@+id/TV.installedTasks"
-            android:layout_marginTop="22dp" >
+            android:layout_marginTop="10dp" >
         </ListView>
 
         <Button

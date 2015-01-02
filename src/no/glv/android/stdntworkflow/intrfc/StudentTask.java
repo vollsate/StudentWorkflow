@@ -1,4 +1,4 @@
-package no.glv.android.stdntworkflow.core;
+package no.glv.android.stdntworkflow.intrfc;
 
 import java.util.Date;
 

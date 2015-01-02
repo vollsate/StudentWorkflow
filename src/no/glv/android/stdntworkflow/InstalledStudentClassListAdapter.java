@@ -3,7 +3,6 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.StudentClass;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -24,10 +23,9 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	private static final String TAG = InstalledStudentClassListAdapter.class.getSimpleName();
 
 	private List<String> mClasses;
-	
+
 	private BaseActivity baseActivity;
 
-	
 	/**
 	 * 
 	 * @param context
@@ -36,12 +34,11 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	private InstalledStudentClassListAdapter( Context context, int resource ) {
 		super( context, resource );
 	}
-	
+
 	void setBaseActivity( BaseActivity base ) {
 		this.baseActivity = base;
 	}
 
-	
 	/**
 	 * 
 	 * @param context
@@ -102,8 +99,6 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 		return myView;
 	}
 
-	
-	
 	/**
 	 * 
 	 * @author GleVoll

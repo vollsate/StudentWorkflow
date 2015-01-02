@@ -3,7 +3,7 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;

@@ -2,8 +2,7 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.Task;
-import no.glv.android.stdntworkflow.core.TaskHandler;
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,8 +24,6 @@ public class AddClassToNewTaskAdapter extends ArrayAdapter<String> {
 
 	/**  */
 	private static final String TAG = AddClassToNewTaskAdapter.class.getSimpleName();
-
-	private TaskHandler taskHandler = TaskHandler.GetInstance();
 
 	private List<String> mClasses;
 
