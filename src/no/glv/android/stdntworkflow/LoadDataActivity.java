@@ -4,6 +4,7 @@ import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.StudentClassHandler;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ import android.widget.Button;
 public class LoadDataActivity extends BaseActivity implements OnClickListener {
 
 	private StudentClass stdClass;
+	
+	private LoadableFilesFragment fragment;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -57,11 +60,15 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onClick( View v ) {
-		stdClass = DataHandler.LoadStudentClassFromDownloadDir( this, "7B - 2013.csv" );
-		DataHandler.GetInstance().addStudentClass( stdClass );
-		stdClass = DataHandler.LoadStudentClassFromDownloadDir( this, "7A - 2013.csv" );
-		DataHandler.GetInstance().addStudentClass( stdClass );
-		
+		fragment = new LoadableFilesFragment();
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		fragment.show( ft, getClass().getSimpleName() );
+	}
+	
+	/**
+	 * 
+	 */
+	public void startStudentListActivity() {
 		Intent intent = new Intent( this, StudentListActivity.class );
 		putStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
@@ -77,7 +84,7 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener {
 
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			View rootView = inflater.inflate( R.layout.fragment_load_data, container, false );
+			View rootView = inflater.inflate( R.layout.fragment_loaddata, container, false );
 
 			Button btn = (Button) rootView.findViewById( R.id.BTN_loadFile );
 			btn.setOnClickListener( (OnClickListener) getActivity() );

@@ -44,7 +44,7 @@ public class DataHandler {
 	private static final String STUDENT_PROPERTY_SEP = ";";
 	private static final String STUDENT_IN_TASK_DELIM = ",";
 
-	private static String STDCLASS_FILE_SUFFIX = ".glv";
+	private static String STDCLASS_FILE_SUFFIX = ".csv";
 	private static String TASKS_FILE_SUFFIX = ".tsk";
 
 	/** A map of all the tasks the students are involved in */
@@ -284,12 +284,12 @@ public class DataHandler {
 	 */
 	private void notifyTaskChange( Task newTask, int mode ) {
 		if ( taskChangeListeners.isEmpty() ) return;
-		
+
 		Iterator<OnTaskChangedListener> it = taskChangeListeners.iterator();
 		while ( it.hasNext() )
 			it.next().onTaskChange( newTask, mode );
 	}
-	
+
 	/**
 	 * 
 	 * @param newTask
@@ -297,7 +297,7 @@ public class DataHandler {
 	private void notifyTaskAdd( Task newTask ) {
 		notifyTaskChange( newTask, OnTaskChangedListener.MODE_ADD );
 	}
-	
+
 	/**
 	 * 
 	 * @param listener
@@ -343,18 +343,19 @@ public class DataHandler {
 		db.insertStudentClass( stdClass );
 		notifyStudentClassAdd( stdClass );
 	}
-	
+
 	/**
 	 * 
 	 * @param stdClass
 	 */
 	private void notifyStudentClassChange( StudentClass stdClass, int mode ) {
-		if (stdChangeListeners.isEmpty() ) return;
-		
+		if ( stdChangeListeners.isEmpty() ) return;
+
 		Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.iterator();
-		while ( it.hasNext() ) it.next().onStudentClassUpdate( stdClass, mode );
+		while ( it.hasNext() )
+			it.next().onStudentClassUpdate( stdClass, mode );
 	}
-	
+
 	/**
 	 * 
 	 * @param stdClass
@@ -362,13 +363,31 @@ public class DataHandler {
 	private void notifyStudentClassAdd( StudentClass stdClass ) {
 		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
 	}
-	
+
 	/**
 	 * 
 	 * @param listener
 	 */
 	public void addStudentClassChangeListener( OnStudentClassChangeListener listener ) {
 		stdClassChangeListeners.add( listener );
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @return
+	 */
+	public List<String> getFilesFromDownloadDir() {
+		List<String> list = new ArrayList<String>();
+
+		File externalDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS );
+		File[] files = externalDir.listFiles();
+		for ( int i = 0; i < files.length; i++ ) {
+			File f = files[i];
+			if ( f.isFile() && f.getName().endsWith( STDCLASS_FILE_SUFFIX )) list.add( f.getName() );
+		}
+
+		return list;
 	}
 
 	/**
@@ -380,7 +399,7 @@ public class DataHandler {
 	 * 
 	 * @return A ready formatted StudentClass instance
 	 */
-	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) {
+	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 		FileInputStream fis;
 		BufferedReader buff = null;
 
@@ -394,11 +413,11 @@ public class DataHandler {
 		}
 		catch ( FileNotFoundException fnfEx ) {
 			Log.e( TAG, "LoadStudentClass(): File not found: " + fName, fnfEx );
-			return null;
+			throw fnfEx;
 		}
 		catch ( RuntimeException e ) {
 			Log.e( TAG, "LoadStudentClass(): Unknown error: " + fName, e );
-			return null;
+			throw e;
 		}
 
 		ArrayList<Student> list = new ArrayList<Student>();
@@ -416,15 +435,15 @@ public class DataHandler {
 		}
 		catch ( IOException ioe ) {
 			Log.e( TAG, "LoadStudentClass(): Error loading file: " + fName, ioe );
+			throw ioe;
 		}
-		finally {
-			try {
-				buff.close();
-				fis.close();
-			}
-			catch ( IOException e ) {
-				Log.e( TAG, "LoadStudentClass(): Error closing file: " + fName, e );
-			}
+		
+		try {
+			buff.close();
+			fis.close();
+		}
+		catch ( IOException e ) {
+			Log.e( TAG, "LoadStudentClass(): Error closing file: " + fName, e );
 		}
 
 		Log.v( TAG, list.toString() );
@@ -529,55 +548,6 @@ public class DataHandler {
 
 		Log.d( TAG, "Creating ident: " + ident );
 		return ident.toLowerCase();
-	}
-
-	/**
-	 * Writes a StudentClass to local file.
-	 * 
-	 * @param students
-	 * @param ctx
-	 * @param fileName
-	 * @return true if success
-	 */
-	public static boolean WriteLocalStudentClass( StudentClass stdClass, Context ctx ) {
-		FileOutputStream fos;
-		BufferedWriter bw;
-		String fileName = stdClass.getName() + STDCLASS_FILE_SUFFIX;
-
-		try {
-			fos = ctx.openFileOutput( fileName, Context.MODE_PRIVATE );
-			bw = new BufferedWriter( new OutputStreamWriter( fos ) );
-		}
-		catch ( FileNotFoundException e ) {
-			Log.e( TAG, "WriteStudentClass: File noe found: " + fileName, e );
-			return false;
-		}
-
-		Iterator<Student> it = stdClass.iterator();
-		while ( it.hasNext() ) {
-			Student std = it.next();
-			String stdString = StudentToDataString( std );
-			try {
-				bw.write( stdString );
-				bw.newLine();
-			}
-			catch ( IOException e ) {
-				Log.e( TAG, "WriteStudentClass: Cannot write to file " + fileName, e );
-				return false;
-			}
-		}
-
-		try {
-			bw.flush();
-			bw.close();
-			fos.close();
-		}
-		catch ( IOException e2 ) {
-			Log.e( TAG, "Error closing FileOutputStream", e2 );
-		}
-
-		Log.d( TAG, "Written new localStudentClass: " + stdClass.getName() );
-		return true;
 	}
 
 	/**
@@ -832,7 +802,7 @@ public class DataHandler {
 		public static final int MODE_DEL = 2;
 		public static final int MODE_UPD = 3;
 	}
-	
+
 	/**
 	 * 
 	 * @author GleVoll

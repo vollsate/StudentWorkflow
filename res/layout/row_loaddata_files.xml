@@ -5,8 +5,8 @@
     android:orientation="horizontal" >
 
     <TextView
-        android:id="@+id/TV.newTask.studentIdent"
-        style="@style/TV.std.L.blue"        
+        android:id="@+id/TV.loadData.fileName"
+        style="@style/TV.std.L"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"

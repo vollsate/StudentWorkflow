@@ -68,7 +68,6 @@ public class StudentListActivity extends BaseActivity implements OnClickListener
 
 		case R.id.action_writeToLocal:
 			Database.GetInstance( getApplicationContext() ).insertStudentClass( stdClass );
-			DataHandler.WriteLocalStudentClass( stdClass, this );
 			return true;
 
 		default:
