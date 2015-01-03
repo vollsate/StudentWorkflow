@@ -1,6 +1,5 @@
 package no.glv.android.stdntworkflow.sql;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,8 +52,7 @@ public class Database extends SQLiteOpenHelper {
 		StudentTbl.CreateTableSQL( db );
 		StudentClassTbl.CreateTable( db );
 		TaskTbl.CreateTable( db );
-
-		db.close();
+		StudentInTaskTbl.CreateTable( db );
 	}
 
 	@Override
@@ -63,8 +61,7 @@ public class Database extends SQLiteOpenHelper {
 		StudentTbl.DropTable( db );
 		StudentClassTbl.DropTable( db );
 		TaskTbl.DropTable( db );
-
-		db.close();
+		StudentInTaskTbl.DropTable( db );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -101,10 +98,11 @@ public class Database extends SQLiteOpenHelper {
 	 * @param oldIdent
 	 */
 	public void updateStudent( Student std, String oldIdent ) {
-		removeStudent( oldIdent );
+		if ( ! std.getIdent().equals( oldIdent ) )
+			removeStudent( oldIdent );
 
 		Log.d( TAG, "Updating student: " + std.getIdent() );
-		StudentTbl.InsertStudent( std, getWritableDatabase() );
+		StudentTbl.UpdateStudent( std, getWritableDatabase() );
 	}
 
 	/**
@@ -117,7 +115,13 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	//
 	// TASK
+	//
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
 	/**
@@ -132,18 +136,37 @@ public class Database extends SQLiteOpenHelper {
 	 * 
 	 * @param task
 	 */
-	public void writeTask( Task task ) {
-
+	public boolean writeTask( Task task ) {
+		Log.d( TAG, "Inserting new task: " + task.getName() );
+		boolean retVal = true;
+		try {
+			TaskTbl.InsertTask( task, getWritableDatabase() );			
+			StudentInTaskTbl.InsertStudentTask( task, getWritableDatabase() );	
+		}
+		catch ( Exception e ) {
+			Log.e( TAG, "Failure in adding task: " + task.getName(), e );
+			retVal = false;
+		}
+		
+		return retVal;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Task> loadTasks() {
-		List<Task> list = new ArrayList<Task>();
-
-		return list;
+		return TaskTbl.loadAllTasks( getReadableDatabase() );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	//
 	// STUDENTCLASS
+	//
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
 	/**
@@ -151,7 +174,14 @@ public class Database extends SQLiteOpenHelper {
 	 * @return
 	 */
 	public List<StudentClass> loadStudentClasses() {
-		return StudentClassTbl.LoadStudentClasses( getReadableDatabase() );
+		try {
+			SQLiteDatabase db = getReadableDatabase();		
+			return StudentClassTbl.LoadStudentClasses( db );			
+		}
+		catch ( RuntimeException e ) {
+			Log.e( TAG, "Cannot load studentClasses", e );
+			throw e;
+		}
 
 	}
 
@@ -172,4 +202,14 @@ public class Database extends SQLiteOpenHelper {
 		StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
 	}
 
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	//
+	// STUDENT IN TASK
+	//
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	
 }

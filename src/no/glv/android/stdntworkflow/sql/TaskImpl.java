@@ -18,16 +18,20 @@ public class TaskImpl implements Task {
 	private Date mExpirationDate;
 	private int mType;
 
-	private HashMap<String, StudentTask> studentsMap;
+	private HashMap<String, Student> studentsMap;
 
-	private HashMap<String, StudentTask> studentsMapPending;
+	/** List of students who has not yet handed in their assignment */
+	private HashMap<String, Student> studentsMapPending;
 
 	private List<String> mClasses;
 
+	/**
+	 * Package protected constructor.
+	 */
 	TaskImpl() {
 		mClasses = new ArrayList<String>();
-		studentsMap = new HashMap<String, StudentTask>();
-		studentsMapPending = new HashMap<String, StudentTask>();
+		studentsMap = new HashMap<String, Student>();
+		studentsMapPending = new HashMap<String, Student>();
 	}
 
 	@Override
@@ -52,14 +56,7 @@ public class TaskImpl implements Task {
 
 	@Override
 	public List<String> getStudentsHandedIn() {
-		List<String> list = new ArrayList<String>();
-		Iterator<String> it = studentsMap.keySet().iterator();
-
-		while ( it.hasNext() ) {
-			list.add( it.next() );
-		}
-
-		return list;
+		return new ArrayList<String>( studentsMap.keySet() );
 	}
 
 	@Override
@@ -69,13 +66,7 @@ public class TaskImpl implements Task {
 
 	@Override
 	public List<String> getClasses() {
-		List<String> list = new ArrayList<String>( mClasses.size() );
-
-		for ( int i = 0; i < mClasses.size(); i++ ) {
-			list.add( mClasses.get( i ) );
-		}
-
-		return list;
+		return new ArrayList<String>( mClasses );
 	}
 
 	@Override
@@ -84,13 +75,7 @@ public class TaskImpl implements Task {
 
 		Iterator<Student> it = stdClass.iterator();
 		while ( it.hasNext() ) {
-			Student std = it.next();
-
-			StudentTaskImpl tImpl = new StudentTaskImpl();
-			tImpl.ident = std.getIdent();
-			tImpl.task = mName;
-
-			studentsMapPending.put( stdClass.getName(), tImpl );
+			addStudent( it.next() );
 		}
 
 	}
@@ -100,6 +85,11 @@ public class TaskImpl implements Task {
 		mName = name;
 	}
 
+	/**
+	 * Removes both the class and every student linked to this class.
+	 * 
+	 * Will not remove students who has already handed in their assignment
+	 */
 	@Override
 	public void removeClass( StudentClass stdClass ) {
 		if ( !mClasses.contains( stdClass.getName() ) ) return;
@@ -108,62 +98,33 @@ public class TaskImpl implements Task {
 		List<Student> list = stdClass.getStudents();
 		Iterator<Student> it = list.iterator();
 		while ( it.hasNext() ) {
-			Student std = it.next();
-			// studentsMap.remove( std.getIdent() );
-			studentsMapPending.remove( std.getIdent() );
+			removeStudent( it.next().getIdent() );
 		}
 
 	}
 
 	@Override
 	public boolean removeStudent( String ident ) {
-		if ( studentsMapPending.containsKey( ident ) ) {
-			studentsMapPending.remove( ident );
-			return true;
-		}
+		if ( !studentsMapPending.containsKey( ident ) ) return false;
 
-		return false;
+		studentsMapPending.remove( ident );
+		return true;
 	}
 
-	static class StudentTaskImpl implements StudentTask {
-
-		String ident;
-		String task;
-		Date handInDate;
-
-		@Override
-		public String getIdent() {
-			return ident;
-		}
-
-		@Override
-		public String getTask() {
-			return task;
-		}
-
-		@Override
-		public Date getHandInDate() {
-			return handInDate;
-		}
-
-		public static StudentTask CreateFromStudent( String taskName, Student std ) {
-			StudentTaskImpl impl = new StudentTaskImpl();
-
-			impl.ident = std.getIdent();
-			impl.task = taskName;
-
-			return impl;
-		}
-
-	}
-
+	/**
+	 * Will only add to students pending
+	 * 
+	 * @return true if the students gets added successfully, false if not added
+	 *         correctly or if the student has already handed in the assigment
+	 */
 	@Override
 	public boolean addStudent( Student std ) {
 		if ( std == null ) return false;
 		if ( studentsMap.containsKey( std.getIdent() ) ) return true;
 
-		studentsMapPending.put( std.getIdent(), StudentTaskImpl.CreateFromStudent( mName, std ) );
-
+		if ( studentsMapPending.containsKey( std.getIdent() ) ) return true;
+		
+		studentsMapPending.put( std.getIdent(), std );
 		return true;
 	}
 
@@ -172,6 +133,12 @@ public class TaskImpl implements Task {
 		return mClasses.contains( className );
 	}
 
+	/**
+	 * 
+	 * @param list
+	 * @param ident
+	 * @return true if 
+	 */
 	boolean hasStudent( List<StudentTask> list, String ident ) {
 		Iterator<StudentTask> it = list.iterator();
 		while ( it.hasNext() ) {
@@ -190,7 +157,7 @@ public class TaskImpl implements Task {
 	}
 
 	@Override
-	public List<String> getStudents() {
+	public List<String> getStudentNames() {
 		List<String> stds = new ArrayList<String>();
 
 		stds.addAll( studentsMap.keySet() );
@@ -211,15 +178,30 @@ public class TaskImpl implements Task {
 
 	@Override
 	public List<String> getStudentsPending() {
-		List<String> stds = new ArrayList<String>();
-
-		stds.addAll( studentsMapPending.keySet() );
-		return stds;
+		return new ArrayList<String>( studentsMapPending.keySet() );
 	}
 
 	@Override
 	public void setDate( Date date ) {
 		this.mExpirationDate = date;
+	}
+
+	@Override
+	public List<Student> getStudents() {
+		List<Student> list = new ArrayList<Student>();
+		
+		list.addAll( studentsMap.values() );
+		list.addAll( studentsMapPending.values() );
+		
+		return list;
+	}
+
+	@Override
+	public void addStudents( List<Student> students ) {
+		Iterator<Student> it = students.iterator();
+		while ( it.hasNext() ) {
+			addStudent( it.next() );
+		}
 	}
 
 }

@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.BaseFragment;
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import android.os.Bundle;
@@ -15,10 +16,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class StudentInfoActivity extends BaseActivity {
+public class StudentInfoActivity extends BaseActivity implements OnStudentChangedListener {
 	
 	private static final String STUDENT_REPLACE = "{elev}";
-
+	
+	private boolean needUpdate;
+	
+	public StudentInfoActivity() {
+		super();
+		
+		DataHandler.GetInstance().addOnStudentChangeListener( this );
+	}
+	
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
@@ -27,7 +36,24 @@ public class StudentInfoActivity extends BaseActivity {
 			getSupportFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment( this ) )
 					.commit();
 		}
-
+		
+		needUpdate = true;
+		createView();
+	}
+	
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		
+		createView();
+	}
+	
+	/**
+	 * 
+	 */
+	private void createView() {
+		if (! needUpdate ) return;
+		
 		TextView textView = (TextView) findViewById( R.id.TV_info_header );
 		Student student = getStudentByIdentExtra();
 		textView.setText( student.getFirstName() );
@@ -35,6 +61,14 @@ public class StudentInfoActivity extends BaseActivity {
 		String name = student.getIdent();
 		String title = name.replace( STUDENT_REPLACE, name );
 		setTitle( title );
+		
+		needUpdate = false;
+	}
+	
+	@Override
+	public void onStudenChange( Student std, int mode ) {
+		needUpdate = true;
+		createView();
 	}
 
 	@Override

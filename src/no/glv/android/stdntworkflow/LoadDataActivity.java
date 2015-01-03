@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import no.glv.android.stdntworkflow.LoadableFilesFragment.OnDataLoadedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.FragmentTransaction;
@@ -13,8 +14,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class LoadDataActivity extends BaseActivity implements OnClickListener {
+public class LoadDataActivity extends BaseActivity implements OnClickListener, OnDataLoadedListener {
 
 	private StudentClass stdClass;
 	
@@ -58,8 +60,17 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick( View v ) {
 		fragment = new LoadableFilesFragment();
+		fragment.listener = this;
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		fragment.show( ft, getClass().getSimpleName() );
+	}
+	
+	@Override
+	public void onDataLoaded( StudentClass stdClass ) {
+		String msg = getResources().getString( R.string.loadData_added_toast );
+		msg = msg.replace( "{class}", stdClass.getName() );
+		
+		Toast.makeText( getApplicationContext(), msg, Toast.LENGTH_LONG ).show();;
 	}
 	
 	/**
@@ -67,7 +78,7 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener {
 	 */
 	public void startStudentListActivity() {
 		Intent intent = new Intent( this, StudentClassListActivity.class );
-		putStudentClassExtra( stdClass.getName(), intent );
+		PutStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
 	}
 

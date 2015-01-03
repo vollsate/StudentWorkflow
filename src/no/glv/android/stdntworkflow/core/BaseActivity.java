@@ -101,7 +101,7 @@ public class BaseActivity extends ActionBarActivity {
 	 * @param studentClass
 	 * @param intent
 	 */
-	public void putStudentClassExtra( String stdClass, Intent intent ) {
+	public static void PutStudentClassExtra( String stdClass, Intent intent ) {
 		intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, stdClass );
 
 	}
@@ -124,7 +124,7 @@ public class BaseActivity extends ActionBarActivity {
 	 * @param intent
 	 */
 	public void putIdentExtra( Student std, Intent intent ) {
-		putStudentClassExtra( std.getStudentClass(), intent );
+		PutStudentClassExtra( std.getStudentClass(), intent );
 		putStudentIdentExtra( std, intent );
 	}
 	

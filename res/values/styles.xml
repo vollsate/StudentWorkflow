@@ -20,7 +20,6 @@
 
     <style name="TV.standard" parent="AppTheme">
         <item name="android:textColor">#000000</item>
-        <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
     </style>
 
@@ -30,12 +29,12 @@
     </style>
 
     <style name="TV.header2" parent="TV.header1">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TV.std" parent="TV.standard">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="TV.std.bold" parent="TV.std">

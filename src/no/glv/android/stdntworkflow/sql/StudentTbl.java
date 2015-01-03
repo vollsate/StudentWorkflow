@@ -38,10 +38,13 @@ class StudentTbl implements BaseColumns {
 
 	
 	/**
+	 * Called as part of initiation of the entire DATABASE.
 	 * 
-	 * @param db
+	 *  DO NOT CLOSE THE SQLiteDatabase
+	 * 
+	 * @param db Do not close!
 	 */
-	public static void CreateTableSQL( SQLiteDatabase db ) {
+	static void CreateTableSQL( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_IDENT + " TEXT PRIMARY KEY UNIQUE, " 
 				+ COL_CLASS + " TEXT, " 
 				+ COL_GRADE + " TEXT, "
@@ -82,11 +85,13 @@ class StudentTbl implements BaseColumns {
 		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_CLASS + " = ?";
 		Cursor cursor = db.rawQuery( sql, new String[] { stdClass} );
 		cursor.moveToFirst();
-		do {
+		while ( ! cursor.isAfterLast() ) {
 			list.add( CreateFromCursor( cursor ) );
 			cursor.moveToNext();
 		}
-		while ( ! cursor.isAfterLast());			
+		
+		cursor.close();
+		db.close();
 		
 		return list;
 	}
@@ -118,13 +123,13 @@ class StudentTbl implements BaseColumns {
 	 * @param std
 	 * @param db
 	 */
-	public static void InsertStudent( Student std, SQLiteDatabase db ) {
+	public static long InsertStudent( Student std, SQLiteDatabase db ) {
 		ContentValues stdValues = StudentValues( std );
 		
-		long retVal = db.insert( StudentTbl.TBL_NAME, null, stdValues );
-		Log.d( TAG, "Retval from InsertStudent: " + retVal );
-		
+		long retVal = db.insert( TBL_NAME, null, stdValues );
 		db.close();
+		
+		return retVal;
 	}
 	
 	/**
@@ -133,10 +138,10 @@ class StudentTbl implements BaseColumns {
 	 * @param db
 	 */
 	public static void UpdateStudent( Student std, SQLiteDatabase db ) {
-		String sqlFiler = COL_IDENT + " = " + std.getIdent();
+		String sqlFiler = COL_IDENT + " = ?";
 		ContentValues cv = StudentValues( std );
 		
-		db.update( TBL_NAME, cv, sqlFiler, null );
+		db.update( TBL_NAME, cv, sqlFiler, new String[] { std.getIdent() } );
 		db.close();
 	}
 	
@@ -145,10 +150,12 @@ class StudentTbl implements BaseColumns {
 	 * @param ident
 	 * @param db
 	 */
-	public static void DeleteStudent( String ident, SQLiteDatabase db ) {
-		String sqlFilter = COL_IDENT + " = " + ident;
+	public static int DeleteStudent( String ident, SQLiteDatabase db ) {
+		String sqlFilter = COL_IDENT + " = ?";
+		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
+		db.close();
 		
-		db.delete( TBL_NAME, sqlFilter, null );
+		return retVal;
 	}
 	
 	

@@ -18,7 +18,6 @@ public class StudentBean implements Student {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
 
 	public String mIdent;
-	public int mID;
 
 	public String fName;
 	public String lName;
@@ -153,11 +152,6 @@ public class StudentBean implements Student {
 	}
 
 	@Override
-	public int getID() {
-		return mID;
-	}
-
-	@Override
 	public void setParent1Name( String val ) {
 		parent1Name = val;
 	}
@@ -215,11 +209,6 @@ public class StudentBean implements Student {
 	@Override
 	public void setStudentClass( String val ) {
 		studentClass = val;
-	}
-
-	@Override
-	public void setID( int val ) {
-		mID = val;
 	}
 
 }

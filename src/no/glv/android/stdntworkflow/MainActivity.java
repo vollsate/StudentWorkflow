@@ -14,51 +14,69 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 
 /**
+ * Main task that shows the first page.
+ * 
+ * - The user may look at a class or a task - A new task may be loaded - A new
+ * class may be installed
  * 
  * @author GleVoll
  *
  */
-public class MainActivity extends BaseActivity implements OnClickListener, OnStudentClassChangeListener, OnTaskChangedListener {
+public class MainActivity extends BaseActivity implements OnStudentClassChangeListener,
+		OnTaskChangedListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	List<String> mClasses;
 	List<String> mTasks;
-	
+
 	private boolean needUpdate = false;
-	
+	private boolean initiated;
+
 	DataHandler dataHandler;
+	InstalledClassesFragment classesFragment;
+
+	/**
+	 * Will initiate the Datahandler for the rest of the applicaion.
+	 * 
+	 * Listeners for StudentClass change and Task change are added
+	 */
+	private void init() {
+		if ( initiated ) return;
+
+		dataHandler = DataHandler.Init( getApplicationContext() );
+		dataHandler.addOnStudentClassChangeListener( this );
+		dataHandler.addOnTaskChangeListener( this );
+
+		initiated = true;
+	}
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
-
-		Button btn = (Button) findViewById( R.id.BTN_loadNewtask );
-		btn.setOnClickListener( this );
-		btn = (Button) findViewById( R.id.BTN_loadNewClass );
-		btn.setOnClickListener( this );
-
-		//Database.GetInstance( getApplicationContext() ).runCreate();
-		dataHandler = DataHandler.Init( getApplicationContext() );
-		dataHandler.addStudentClassChangeListener( this );
 		
+		setTitle( "Student manager" );
+
+		init();
+
 		updateLists();
+/*
+		classesFragment = new InstalledClassesFragment( );
+		getFragmentManager().beginTransaction().add( R.id.activity_main, classesFragment ).commit();
+*/
 		createListView();
-	}
-	
+}
+
 	@Override
 	protected void onRestart() {
 		super.onRestart();
 
-		if ( ! needUpdate ) return;
-		
+		if ( !needUpdate ) return;
+
 		updateLists();
 		createListView();
 		needUpdate = false;
@@ -81,8 +99,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 
 		if ( !mTasks.isEmpty() ) {
 			listView = (ListView) findViewById( R.id.LV_tasks );
-			InstalledTaskListAdapter taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list,
-					mTasks );
+			InstalledTaskListAdapter taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list, mTasks );
 			taskAdapter.setBaseActivity( this );
 			listView.setAdapter( taskAdapter );
 		}
@@ -111,37 +128,31 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnStu
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		int id = item.getItemId();
-		// Intent intent = null;
+		Intent intent = null;
 
 		switch ( id ) {
 		case R.id.menu_settings:
 			// intent = new Intent(this, SettingsActivity.class);
 			break;
 
+		case R.id.menu_resetDB:
+			Database.GetInstance( getApplicationContext() ).runCreate();
+			break;
+
+		case R.id.menu_newTask:
+			intent = new Intent( this, NewTaskActivity.class );
+			break;
+
+		case R.id.menu_loadData:
+			intent = new Intent( this, LoadDataActivity.class );
+			break;
+
 		default:
 			return super.onOptionsItemSelected( item );
 		}
 
-		// if (intent != null ) startActivity( intent );
+		if ( intent != null ) startActivity( intent );
 		return true;
-	}
-
-	@Override
-	public void onClick( View v ) {
-		int id = v.getId();
-		Intent intent = null;
-
-		switch ( id ) {
-		case R.id.BTN_loadNewtask:
-			intent = new Intent( this, NewTaskActivity.class );
-			break;
-
-		case R.id.BTN_loadNewClass:
-			intent = new Intent( this, LoadDataActivity.class );
-			break;
-		}
-
-		startActivity( intent );
 	}
 
 	@Override

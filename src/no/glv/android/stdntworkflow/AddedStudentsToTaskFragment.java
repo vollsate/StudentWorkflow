@@ -24,6 +24,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * 
+ * @author GleVoll
+ *
+ */
 public class AddedStudentsToTaskFragment extends DialogFragment {
 	
 	public static final String EXTRA_TASKNAME = BaseValues.EXTRA_BASEPARAM + "TaskName";
@@ -57,7 +62,10 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		return rootView;
 	}
 	
-	
+	/**
+	 * 
+	 * @param rootView
+	 */
 	private void buildButton( View rootView ) {
 		Button btn = ( Button ) rootView.findViewById( R.id.BTN_newTask_verifyStudents );
 		btn.setOnClickListener( new View.OnClickListener() {
@@ -129,17 +137,17 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		public View getView( int position, View convertView, ViewGroup parent ) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 			if ( convertView == null ) {
-				convertView = inflater.inflate( R.layout.row_newtask_addclasses, parent, false );
+				convertView = inflater.inflate( R.layout.row_newtask_students, parent, false );
 			}
 			Student std = students.get( position ); 
 			String tag = std.getIdent();
 
 			TextView textView = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );
-			textView.setTag( std.getFirstName() );
+			textView.setTag( std );
 			textView.setText( tag );
 			
 			CheckBox cBox = ( CheckBox ) convertView.findViewById( R.id.CB_newTask_addStudent );
-			cBox.setTag( tag );
+			cBox.setTag( std );
 			cBox.setChecked( true );
 			cBox.setOnCheckedChangeListener( this );
 
@@ -150,8 +158,11 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 
 		@Override
 		public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-			String stdName = buttonView.getTag().toString();
-			students.remove( stdName );
+			Student std = (Student) buttonView.getTag();
+			if ( isChecked )
+				students.add( std );
+			else
+				students.remove( std );
 		}
 	}
 	

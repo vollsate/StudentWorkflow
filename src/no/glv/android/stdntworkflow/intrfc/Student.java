@@ -49,8 +49,5 @@ public interface Student {
 	/** @return The unique identity used on It's Learning and Google */
 	public String getIdent();
 	public void setIdent( String val );
-	
-	public int getID();
-	public void setID( int val );
 
 }

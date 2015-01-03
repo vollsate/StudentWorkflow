@@ -25,7 +25,6 @@ import no.glv.android.stdntworkflow.sql.Database;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
-import no.glv.android.stdntworkflow.sql.TaskImpl;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
@@ -62,9 +61,9 @@ public class DataHandler {
 	private static boolean isInitiated = false;
 
 	// Listeners
-	private List<OnTaskChangedListener> taskChangeListeners;
-	private List<OnStudentClassChangeListener> stdClassChangeListeners;
-	private List<OnStudentChangedListener> stdChangeListeners;
+	private Map<String, OnTaskChangedListener> taskChangeListeners;
+	private Map<String, OnStudentClassChangeListener> stdClassChangeListeners;
+	private Map<String, OnStudentChangedListener> stdChangeListeners;
 
 	/**
 	 * 
@@ -106,9 +105,9 @@ public class DataHandler {
 		
 		sManager = new SettingsManager();
 
-		stdClassChangeListeners = new ArrayList<DataHandler.OnStudentClassChangeListener>( 2 );
-		stdChangeListeners = new ArrayList<DataHandler.OnStudentChangedListener>( 2 );
-		taskChangeListeners = new ArrayList<DataHandler.OnTaskChangedListener>( 2 );
+		stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
+		stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
+		taskChangeListeners = new HashMap<String, DataHandler.OnTaskChangedListener>( 2 );
 	}
 
 	/**
@@ -217,7 +216,7 @@ public class DataHandler {
 	 * @param std
 	 */
 	private void notifyStudentChagnge( Student std, int mode ) {
-		Iterator<OnStudentChangedListener> it = stdChangeListeners.iterator();
+		Iterator<OnStudentChangedListener> it = stdChangeListeners.values().iterator();
 		while ( it.hasNext() ) {
 			it.next().onStudenChange( std, mode );
 		}
@@ -235,8 +234,11 @@ public class DataHandler {
 	 * 
 	 * @param listener
 	 */
-	public void addStudentChangesListener( OnStudentChangedListener listener ) {
-		stdChangeListeners.add( listener );
+	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
+		String name = listener.getClass().getSimpleName();
+		if ( stdChangeListeners.containsKey( name ) ) return;
+		
+		stdChangeListeners.put( name, listener );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -275,8 +277,10 @@ public class DataHandler {
 		if ( tasks.containsKey( task.getName() ) )
 			throw new IllegalArgumentException( "Task " + task.getName() + " already exists" );
 
-		tasks.put( task.getName(), task );
-		notifyTaskAdd( task );
+		if ( db.writeTask( task ) ) {
+			tasks.put( task.getName(), task );
+			notifyTaskAdd( task );
+		}
 
 		return this;
 	}
@@ -300,7 +304,7 @@ public class DataHandler {
 	private void notifyTaskChange( Task newTask, int mode ) {
 		if ( taskChangeListeners.isEmpty() ) return;
 
-		Iterator<OnTaskChangedListener> it = taskChangeListeners.iterator();
+		Iterator<OnTaskChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() )
 			it.next().onTaskChange( newTask, mode );
 	}
@@ -318,7 +322,10 @@ public class DataHandler {
 	 * @param listener
 	 */
 	public void addOnTaskChangeListener( OnTaskChangedListener listener ) {
-		taskChangeListeners.add( listener );
+		String name = listener.getClass().getSimpleName();
+		if ( taskChangeListeners.containsKey( name ) ) return;
+
+		taskChangeListeners.put( name, listener );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -366,7 +373,7 @@ public class DataHandler {
 	private void notifyStudentClassChange( StudentClass stdClass, int mode ) {
 		if ( stdClassChangeListeners.isEmpty() ) return;
 
-		Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.iterator();
+		Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.values().iterator();
 		while ( it.hasNext() )
 			it.next().onStudentClassUpdate( stdClass, mode );
 	}
@@ -383,8 +390,11 @@ public class DataHandler {
 	 * 
 	 * @param listener
 	 */
-	public void addStudentClassChangeListener( OnStudentClassChangeListener listener ) {
-		stdClassChangeListeners.add( listener );
+	public void addOnStudentClassChangeListener( OnStudentClassChangeListener listener ) {
+		String name = listener.getClass().getSimpleName();
+		if ( stdClassChangeListeners.containsKey( name ) ) return;
+
+		stdClassChangeListeners.put( name, listener );
 	}
 
 	/**
@@ -410,9 +420,8 @@ public class DataHandler {
 	 * header line, and the headers MUST be in this order: - Klasse - Født -
 	 * Fullt navn
 	 * 
-	 * TODO: Finish writing
-	 * 
 	 * @return A ready formatted StudentClass instance
+	 * @throws IOException if any I/O error occurs
 	 */
 	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 		FileInputStream fis;

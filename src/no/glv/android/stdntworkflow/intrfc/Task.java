@@ -14,7 +14,7 @@ import java.util.List;
  *
  */
 public interface Task {
-	
+
 	public static final String PROP_NAME = "NAME";
 	public static final String PROP_DESC = "DESC";
 	public static final String PROP_CLASS = "CLASSES";
@@ -30,7 +30,7 @@ public interface Task {
 	public Date getDate();
 
 	public int getType();
-	
+
 	public void setType( int type );
 
 	public String getDesciption();
@@ -56,9 +56,8 @@ public interface Task {
 	public void addClass( StudentClass stdClass );
 
 	public void removeClass( StudentClass stdClass );
-	
+
 	public void setDate( Date date );
-	
 
 	/**
 	 * This method will only remove the student from the ones who have not
@@ -76,6 +75,10 @@ public interface Task {
 
 	public boolean hasStudent( String ident );
 
-	public List<String> getStudents();
+	public List<String> getStudentNames();
+
+	public List<Student> getStudents();
+
+	public void addStudents( List<Student> students );
 
 }

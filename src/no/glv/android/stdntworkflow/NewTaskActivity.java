@@ -25,12 +25,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class NewTaskActivity extends Activity {
 
 	private static final String TAG = NewTaskActivity.class.getSimpleName();
-	
-	private Task task;
 	
 	private NewTaskFragment fragment;
 	
@@ -185,8 +184,12 @@ public class NewTaskActivity extends Activity {
 
 		@Override
 		public void onStudentsVerified( Task task ) {
-			DataHandler.GetInstance().addTask( task ).commitTasks();
+			DataHandler.GetInstance().addTask( task );
 			
+			String msg = getResources().getString( R.string.newTask_added_toast );
+			msg = msg.replace( "{task}", task.getName() );
+			Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();;
+
 			getActivity().finish();
 		}
 	}
