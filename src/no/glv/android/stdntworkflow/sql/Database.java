@@ -5,6 +5,7 @@ import java.util.List;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,8 +43,12 @@ public class Database extends SQLiteOpenHelper {
 	 * 
 	 */
 	public void runCreate() {
-		onUpgrade( getWritableDatabase(), 1, 1 );
-		onCreate( getWritableDatabase() );
+		SQLiteDatabase db = getWritableDatabase();
+		
+		onUpgrade( db, 1, 1 );
+		onCreate( db );
+		
+		db.close();
 	}
 
 	@Override
@@ -53,15 +58,19 @@ public class Database extends SQLiteOpenHelper {
 		StudentClassTbl.CreateTable( db );
 		TaskTbl.CreateTable( db );
 		StudentInTaskTbl.CreateTable( db );
+		PhoneTbl.CreateTableSQL( db );
+		ParentTbl.CreateTableSQL( db );
 	}
 
 	@Override
 	public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
-		Log.d( TAG, "Dropping tables" );
+		Log.d( TAG, "Dropping tables .." );
 		StudentTbl.DropTable( db );
 		StudentClassTbl.DropTable( db );
 		TaskTbl.DropTable( db );
 		StudentInTaskTbl.DropTable( db );
+		PhoneTbl.DropTable( db );
+		ParentTbl.CreateTableSQL( db );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -97,21 +106,21 @@ public class Database extends SQLiteOpenHelper {
 	 * @param std
 	 * @param oldIdent
 	 */
-	public void updateStudent( Student std, String oldIdent ) {
+	public int updateStudent( Student std, String oldIdent ) {
 		if ( ! std.getIdent().equals( oldIdent ) )
 			removeStudent( oldIdent );
 
 		Log.d( TAG, "Updating student: " + std.getIdent() );
-		StudentTbl.UpdateStudent( std, getWritableDatabase() );
+		return StudentTbl.UpdateStudent( std, getWritableDatabase() );
 	}
 
 	/**
 	 * 
 	 * @param ident
 	 */
-	public void removeStudent( String ident ) {
+	public int removeStudent( String ident ) {
 		Log.d( TAG, "Deleting student: " + ident );
-		StudentTbl.DeleteStudent( ident, getWritableDatabase() );
+		return StudentTbl.DeleteStudent( ident, getWritableDatabase() );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -157,6 +166,49 @@ public class Database extends SQLiteOpenHelper {
 	 */
 	public List<Task> loadTasks() {
 		return TaskTbl.loadAllTasks( getReadableDatabase() );
+	}
+	
+	/**
+	 * 
+	 * @param task
+	 * @param oldName
+	 * @return
+	 */
+	public boolean updateTask( Task task, String oldName ) {
+		int rows = 0;
+		
+		try {
+			rows = TaskTbl.updateTask( task, oldName, getWritableDatabase() );
+		}
+		catch ( RuntimeException e ) {
+			Log.e( TAG, "Cannot update task: " + oldName, e );
+			e.printStackTrace();
+		}
+		
+		Log.d( TAG, "Updated " + rows + " rows" );
+		
+		return rows > 0;
+	}
+	
+	/**
+	 * 
+	 * @param taskName
+	 * @return
+	 */
+	public boolean deleteTask( String taskName ) {
+		int rows = 0;
+		
+		try {
+			rows = TaskTbl.DeleteTask( taskName, getWritableDatabase() );
+		}
+		catch ( RuntimeException e ) {
+			Log.e( TAG, "Cannot update task: " + taskName, e );
+			e.printStackTrace();
+		}
+		
+		Log.d( TAG, "Detelted " + rows + " rows" );
+		
+		return rows > 0;
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -211,5 +263,14 @@ public class Database extends SQLiteOpenHelper {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * 
+	 * @param task
+	 * @return
+	 */
+	public List<StudentTask> loadStudentsInTask( Task task ) {
+		return StudentInTaskTbl.LoadAll( getReadableDatabase(), task );
+	}
 	
 }

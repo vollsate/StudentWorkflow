@@ -18,10 +18,10 @@ public class TaskImpl implements Task {
 	private Date mExpirationDate;
 	private int mType;
 
-	private HashMap<String, Student> studentsMap;
+	private HashMap<String, StudentTask> studentsMap;
 
 	/** List of students who has not yet handed in their assignment */
-	private HashMap<String, Student> studentsMapPending;
+	private HashMap<String, StudentTask> studentsMapPending;
 
 	private List<String> mClasses;
 
@@ -30,8 +30,8 @@ public class TaskImpl implements Task {
 	 */
 	TaskImpl() {
 		mClasses = new ArrayList<String>();
-		studentsMap = new HashMap<String, Student>();
-		studentsMapPending = new HashMap<String, Student>();
+		studentsMap = new HashMap<String, StudentTask>();
+		studentsMapPending = new HashMap<String, StudentTask>();
 	}
 
 	@Override
@@ -120,9 +120,19 @@ public class TaskImpl implements Task {
 	@Override
 	public boolean addStudent( Student std ) {
 		if ( std == null ) return false;
-		if ( studentsMap.containsKey( std.getIdent() ) ) return true;
-
-		if ( studentsMapPending.containsKey( std.getIdent() ) ) return true;
+		if (hasStudent( std.getIdent() ) ) return false;
+		
+		return addStudentTask( new StudentTaskImpl( std.getIdent(), mName, 0, null ) );
+	}
+	
+	/**
+	 * 
+	 * @param std
+	 * @return
+	 */
+	public boolean addStudentTask( StudentTask std )  {
+		if ( std == null ) return false;
+		if (hasStudent( std.getIdent() ) ) return false;
 		
 		studentsMapPending.put( std.getIdent(), std );
 		return true;
@@ -187,8 +197,8 @@ public class TaskImpl implements Task {
 	}
 
 	@Override
-	public List<Student> getStudents() {
-		List<Student> list = new ArrayList<Student>();
+	public List<StudentTask> getStudentsInTask() {
+		List<StudentTask> list = new ArrayList<StudentTask>();
 		
 		list.addAll( studentsMap.values() );
 		list.addAll( studentsMapPending.values() );
@@ -201,6 +211,14 @@ public class TaskImpl implements Task {
 		Iterator<Student> it = students.iterator();
 		while ( it.hasNext() ) {
 			addStudent( it.next() );
+		}
+	}
+	
+	@Override
+	public void addStudentTasks( List<StudentTask> students ) {
+		Iterator<StudentTask> it = students.iterator();
+		while (it.hasNext()) {
+			addStudentTask( it.next() );
 		}
 	}
 

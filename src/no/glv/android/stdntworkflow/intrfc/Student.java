@@ -14,22 +14,6 @@ public interface Student {
 	public String getLastname();
 	public void setLastName( String lName );
 	
-	public String getParent1Name();
-	public void setParent1Name( String val );
-
-	public String getParent1Phone();
-	public void setParent1Phone( String val );
-	
-	public String getParent1Mail();
-	public void setParent1Mail( String val );
-	
-	public String getParent2Name();
-	public void setParent2Name( String val );
-	public String getParent2Phone();
-	public void setParent2Phone( String val );
-	public String getParent2Mail();
-	public void setParent2Mail( String val );
-	
 	public String getBirth();
 	public void setBirth( String val );
 	
@@ -49,5 +33,9 @@ public interface Student {
 	/** @return The unique identity used on It's Learning and Google */
 	public String getIdent();
 	public void setIdent( String val );
+	
+	public Parent[] getParents();
+	
+	public void addParent( Parent parent );
 
 }

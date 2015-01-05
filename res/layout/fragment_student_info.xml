@@ -1,7 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -13,18 +14,14 @@
         style="@style/TV.std.L"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TV.info.header"
         android:layout_marginTop="30sp"
-        android:text="Fornavn" />
+        android:text="@string/stdInfo.fName" />
 
     <EditText
         android:id="@+id/ET.info.firstName"
         style="@style/ET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10sp"
-        android:layout_alignBottom="@+id/TV.info.firstName"
-        android:layout_toRightOf="@+id/TV.info.firstName"
         android:ems="10" >
 
         <requestFocus />
@@ -33,33 +30,27 @@
     <TextView
         android:id="@+id/TV.info.lastName"
         style="@style/TV.std"
-        android:layout_marginTop="10sp"
-        android:layout_below="@+id/TV.info.firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Etternavn" />
+        android:layout_marginTop="10sp"
+        android:text="@string/stdInfo.lName" />
 
     <EditText
         android:id="@+id/ET.info.LastName"
         style="@style/ET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10sp"
-        android:layout_alignBottom="@+id/TV.info.lastName"
-        android:layout_toRightOf="@+id/TV.info.lastName"
         android:ems="10" >
     </EditText>
 
-    
-<!-- This section covers the It's Learing ident. It's important that this one is correct! -->
-    
+    <!-- This section covers the It's Learing ident. It's important that this one is correct! -->
+
     <TextView
         android:id="@+id/TV.info.ident"
         style="@style/TV.std"
-        android:layout_marginTop="10sp"
-        android:layout_below="@+id/TV.info.lastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
         android:text="Ident" />
 
     <EditText
@@ -67,9 +58,134 @@
         style="@style/ET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30sp"
-        android:layout_alignBottom="@+id/TV.info.ident"
-        android:layout_toRightOf="@+id/TV.info.ident"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.birth"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.birth"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.pc"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.pc"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.adr"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.adr"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.p1Name"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.p1Name"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.p1Mail"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.p1Mail"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.p1Phone"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.p1Phone"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.p2Name"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.p2Name"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/TV.info.p2Mail"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:text="birth" />
+
+    <EditText
+        android:id="@+id/ET.info.p2Mail"
+        style="@style/ET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:ems="10" >
     </EditText>
 
@@ -78,8 +194,7 @@
         style="@style/BTN"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ET.info.ident"
         android:layout_marginTop="20sp"
         android:text="Oppdater!" />
 
-</RelativeLayout>
+</LinearLayout>

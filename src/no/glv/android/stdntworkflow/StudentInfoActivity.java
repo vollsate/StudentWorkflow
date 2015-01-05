@@ -16,6 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * 
+ * @author GleVoll
+ *
+ */
 public class StudentInfoActivity extends BaseActivity implements OnStudentChangedListener {
 	
 	private static final String STUDENT_REPLACE = "{elev}";
@@ -32,6 +37,7 @@ public class StudentInfoActivity extends BaseActivity implements OnStudentChange
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_student_info );
+				
 		if ( savedInstanceState == null ) {
 			getSupportFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment( this ) )
 					.commit();
@@ -47,6 +53,7 @@ public class StudentInfoActivity extends BaseActivity implements OnStudentChange
 		
 		createView();
 	}
+	
 	
 	/**
 	 * 

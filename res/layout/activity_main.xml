@@ -38,6 +38,14 @@
             android:text="@string/TV.maininfo.text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+<!-- 
+        <fragment 
+            android:name="no.glv.android.stdntworkflow.InstalledClassesFragment"
+            android:id="@+id/FR.installedClasses"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+ -->
+ 
         <TextView
             android:id="@+id/TV.installedClasses"
             style="@style/TV.header2"
@@ -58,7 +66,7 @@
             android:layout_below="@+id/TV.installedClasses"
             android:layout_marginTop="10dp" >
         </ListView>
-
+ 
         <TextView
             android:id="@+id/TV.installedTasks"
             style="@style/TV.header2"

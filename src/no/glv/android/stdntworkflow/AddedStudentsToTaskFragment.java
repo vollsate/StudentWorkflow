@@ -25,6 +25,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * A dialog that will list every known student added to the task. The user may choose to remove certain
+ * students from the list, if needed.
  * 
  * @author GleVoll
  *
@@ -76,6 +78,16 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 				
 				listener.onStudentsVerified( task );
+			}
+		} );
+
+		btn = ( Button ) rootView.findViewById( R.id.BTN_newTask_cancelStudents );
+		btn.setOnClickListener( new View.OnClickListener() {
+			
+			@Override
+			public void onClick( View v ) {
+				Fragment fr = AddedStudentsToTaskFragment.this;
+				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 			}
 		} );
 	}

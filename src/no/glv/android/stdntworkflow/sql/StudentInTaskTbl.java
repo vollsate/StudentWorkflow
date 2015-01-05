@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.ContentValues;
@@ -63,9 +62,10 @@ public class StudentInTaskTbl {
 	 * @return
 	 */
 	public static List<StudentTask> LoadAll( SQLiteDatabase db, Task task ) {
-		String sql = "SELECT * FROM " + TBL_NAME;
+		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_TASK + "=?";
+		
 
-		Cursor cursor = db.rawQuery( sql, null );
+		Cursor cursor = db.rawQuery( sql, new String[]{ task.getName() } );
 		List<StudentTask> list = new ArrayList<StudentTask>();
 		cursor.moveToFirst();
 
@@ -126,9 +126,9 @@ public class StudentInTaskTbl {
 	 * @return
 	 */
 	public static void InsertStudentTask( Task task, SQLiteDatabase db ) {
-		Iterator<Student> it = task.getStudents().iterator();
+		Iterator<StudentTask> it = task.getStudentsInTask().iterator();
 		while ( it.hasNext() ) {
-			Student st = it.next();
+			StudentTask st = it.next();
 			
 			StudentTaskImpl impl = new StudentTaskImpl( st.getIdent(), task.getName(), StudentTask.MODE_PENDING, null );
 			InsertOneST( impl, db );

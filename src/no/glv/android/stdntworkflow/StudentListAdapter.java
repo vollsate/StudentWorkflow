@@ -33,8 +33,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
 	private Context context;
 
-	private BaseActivity baseActivity;
-
 	/**
 	 * 
 	 * @param context
@@ -45,10 +43,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
 		this.beans = objects;
 		this.context = context;
-	}
-
-	void setBaseActivity( BaseActivity baseActivity ) {
-		this.baseActivity = baseActivity;
 	}
 
 	/**
@@ -99,7 +93,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
 
 				Student std = (Student) v.getTag();
-				baseActivity.putIdentExtra( std, intent );
+				BaseActivity.putIdentExtra( std, intent );
 
 				getContext().startActivity( intent );
 			}
@@ -113,9 +107,9 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 			public void onClick( View v ) {
 				Log.d( TAG, "" + v.getTag() );
 
-				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
+				Intent intent = new Intent( getContext(), StdInfoActivity.class );
 				Student std = (Student) v.getTag();
-				baseActivity.putIdentExtra( std, intent );
+				BaseActivity.putIdentExtra( std, intent );
 				getContext().startActivity( intent );
 			}
 		} );

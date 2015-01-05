@@ -67,7 +67,6 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 		setTitle( title );
 
 		StudentListAdapter adapter = new StudentListAdapter( this, stdClass.toList() );
-		adapter.setBaseActivity( this );
 		adapter.notifyDataSetChanged();
 		listView.setAdapter( adapter );
 		

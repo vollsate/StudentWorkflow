@@ -15,6 +15,9 @@ import java.util.List;
  */
 public interface Task {
 
+	public static final String EXTRA_TASKNAME =  BaseValues.EXTRA_BASEPARAM +  "task";
+
+	
 	public static final String PROP_NAME = "NAME";
 	public static final String PROP_DESC = "DESC";
 	public static final String PROP_CLASS = "CLASSES";
@@ -77,8 +80,10 @@ public interface Task {
 
 	public List<String> getStudentNames();
 
-	public List<Student> getStudents();
+	public List<StudentTask> getStudentsInTask();
 
 	public void addStudents( List<Student> students );
+
+	public void addStudentTasks( List<StudentTask> students );
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,6 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 
 	private List<String> mTasks;
 
-	private BaseActivity baseActivity;
-
 	/**
 	 * 
 	 * @param context
@@ -34,14 +33,6 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	public InstalledTaskListAdapter( Context context, int resource, List<String> objects ) {
 		super( context, resource, objects );
 		mTasks = objects;
-	}
-
-	/**
-	 * 
-	 * @param base
-	 */
-	void setBaseActivity( BaseActivity base ) {
-		this.baseActivity = base;
 	}
 
 	@Override
@@ -67,6 +58,19 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	private View createView( Context context, ViewGroup parent, int position ) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		View myView = inflater.inflate( R.layout.row_tasks_list, parent, false );
+		myView.setTag( mTasks.get( position ) );
+		myView.setOnClickListener( new View.OnClickListener() {
+			
+			@Override
+			public void onClick( View v ) {
+				Log.d( TAG, "" + v.getTag() );
+				Intent intent = new Intent( getContext(), TaskActivity.class );
+				String taskName = (String) v.getTag();
+				BaseActivity.PutTaskNameExtra( taskName, intent );
+				getContext().startActivity( intent );
+			}
+		} );
+		
 		StudentClassHolder holder = new StudentClassHolder();
 
 		TextView textView = (TextView) myView.findViewById( R.id.TV_main_taskName );
@@ -78,14 +82,10 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 			@Override
 			public void onClick( View v ) {
 				Log.d( TAG, "" + v.getTag() );
-				/*
-				 * Intent intent = new Intent( getContext(),
-				 * StudentListActivity.class ); String studentClass = (String)
-				 * v.getTag(); baseActivity.putStudentClassExtra( studentClass,
-				 * intent );
-				 * InstalledTaskListAdapter.this.getContext().startActivity(
-				 * intent );
-				 */
+				Intent intent = new Intent( getContext(), TaskActivity.class );
+				String taskName = (String) v.getTag();
+				BaseActivity.PutTaskNameExtra( taskName, intent );
+				getContext().startActivity( intent );
 			}
 		} );
 

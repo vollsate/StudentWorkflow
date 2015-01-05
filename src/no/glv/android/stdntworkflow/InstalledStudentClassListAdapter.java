@@ -24,7 +24,6 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 
 	private List<String> mClasses;
 
-	private BaseActivity baseActivity;
 
 	/**
 	 * 
@@ -33,10 +32,6 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	 */
 	private InstalledStudentClassListAdapter( Context context, int resource ) {
 		super( context, resource );
-	}
-
-	void setBaseActivity( BaseActivity base ) {
-		this.baseActivity = base;
 	}
 
 	/**
@@ -87,7 +82,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 
 				Intent intent = new Intent( getContext(), StudentClassListActivity.class );
 				String studentClass = (String) v.getTag();
-				baseActivity.PutStudentClassExtra( studentClass, intent );
+				BaseActivity.PutStudentClassExtra( studentClass, intent );
 				InstalledStudentClassListAdapter.this.getContext().startActivity( intent );
 			}
 		} );

@@ -17,21 +17,28 @@ class StudentTbl implements BaseColumns {
 	public static final String TBL_NAME = "student";
 
 	public static final String COL_IDENT = "ident";
+	public static final int COL_IDENT_ID = 0;
+
 	public static final String COL_CLASS = "class";
+	public static final int COL_CLASS_ID = 1;
+
 	public static final String COL_GRADE = "grade";
+	public static final int COL_GRADE_ID = 2;
+
 	public static final String COL_FNAME = "fname";
+	public static final int COL_FNAME_ID = 3;
+
 	public static final String COL_LNAME = "lname";
+	public static final int COL_LNAME_ID = 4;
+
 	public static final String COL_BIRTH = "birth";
+	public static final int COL_BIRTH_ID = 5;
+
 	public static final String COL_ADR = "adr";
+	public static final int COL_ADR_ID = 6;
+
 	public static final String COL_POSTALCODE = "pcode";
-
-	public static final String COL_P1NAME = "p1name";
-	public static final String COL_P1MAIL = "p1mail";
-	public static final String COL_P1PHONE = "p1phone";
-
-	public static final String COL_P2NAME = "p2name";
-	public static final String COL_P2MAIL = "p2mail";
-	public static final String COL_P2PHONE = "p2phone";
+	public static final int COL_POSTALCODE_ID = 7;
 
 	private  StudentTbl() {
 	}
@@ -45,20 +52,15 @@ class StudentTbl implements BaseColumns {
 	 * @param db Do not close!
 	 */
 	static void CreateTableSQL( SQLiteDatabase db ) {
-		String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_IDENT + " TEXT PRIMARY KEY UNIQUE, " 
+		String sql = "CREATE TABLE " + TBL_NAME + "(" 
+				+ COL_IDENT + " TEXT PRIMARY KEY UNIQUE, " 
 				+ COL_CLASS + " TEXT, " 
 				+ COL_GRADE + " TEXT, "
 				+ COL_FNAME + " TEXT, " 
 				+ COL_LNAME + " TEXT, " 
 				+ COL_BIRTH + " TEXT, "
 				+ COL_ADR + " TEXT, " 
-				+ COL_POSTALCODE + " TEXT, "
-				+ COL_P1NAME + " TEXT, " 
-				+ COL_P1MAIL + " TEXT, " 
-				+ COL_P1PHONE + " TEXT, "
-				+ COL_P2NAME + " TEXT, " 
-				+ COL_P2MAIL + " TEXT, " 
-				+ COL_P2PHONE + " TEXT)";
+				+ COL_POSTALCODE + " TEXT)";
 		
 		Log.v( TAG, "Executing SQL: " + sql );		
 		db.execSQL( sql );
@@ -100,20 +102,14 @@ class StudentTbl implements BaseColumns {
 	private static Student CreateFromCursor( Cursor cursor ) {
 		StudentBean bean = new StudentBean( null );
 		
-		bean.setIdent( cursor.getString( 0 ) );
-		bean.setStudentClass( cursor.getString( 1 ) );
-		bean.setGrade( cursor.getString( 2 ) );
-		bean.setFirstName( cursor.getString( 3 ) );
-		bean.setLastName( cursor.getString( 4 ) );
-		bean.setBirth( cursor.getString( 5 ) );
-		bean.setAdress( cursor.getString( 6 ) );
-		bean.setPostalCode( cursor.getString( 7 ) );
-		bean.setParent1Name( cursor.getString( 8 ) );
-		bean.setParent1Mail( cursor.getString( 9 ) );
-		bean.setParent1Phone( cursor.getString( 10 ) );
-		bean.setParent2Name( cursor.getString( 11 ) );
-		bean.setParent2Mail( cursor.getString( 12 ) );
-		bean.setParent2Phone( cursor.getString( 13 ) );
+		bean.setIdent( cursor.getString( COL_IDENT_ID ) );
+		bean.setStudentClass( cursor.getString( COL_CLASS_ID ) );
+		bean.setGrade( cursor.getString( COL_GRADE_ID ) );
+		bean.setFirstName( cursor.getString( COL_FNAME_ID ) );
+		bean.setLastName( cursor.getString( COL_LNAME_ID ) );
+		bean.setBirth( cursor.getString( COL_BIRTH_ID ) );
+		bean.setAdress( cursor.getString( COL_ADR_ID ) );
+		bean.setPostalCode( cursor.getString( COL_POSTALCODE_ID ) );
 		
 		return bean;
 	}
@@ -135,14 +131,18 @@ class StudentTbl implements BaseColumns {
 	/**
 	 * 
 	 * @param std
-	 * @param db
+	 * @param db Is closed after use
+	 * 
+	 * @return 1 if successful, 0 otherwise
 	 */
-	public static void UpdateStudent( Student std, SQLiteDatabase db ) {
+	public static int UpdateStudent( Student std, SQLiteDatabase db ) {
 		String sqlFiler = COL_IDENT + " = ?";
 		ContentValues cv = StudentValues( std );
 		
-		db.update( TBL_NAME, cv, sqlFiler, new String[] { std.getIdent() } );
+		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { std.getIdent() } );
 		db.close();
+		
+		return retVal;
 	}
 	
 	/**
@@ -175,12 +175,6 @@ class StudentTbl implements BaseColumns {
 		cv.put( COL_BIRTH, std.getBirth() );
 		cv.put( COL_ADR, std.getAdress() );
 		cv.put( COL_POSTALCODE, std.getPostalCode() );
-		cv.put( COL_P1NAME, std.getParent1Name() );
-		cv.put( COL_P1MAIL, std.getParent1Mail() );
-		cv.put( COL_P1PHONE, std.getParent1Phone() );
-		cv.put( COL_P2NAME, std.getParent2Name() );
-		cv.put( COL_P2MAIL, std.getParent2Mail() );
-		cv.put( COL_P2PHONE, std.getParent2Phone() );
 		
 		return cv;
 	}

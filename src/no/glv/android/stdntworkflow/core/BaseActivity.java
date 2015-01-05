@@ -13,6 +13,7 @@ import java.util.Locale;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -83,8 +84,8 @@ public class BaseActivity extends ActionBarActivity {
 	 * 
 	 * @return
 	 */
-	public Student getStudentByIdentExtra() {
-		Bundle bundle = getIntent().getExtras();
+	public static Student GetStudentByIdentExtra( Intent intent ) {
+		Bundle bundle = intent.getExtras();
 
 		String sName = bundle.getString( Student.EXTRA_IDENT );
 		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
@@ -92,7 +93,11 @@ public class BaseActivity extends ActionBarActivity {
 		StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
 		Student bean = stdClass.getStudentByIdent( sName );
 
-		return bean;
+		return bean;		
+	}
+
+	public Student getStudentByIdentExtra() {
+		return GetStudentByIdentExtra( getIntent() );
 	}
 	
 	
@@ -106,14 +111,30 @@ public class BaseActivity extends ActionBarActivity {
 
 	}
 
-	public void putStudentNameExtra( Student std, Intent intent ) {
+	public static void putStudentNameExtra( Student std, Intent intent ) {
 		intent.putExtra( Student.EXTRA_STUDENTNAME, std.getFirstName() );
 
 	}
 
-	public void putStudentIdentExtra( Student std, Intent intent ) {
-		intent.putExtra( Student.EXTRA_IDENT, std.getIdent() );
+	public static void putStudentIdentExtra( Student std, Intent intent ) {
+		putStudentIdentExtra( std.getIdent(), intent );
 
+	}
+
+	public static void putStudentIdentExtra( String std, Intent intent ) {
+		intent.putExtra( Student.EXTRA_IDENT, std );
+	}
+	
+	public static void PutTaskNameExtra( String taskName, Intent intent ) {
+		if ( intent == null ) return;
+		
+		intent.putExtra( Task.EXTRA_TASKNAME , taskName );
+	}
+	
+	public static String GetTaskNameExtra( Intent intent ) {
+		if ( intent == null ) return null;
+		
+		return intent.getStringExtra( Task.EXTRA_TASKNAME );
 	}
 
 	
@@ -123,7 +144,7 @@ public class BaseActivity extends ActionBarActivity {
 	 * @param stdClass
 	 * @param intent
 	 */
-	public void putIdentExtra( Student std, Intent intent ) {
+	public static void putIdentExtra( Student std, Intent intent ) {
 		PutStudentClassExtra( std.getStudentClass(), intent );
 		putStudentIdentExtra( std, intent );
 	}

@@ -7,9 +7,9 @@ import java.util.List;
 import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -27,13 +27,19 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+/**
+ * Creates a new Task.
+ * 
+ * Uses the {@link NewTaskFragment} to collect the data.
+ * 
+ * @author GleVoll
+ *
+ */
 public class NewTaskActivity extends Activity {
 
 	private static final String TAG = NewTaskActivity.class.getSimpleName();
-	
+
 	private NewTaskFragment fragment;
-	
-	
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -41,10 +47,11 @@ public class NewTaskActivity extends Activity {
 		setContentView( R.layout.activity_new_task );
 
 		if ( savedInstanceState == null ) {
-			fragment = new NewTaskFragment( );
+			fragment = new NewTaskFragment();
+			// Set a new empty Task
 			fragment.setTask( DataHandler.GetInstance().createTask() );
 			getFragmentManager().beginTransaction().add( R.id.container, fragment ).commit();
-		}		
+		}
 	}
 
 	@Override
@@ -63,17 +70,17 @@ public class NewTaskActivity extends Activity {
 	}
 
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * The fragment collecting the data we need
 	 */
-	public static class NewTaskFragment extends Fragment implements OnClickListener, OnDateSetListener, OnStudentsVerifiedListener {
+	public static class NewTaskFragment extends Fragment implements OnClickListener, OnDateSetListener,
+			OnStudentsVerifiedListener {
 
 		private View rootView;
-		
+
 		private AddClassToNewTaskAdapter adapter;
-		
+
 		private Task task;
 
-		
 		/**
 		 * 
 		 * @param task
@@ -94,28 +101,28 @@ public class NewTaskActivity extends Activity {
 			EditText eText = (EditText) rootView.findViewById( R.id.ET_newTask_date );
 			eText.setText( BaseActivity.GetDateAsString( Calendar.getInstance().getTime() ) );
 
-			createListView( rootView );			
+			createListView( rootView );
 
 			return rootView;
 		}
 
-		
 		/**
 		 * 
 		 * @param v
 		 */
-		private void createListView( View v) {
+		private void createListView( View v ) {
 			ListView listView = (ListView) v.findViewById( R.id.LV_newTask_classes );
-			List<String> mClasses = DataHandler.GetInstance().getStudentClassNames(); 
+			List<String> mClasses = DataHandler.GetInstance().getStudentClassNames();
+			
 			adapter = new AddClassToNewTaskAdapter( getActivity(), R.layout.row_newtask_addclasses, mClasses );
 			adapter.setTask( task );
 			listView.setAdapter( adapter );
 		}
-		
-		
+
 		@Override
 		public void onClick( View v ) {
 			int id = v.getId();
+			
 			switch ( id ) {
 			case R.id.BTN_newTask_create:
 				createNewTask( v );
@@ -123,23 +130,8 @@ public class NewTaskActivity extends Activity {
 
 			case R.id.BTN_newTask_date:
 				Log.d( TAG, v.toString() );
-
-				Date date = new Date();
-				Calendar cal = Calendar.getInstance();
-				cal.setTime( date );
 				
-				int day = cal.get( Calendar.DAY_OF_MONTH );
-				int month = cal.get( Calendar.MONTH );
-				int year = cal.get( Calendar.YEAR );
-				
-				DatePickerDialog dpd = new DatePickerDialog( getActivity(), this, year, month, day );
-
-				DatePicker picker = dpd.getDatePicker();
-				picker.setSpinnersShown( false );
-				picker.setCalendarViewShown( true );
-
-				dpd.show();
-
+				DatePickerDialogHelper.OpenDatePickerDialog( new Date(), getActivity(), this, false, true );
 			default:
 				break;
 			}
@@ -160,11 +152,11 @@ public class NewTaskActivity extends Activity {
 
 			editText = (EditText) rootView.findViewById( R.id.ET_newTask_date );
 			String dateStr = editText.getText().toString();
-			
+
 			task.setName( taskName );
 			task.setDescription( taskDesc );
 			task.setDate( BaseActivity.GetDateFromString( dateStr ) );
-			
+
 			// Show FragmentDialog to confirm all the students in the task
 			AddedStudentsToTaskFragment fragment = new AddedStudentsToTaskFragment();
 			fragment.setTask( task );
@@ -185,10 +177,10 @@ public class NewTaskActivity extends Activity {
 		@Override
 		public void onStudentsVerified( Task task ) {
 			DataHandler.GetInstance().addTask( task );
-			
+
 			String msg = getResources().getString( R.string.newTask_added_toast );
 			msg = msg.replace( "{task}", task.getName() );
-			Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();;
+			Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();
 
 			getActivity().finish();
 		}

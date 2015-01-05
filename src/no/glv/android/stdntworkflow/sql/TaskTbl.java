@@ -1,22 +1,24 @@
 package no.glv.android.stdntworkflow.sql;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-public class TaskTbl implements BaseValues {
+/**
+ * A static class that works towards a SQLite database. Takes care of loading, inserting, deleting and 
+ * updating tasks.
+ * 
+ * @author GleVoll
+ *
+ */
+public class TaskTbl {
 
-	private static final String TAG = TaskTbl.class.getSimpleName();
-
+	/** Name of the TABLE in the SQLite database */
 	public static final String TBL_NAME = "tasks";
 
 	public static final String COL_NAME = "name";
@@ -29,28 +31,24 @@ public class TaskTbl implements BaseValues {
 
 	/**
 	 * 
-	 * @param db
+	 * @param db Is NOT closed after use!
 	 */
-	public static void CreateTable( SQLiteDatabase db ) {
+	public static boolean CreateTable( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "(" 
 				+ COL_NAME + " TEXT PRIMARY KEY UNIQUE, "
 				+ COL_DESC + " TEXT, "
 				+ COL_DATE + " LONG NOT NULL, " 
 				+ COL_TYPE + " INTEGER)";
-
-		Log.v( TAG, "Executing SQL: " + sql );
-		db.execSQL( sql );
+		
+		return DBUtils.ExecuteSQL( sql, db );
 	}
 
 	/**
 	 * 
-	 * @param db
+	 * @param db Is NOT closed after use!
 	 */
-	public static void DropTable( SQLiteDatabase db ) {
-		String sql = "DROP TABLE IF EXISTS " + TBL_NAME;
-
-		Log.v( TAG, "Executing SQL: " + sql );
-		db.execSQL( sql );
+	public static boolean DropTable( SQLiteDatabase db ) {
+		return DBUtils.ExecuteSQL( "DROP TABLE IF EXISTS " + TBL_NAME, db );
 	}
 
 	/**
@@ -93,12 +91,17 @@ public class TaskTbl implements BaseValues {
 	/**
 	 * 
 	 * @param task
-	 * @param db
+	 * @param db Is closed after use
 	 * @return
 	 */
 	public static long InsertTask( Task task, SQLiteDatabase db ) {
+		long retVal = -1;
+		
 		ContentValues cv = TaksValues( task );
-		return db.insertOrThrow( TBL_NAME, null, cv );
+		retVal = db.insertOrThrow( TBL_NAME, null, cv );
+		
+		db.close();
+		return retVal;
 	}
 
 	/**
@@ -106,24 +109,52 @@ public class TaskTbl implements BaseValues {
 	 * @param task
 	 * @return
 	 */
-	public static ContentValues TaksValues( Task task ) {
+	private static ContentValues TaksValues( Task task ) {
 		ContentValues cv = new ContentValues();
 		
 		cv.put( COL_NAME, task.getName() );
 		cv.put( COL_DESC, task.getDesciption() );
-		cv.put( COL_DATE, ConcertToString( task.getDate() ) );
+		cv.put( COL_DATE, task.getDate().getTime() );
 		cv.put( COL_TYPE, task.getType() );
 
 		return cv;
 	}
-
+	
+	/**
+	 * Updates a specific task
+	 * 
+	 * @param task The {@link Task} to update, with all the new values
+	 * @param oldName The name of the old task. If null, the current name is used.
+	 * @param db Is closed after use
+	 * @return 0 if no update, otherwise 1
+	 */
+	public static int updateTask( Task task, String oldName, SQLiteDatabase db ) {
+		int retVal = 0;
+		
+		ContentValues cv = TaksValues( task );
+		String whereClause = COL_NAME + "=?";
+		if ( oldName == null ) oldName = task.getName();
+		
+		retVal = db.update( TBL_NAME, cv, whereClause, new String[] { oldName } );
+		
+		db.close();
+		
+		return retVal;
+	}
+	
 	/**
 	 * 
-	 * @param date
-	 * @return
+	 * @param taskName
+	 * @param db Is closed after use
+	 * 
+	 * @return 1 if task deleted, 0 otherwise
 	 */
-	private static String ConcertToString( Date date ) {
-		SimpleDateFormat sdf = new SimpleDateFormat( DATE_PATTERN, Locale.getDefault() );
-		return sdf.format( date );
+	public static int DeleteTask( String taskName, SQLiteDatabase db ) {
+		String whereClause = COL_NAME + "=?";
+		int retVal = db.delete( TBL_NAME, whereClause, new String[] { taskName } );
+		
+		db.close();
+		return retVal;
 	}
+
 }

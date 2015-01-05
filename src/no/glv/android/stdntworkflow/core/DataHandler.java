@@ -20,6 +20,7 @@ import java.util.Map;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.sql.Database;
 import no.glv.android.stdntworkflow.sql.StudentBean;
@@ -78,7 +79,13 @@ public class DataHandler {
 	}
 
 	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	//
 	// INIT
+	//
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
 	/**
@@ -89,8 +96,8 @@ public class DataHandler {
 	public static final DataHandler Init( Context ctx ) {
 		if ( instance == null ) instance = new DataHandler( new Database( ctx ) );
 
-		instance.loadTasks();
 		instance.loadStudentClasses();
+		instance.loadTasks();
 
 		isInitiated = true;
 		return instance;
@@ -121,9 +128,25 @@ public class DataHandler {
 
 		while ( it.hasNext() ) {
 			Task task = it.next();
+			List<StudentTask> stdTasks = db.loadStudentsInTask( task );
+			fillStudentTaskWithStudent( task, stdTasks );
+			
+			task.addStudentTasks( stdTasks );
 			tasks.put( task.getName(), task );
 		}
-
+	}
+	
+	/**
+	 * 
+	 * @param task
+	 * @param stdTasks
+	 */
+	private void fillStudentTaskWithStudent( Task task, List<StudentTask> stdTasks) {
+		Iterator<StudentTask> it = stdTasks.iterator();
+		while ( it.hasNext()) {
+			StudentTask stdTask = it.next();
+			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
+		}
 	}
 
 	/**
@@ -169,12 +192,12 @@ public class DataHandler {
 	 * @param ident
 	 * @return
 	 */
-	public Student findStudentById( String ident ) {
+	public Student getStudentById( String ident ) {
 		Student std = null;
 
 		Iterator<String> it = stdClasses.keySet().iterator();
 		while ( it.hasNext() ) {
-			std = findStudentById( it.next(), ident );
+			std = getStudentById( it.next(), ident );
 			if ( std != null ) break;
 		}
 
@@ -187,7 +210,7 @@ public class DataHandler {
 	 * @param ident
 	 * @return
 	 */
-	public Student findStudentById( String stdClassName, String ident ) {
+	public Student getStudentById( String stdClassName, String ident ) {
 		Student std = null;
 
 		StudentClass stdClass = stdClasses.get( stdClassName );
@@ -200,15 +223,20 @@ public class DataHandler {
 	 * 
 	 * @param std
 	 * @param oldIdent
+	 * 
+	 * @return true if successful
 	 */
-	public void updateStudent( Student std, String oldIdent ) {
+	public boolean updateStudent( Student std, String oldIdent ) {
+		int retVal = 0;
 		try {
-			db.updateStudent( std, oldIdent );
+			retVal = db.updateStudent( std, oldIdent );
 			notifyStudentUpdate( std );
 		}
 		catch ( Exception e ) {
 			Log.e( TAG, "Failed to update student: " + std.getIdent(), e );
 		}
+		
+		return retVal > 0;
 	}
 
 	/**
@@ -232,6 +260,21 @@ public class DataHandler {
 
 	/**
 	 * 
+	 * @param std
+	 */
+	private void notifyStudentDelete( Student std ) {
+		notifyStudentChagnge( std, OnStudentChangedListener.MODE_DEL );
+	}
+
+	/**
+	 * 
+	 * @param std
+	 */
+	private void notifyStudenAdd( Student std ) {
+		notifyStudentChagnge( std, OnStudentChangedListener.MODE_ADD );
+	}
+	/**
+	 * 
 	 * @param listener
 	 */
 	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
@@ -244,7 +287,9 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
-	// TASKS
+	//
+	// TASK
+	//
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
@@ -264,6 +309,15 @@ public class DataHandler {
 	public List<Task> getTasks() {
 		return new ArrayList<Task>( tasks.values() );
 	}
+	
+	/**
+	 * 
+	 * @param name Name of {@link Task} to find.
+	 * @return The actual task, or NULL if not found
+	 */
+	public Task getTask( String name ) {
+		return tasks.get( name );
+	}
 
 	/**
 	 * 
@@ -278,11 +332,52 @@ public class DataHandler {
 			throw new IllegalArgumentException( "Task " + task.getName() + " already exists" );
 
 		if ( db.writeTask( task ) ) {
+			List<StudentTask>stds = db.loadStudentsInTask( task );
+			for ( int i = 0; i < stds.size(); i++ ) {
+				StudentTask stdTask = stds.get( i );
+				stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
+			}
+			
+			task.addStudentTasks( stds );
+			
 			tasks.put( task.getName(), task );
 			notifyTaskAdd( task );
 		}
 
 		return this;
+	}
+	
+	/**
+	 * 
+	 * @param task
+	 * @param oldName
+	 */
+	public boolean updateTask( Task task, String oldName ) {
+		Log.d( TAG, "Updating task: " + oldName );
+		if ( db.updateTask( task, oldName ) ) {
+			notifyTaskUpdate( task );
+			return true;
+		}
+		
+		return false;		
+	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean deleteTask( String name ) {
+		Task task = getTask( name );
+
+		
+		if ( db.deleteTask( name ) ) {
+			tasks.remove( name );
+			notifyTaskDelete( task );
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -315,6 +410,22 @@ public class DataHandler {
 	 */
 	private void notifyTaskAdd( Task newTask ) {
 		notifyTaskChange( newTask, OnTaskChangedListener.MODE_ADD );
+	}
+
+	/**
+	 * 
+	 * @param newTask
+	 */
+	private void notifyTaskDelete( Task oldTask ) {
+		notifyTaskChange( oldTask, OnTaskChangedListener.MODE_DEL );
+	}
+
+	/**
+	 * 
+	 * @param task
+	 */
+	private void notifyTaskUpdate( Task task ) {
+		notifyTaskChange( task, OnTaskChangedListener.MODE_UPD );
 	}
 
 	/**
@@ -518,27 +629,27 @@ public class DataHandler {
 				break;
 
 			case 5:
-				bean.parent1Name = param;
+				//bean.parent1Name = param;
 				break;
 
 			case 6:
-				bean.parent1Phone = param;
+				//bean.parent1Phone = param;
 				break;
 
 			case 7:
-				bean.parent1Mail = param;
+				//bean.parent1Mail = param;
 				break;
 
 			case 8:
-				bean.parent2Name = param;
+				//bean.parent2Name = param;
 				break;
 
 			case 9:
-				bean.parent2Phone = param;
+				//bean.parent2Phone = param;
 				break;
 
 			case 10:
-				bean.parent2Mail = param;
+				//bean.parent2Mail = param;
 				break;
 
 			default:
@@ -587,7 +698,7 @@ public class DataHandler {
 		sb.append( std.getLastname() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
-
+/*
 		sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
@@ -595,7 +706,7 @@ public class DataHandler {
 		sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getParent2Mail() );
-
+*/
 		return sb.toString();
 	}
 

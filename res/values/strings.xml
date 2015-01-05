@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">StudentWorkflow</string>
+    <string name="def">To be altered</string>
+
+    
     <string name="action_settings">Settings</string>
     <string name="action_resetDB">Slett databasen</string>
     <string name="action_loadData">Installer ny klasse</string>
@@ -23,16 +26,40 @@
     <string name="TV.header.text">Student work flow</string>
     <string name="TV.maininfo.text">        Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 
         Gå inn på settings eller historikk for å se på oppgaver som er avsluttet, eller for å se på statistikk</string>
-    
-    <string name="TV.task.info.text">        
-        Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en 
-        korrekt innleveringsdato.
-    </string>
-    
+    <string name="TV.task.info.text">        Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en 
+        korrekt innleveringsdato.</string>
     <string name="title_activity_new_task">NewTaskActivity</string>
-    
-    
     <string name="newTask.added.toast">Ny oppgave [{task}] lagt til!</string>
     <string name="loadData.added.toast">Ny klasse [{class}] lagt til!</string>
+
+    <string name="stdInfo.fName">Fornavn: </string>
+    <string name="stdInfo.lName">Etternavn: </string>
+    <string name="stdInfo.ident">Ident: </string>
+    <string name="stdInfo.birth">Født: </string>
+    <string name="stdInfo.adr">Adresse: </string>
     
+    <string name="title_activity_std_info">StdInfoActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_task">TaskActivity</string>
+    <string name="std_info_title">Elev</string>
+    <string name="std_parent1_title">Foresatt 1</string>
+    <string name="std_parent2_title">Foresatt 2</string>
+    <string name="title_activity_new">NewActivity</string>
+
+
+    <string name="menu_task_delete">Slett</string>
+    <string name="menu_task_update">Oppdater</string>
+    
+    <string name="task_title">Oppgaver</string>
+    <string name="task_header">Info om oppgave</string>
+    
+    <string name="task_name">Navn</string>
+    <string name="task_desca">Beskrivelse</string>
+    <string name="task_date">Dato</string>
+    
+    <string name="task_tab_section1">Info</string>
+    <string name="task_tab_section2">Elever</string>
+    
+
+
 </resources>

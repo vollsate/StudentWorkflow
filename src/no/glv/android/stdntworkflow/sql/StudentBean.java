@@ -1,10 +1,13 @@
 package no.glv.android.stdntworkflow.sql;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.util.Log;
 
@@ -16,6 +19,8 @@ import android.util.Log;
 public class StudentBean implements Student {
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
+	
+	private static final Parent[] EMPTY_PARENT = new Parent[] {};
 
 	public String mIdent;
 
@@ -24,19 +29,13 @@ public class StudentBean implements Student {
 	public String bYear;
 	public Date birth;
 
-	public String parent1Name;
-	public String parent1Phone;
-	public String parent1Mail;
-
-	public String parent2Name;
-	public String parent2Phone;
-	public String parent2Mail;
-
 	public String adress;
 	public String postalCode;
 	public String grade;
 
 	private String studentClass;
+
+	private List<Parent> parents;
 
 	private StudentBean() {
 	}
@@ -71,36 +70,6 @@ public class StudentBean implements Student {
 	@Override
 	public String getLastname() {
 		return lName;
-	}
-
-	@Override
-	public String getParent1Name() {
-		return parent1Name;
-	}
-
-	@Override
-	public String getParent1Phone() {
-		return parent1Phone;
-	}
-
-	@Override
-	public String getParent1Mail() {
-		return parent1Mail;
-	}
-
-	@Override
-	public String getParent2Name() {
-		return parent2Name;
-	}
-
-	@Override
-	public String getParent2Phone() {
-		return parent2Phone;
-	}
-
-	@Override
-	public String getParent2Mail() {
-		return parent2Mail;
 	}
 
 	@Override
@@ -152,36 +121,6 @@ public class StudentBean implements Student {
 	}
 
 	@Override
-	public void setParent1Name( String val ) {
-		parent1Name = val;
-	}
-
-	@Override
-	public void setParent1Phone( String val ) {
-		parent1Phone = val;
-	}
-
-	@Override
-	public void setParent1Mail( String val ) {
-		parent1Mail = val;
-	}
-
-	@Override
-	public void setParent2Name( String val ) {
-		parent2Name = val;
-	}
-
-	@Override
-	public void setParent2Phone( String val ) {
-		parent2Phone = val;
-	}
-
-	@Override
-	public void setParent2Mail( String val ) {
-		parent2Mail = val;
-	}
-
-	@Override
 	public void setBirth( String val ) {
 		try {
 			birth = sdf.parse( val );
@@ -211,4 +150,18 @@ public class StudentBean implements Student {
 		studentClass = val;
 	}
 
+
+	@Override
+	public Parent[] getParents() {
+		if ( parents == null ) return EMPTY_PARENT;
+		
+		return ( Parent[] ) parents.toArray();
+	}
+
+	@Override
+	public void addParent( Parent parent ) {
+		if ( parents == null ) parents = new ArrayList<Parent>(2);
+		
+		parents.add( parent );
+	}
 }

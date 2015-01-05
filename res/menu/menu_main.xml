@@ -4,6 +4,12 @@
     tools:context="no.glv.android.stdntworkflow.MainActivity" >
 
     <item
+        android:id="@+id/menu.stdInfo"
+        android:orderInCategory="1"
+        android:title="New elevinfo"
+        app:showAsAction="never"/>
+    
+    <item
         android:id="@+id/menu.settings"
         android:orderInCategory="90"
         android:title="@string/action_settings"

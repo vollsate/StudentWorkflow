@@ -11,13 +11,19 @@
             backward-compatibility can go here.
         -->
     </style>
-
+    <style name="newAppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar"/>
+    
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:actionBarStyle">@style/actionBar</item>
         <item name="actionBarStyle">@style/actionBar</item>
     </style>
-
+    
+    <style name="newAppTheme" parent="newAppBaseTheme">
+        <item name="android:actionBarStyle">@style/actionBar</item>
+        <item name="actionBarStyle">@style/actionBar</item>
+    </style>
+    
     <style name="TV.standard" parent="AppTheme">
         <item name="android:textColor">#000000</item>
         <item name="android:textStyle">normal</item>
@@ -41,11 +47,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TV.std.S" parent="TV.standard">
+    <style name="TV.std.S" parent="TV.std">
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="TV.std.L" parent="TV.standard">
+    <style name="TV.std.L" parent="TV.std">
         <item name="android:textSize">20sp</item>
     </style>
 
@@ -56,9 +62,14 @@
     </style>
 
     <style name="ET" parent="TV.standard">
+        <item name="android:gravity">left</item>
         <item name="android:textColor">#000000</item>
         <item name="android:background">#FFFFFF</item>
-        </style>
+    </style>
+
+    <style name="ET.L" parent="ET">
+        <item name="android:textSize">20sp</item>
+    </style>
 
     <style name="ET.task" parent="ET">
         <item name="android:layout_width">match_parent</item>
@@ -72,7 +83,7 @@
         <item name="android:layout_marginTop">5sp</item>
     </style>
 
-    <style name="actionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="actionBar" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:textColor">#000000</item>
         <item name="android:background">#ffbb33</item>
     </style>

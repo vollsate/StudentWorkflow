@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/TV.task.stdlist.name"
+        style="@style/TV.std"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:text="Navn"
+        android:singleLine="true" />
+    
+    <TextView
+        android:id="@+id/TV.task.stdlist.ident"
+        style="@style/TV.std.S"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TV.task.stdlist.name"
+        android:layout_alignLeft="@+id/TV.task.stdlist.name"
+        android:layout_alignStart="@+id/TV.task.stdlist.name"
+        android:ellipsize="marquee"
+        android:text="ident"
+        android:singleLine="true"/>
+    
+    <TextView
+        android:id="@+id/TV.task.stdlist.class"
+        style="@style/TV.std.S"
+        android:layout_width="wrap_content"
+        android:gravity="end"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/task"
+        android:layout_alignBottom="@id/TV.task.stdlist.ident"
+        android:layout_toEndOf="@id/TV.task.stdlist.ident"
+        android:layout_toRightOf="@id/TV.task.stdlist.ident"
+        android:ellipsize="marquee"
+        android:text="Klasse"
+        android:singleLine="true"/>
+    
+    <ImageView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="2dip"
+        android:layout_marginRight="2dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/info_desc"
+        android:src="@drawable/info" />
+
+    <ImageView
+        android:id="@+id/task"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="2dip"
+        android:layout_marginRight="2dip"
+        android:layout_toLeftOf="@+id/info"
+        android:contentDescription="@string/task_desc"
+        android:src="@drawable/task" />
+ 
+</RelativeLayout>
