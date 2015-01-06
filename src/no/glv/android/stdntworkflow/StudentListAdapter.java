@@ -61,7 +61,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		Student bean = beans[position];
 		
 		if ( DataHandler.GetInstance().getSettingsManager().isShowFullname() )
-			holder.textView.setText( bean.getFirstName() + " " + bean.getLastname() );
+			holder.textView.setText( bean.getFirstName() + " " + bean.getLastName() );
 		else
 			holder.textView.setText( bean.getFirstName() );
 			

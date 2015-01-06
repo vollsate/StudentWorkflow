@@ -107,7 +107,7 @@ public class StudentClassImpl implements StudentClass {
 	}
 
 	@Override
-	public Student[] toList() {
+	public Student[] toArray() {
 		Student[] beans = new Student[students.size()];
 
 		for ( int i = 0; i < students.size(); i++ ) {
@@ -124,13 +124,7 @@ public class StudentClassImpl implements StudentClass {
 
 	@Override
 	public List<Student> getStudents() {
-		List<Student> list = new ArrayList<Student>( students.size() );
-		
-		for ( int i = 0; i < students.size(); i++ ) {
-			list.add( students.get( i )  );
-		}
-		
-		return list;
+		return students;
 	}
 
 }

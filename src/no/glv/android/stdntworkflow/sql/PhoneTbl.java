@@ -45,7 +45,7 @@ class PhoneTbl implements BaseColumns {
 		String sql = "CREATE TABLE " + TBL_NAME + "(" 
 				+ COL_ID + " STRING PRIMARY KEY UNIQUE, " 
 				+ COL_PHONE + " TEXT, "
-				+ COL_TYPE + " INTEGER)";
+				+ COL_TYPE + " LONG)";
 		
 		Log.v( TAG, "Executing SQL: " + sql );		
 		db.execSQL( sql );
@@ -85,10 +85,8 @@ class PhoneTbl implements BaseColumns {
 	
 	
 	private static Phone CreateFromCursor( Cursor cursor ) {
-		Phone phone = null;
-		
-		phone.setNumber( cursor.getInt( COL_ID_ID ) );
-		phone.setID( cursor.getString( COL_TYPE_ID ) );
+		Phone phone = new PhoneBean( cursor.getString( COL_TYPE_ID ), cursor.getInt( COL_TYPE_ID ) );
+		phone.setNumber( cursor.getLong( COL_PHONE_ID ) );
 		
 		return phone;
 	}
@@ -96,7 +94,7 @@ class PhoneTbl implements BaseColumns {
 	/**
 	 * 
 	 * @param std
-	 * @param db
+	 * @param db Is closed after use
 	 */
 	public static long InsertPhone( Phone phone, SQLiteDatabase db ) {
 		ContentValues phoneValues = PhoneValues( phone );

@@ -1,5 +1,7 @@
 package no.glv.android.stdntworkflow.intrfc;
 
+import java.util.List;
+
 public interface Parent {
 	
 	public static final int PRIMARY = 1;
@@ -15,7 +17,7 @@ public interface Parent {
 	
 	public String getID();
 	
-	public Phone[] getPhoneNumbers();
+	public List<Phone> getPhoneNumbers();
 	
 	public void setFirstName( String name );
 	
@@ -24,5 +26,7 @@ public interface Parent {
 	public void setMail( String mail );
 	
 	public void addPhone( Phone phone);
+
+	public void addPhones( List<Phone> phones );
 	
 }

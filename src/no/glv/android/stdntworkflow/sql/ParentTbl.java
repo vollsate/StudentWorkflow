@@ -20,17 +20,20 @@ class ParentTbl implements BaseColumns {
 	public static final String COL_ID = "_id";
 	public static final int COL_ID_ID = 0;
 
+	public static final String COL_IDENT = "ident";
+	public static final int COL_IDENT_ID = 1;
+
 	public static final String COL_FNAME = "fname";
-	public static final int COL_FNAME_ID = 1;
+	public static final int COL_FNAME_ID = 2;
 
 	public static final String COL_LNAME = "lname";
-	public static final int COL_LNAME_ID = 2;
+	public static final int COL_LNAME_ID = 3;
 	
 	public static final String COL_MAIL = "mail";
-	public static final int COL_MAIL_ID = 3;
+	public static final int COL_MAIL_ID = 4;
 	
 	public static final String COL_TYPE = "type";
-	public static final int COL_TYPE_ID = 4;
+	public static final int COL_TYPE_ID = 5;
 
 	private  ParentTbl() {
 	}
@@ -45,14 +48,14 @@ class ParentTbl implements BaseColumns {
 	 */
 	static void CreateTableSQL( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "(" 
-				+ COL_ID + " STRING PRIMARY KEY UNIQUE, " 
+				+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ COL_IDENT + " TEXT NOT NULL, " 
 				+ COL_FNAME + " TEXT, "
 				+ COL_LNAME + " TEXT, "
 				+ COL_MAIL + " TEXT, "
 				+ COL_TYPE + " INTEGER)";
 		
-		Log.v( TAG, "Executing SQL: " + sql );		
-		db.execSQL( sql );
+		DBUtils.ExecuteSQL( sql, db );
 	}
 	
 	
@@ -70,10 +73,10 @@ class ParentTbl implements BaseColumns {
 	 * @param db
 	 * @return
 	 */
-	public static List<Parent> LoadParentPhone (String parentID, SQLiteDatabase db ) {
+	public static List<Parent> LoadParent (String parentID, SQLiteDatabase db ) {
 		List<Parent> list = new ArrayList<Parent>();
 		
-		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_ID + " = ?";
+		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_IDENT + " = ?";
 		Cursor cursor = db.rawQuery( sql, new String[] { parentID } );
 		cursor.moveToFirst();
 		while ( ! cursor.isAfterLast() ) {
@@ -89,7 +92,7 @@ class ParentTbl implements BaseColumns {
 	
 	
 	private static Parent CreateFromCursor( Cursor cursor ) {
-		Parent parent = new ParentBean( cursor.getString( COL_ID_ID ) );
+		Parent parent = new ParentBean( cursor.getString( COL_IDENT_ID ), cursor.getInt( COL_TYPE_ID ) );
 		
 		parent.setFirstName( cursor.getString( COL_FNAME_ID ) );
 		parent.setLastName( cursor.getString( COL_LNAME_ID ) );
@@ -120,7 +123,7 @@ class ParentTbl implements BaseColumns {
 	 * @return 1 if successful, 0 otherwise
 	 */
 	public static int UpdateParent( Parent parent, SQLiteDatabase db ) {
-		String sqlFiler = COL_ID + " = ?";
+		String sqlFiler = COL_IDENT + " = ?";
 		ContentValues cv = ParentValues( parent );
 		
 		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { parent.getID() } );
@@ -135,7 +138,7 @@ class ParentTbl implements BaseColumns {
 	 * @param db
 	 */
 	public static int DeletePhone( String ident, SQLiteDatabase db ) {
-		String sqlFilter = COL_ID + " = ?";
+		String sqlFilter = COL_IDENT + " = ?";
 		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
 		db.close();
 		
@@ -151,7 +154,7 @@ class ParentTbl implements BaseColumns {
 	private static ContentValues ParentValues( Parent parent ) {
 		ContentValues cv = new ContentValues();
 		
-		cv.put( COL_ID, parent.getID() );
+		cv.put( COL_IDENT, parent.getID() );
 		cv.put( COL_FNAME, parent.getFirstName() );
 		cv.put( COL_LNAME, parent.getLastName() );
 		cv.put( COL_MAIL, parent.getMail() );

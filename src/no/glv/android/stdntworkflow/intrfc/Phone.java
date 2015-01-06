@@ -8,13 +8,14 @@ public interface Phone {
 	
 	public static final int WORK = 3;
 	
-	public int getNumber();
+	public long getNumber();
 	
 	public int getType();
 	
 	public String getID();
 	
-	public void setNumber( int num );
+	public void setNumber( long num );
 
 	public void setID( String id );
+	
 }

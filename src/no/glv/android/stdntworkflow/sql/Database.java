@@ -3,6 +3,8 @@ package no.glv.android.stdntworkflow.sql;
 import java.util.Iterator;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.intrfc.Parent;
+import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
@@ -37,6 +39,7 @@ public class Database extends SQLiteOpenHelper {
 		// public Database( Context context, String name, CursorFactory factory,
 		// int version, DatabaseErrorHandler errorHandler )
 		super( context, DB_NAME, null, DB_VERSION, null );
+		//runCreate();
 	}
 
 	/**
@@ -70,7 +73,7 @@ public class Database extends SQLiteOpenHelper {
 		TaskTbl.DropTable( db );
 		StudentInTaskTbl.DropTable( db );
 		PhoneTbl.DropTable( db );
-		ParentTbl.CreateTableSQL( db );
+		ParentTbl.DropTable( db );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -83,6 +86,14 @@ public class Database extends SQLiteOpenHelper {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
+	public List<Parent> loadParents( String id ) {
+		return ParentTbl.LoadParent( id, getReadableDatabase() );
+	}
+	
+	public List<Phone> loadPhone( String id ) {
+		return PhoneTbl.LoadParentPhone( id, getReadableDatabase() );
+	}
+	
 	/**
 	 * 
 	 * @param stdClass
@@ -93,12 +104,32 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * Will insert the {@link Student} in the StudentTbl and every {@link Parent} and {@link Phone} related
+	 * to the student.
 	 * 
 	 * @param student
 	 */
-	public void writeStudent( Student student ) {
-		Log.d( TAG, "Writing student: " + student.getIdent() );
+	public boolean insertStudent( Student student ) {
+		Log.d( TAG, "Inserting student: " + student.getIdent() );
+		boolean success = true;
+		
 		StudentTbl.InsertStudent( student, getWritableDatabase() );
+		
+		Iterator<Parent> it = student.getParents().iterator();
+		while ( it.hasNext() ) {
+			insertParent( it.next() );
+		}
+		
+		return success;
+	}
+	
+	private void insertParent( Parent parent ) {
+		ParentTbl.InsertParent( parent, getWritableDatabase() );
+		
+		Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
+		while ( pIt.hasNext() ) {
+			PhoneTbl.InsertPhone( pIt.next(), getWritableDatabase() );
+		}
 	}
 
 	/**
@@ -248,7 +279,7 @@ public class Database extends SQLiteOpenHelper {
 		while ( it.hasNext() ) {
 			Student std = it.next();
 			std.setStudentClass( stdClass.getName() );
-			writeStudent( std );
+			insertStudent( std );
 		}
 
 		StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );

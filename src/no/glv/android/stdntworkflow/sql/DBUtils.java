@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow.sql;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -44,5 +45,17 @@ public class DBUtils implements BaseValues {
 		return sdf.format( date );
 	}
 	
-
+	public static Date ConvertStringToDate( String date, String pattern ) {
+		SimpleDateFormat simpleDF = sdf;
+		if ( pattern != null ) simpleDF = new SimpleDateFormat( pattern, Locale.getDefault() );
+		
+		try {
+			return simpleDF.parse( date );
+		}
+		catch ( ParseException e ) {
+			Log.e( TAG, "Error parsing date: " + date, e );
+			return null;
+		}
+	}
+	
 }

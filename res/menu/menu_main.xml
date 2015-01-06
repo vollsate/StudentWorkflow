@@ -4,33 +4,33 @@
     tools:context="no.glv.android.stdntworkflow.MainActivity" >
 
     <item
-        android:id="@+id/menu.stdInfo"
-        android:orderInCategory="1"
-        android:title="New elevinfo"
-        app:showAsAction="never"/>
-    
-    <item
-        android:id="@+id/menu.settings"
+        android:id="@+id/menu.overflow"
         android:orderInCategory="90"
+        android:icon="@drawable/ic_action_overflow"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>
-    
-    <item
-        android:id="@+id/menu.resetDB"
-        android:orderInCategory="100"
-        android:title="@string/action_resetDB"
-        app:showAsAction="never"/>
-    
-    <item
-        android:id="@+id/menu.loadData"
-        android:orderInCategory="10"
-        android:title="@string/action_loadData"
-        app:showAsAction="never"/>
-    
-    <item
-        android:id="@+id/menu.newTask"
-        android:orderInCategory="11"
-        android:title="@string/action_newTask"
-        app:showAsAction="never"/>
-    
+        android:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/menu.settings"
+                android:orderInCategory="90"
+                android:title="@string/action_settings"
+                android:showAsAction="never"/>
+            <item
+                android:id="@+id/menu.resetDB"
+                android:orderInCategory="100"
+                android:title="@string/action_resetDB"
+                android:showAsAction="never"/>
+            <item
+                android:id="@+id/menu.loadData"
+                android:orderInCategory="10"
+                android:title="@string/action_loadData"
+                android:showAsAction="never"/>
+            <item
+                android:id="@+id/menu.newTask"
+                android:orderInCategory="11"
+                android:title="@string/action_newTask"
+                android:showAsAction="ifRoom"/>
+        </menu>
+    </item>
+
 </menu>

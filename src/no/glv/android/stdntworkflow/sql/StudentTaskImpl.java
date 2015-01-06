@@ -4,7 +4,6 @@ import java.util.Date;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
-import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * Keeps track of every student registered and every task they are currently
@@ -20,8 +19,11 @@ public class StudentTaskImpl implements StudentTask {
 	private Date handinDate;
 	private int mode;
 
-	private Task task;
 	private Student student;
+
+	public StudentTaskImpl( String ident, String taskName, Date date ) {
+		this( ident, taskName, MODE_PENDING, date );
+	}
 
 	public StudentTaskImpl( String ident, String taskName, int mode, Date date ) {
 		this.ident = ident;
@@ -61,20 +63,6 @@ public class StudentTaskImpl implements StudentTask {
 	@Override
 	public boolean isHandedIn() {
 		return (handinDate != null);
-	}
-
-	@Override
-	public void setTask( Task task ) {
-		if ( !task.getName().equals( taskName ) )
-			throw new IllegalStateException( "Task in task [" + taskName + "] and setTask [" + task.getName()
-					+ "] does not match" );
-		
-		this.task = task;
-	}
-
-	@Override
-	public Task getTask() {
-		return task;
 	}
 
 	@Override

@@ -48,6 +48,19 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_studentclass_list );
 		
+		Log.d( TAG, "onCreate" );
+		update();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		Log.d( TAG, "onResume()" );
+		update();
+	}
+	
+	private void update() {
 		needUpdate = true;
 		createView();
 	}
@@ -59,14 +72,14 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 		if (! needUpdate ) return;
 		
 		ListView listView = (ListView) findViewById( R.id.student_listview );
-		stdClass = getStudentClassExtra();
+		stdClass = BaseActivity.getStudentClassExtra( this.getIntent() );
 		
 		String title = getResources().getString( R.string.activity_studentList_title );
 		title = title.replace( CLASS_REPLACE, stdClass.getName() );
 		
 		setTitle( title );
 
-		StudentListAdapter adapter = new StudentListAdapter( this, stdClass.toList() );
+		StudentListAdapter adapter = new StudentListAdapter( this, stdClass.toArray() );
 		adapter.notifyDataSetChanged();
 		listView.setAdapter( adapter );
 		
@@ -77,7 +90,15 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 	protected void onRestart() {
 		super.onRestart();
 		
-		createView();
+		Log.d( TAG, "onRestart()" );
+		update();
+	}
+	
+	@Override
+	protected void onResumeFragments() {
+		super.onResumeFragments();
+		
+		Log.d( TAG, "onResumeFragments()" );
 	}
 	
 	@Override
@@ -105,14 +126,24 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 
 		switch ( id ) {
 		case R.id.action_settings:
-			return true;
+			break;
 
 		case R.id.action_writeToLocal:
 			Database.GetInstance( getApplicationContext() ).insertStudentClass( stdClass );
 			return true;
+			
+		case R.id.menu_stdList_sort_firstNameAsc:
+			DataHandler.GetInstance().getSettingsManager().sortByFirstNameAsc( stdClass.getName() );
+			update();
+			return true;
 
-		default:
-			return super.onOptionsItemSelected( item );
+		case R.id.menu_stdList_sort_lastNameAsc:
+			DataHandler.GetInstance().getSettingsManager().sortByLastNameAsc( stdClass.getName() );
+			update();
+			return true;
+
 		}
+		
+		return super.onOptionsItemSelected( item );		
 	}
 }

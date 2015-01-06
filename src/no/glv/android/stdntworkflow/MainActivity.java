@@ -2,13 +2,13 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTaskChangedListener;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.sql.Database;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +25,7 @@ import android.widget.ListView;
  * @author GleVoll
  *
  */
-public class MainActivity extends BaseActivity implements OnStudentClassChangeListener, OnTaskChangedListener {
+public class MainActivity extends Activity implements OnStudentClassChangeListener, OnTaskChangedListener {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -34,8 +34,8 @@ public class MainActivity extends BaseActivity implements OnStudentClassChangeLi
 
 	DataHandler dataHandler;
 	InstalledClassesFragment classesFragment;
-	
-	InstalledStudentClassListAdapter classesAdapter ;
+
+	InstalledStudentClassListAdapter classesAdapter;
 	InstalledTaskListAdapter taskAdapter;
 
 	/**
@@ -50,6 +50,7 @@ public class MainActivity extends BaseActivity implements OnStudentClassChangeLi
 		dataHandler.addOnStudentClassChangeListener( this );
 		dataHandler.addOnTaskChangeListener( this );
 
+		getActionBar().setIcon( null );
 		initiated = true;
 	}
 
@@ -77,7 +78,7 @@ public class MainActivity extends BaseActivity implements OnStudentClassChangeLi
 		createListView();
 		needUpdate = false;
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -85,7 +86,6 @@ public class MainActivity extends BaseActivity implements OnStudentClassChangeLi
 		if ( !needUpdate ) return;
 
 		createListView();
-		needUpdate = false;
 	}
 
 	/**
@@ -96,19 +96,19 @@ public class MainActivity extends BaseActivity implements OnStudentClassChangeLi
 
 		ListView listView;
 		List<String> strClasses = dataHandler.getStudentClassNames();
-		if ( !strClasses.isEmpty() || needUpdate ) {
-			listView = (ListView) findViewById( R.id.LV_classes );
-			classesAdapter = new InstalledStudentClassListAdapter( this,
-					R.layout.row_classes_list, strClasses );
-			listView.setAdapter( classesAdapter );
-		}
-		
+		listView = (ListView) findViewById( R.id.LV_classes );
+		classesAdapter = new InstalledStudentClassListAdapter( this, R.layout.row_classes_list, strClasses );
+		listView.setAdapter( classesAdapter );
+
 		List<String> strTasks = dataHandler.getTaskNames();
-		if ( !strTasks.isEmpty() || needUpdate ) {
-			listView = (ListView) findViewById( R.id.LV_tasks );
-			taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list, strTasks );
-			listView.setAdapter( taskAdapter );
-		}
+		listView = (ListView) findViewById( R.id.LV_tasks );
+		taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list, strTasks );
+		listView.setAdapter( taskAdapter );
+	}
+	
+	private void update() {
+		createListView();
+		needUpdate = false;
 	}
 
 	/**
@@ -155,18 +155,16 @@ public class MainActivity extends BaseActivity implements OnStudentClassChangeLi
 
 	@Override
 	public void onStudentClassUpdate( StudentClass stdClass, int mode ) {
-		if ( classesAdapter != null )
-			classesAdapter.notifyDataSetChanged();
-		
-		needUpdate = true;
+		if ( classesAdapter != null ) classesAdapter.notifyDataSetChanged();
+
+		update();
 	}
 
 	@Override
 	public void onTaskChange( Task newTask, int mode ) {
-		if ( taskAdapter != null )
-			taskAdapter.notifyDataSetChanged();
-		
-		needUpdate = true;
+		if ( taskAdapter != null ) taskAdapter.notifyDataSetChanged();
+
+		update();
 	}
 
 }

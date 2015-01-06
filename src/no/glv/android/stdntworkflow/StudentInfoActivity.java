@@ -115,7 +115,7 @@ public class StudentInfoActivity extends BaseActivity implements OnStudentChange
  			editText.setText( bean.getFirstName() );
  			
  			editText = ( EditText ) rootView.findViewById( R.id.ET_info_LastName );
- 			editText.setText( bean.getLastname() );
+ 			editText.setText( bean.getLastName() );
  			
  			editText = ( EditText ) rootView.findViewById( R.id.ET_info_ident );
  			editText.setText( bean.getIdent() );

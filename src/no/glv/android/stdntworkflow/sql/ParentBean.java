@@ -17,8 +17,9 @@ public class ParentBean implements Parent {
 	private List<Phone> phones;
 	private int type;
 
-	public ParentBean(String id) {
+	public ParentBean(String id, int type) {
 		this.id = id;
+		this.type = type;
 	}
 
 	@Override
@@ -47,8 +48,8 @@ public class ParentBean implements Parent {
 	}
 
 	@Override
-	public Phone[] getPhoneNumbers() {
-		return (Phone[]) phones.toArray();
+	public List<Phone> getPhoneNumbers() {
+		return phones;
 	}
 
 	@Override
@@ -68,9 +69,15 @@ public class ParentBean implements Parent {
 
 	@Override
 	public void addPhone( Phone phone ) {
+		if ( phone == null ) return;
 		if ( phones == null ) phones = new ArrayList<Phone>(2);
 		
 		phones.add( phone );
+	}
+	
+	@Override
+	public void addPhones( List<Phone> phones ) {
+		for ( int i=0 ; i<phones.size() ; i++ ) addPhone( phones.get( i ) );
 	}
 
 }

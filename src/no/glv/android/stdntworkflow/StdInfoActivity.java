@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.List;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
@@ -152,13 +153,13 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
 			case 1:
 				if ( fr == null ) {
-					fr = new StdParent1Fragment(  ).setStudent( bean );
+					fr = new StdParentPrimaryFragment(  ).setStudent( bean );
 				}
 				break;
 
 			case 2:
 				if ( fr == null ) {
-					fr = new StdParent2Fragment( ).setStudent( bean );
+					fr = new StdParentSecundaryFragment( ).setStudent( bean );
 				}
 				break;
 
@@ -194,11 +195,11 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class StdParent1Fragment extends Fragment {
+	public static class StdParentPrimaryFragment extends Fragment {
 
 		private Student bean;
 		
-		public StdParent1Fragment setStudent( Student bean ) {
+		public StdParentPrimaryFragment setStudent( Student bean ) {
 			this.bean = bean;
 			return this;
 		}
@@ -208,8 +209,11 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			View rootView = inflater.inflate( R.layout.fragment_std_parent1, container, false );
-			Parent[] parents = bean.getParents();
-			Parent parent = parents[0];
+			List<Parent> parents = bean.getParents();
+			
+			if (! (parents.size() > 0) ) return rootView;
+					
+			Parent parent = parents.get( 0 );
 
 			EditText editText = (EditText) rootView.findViewById( R.id.ET_info_p1Name );
 			editText.setText( parent.getFirstName() + " " + parent.getLastName() );
@@ -227,11 +231,11 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class StdParent2Fragment extends Fragment {
+	public static class StdParentSecundaryFragment extends Fragment {
 
 		private Student bean;
 		
-		public StdParent2Fragment setStudent( Student bean ) {
+		public StdParentSecundaryFragment setStudent( Student bean ) {
 			this.bean = bean;
 			return this;
 		}
@@ -241,8 +245,13 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			View rootView = inflater.inflate( R.layout.fragment_std_parent2, container, false );
-			Parent[] parents = bean.getParents();
-			Parent parent = parents[1];
+			List<Parent> parents = bean.getParents();
+
+			if (! (parents.size() > 1) ) return rootView;
+			
+			Parent parent = parents.get( 1 );
+			
+			if ( parent == null ) return rootView;
 
 			EditText editText = (EditText) rootView.findViewById( R.id.ET_info_p2Name );
 			editText.setText( parent.getFirstName() + " " + parent.getLastName() );
@@ -250,7 +259,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 			editText = (EditText) rootView.findViewById( R.id.ET_info_p2Mail );
 			editText.setText( parent.getMail() );
 
-			editText = (EditText) rootView.findViewById( R.id.ET_info_p1Phone );
+			editText = (EditText) rootView.findViewById( R.id.ET_info_p2Phone );
 			editText.setText( parent.getPhoneNumbers().toString() );
 
 			return rootView;
@@ -280,7 +289,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 			editText.setText( bean.getFirstName() );
 
 			editText = (EditText) rootView.findViewById( R.id.ET_info_LastName );
-			editText.setText( bean.getLastname() );
+			editText.setText( bean.getLastName() );
 
 			editText = (EditText) rootView.findViewById( R.id.ET_info_ident );
 			editText.setText( bean.getIdent() );

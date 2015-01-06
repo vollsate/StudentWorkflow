@@ -60,6 +60,12 @@
     <string name="task_tab_section1">Info</string>
     <string name="task_tab_section2">Elever</string>
     
+<!-- STDINFO -->
 
-
+	<string name="stdinfo_name">Navn: </string>
+	<string name="stdinfo_mail">Epost: </string>
+	<string name="stdinfo_phone_mobile">Mobil: </string>
+	<string name="stdinfo_phone_home">Hjemme: </string>
+	<string name="stdinfo_phone_work">Arbeid: </string>
+		
 </resources>

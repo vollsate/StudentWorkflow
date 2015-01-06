@@ -8,7 +8,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 class StudentTbl implements BaseColumns {
 	
@@ -62,16 +61,14 @@ class StudentTbl implements BaseColumns {
 				+ COL_ADR + " TEXT, " 
 				+ COL_POSTALCODE + " TEXT)";
 		
-		Log.v( TAG, "Executing SQL: " + sql );		
-		db.execSQL( sql );
+		DBUtils.ExecuteSQL( sql, db );
 	}
 	
 	
 	public static void DropTable( SQLiteDatabase db ) {
 		String sql = "DROP TABLE IF EXISTS " +  TBL_NAME; 
 		
-		Log.v( TAG, "Executing SQL: " + sql );
-		db.execSQL( sql );
+		DBUtils.ExecuteSQL( sql, db );
 	}
 	
 	
@@ -171,7 +168,7 @@ class StudentTbl implements BaseColumns {
 		cv.put( COL_CLASS, std.getStudentClass() );
 		cv.put( COL_GRADE, std.getGrade() );
 		cv.put( COL_FNAME, std.getFirstName() );
-		cv.put( COL_LNAME, std.getLastname() );
+		cv.put( COL_LNAME, std.getLastName() );
 		cv.put( COL_BIRTH, std.getBirth() );
 		cv.put( COL_ADR, std.getAdress() );
 		cv.put( COL_POSTALCODE, std.getPostalCode() );

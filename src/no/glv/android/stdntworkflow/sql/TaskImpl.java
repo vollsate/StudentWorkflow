@@ -2,9 +2,9 @@ package no.glv.android.stdntworkflow.sql;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
@@ -18,10 +18,10 @@ public class TaskImpl implements Task {
 	private Date mExpirationDate;
 	private int mType;
 
-	private HashMap<String, StudentTask> studentsMap;
+	private TreeMap<String, StudentTask> studentsMap;
 
 	/** List of students who has not yet handed in their assignment */
-	private HashMap<String, StudentTask> studentsMapPending;
+	private TreeMap<String, StudentTask> studentsMapPending;
 
 	private List<String> mClasses;
 
@@ -30,8 +30,8 @@ public class TaskImpl implements Task {
 	 */
 	TaskImpl() {
 		mClasses = new ArrayList<String>();
-		studentsMap = new HashMap<String, StudentTask>();
-		studentsMapPending = new HashMap<String, StudentTask>();
+		studentsMap = new TreeMap<String, StudentTask>();
+		studentsMapPending = new TreeMap<String, StudentTask>();
 	}
 
 	@Override
@@ -115,25 +115,28 @@ public class TaskImpl implements Task {
 	 * Will only add to students pending
 	 * 
 	 * @return true if the students gets added successfully, false if not added
-	 *         correctly or if the student has already handed in the assigment
+	 *         correctly or if the student has already handed in the assignment
 	 */
 	@Override
 	public boolean addStudent( Student std ) {
 		if ( std == null ) return false;
-		if (hasStudent( std.getIdent() ) ) return false;
+		if ( hasStudent( std.getIdent() ) ) return false;
 		
-		return addStudentTask( new StudentTaskImpl( std.getIdent(), mName, 0, null ) );
+		StudentTask st = new StudentTaskImpl( std.getIdent(), mName, null );
+		st.setStudent( std );
+
+		return addStudentTask( st );
 	}
-	
+
 	/**
 	 * 
 	 * @param std
 	 * @return
 	 */
-	public boolean addStudentTask( StudentTask std )  {
+	public boolean addStudentTask( StudentTask std ) {
 		if ( std == null ) return false;
-		if (hasStudent( std.getIdent() ) ) return false;
-		
+		if ( hasStudent( std.getIdent() ) ) return false;
+
 		studentsMapPending.put( std.getIdent(), std );
 		return true;
 	}
@@ -147,7 +150,7 @@ public class TaskImpl implements Task {
 	 * 
 	 * @param list
 	 * @param ident
-	 * @return true if 
+	 * @return true if
 	 */
 	boolean hasStudent( List<StudentTask> list, String ident ) {
 		Iterator<StudentTask> it = list.iterator();
@@ -199,10 +202,10 @@ public class TaskImpl implements Task {
 	@Override
 	public List<StudentTask> getStudentsInTask() {
 		List<StudentTask> list = new ArrayList<StudentTask>();
-		
+
 		list.addAll( studentsMap.values() );
 		list.addAll( studentsMapPending.values() );
-		
+
 		return list;
 	}
 
@@ -213,11 +216,11 @@ public class TaskImpl implements Task {
 			addStudent( it.next() );
 		}
 	}
-	
+
 	@Override
 	public void addStudentTasks( List<StudentTask> students ) {
 		Iterator<StudentTask> it = students.iterator();
-		while (it.hasNext()) {
+		while ( it.hasNext() ) {
 			addStudentTask( it.next() );
 		}
 	}

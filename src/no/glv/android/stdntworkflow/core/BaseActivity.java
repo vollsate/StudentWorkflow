@@ -14,6 +14,7 @@ import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -73,8 +74,8 @@ public class BaseActivity extends ActionBarActivity {
 	 * 
 	 * @return
 	 */
-	protected StudentClass getStudentClassExtra() {
-		Bundle bundle = getIntent().getExtras();
+	public static StudentClass getStudentClassExtra( Intent intent ) {
+		Bundle bundle = intent.getExtras();
 		String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
 		return DataHandler.GetInstance().getStudentClass( className );

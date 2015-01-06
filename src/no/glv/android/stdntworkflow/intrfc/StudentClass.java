@@ -28,7 +28,7 @@ public interface StudentClass  {
 	
 	public void addAll (Student[] stds );
 	
-	public Student[] toList();
+	public Student[] toArray();
 	
 	public Iterator<Student> iterator();
 	

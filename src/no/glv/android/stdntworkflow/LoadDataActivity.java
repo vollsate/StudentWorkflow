@@ -3,10 +3,10 @@ package no.glv.android.stdntworkflow;
 import no.glv.android.stdntworkflow.LoadableFilesFragment.OnDataLoadedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class LoadDataActivity extends BaseActivity implements OnClickListener, OnDataLoadedListener {
+public class LoadDataActivity extends Activity implements OnClickListener, OnDataLoadedListener {
 
 	private StudentClass stdClass;
 	
@@ -28,7 +28,7 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener, O
 
 		setContentView( R.layout.activity_load_data );
 		if ( savedInstanceState == null ) {
-			getSupportFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment() ).commit();
+			getFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment() ).commit();
 		}
 	}
 
@@ -78,14 +78,14 @@ public class LoadDataActivity extends BaseActivity implements OnClickListener, O
 	 */
 	public void startStudentListActivity() {
 		Intent intent = new Intent( this, StudentClassListActivity.class );
-		PutStudentClassExtra( stdClass.getName(), intent );
+		BaseActivity.PutStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
 	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PlaceholderFragment extends android.app.Fragment {
 
 		public PlaceholderFragment() {
 		}

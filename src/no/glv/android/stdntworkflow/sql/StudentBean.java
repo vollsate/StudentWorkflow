@@ -38,6 +38,7 @@ public class StudentBean implements Student {
 	private List<Parent> parents;
 
 	private StudentBean() {
+		parents = new ArrayList<Parent>();
 	}
 
 	public StudentBean( String stdClass ) {
@@ -68,7 +69,7 @@ public class StudentBean implements Student {
 	}
 
 	@Override
-	public String getLastname() {
+	public String getLastName() {
 		return lName;
 	}
 
@@ -152,16 +153,21 @@ public class StudentBean implements Student {
 
 
 	@Override
-	public Parent[] getParents() {
-		if ( parents == null ) return EMPTY_PARENT;
-		
-		return ( Parent[] ) parents.toArray();
+	public List<Parent> getParents() {
+		return parents;
 	}
 
 	@Override
 	public void addParent( Parent parent ) {
-		if ( parents == null ) parents = new ArrayList<Parent>(2);
+		if ( parent == null ) return;
 		
 		parents.add( parent );
+	}
+
+	@Override
+	public void addParents( List<Parent> parents ) {
+		if ( this.parents == null ) this.parents = new ArrayList<Parent>( parents.size() );
+		
+		this.parents.addAll( parents );
 	}
 }

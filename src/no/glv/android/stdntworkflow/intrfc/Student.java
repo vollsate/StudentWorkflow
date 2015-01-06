@@ -1,5 +1,7 @@
 package no.glv.android.stdntworkflow.intrfc;
 
+import java.util.List;
+
 
 public interface Student {
 	
@@ -11,7 +13,7 @@ public interface Student {
 	
 	public String getBirthYear();
 	
-	public String getLastname();
+	public String getLastName();
 	public void setLastName( String lName );
 	
 	public String getBirth();
@@ -34,8 +36,10 @@ public interface Student {
 	public String getIdent();
 	public void setIdent( String val );
 	
-	public Parent[] getParents();
+	public List<Parent> getParents();
 	
 	public void addParent( Parent parent );
+
+	public void addParents( List<Parent> parents );
 
 }

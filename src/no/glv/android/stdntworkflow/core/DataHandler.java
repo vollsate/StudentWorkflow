@@ -9,20 +9,25 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.Parent;
+import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import no.glv.android.stdntworkflow.sql.DBUtils;
 import no.glv.android.stdntworkflow.sql.Database;
+import no.glv.android.stdntworkflow.sql.ParentBean;
+import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
@@ -55,8 +60,8 @@ public class DataHandler {
 	private Database db;
 	private SettingsManager sManager;
 
-	private Map<String, StudentClass> stdClasses;
-	private Map<String, Task> tasks;
+	private TreeMap<String, StudentClass> stdClasses;
+	private TreeMap<String, Task> tasks;
 
 	private static DataHandler instance;
 	private static boolean isInitiated = false;
@@ -109,7 +114,7 @@ public class DataHandler {
 	 */
 	private DataHandler( Database db ) {
 		this.db = db;
-		
+
 		sManager = new SettingsManager();
 
 		stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
@@ -121,7 +126,8 @@ public class DataHandler {
 	 * 
 	 */
 	private void loadTasks() {
-		tasks = new HashMap<String, Task>();
+		tasks = new TreeMap<String, Task>( );
+		tasks.comparator();
 
 		List<Task> list = db.loadTasks();
 		Iterator<Task> it = list.iterator();
@@ -130,20 +136,20 @@ public class DataHandler {
 			Task task = it.next();
 			List<StudentTask> stdTasks = db.loadStudentsInTask( task );
 			fillStudentTaskWithStudent( task, stdTasks );
-			
+
 			task.addStudentTasks( stdTasks );
 			tasks.put( task.getName(), task );
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param task
 	 * @param stdTasks
 	 */
-	private void fillStudentTaskWithStudent( Task task, List<StudentTask> stdTasks) {
+	private void fillStudentTaskWithStudent( Task task, List<StudentTask> stdTasks ) {
 		Iterator<StudentTask> it = stdTasks.iterator();
-		while ( it.hasNext()) {
+		while ( it.hasNext() ) {
 			StudentTask stdTask = it.next();
 			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
 		}
@@ -153,7 +159,7 @@ public class DataHandler {
 	 * 
 	 */
 	private void loadStudentClasses() {
-		stdClasses = new HashMap<String, StudentClass>();
+		stdClasses = new TreeMap<String, StudentClass>();
 
 		List<StudentClass> list = db.loadStudentClasses();
 		Iterator<StudentClass> it = list.iterator();
@@ -161,14 +167,26 @@ public class DataHandler {
 			StudentClass stdClass = it.next();
 			stdClasses.put( stdClass.getName(), stdClass );
 			stdClass.addAll( db.loadStudentsFromClass( stdClass.getName() ) );
+			
+			Iterator <Student> stds = stdClass.getStudents().iterator();
+			while ( stds.hasNext() ) {
+				Student student = stds.next();
+				student.addParents( db.loadParents( student.getIdent() ) );
+				
+				Iterator<Parent> parIt = student.getParents().iterator();
+				while ( parIt.hasNext() ) {
+					Parent parent = parIt.next();
+					parent.addPhones( db.loadPhone( parent.getID() ) );
+				}
+			}
 		}
 
 	}
-	
+
 	public Task createTask() {
 		return db.createNewTask();
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -235,7 +253,7 @@ public class DataHandler {
 		catch ( Exception e ) {
 			Log.e( TAG, "Failed to update student: " + std.getIdent(), e );
 		}
-		
+
 		return retVal > 0;
 	}
 
@@ -273,6 +291,7 @@ public class DataHandler {
 	private void notifyStudenAdd( Student std ) {
 		notifyStudentChagnge( std, OnStudentChangedListener.MODE_ADD );
 	}
+
 	/**
 	 * 
 	 * @param listener
@@ -280,7 +299,7 @@ public class DataHandler {
 	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
 		String name = listener.getClass().getSimpleName();
 		if ( stdChangeListeners.containsKey( name ) ) return;
-		
+
 		stdChangeListeners.put( name, listener );
 	}
 
@@ -309,10 +328,11 @@ public class DataHandler {
 	public List<Task> getTasks() {
 		return new ArrayList<Task>( tasks.values() );
 	}
-	
+
 	/**
 	 * 
-	 * @param name Name of {@link Task} to find.
+	 * @param name
+	 *            Name of {@link Task} to find.
 	 * @return The actual task, or NULL if not found
 	 */
 	public Task getTask( String name ) {
@@ -320,6 +340,8 @@ public class DataHandler {
 	}
 
 	/**
+	 * Adds the task to the database. The task will be filled with instances of {@link StudentTask} objects
+	 * linking the {@link Student} to the {@link Task}. 
 	 * 
 	 * @param task
 	 */
@@ -332,21 +354,21 @@ public class DataHandler {
 			throw new IllegalArgumentException( "Task " + task.getName() + " already exists" );
 
 		if ( db.writeTask( task ) ) {
-			List<StudentTask>stds = db.loadStudentsInTask( task );
+			List<StudentTask> stds = db.loadStudentsInTask( task );
 			for ( int i = 0; i < stds.size(); i++ ) {
 				StudentTask stdTask = stds.get( i );
 				stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
 			}
-			
+
 			task.addStudentTasks( stds );
-			
+
 			tasks.put( task.getName(), task );
 			notifyTaskAdd( task );
 		}
 
 		return this;
 	}
-	
+
 	/**
 	 * 
 	 * @param task
@@ -358,10 +380,10 @@ public class DataHandler {
 			notifyTaskUpdate( task );
 			return true;
 		}
-		
-		return false;		
+
+		return false;
 	}
-	
+
 	/**
 	 * 
 	 * @param name
@@ -370,13 +392,12 @@ public class DataHandler {
 	public boolean deleteTask( String name ) {
 		Task task = getTask( name );
 
-		
 		if ( db.deleteTask( name ) ) {
 			tasks.remove( name );
 			notifyTaskDelete( task );
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -471,10 +492,10 @@ public class DataHandler {
 	 * @param stdClass
 	 */
 	public void addStudentClass( StudentClass stdClass ) {
-		stdClasses.put( stdClass.getName(), stdClass );
-
 		db.insertStudentClass( stdClass );
-		notifyStudentClassAdd( stdClass );
+		stdClasses.put( stdClass.getName(), stdClass );
+		
+		notifyStudentClassAdd( stdClass );		
 	}
 
 	/**
@@ -520,7 +541,7 @@ public class DataHandler {
 		File[] files = externalDir.listFiles();
 		for ( int i = 0; i < files.length; i++ ) {
 			File f = files[i];
-			if ( f.isFile() && f.getName().endsWith( STDCLASS_FILE_SUFFIX )) list.add( f.getName() );
+			if ( f.isFile() && f.getName().endsWith( STDCLASS_FILE_SUFFIX ) ) list.add( f.getName() );
 		}
 
 		return list;
@@ -532,7 +553,8 @@ public class DataHandler {
 	 * Fullt navn
 	 * 
 	 * @return A ready formatted StudentClass instance
-	 * @throws IOException if any I/O error occurs
+	 * @throws IOException
+	 *             if any I/O error occurs
 	 */
 	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 		FileInputStream fis;
@@ -572,7 +594,7 @@ public class DataHandler {
 			Log.e( TAG, "LoadStudentClass(): Error loading file: " + fName, ioe );
 			throw ioe;
 		}
-		
+
 		try {
 			buff.close();
 			fis.close();
@@ -598,66 +620,111 @@ public class DataHandler {
 		StudentBean bean = new StudentBean( className );
 
 		String[] params = stdString.split( STUDENT_PROPERTY_SEP );
-		for ( int i = 0; i < params.length; i++ ) {
-			String param = params[i];
+		if ( params.length == 11 ) return CreateOldStudentFromstring( bean, params, datePattern );
 
-			switch ( i ) {
-			case 0:
-				bean.grade = param;
-				break;
+		int index = 0;
 
-			case 1:
-				try {
-					bean.birth = new SimpleDateFormat( datePattern, Locale.getDefault() ).parse( param );
+		bean.lName = params[index++];
+		bean.fName = params[index++];
+		bean.birth = DBUtils.ConvertStringToDate( params[index++], datePattern );
+		bean.adress = params[index++];
+		bean.mIdent = CreateStudentIdent( bean );
 
-				}
-				catch ( Exception e ) {
-					Log.e( TAG, "Cannot convert String to date: " + param, e );
-				}
-				break;
+		bean.addParent( CreateParent( params, index, bean.getIdent(), Parent.PRIMARY ) );
 
-			case 2:
-				bean.setFullName( param );
-				break;
+		index = 10;
+		bean.addParent( CreateParent( params, index, bean.getIdent(), Parent.SECUNDARY ) );
 
-			case 3:
-				bean.adress = param;
-				break;
+		return bean;
 
-			case 4:
-				bean.postalCode = param;
-				break;
+	}
 
-			case 5:
-				//bean.parent1Name = param;
-				break;
+	/**
+	 * 
+	 * @param params
+	 * @param start
+	 * @param id
+	 * @param type
+	 * @return
+	 */
+	private static Parent CreateParent( String[] params, int start, String id, int type ) {
+		Parent parent = new ParentBean( id, type );
+		parent.setLastName( params[start++] );
+		parent.setFirstName( params[start++] );
 
-			case 6:
-				//bean.parent1Phone = param;
-				break;
+		if ( params.length >= 13 )
+			parent.addPhone( CreatePhone( params[start++], Phone.MOBIL, id ) );
+		if ( params.length >= 14 )
+			parent.addPhone( CreatePhone( params[start++], Phone.WORK, id ) );
+		if ( params.length >= 15 )
+			parent.addPhone( CreatePhone( params[start++], Phone.HOME, id ) );
+		
+		if ( params.length >= 16 )
+			parent.setMail( params[start++] );
 
-			case 7:
-				//bean.parent1Mail = param;
-				break;
+		return parent;
+	}
 
-			case 8:
-				//bean.parent2Name = param;
-				break;
+	/**
+	 * 
+	 * @param param
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	private static Phone CreatePhone( String param, int type, String id ) {
+		if ( param == null ) return null;
+		if ( !(param.length() > 0) ) return null;
 
-			case 9:
-				//bean.parent2Phone = param;
-				break;
+		PhoneBean phone = new PhoneBean( id, type );
+		phone.setNumber( Long.parseLong( param ) );
 
-			case 10:
-				//bean.parent2Mail = param;
-				break;
+		return phone;
+	}
 
-			default:
-				break;
-			}
-		}
+	/**
+	 * 
+	 * @param bean
+	 * @param params
+	 * @param datePattern
+	 * @return
+	 */
+	private static Student CreateOldStudentFromstring( StudentBean bean, String[] params, String datePattern ) {
+		Parent parent = null;
+		Phone phone = null;
+		String[] subParams;
+		int index = 0;
+
+		bean.grade = params[index++];
+		bean.birth = DBUtils.ConvertStringToDate( params[index++], datePattern );
+		bean.setFullName( params[index++] );
+		bean.adress = params[index++];
+		bean.postalCode = params[index++];
 
 		bean.mIdent = CreateStudentIdent( bean );
+
+		parent = new ParentBean( bean.getIdent(), Parent.PRIMARY );
+		subParams = params[index++].split( "," );
+		parent.setLastName( subParams[0].trim() );
+		parent.setFirstName( subParams[1].trim() );
+
+		phone = new PhoneBean( bean.getIdent(), Phone.MOBIL );
+		phone.setNumber( Long.parseLong( params[index++] ) );
+		parent.addPhone( phone );
+		parent.setMail( params[index++] );
+		bean.addParent( parent );
+
+		parent = new ParentBean( bean.getIdent(), Parent.SECUNDARY );
+		subParams = params[index++].split( "," );
+		parent.setLastName( subParams[0].trim() );
+		parent.setFirstName( subParams[1].trim() );
+
+		phone = new PhoneBean( bean.getIdent(), Phone.MOBIL );
+		phone.setNumber( Long.parseLong( params[index++] ) );
+		parent.addPhone( phone );
+		parent.setMail( params[index++] );
+		
+		bean.addParent( parent );
 
 		return bean;
 	}
@@ -671,7 +738,7 @@ public class DataHandler {
 		String ident = null;
 
 		String fName = bean.getFirstName().substring( 0, 3 );
-		String lName = bean.getLastname().substring( 0, 4 );
+		String lName = bean.getLastName().substring( 0, 4 );
 
 		String year = bean.getBirth();
 		year = year.substring( 2, 4 );
@@ -695,18 +762,18 @@ public class DataHandler {
 
 		sb.append( std.getGrade() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( ((StudentBean) std).birhtToString() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getLastname() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
+		sb.append( std.getLastName() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
 		sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
-/*
-		sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getParent2Mail() );
-*/
+		/*
+		 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
+		 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
+		 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
+		 * 
+		 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
+		 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
+		 * sb.append( std.getParent2Mail() );
+		 */
 		return sb.toString();
 	}
 
@@ -967,4 +1034,5 @@ public class DataHandler {
 
 		public void onStudentClassUpdate( StudentClass stdClass, int mode );
 	}
+	
 }
