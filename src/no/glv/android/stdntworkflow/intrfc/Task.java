@@ -14,6 +14,11 @@ import java.util.List;
  *
  */
 public interface Task {
+	
+	public static final int HANDIN_DATE = 0;
+	public static final int HANDIN_SICK = 1;
+	public static final int HANDIN_AWAY = 2;
+	public static final int HANDIN_CANCEL = 3;
 
 	public static final String EXTRA_TASKNAME =  BaseValues.EXTRA_BASEPARAM +  "task";
 
@@ -45,6 +50,10 @@ public interface Task {
 	 * @return The number of Student who has handed in the assignment
 	 */
 	public int getStudentsHandedInCount();
+	
+	public boolean handIn( String ident );
+	
+	public boolean handIn( String ident, int mode);
 
 	/**
 	 * 

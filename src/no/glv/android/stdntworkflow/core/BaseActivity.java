@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
@@ -19,6 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 
 /**
  * @author GleVoll
@@ -189,6 +193,14 @@ public class BaseActivity extends ActionBarActivity {
 			// TODO: handle exception
 			return null;
 		}
+	}
+	
+	public static CheckBox GetCheckBox( View rootView, int id ) {
+		return ( CheckBox ) rootView.findViewById( id );
+	}
+	
+	public static ImageView GetImageVire( View rootView, int id ) {
+		return (ImageView) rootView.findViewById( id );
 	}
 	
 }

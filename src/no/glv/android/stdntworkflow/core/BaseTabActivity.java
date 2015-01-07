@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -238,6 +239,10 @@ public abstract class BaseTabActivity extends Activity implements ActionBar.TabL
 		
 		protected ListView getListView( int id ) {
 			return ( ListView ) rootView.findViewById( id );
+		}
+		
+		protected Button getButton( int id ) {
+			return ( Button ) rootView.findViewById( id );
 		}
 	}
 

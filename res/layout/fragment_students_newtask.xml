@@ -13,29 +13,27 @@
         android:layout_width="match_parent"
         android:layout_height="200sp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/BTN.newTask.verifyStudents"
-            style="@style/BTN"
-            android:layout_width="wrap_content"
+            android:id="@+id/BTN.newTask.cancelStudents"
+            style="@style/BTN.addStdTask"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20sp"
-            android:layout_marginTop="20sp"
+            android:layout_weight="1"
+            android:text="Avbryt" />
+        
+        <Button
+            android:id="@+id/BTN.newTask.verifyStudents"
+            style="@style/BTN.addStdTask"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="OK" />
 
-        <Button
-            android:id="@+id/BTN.newTask.cancelStudents"
-            style="@style/BTN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="20sp"
-            android:layout_marginRight="20sp"
-            android:text="Avbryt" />
-    </RelativeLayout>
+        </LinearLayout>
 
 </LinearLayout>

@@ -4,12 +4,12 @@ import no.glv.android.stdntworkflow.intrfc.Phone;
 
 public class PhoneBean implements Phone {
 	
-	private String id;
+	private String stdID;
+	private String parentID;
 	private long number;
 	private int type;
 
-	public PhoneBean( String id, int type ) {
-		this.id = id;
+	public PhoneBean( int type ) {
 		this.type = type;
 	}
 
@@ -24,8 +24,8 @@ public class PhoneBean implements Phone {
 	}
 
 	@Override
-	public String getID() {
-		return id;
+	public String getStudentID() {
+		return stdID;
 	}
 
 	@Override
@@ -34,8 +34,18 @@ public class PhoneBean implements Phone {
 	}
 
 	@Override
-	public void setID( String id ) {
-		this.id = id;
+	public void setStudentID( String id ) {
+		this.stdID = id;
+	}
+
+	@Override
+	public String getParentID() {
+		return parentID;
+	}
+
+	@Override
+	public void setParentID( String id ) {
+		this.parentID = id;
 	}
 
 }

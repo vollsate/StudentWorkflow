@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -78,9 +78,10 @@
         <item name="android:layout_marginLeft">10sp</item>
     </style>
 
-    <style name="ET.stdInfo" parent="ET">
+    <style name="ET.stdInfo" parent="ET.L">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|fill_horizontal</item>
         <item name="android:layout_marginLeft">10sp</item>
     </style>
 
@@ -88,6 +89,14 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:background">#33b5e5</item>
         <item name="android:layout_marginTop">5sp</item>
+    </style>
+
+    <style name="BTN.addStdTask" parent="BTN">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginTop">5sp</item>
+        <item name="android:layout_marginLeft">5sp</item>
+        <item name="android:layout_marginRight">5sp</item>
+        <item name="android:layout_marginBottom">5sp</item>
     </style>
 
     <style name="actionBar" parent="@android:style/Theme.Holo.Light.DarkActionBar">

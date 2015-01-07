@@ -90,8 +90,8 @@ public class Database extends SQLiteOpenHelper {
 		return ParentTbl.LoadParent( id, getReadableDatabase() );
 	}
 	
-	public List<Phone> loadPhone( String id ) {
-		return PhoneTbl.LoadParentPhone( id, getReadableDatabase() );
+	public List<Phone> loadPhone( String stdID, String parentID ) {
+		return PhoneTbl.LoadParentPhone( stdID, parentID, getReadableDatabase() );
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class Database extends SQLiteOpenHelper {
 		Log.d( TAG, "Inserting student: " + student.getIdent() );
 		boolean success = true;
 		
-		StudentTbl.InsertStudent( student, getWritableDatabase() );
+		StudentTbl.Insert( student, getWritableDatabase() );
 		
 		Iterator<Parent> it = student.getParents().iterator();
 		while ( it.hasNext() ) {
@@ -128,7 +128,9 @@ public class Database extends SQLiteOpenHelper {
 		
 		Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
 		while ( pIt.hasNext() ) {
-			PhoneTbl.InsertPhone( pIt.next(), getWritableDatabase() );
+			Phone p = pIt.next();
+			p.setParentID( parent.getID() );
+			PhoneTbl.InsertPhone( p, getWritableDatabase() );
 		}
 	}
 
@@ -142,7 +144,7 @@ public class Database extends SQLiteOpenHelper {
 			removeStudent( oldIdent );
 
 		Log.d( TAG, "Updating student: " + std.getIdent() );
-		return StudentTbl.UpdateStudent( std, getWritableDatabase() );
+		return StudentTbl.Update( std, getWritableDatabase() );
 	}
 
 	/**
@@ -151,7 +153,7 @@ public class Database extends SQLiteOpenHelper {
 	 */
 	public int removeStudent( String ident ) {
 		Log.d( TAG, "Deleting student: " + ident );
-		return StudentTbl.DeleteStudent( ident, getWritableDatabase() );
+		return StudentTbl.Delete( ident, getWritableDatabase() );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -181,7 +183,7 @@ public class Database extends SQLiteOpenHelper {
 		boolean retVal = true;
 		try {
 			TaskTbl.InsertTask( task, getWritableDatabase() );			
-			StudentInTaskTbl.InsertStudentTask( task, getWritableDatabase() );	
+			StudentInTaskTbl.InsertAll( task, getWritableDatabase() );	
 		}
 		catch ( Exception e ) {
 			Log.e( TAG, "Failure in adding task: " + task.getName(), e );
@@ -189,6 +191,13 @@ public class Database extends SQLiteOpenHelper {
 		}
 		
 		return retVal;
+	}
+	
+	public boolean updateStudentTask( StudentTask stdTask) {
+		if (StudentInTaskTbl.Update( stdTask, getWritableDatabase() ) != 1 )
+			return false;
+		
+		return true;
 	}
 
 	/**

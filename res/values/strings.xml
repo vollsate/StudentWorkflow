@@ -61,7 +61,9 @@
     <string name="task_tab_section2">Elever</string>
     
 <!-- STDINFO -->
-
+	<string name="stdinfo_header1">Navn og epost</string>
+	<string name="stdinfo_header2">Telefonnumre</string>
+	
 	<string name="stdinfo_name">Navn: </string>
 	<string name="stdinfo_mail">Epost: </string>
 	<string name="stdinfo_phone_mobile">Mobil: </string>

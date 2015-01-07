@@ -4,9 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+    <CheckBox 
+        android:id="@+id/CB.task.stdlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    
     <TextView
         android:id="@+id/TV.task.stdlist.name"
         style="@style/TV.std"
+        android:layout_toRightOf="@id/CB.task.stdlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
@@ -18,7 +25,7 @@
         style="@style/TV.std.S"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TV.task.stdlist.name"
+        android:layout_below="@id/TV.task.stdlist.name"
         android:layout_alignLeft="@+id/TV.task.stdlist.name"
         android:layout_alignStart="@+id/TV.task.stdlist.name"
         android:ellipsize="marquee"
@@ -29,14 +36,27 @@
         android:id="@+id/TV.task.stdlist.class"
         style="@style/TV.std.S"
         android:layout_width="wrap_content"
-        android:gravity="end"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/task"
+        android:gravity="start"
+        android:layout_marginLeft="10sp"
         android:layout_alignBottom="@id/TV.task.stdlist.ident"
         android:layout_toEndOf="@id/TV.task.stdlist.ident"
         android:layout_toRightOf="@id/TV.task.stdlist.ident"
         android:ellipsize="marquee"
         android:text="Klasse"
+        android:singleLine="true"/>
+    
+    <TextView
+        android:id="@+id/TV.task.stdlist.handinDate"
+        style="@style/TV.std.S"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:layout_marginLeft="10sp"
+        android:layout_alignBottom="@id/TV.task.stdlist.ident"
+        android:layout_toEndOf="@id/TV.task.stdlist.class"
+        android:layout_toRightOf="@id/TV.task.stdlist.class"
+        android:text="Handin: {dd.MM.yyyy}"
         android:singleLine="true"/>
     
     <ImageView

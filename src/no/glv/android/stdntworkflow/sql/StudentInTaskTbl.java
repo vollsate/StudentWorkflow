@@ -64,7 +64,6 @@ public class StudentInTaskTbl {
 	public static List<StudentTask> LoadAll( SQLiteDatabase db, Task task ) {
 		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_TASK + "=?";
 		
-
 		Cursor cursor = db.rawQuery( sql, new String[]{ task.getName() } );
 		List<StudentTask> list = new ArrayList<StudentTask>();
 		cursor.moveToFirst();
@@ -77,6 +76,24 @@ public class StudentInTaskTbl {
 		cursor.close();
 		db.close();
 		return list;
+	}
+	
+	/**
+	 * 
+	 * @param ident
+	 * @param task
+	 * @param db
+	 * @return
+	 */
+	public static StudentTask Load( String ident, String task, SQLiteDatabase db ) {
+		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_TASK + "=? AND " + COL_IDENT + "=?";
+		Cursor cursor = db.rawQuery( sql, new String[] { task, ident } );
+		
+		if ( cursor.getCount() > 1 ) 
+			throw new IllegalStateException( "Too many StudentTask: ident=" + ident + ", task=" + task);
+		
+		cursor.moveToFirst();
+		return  CreateFromCursor( cursor );
 	}
 
 	/**
@@ -103,7 +120,7 @@ public class StudentInTaskTbl {
 	 * @param db
 	 * @return
 	 */
-	public static long InsertStudentTask( StudentTask task, SQLiteDatabase db ) {
+	public static long Insert( StudentTask task, SQLiteDatabase db ) {
 		long retVal = InsertOneST( task, db );
 		db.close();
 		return retVal;
@@ -125,7 +142,7 @@ public class StudentInTaskTbl {
 	 * @param db
 	 * @return
 	 */
-	public static void InsertStudentTask( Task task, SQLiteDatabase db ) {
+	public static void InsertAll( Task task, SQLiteDatabase db ) {
 		Iterator<StudentTask> it = task.getStudentsInTask().iterator();
 		while ( it.hasNext() ) {
 			StudentTask st = it.next();
@@ -136,6 +153,22 @@ public class StudentInTaskTbl {
 		
 		db.close();
 	}
+	
+	/**
+	 * 
+	 * @param stdTask
+	 * @param db
+	 * @return
+	 */
+	public static long Update( StudentTask stdTask, SQLiteDatabase db ) {
+		long retVal = 0;
+		
+		String whereClause = COL_IDENT + "=? AND " + COL_TASK + "=?";
+		retVal = db.update( TBL_NAME, StudentInTaskValues( stdTask ), whereClause, new String[] { stdTask.getIdent(), stdTask.getTask() } );
+		
+		return retVal;
+	}
+	
 	/**
 	 * 
 	 * @param task

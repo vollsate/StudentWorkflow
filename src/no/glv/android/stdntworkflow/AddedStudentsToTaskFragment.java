@@ -102,6 +102,7 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		
 		ListView listView = ( ListView ) rootView.findViewById( R.id.LV_newTask_addedStudents );
 		AddedStudentsAdapter adapter = new AddedStudentsAdapter( getActivity(), R.id.LV_newTask_addedStudents, students );
+		adapter.setTask( task );
 		listView.setAdapter( adapter );
 	}
 
@@ -134,11 +135,17 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	public static class AddedStudentsAdapter extends ArrayAdapter<Student> implements OnCheckedChangeListener {
 		
 		private List<Student> students;
+		private Task task;
+		
 		
 		public AddedStudentsAdapter( Context context, int resource, List<Student> objects ) {
 			super( context, resource, objects );
 			
 			this.students = objects;
+		}
+		
+		void setTask( Task task ) {
+			this.task = task;
 		}
 		
 		
@@ -147,21 +154,29 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		 */
 		@Override
 		public View getView( int position, View convertView, ViewGroup parent ) {
+			ViewHolder holder = null;
+			
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 			if ( convertView == null ) {
 				convertView = inflater.inflate( R.layout.row_newtask_students, parent, false );
+				holder = new ViewHolder();
+				holder.studentIdent = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );				
+				holder.cBox = ( CheckBox ) convertView.findViewById( R.id.CB_newTask_addStudent );
+				
+				convertView.setTag( holder );
 			}
+			
+			holder = ( ViewHolder ) convertView.getTag();
+			
 			Student std = students.get( position ); 
 			String tag = std.getIdent();
 
-			TextView textView = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );
-			textView.setTag( std );
-			textView.setText( tag );
+			holder.studentIdent.setTag( std );
+			holder.studentIdent.setText( tag );
 			
-			CheckBox cBox = ( CheckBox ) convertView.findViewById( R.id.CB_newTask_addStudent );
-			cBox.setTag( std );
-			cBox.setChecked( true );
-			cBox.setOnCheckedChangeListener( this );
+			holder.cBox.setTag( std );
+			holder.cBox.setChecked( true );
+			holder.cBox.setOnCheckedChangeListener( this );
 
 			
 			return convertView;
@@ -171,14 +186,17 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 		@Override
 		public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
 			Student std = (Student) buttonView.getTag();
-			if ( isChecked )
-				students.add( std );
+			if ( ! isChecked )
+				task.removeStudent( std.getIdent() );
 			else
-				students.remove( std );
+				task.addStudent( std );
 		}
 	}
 	
-	
+	static class ViewHolder {
+		TextView studentIdent;
+		CheckBox cBox;
+	}
 	
 	
 	/**

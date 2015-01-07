@@ -39,7 +39,7 @@ public class StudentClassImpl implements StudentClass {
 		return mName;
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see no.glv.android.stdntworkflow.core.StudentClass#getSize()
@@ -80,10 +80,8 @@ public class StudentClassImpl implements StudentClass {
 
 		while ( it.hasNext() ) {
 			bean = it.next();
-			if ( bean.getIdent().equals( name ) ) 
-				break;
-			else
-				bean = null;
+			if ( bean.getIdent().equals( name ) ) break;
+			else bean = null;
 		}
 
 		return bean;
@@ -110,9 +108,10 @@ public class StudentClassImpl implements StudentClass {
 	public Student[] toArray() {
 		Student[] beans = new Student[students.size()];
 
-		for ( int i = 0; i < students.size(); i++ ) {
-			beans[i] = students.get( i );
-		}
+		Iterator<Student> it = students.iterator();
+		int i = 0;
+		while ( it.hasNext() )
+			beans[i++] = it.next();
 
 		return beans;
 	}

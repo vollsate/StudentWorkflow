@@ -116,7 +116,7 @@ class StudentTbl implements BaseColumns {
 	 * @param std
 	 * @param db
 	 */
-	public static long InsertStudent( Student std, SQLiteDatabase db ) {
+	public static long Insert( Student std, SQLiteDatabase db ) {
 		ContentValues stdValues = StudentValues( std );
 		
 		long retVal = db.insert( TBL_NAME, null, stdValues );
@@ -132,7 +132,7 @@ class StudentTbl implements BaseColumns {
 	 * 
 	 * @return 1 if successful, 0 otherwise
 	 */
-	public static int UpdateStudent( Student std, SQLiteDatabase db ) {
+	public static int Update( Student std, SQLiteDatabase db ) {
 		String sqlFiler = COL_IDENT + " = ?";
 		ContentValues cv = StudentValues( std );
 		
@@ -147,7 +147,7 @@ class StudentTbl implements BaseColumns {
 	 * @param ident
 	 * @param db
 	 */
-	public static int DeleteStudent( String ident, SQLiteDatabase db ) {
+	public static int Delete( String ident, SQLiteDatabase db ) {
 		String sqlFilter = COL_IDENT + " = ?";
 		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
 		db.close();

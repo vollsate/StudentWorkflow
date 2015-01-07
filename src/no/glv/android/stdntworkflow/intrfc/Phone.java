@@ -12,10 +12,14 @@ public interface Phone {
 	
 	public int getType();
 	
-	public String getID();
+	public String getStudentID();
+	
+	public String getParentID();
 	
 	public void setNumber( long num );
 
-	public void setID( String id );
+	public void setStudentID( String id );
+
+	public void setParentID( String id );
 	
 }

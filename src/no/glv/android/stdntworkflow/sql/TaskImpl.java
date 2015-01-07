@@ -65,6 +65,22 @@ public class TaskImpl implements Task {
 	}
 
 	@Override
+	public boolean handIn( String ident ) {
+		return handIn( ident, HANDIN_DATE );
+	}
+
+	@Override
+	public boolean handIn( String ident, int mode ) {
+		StudentTask stdTask = studentsMapPending.remove( ident );
+		if ( stdTask == null ) return false;
+		
+		stdTask.handIn();
+		studentsMap.put( ident, stdTask );
+		
+		return true;
+	}
+
+	@Override
 	public List<String> getClasses() {
 		return new ArrayList<String>( mClasses );
 	}
@@ -121,23 +137,25 @@ public class TaskImpl implements Task {
 	public boolean addStudent( Student std ) {
 		if ( std == null ) return false;
 		if ( hasStudent( std.getIdent() ) ) return false;
-		
-		StudentTask st = new StudentTaskImpl( std.getIdent(), mName, null );
-		st.setStudent( std );
 
-		return addStudentTask( st );
+		StudentTask stdTask = new StudentTaskImpl( std, mName, null );
+		return addStudentTask( stdTask );
 	}
 
 	/**
 	 * 
-	 * @param std
+	 * @param stdTask
 	 * @return
 	 */
-	public boolean addStudentTask( StudentTask std ) {
-		if ( std == null ) return false;
-		if ( hasStudent( std.getIdent() ) ) return false;
-
-		studentsMapPending.put( std.getIdent(), std );
+	public boolean addStudentTask( StudentTask stdTask ) {
+		if ( stdTask == null ) return false;
+		if ( hasStudent( stdTask.getIdent() ) ) return false;
+		
+		if ( stdTask.getMode() == HANDIN_DATE )
+			studentsMap.put( stdTask.getIdent(), stdTask );
+		else
+			studentsMapPending.put( stdTask.getIdent(), stdTask );
+		
 		return true;
 	}
 

@@ -12,6 +12,7 @@ public class ParentBean implements Parent {
 	private String lName;
 	
 	private String id;
+	private String studentID;
 	private String mail;
 	
 	private List<Phone> phones;
@@ -78,6 +79,32 @@ public class ParentBean implements Parent {
 	@Override
 	public void addPhones( List<Phone> phones ) {
 		for ( int i=0 ; i<phones.size() ; i++ ) addPhone( phones.get( i ) );
+	}
+
+	@Override
+	public Phone getPhone( int type ) {
+		if ( phones == null ) return null;
+		for ( int i=0 ; i<phones.size() ; i++ ) {
+			if ( phones.get( i ).getType() == type  ) 
+				return phones.get( i );
+		}
+		
+		return null;
+	}
+
+	@Override
+	public String getStudentID() {
+		return studentID;
+	}
+
+	@Override
+	public void setStudentID( String stdID ) {
+		this.studentID = stdID;
+	}
+	
+	@Override
+	public void setID( String id ) {
+		this.id = id;
 	}
 
 }

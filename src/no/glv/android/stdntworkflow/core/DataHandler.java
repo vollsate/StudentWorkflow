@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import no.glv.android.stdntworkflow.sql.ParentBean;
 import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
+import no.glv.android.stdntworkflow.sql.StudentInTaskTbl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Activity;
 import android.content.Context;
@@ -153,6 +155,8 @@ public class DataHandler {
 			StudentTask stdTask = it.next();
 			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
 		}
+		
+		Collections.sort( stdTasks, new DataComparator.StudentTaskComparator() );
 	}
 
 	/**
@@ -165,24 +169,39 @@ public class DataHandler {
 		Iterator<StudentClass> it = list.iterator();
 		while ( it.hasNext() ) {
 			StudentClass stdClass = it.next();
+			fillStudentClassWithStudents( stdClass );
 			stdClasses.put( stdClass.getName(), stdClass );
-			stdClass.addAll( db.loadStudentsFromClass( stdClass.getName() ) );
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param stdClass
+	 */
+	private void fillStudentClassWithStudents( StudentClass stdClass ) {
+		List<Student> stList = db.loadStudentsFromClass( stdClass.getName() );
+		Collections.sort( stList, new DataComparator.StudentComparator() );
+		
+		stdClass.addAll( stList );
+		
+		Iterator <Student> stds = stdClass.getStudents().iterator();
+		while ( stds.hasNext() ) {
+			Student student = stds.next();
+			student.addParents( db.loadParents( student.getIdent() ) );
 			
-			Iterator <Student> stds = stdClass.getStudents().iterator();
-			while ( stds.hasNext() ) {
-				Student student = stds.next();
-				student.addParents( db.loadParents( student.getIdent() ) );
-				
-				Iterator<Parent> parIt = student.getParents().iterator();
-				while ( parIt.hasNext() ) {
-					Parent parent = parIt.next();
-					parent.addPhones( db.loadPhone( parent.getID() ) );
-				}
+			Iterator<Parent> parIt = student.getParents().iterator();
+			while ( parIt.hasNext() ) {
+				Parent parent = parIt.next();
+				parent.addPhones( db.loadPhone( parent.getStudentID(), parent.getID() ) );
 			}
 		}
-
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public Task createTask() {
 		return db.createNewTask();
 	}
@@ -355,11 +374,7 @@ public class DataHandler {
 
 		if ( db.writeTask( task ) ) {
 			List<StudentTask> stds = db.loadStudentsInTask( task );
-			for ( int i = 0; i < stds.size(); i++ ) {
-				StudentTask stdTask = stds.get( i );
-				stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
-			}
-
+			fillStudentTaskWithStudent( task, stds );
 			task.addStudentTasks( stds );
 
 			tasks.put( task.getName(), task );
@@ -367,6 +382,16 @@ public class DataHandler {
 		}
 
 		return this;
+	}
+	
+	/**
+	 * 
+	 * @param stdTask
+	 */
+	public void handin( StudentTask stdTask ) {
+		Task task = tasks.get( stdTask.getTask() );
+		if ( task.handIn( stdTask.getIdent()  ) )
+			db.updateStudentTask( stdTask );
 	}
 
 	/**
@@ -648,7 +673,8 @@ public class DataHandler {
 	 * @return
 	 */
 	private static Parent CreateParent( String[] params, int start, String id, int type ) {
-		Parent parent = new ParentBean( id, type );
+		Parent parent = new ParentBean( null, type );
+		parent.setStudentID( id );
 		parent.setLastName( params[start++] );
 		parent.setFirstName( params[start++] );
 
@@ -676,8 +702,9 @@ public class DataHandler {
 		if ( param == null ) return null;
 		if ( !(param.length() > 0) ) return null;
 
-		PhoneBean phone = new PhoneBean( id, type );
+		PhoneBean phone = new PhoneBean( type );
 		phone.setNumber( Long.parseLong( param ) );
+		phone.setStudentID( id );
 
 		return phone;
 	}
@@ -708,7 +735,9 @@ public class DataHandler {
 		parent.setLastName( subParams[0].trim() );
 		parent.setFirstName( subParams[1].trim() );
 
-		phone = new PhoneBean( bean.getIdent(), Phone.MOBIL );
+		phone = new PhoneBean( Phone.MOBIL );
+		phone.setStudentID( bean.getIdent() );
+		phone.setParentID( parent.getID() );
 		phone.setNumber( Long.parseLong( params[index++] ) );
 		parent.addPhone( phone );
 		parent.setMail( params[index++] );
@@ -719,7 +748,9 @@ public class DataHandler {
 		parent.setLastName( subParams[0].trim() );
 		parent.setFirstName( subParams[1].trim() );
 
-		phone = new PhoneBean( bean.getIdent(), Phone.MOBIL );
+		phone = new PhoneBean( Phone.MOBIL );
+		phone.setParentID( parent.getID() );
+		phone.setStudentID( bean.getIdent() );
 		phone.setNumber( Long.parseLong( params[index++] ) );
 		parent.addPhone( phone );
 		parent.setMail( params[index++] );

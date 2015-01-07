@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow.core;
 import java.util.Comparator;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
 
 public class DataComparator {
 	
@@ -15,6 +16,11 @@ public class DataComparator {
 	private DataComparator() {
 	}
 	
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
 	public static class StudentComparator implements Comparator<Student> {
 		
 		private int mode;
@@ -49,4 +55,31 @@ public class DataComparator {
 		
 	}
 
+	public static class StudentTaskComparator implements Comparator<StudentTask> {
+		
+		private int mode;
+		
+		public StudentTaskComparator(  ) {
+			this( SORT_IDENT_ASC );
+		}
+
+		public StudentTaskComparator( int mode ) {
+			this.mode = mode;
+		}
+		
+		@Override
+		public int compare( StudentTask lhs, StudentTask rhs ) {
+			switch ( mode ) {
+			case SORT_IDENT_ASC:
+				return lhs.getIdent().compareToIgnoreCase( rhs.getIdent() );
+				
+			case SORT_IDENT_DSC:
+				return rhs.getIdent().compareToIgnoreCase( lhs.getIdent() );
+
+			}
+			
+			return 0;
+		}
+		
+	}
 }

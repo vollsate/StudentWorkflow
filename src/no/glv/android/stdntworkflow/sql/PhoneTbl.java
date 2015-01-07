@@ -3,9 +3,7 @@ package no.glv.android.stdntworkflow.sql;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
-import no.glv.android.stdntworkflow.intrfc.Student;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,17 +16,23 @@ class PhoneTbl implements BaseColumns {
 
 	public static final String TBL_NAME = "phone";
 
-	/** String (student ident) */
 	public static final String COL_ID = "_id";
 	public static final int COL_ID_ID = 0;
 
+	/** String (student ident) */
+	public static final String COL_STDID = "stdid";
+	public static final int COL_STDID_ID = 1;
+
+	public static final String COL_PARENTID = "parentid";
+	public static final int COL_PARENTID_ID = 2;
+
 	/** INTEGER */
 	public static final String COL_PHONE = "phone";
-	public static final int COL_PHONE_ID = 1;
+	public static final int COL_PHONE_ID = 3;
 
 	/** INTEGER */	 
 	public static final String COL_TYPE = "type";
-	public static final int COL_TYPE_ID = 2;
+	public static final int COL_TYPE_ID = 4;
 
 	private  PhoneTbl() {
 	}
@@ -43,9 +47,11 @@ class PhoneTbl implements BaseColumns {
 	 */
 	static void CreateTableSQL( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "(" 
-				+ COL_ID + " STRING PRIMARY KEY UNIQUE, " 
-				+ COL_PHONE + " TEXT, "
-				+ COL_TYPE + " LONG)";
+				+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
+				+ COL_STDID + " TEXT NOT NULL, " 
+				+ COL_PARENTID + " TEXT NOT NULL, " 
+				+ COL_PHONE + " LONG, "
+				+ COL_TYPE + " INTEGER)";
 		
 		Log.v( TAG, "Executing SQL: " + sql );		
 		db.execSQL( sql );
@@ -66,18 +72,26 @@ class PhoneTbl implements BaseColumns {
 	 * @param db
 	 * @return
 	 */
-	public static List<Phone> LoadParentPhone (String parentID, SQLiteDatabase db ) {
+	public static List<Phone> LoadParentPhone (String stdID, String parentID, SQLiteDatabase db ) {
 		List<Phone> list = new ArrayList<Phone>();
 		
-		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_ID + " = ?";
-		Cursor cursor = db.rawQuery( sql, new String[] { parentID } );
-		cursor.moveToFirst();
-		while ( ! cursor.isAfterLast() ) {
-			list.add( CreateFromCursor( cursor ) );
-			cursor.moveToNext();
+		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_STDID + " = ? AND " + COL_PARENTID + "=?";
+		Log.d( TAG, "Executing SQL: " + sql );
+		
+		try {
+			//Cursor cursor = db.query( TBL_NAME, new String[] { COL_STDID, COL_PARNETID }, null, new String[] { stdID, parentID }, null, null, null, null );
+			Cursor cursor = db.rawQuery( sql, new String[] { stdID, parentID } );
+			cursor.moveToFirst();
+			while ( ! cursor.isAfterLast() ) {
+				list.add( CreateFromCursor( cursor ) );
+				cursor.moveToNext();
+			}			
+			cursor.close();
+		}
+		catch ( Exception e ) {
+			Log.e( TAG, "Error getting phonerecord", e );
 		}
 		
-		cursor.close();
 		db.close();
 		
 		return list;
@@ -85,7 +99,10 @@ class PhoneTbl implements BaseColumns {
 	
 	
 	private static Phone CreateFromCursor( Cursor cursor ) {
-		Phone phone = new PhoneBean( cursor.getString( COL_TYPE_ID ), cursor.getInt( COL_TYPE_ID ) );
+		Phone phone = new PhoneBean( cursor.getInt( COL_TYPE_ID ) );
+		
+		phone.setStudentID( cursor.getString( COL_STDID_ID ) );
+		phone.setParentID( cursor.getString( COL_PARENTID_ID ) );
 		phone.setNumber( cursor.getLong( COL_PHONE_ID ) );
 		
 		return phone;
@@ -110,13 +127,13 @@ class PhoneTbl implements BaseColumns {
 	 * @param phone
 	 * @param db Is closed after use
 	 * 
-	 * @return 1 if successfull, 0 otherwise
+	 * @return 1 if successful, 0 otherwise
 	 */
 	public static int UpdatePhone( Phone phone, SQLiteDatabase db ) {
-		String sqlFiler = COL_ID + " = ?";
+		String sqlFiler = COL_STDID + " = ?";
 		ContentValues cv = PhoneValues( phone );
 		
-		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { phone.getID() } );
+		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { phone.getStudentID() } );
 		db.close();
 		
 		return retVal;
@@ -128,7 +145,7 @@ class PhoneTbl implements BaseColumns {
 	 * @param db
 	 */
 	public static int DeletePhone( String ident, SQLiteDatabase db ) {
-		String sqlFilter = COL_ID + " = ?";
+		String sqlFilter = COL_STDID + " = ?";
 		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
 		db.close();
 		
@@ -144,7 +161,8 @@ class PhoneTbl implements BaseColumns {
 	private static ContentValues PhoneValues( Phone phone ) {
 		ContentValues cv = new ContentValues();
 		
-		cv.put( COL_ID, phone.getID() );
+		cv.put( COL_STDID, phone.getStudentID() );
+		cv.put( COL_PARENTID, phone.getParentID() );
 		cv.put( COL_PHONE, phone.getNumber() );
 		cv.put( COL_TYPE, phone.getType() );
 		

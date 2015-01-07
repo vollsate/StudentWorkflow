@@ -24,10 +24,14 @@ public interface StudentTask {
 
 	public void handIn();
 
+	public void handIn(int mode);
+
 	public int getMode();
 
-	public void setStudent( Student student );
-
 	public Student getStudent();
+	
+	public void setStudent( Student std );
+	
+	public String getTask();
 
 }

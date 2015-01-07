@@ -50,24 +50,24 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	 */
 	@Override
 	public View getView( int position, View convertView, ViewGroup parent ) {
-		View myView = convertView;
+		Student student = beans[position];
 
-		/*
-		 * if (myView == null) { myView = createView( context, parent, position
-		 * ); }
-		 */
-		myView = createView( context, parent, position );
-		ViewHolder holder = (ViewHolder) myView.getTag();
-		Student bean = beans[position];
+		if (convertView == null)
+			convertView = createView( context, parent, student);
+		
+		ViewHolder holder = (ViewHolder) convertView.getTag();
+		holder.imgInfoView.setTag( student );
+		holder.imgTaskView.setTag( student );
+		holder.id = position;
 		
 		if ( DataHandler.GetInstance().getSettingsManager().isShowFullname() )
-			holder.textView.setText( bean.getFirstName() + " " + bean.getLastName() );
+			holder.textView.setText( student.getFirstName() + " " + student.getLastName() );
 		else
-			holder.textView.setText( bean.getFirstName() );
+			holder.textView.setText( student.getFirstName() );
 			
-		holder.identText.setText( bean.getIdent() );
+		holder.identText.setText( student.getIdent() );
 
-		return myView;
+		return convertView;
 	}
 
 	/**
@@ -76,14 +76,12 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	 * @param parent
 	 * @return
 	 */
-	private View createView( Context context, ViewGroup parent, int position ) {
+	private View createView( Context context, ViewGroup parent, Student student ) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		View myView = inflater.inflate( R.layout.row_student_list, parent, false );
 		ViewHolder holder = new ViewHolder();
-		Student student = beans[position];
 
 		ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
-		imgInfoView.setTag( student );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 
 			@Override
@@ -100,7 +98,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		} );
 
 		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
-		imgTaskView.setTag( student );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 
 			@Override
@@ -123,7 +120,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		
 		holder.imgInfoView = imgInfoView;
 		holder.imgTaskView = imgTaskView;
-		holder.id = position;
 
 		myView.setTag( holder );
 

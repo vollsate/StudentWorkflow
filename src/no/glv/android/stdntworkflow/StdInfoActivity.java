@@ -6,6 +6,7 @@ import java.util.Locale;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Parent;
+import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import android.app.ActionBar;
@@ -220,14 +221,41 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
 			editText = (EditText) rootView.findViewById( R.id.ET_info_p1Mail );
 			editText.setText( parent.getMail() );
-
-			editText = (EditText) rootView.findViewById( R.id.ET_info_p1Phone );
-			editText.setText( parent.getPhoneNumbers().toString() );
-
+			
+			createPhoneView( parent, rootView );
+			
 			return rootView;
 		}
-	}
+		
+		private void createPhoneView( Parent parent, View rootView ) {
+			EditText editText = null;
+			Phone phone = parent.getPhone( Phone.MOBIL );
+			String number = phone == null ? "" : String.valueOf( phone.getNumber() );
+			
+			if ( phone != null ) {
+				editText = (EditText) rootView.findViewById( R.id.ET_info_p1Phone_mob );
+				editText.setText( number );
+			}
 
+			phone = parent.getPhone( Phone.WORK );
+			number = phone == null ? "" : String.valueOf( phone.getNumber() );
+			
+			if ( phone != null ) {
+				editText = (EditText) rootView.findViewById( R.id.ET_info_p1Phone_work );
+				editText.setText( number );
+			}
+			
+			phone = parent.getPhone( Phone.HOME );
+			number = phone == null ? "" : String.valueOf( phone.getNumber() );
+			
+			if ( phone != null ) {
+				editText = (EditText) rootView.findViewById( R.id.ET_info_p1Phone_home );
+				editText.setText( number );
+			}
+		}
+
+	}
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -246,23 +274,46 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			View rootView = inflater.inflate( R.layout.fragment_std_parent2, container, false );
 			List<Parent> parents = bean.getParents();
-
+			
 			if (! (parents.size() > 1) ) return rootView;
-			
 			Parent parent = parents.get( 1 );
-			
-			if ( parent == null ) return rootView;
 
 			EditText editText = (EditText) rootView.findViewById( R.id.ET_info_p2Name );
 			editText.setText( parent.getFirstName() + " " + parent.getLastName() );
 
 			editText = (EditText) rootView.findViewById( R.id.ET_info_p2Mail );
 			editText.setText( parent.getMail() );
-
-			editText = (EditText) rootView.findViewById( R.id.ET_info_p2Phone );
-			editText.setText( parent.getPhoneNumbers().toString() );
-
+			
+			createPhoneView( parent, rootView );
+			
 			return rootView;
+		}
+		
+		private void createPhoneView( Parent parent, View rootView ) {
+			EditText editText = null;
+			Phone phone = parent.getPhone( Phone.MOBIL );
+			String number = phone == null ? "" : String.valueOf( phone.getNumber() );
+			
+			if ( phone != null ) {
+				editText = (EditText) rootView.findViewById( R.id.ET_info_p2Phone_mob );
+				editText.setText( number );
+			}
+
+			phone = parent.getPhone( Phone.WORK );
+			number = phone == null ? "" : String.valueOf( phone.getNumber() );
+			
+			if ( phone != null ) {
+				editText = (EditText) rootView.findViewById( R.id.ET_info_p2Phone_work );
+				editText.setText( number );
+			}
+			
+			phone = parent.getPhone( Phone.HOME );
+			number = phone == null ? "" : String.valueOf( phone.getNumber() );
+			
+			if ( phone != null ) {
+				editText = (EditText) rootView.findViewById( R.id.ET_info_p2Phone_home );
+				editText.setText( number );
+			}
 		}
 	}
 

@@ -20,8 +20,6 @@ public class StudentBean implements Student {
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
 	
-	private static final Parent[] EMPTY_PARENT = new Parent[] {};
-
 	public String mIdent;
 
 	public String fName;
@@ -38,7 +36,7 @@ public class StudentBean implements Student {
 	private List<Parent> parents;
 
 	private StudentBean() {
-		parents = new ArrayList<Parent>();
+		parents = new ArrayList<Parent>(2);
 	}
 
 	public StudentBean( String stdClass ) {
@@ -166,8 +164,6 @@ public class StudentBean implements Student {
 
 	@Override
 	public void addParents( List<Parent> parents ) {
-		if ( this.parents == null ) this.parents = new ArrayList<Parent>( parents.size() );
-		
 		this.parents.addAll( parents );
 	}
 }

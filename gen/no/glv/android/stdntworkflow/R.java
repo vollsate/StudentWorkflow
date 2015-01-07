@@ -1644,13 +1644,15 @@ containing a value of this type.
         public static final int BTN_info_update=0x7f090068;
         public static final int BTN_loadData_cancel=0x7f090051;
         public static final int BTN_loadFile=0x7f09004f;
-        public static final int BTN_newTask_cancelStudents=0x7f090083;
+        public static final int BTN_newTask_cancelStudents=0x7f090088;
         public static final int BTN_newTask_create=0x7f09005c;
         public static final int BTN_newTask_date=0x7f090059;
-        public static final int BTN_newTask_verifyStudents=0x7f090082;
-        public static final int BTN_task_update=0x7f09008e;
-        public static final int CB_newTask_addClass=0x7f090092;
-        public static final int CB_newTask_addStudent=0x7f090094;
+        public static final int BTN_newTask_verifyStudents=0x7f090089;
+        public static final int BTN_task_date=0x7f090093;
+        public static final int BTN_task_update=0x7f090095;
+        public static final int CB_newTask_addClass=0x7f090099;
+        public static final int CB_newTask_addStudent=0x7f09009b;
+        public static final int CB_task_stdlist=0x7f0900a1;
         public static final int ET_info_LastName=0x7f090060;
         public static final int ET_info_adr=0x7f090067;
         public static final int ET_info_birth=0x7f090064;
@@ -1658,34 +1660,36 @@ containing a value of this type.
         public static final int ET_info_ident=0x7f090062;
         public static final int ET_info_p1Mail=0x7f09006d;
         public static final int ET_info_p1Name=0x7f09006b;
-        public static final int ET_info_p1Phone=0x7f09007d;
+        public static final int ET_info_p1Phone=0x7f090083;
         public static final int ET_info_p1Phone_home=0x7f090072;
         public static final int ET_info_p1Phone_mob=0x7f090070;
         public static final int ET_info_p1Phone_work=0x7f090074;
-        public static final int ET_info_p2Mail=0x7f090078;
-        public static final int ET_info_p2Name=0x7f090076;
-        public static final int ET_info_p2Phone=0x7f09007a;
+        public static final int ET_info_p2Mail=0x7f090079;
+        public static final int ET_info_p2Name=0x7f090077;
+        public static final int ET_info_p2Phone_home=0x7f09007e;
+        public static final int ET_info_p2Phone_mob=0x7f09007c;
+        public static final int ET_info_p2Phone_work=0x7f090080;
         public static final int ET_info_pc=0x7f090066;
         public static final int ET_newTask_date=0x7f09005a;
         public static final int ET_newTask_desc=0x7f090057;
         public static final int ET_newTask_name=0x7f090055;
-        public static final int ET_task_date=0x7f09008d;
-        public static final int ET_task_desc=0x7f09008a;
-        public static final int ET_task_name=0x7f090087;
+        public static final int ET_task_date=0x7f090094;
+        public static final int ET_task_desc=0x7f090090;
+        public static final int ET_task_name=0x7f09008d;
         public static final int FR_installedClasses=0x7f09004b;
-        public static final int LL_task_date=0x7f09008b;
-        public static final int LL_task_desc=0x7f090088;
-        public static final int LL_task_name=0x7f090085;
+        public static final int LL_task_date=0x7f090091;
+        public static final int LL_task_desc=0x7f09008e;
+        public static final int LL_task_name=0x7f09008b;
         public static final int LV_classes=0x7f090044;
         public static final int LV_installedClasses=0x7f09004c;
         public static final int LV_loadData_filesList=0x7f090050;
-        public static final int LV_newTask_addedStudents=0x7f090081;
+        public static final int LV_newTask_addedStudents=0x7f090087;
         public static final int LV_newTask_classes=0x7f09005b;
-        public static final int LV_task_students=0x7f09008f;
+        public static final int LV_task_students=0x7f090096;
         public static final int LV_tasks=0x7f090046;
         public static final int TV_LoadDataInfo=0x7f09004e;
         public static final int TV_header=0x7f090041;
-        public static final int TV_info_adr=0x7f09007b;
+        public static final int TV_info_adr=0x7f090081;
         public static final int TV_info_birth=0x7f090063;
         public static final int TV_info_firstName=0x7f09005d;
         public static final int TV_info_header=0x7f090048;
@@ -1695,37 +1699,42 @@ containing a value of this type.
         public static final int TV_info_p1Header2=0x7f09006e;
         public static final int TV_info_p1Mail=0x7f09006c;
         public static final int TV_info_p1Name=0x7f09006a;
-        public static final int TV_info_p1Phone=0x7f09007c;
+        public static final int TV_info_p1Phone=0x7f090082;
         public static final int TV_info_p1Phone_home=0x7f090071;
         public static final int TV_info_p1Phone_mob=0x7f09006f;
         public static final int TV_info_p1Phone_work=0x7f090073;
-        public static final int TV_info_p2Mail=0x7f090077;
-        public static final int TV_info_p2Name=0x7f090075;
-        public static final int TV_info_p2Phone=0x7f090079;
+        public static final int TV_info_p2Header=0x7f090075;
+        public static final int TV_info_p2Header2=0x7f09007a;
+        public static final int TV_info_p2Mail=0x7f090078;
+        public static final int TV_info_p2Name=0x7f090076;
+        public static final int TV_info_p2Phone_home=0x7f09007d;
+        public static final int TV_info_p2Phone_mob=0x7f09007b;
+        public static final int TV_info_p2Phone_work=0x7f09007f;
         public static final int TV_info_pc=0x7f090065;
         public static final int TV_installedClasses=0x7f090043;
         public static final int TV_installedTasks=0x7f090045;
         public static final int TV_loadClassHeader=0x7f09004d;
-        public static final int TV_loadData_fileName=0x7f090091;
-        public static final int TV_main_taskName=0x7f09009d;
+        public static final int TV_loadData_fileName=0x7f090098;
+        public static final int TV_main_taskName=0x7f0900a6;
         public static final int TV_maininfo=0x7f090042;
-        public static final int TV_newTask_className=0x7f090093;
+        public static final int TV_newTask_className=0x7f09009a;
         public static final int TV_newTask_date=0x7f090058;
         public static final int TV_newTask_desc=0x7f090056;
         public static final int TV_newTask_header=0x7f090052;
         public static final int TV_newTask_info=0x7f090053;
         public static final int TV_newTask_name=0x7f090054;
-        public static final int TV_newTask_studentIdent=0x7f090095;
-        public static final int TV_stdlist_ident=0x7f090097;
-        public static final int TV_stdlist_name=0x7f090096;
-        public static final int TV_studentClassName=0x7f090090;
-        public static final int TV_task_date=0x7f09008c;
-        public static final int TV_task_desc=0x7f090089;
-        public static final int TV_task_header=0x7f090084;
-        public static final int TV_task_name=0x7f090086;
-        public static final int TV_task_stdlist_class=0x7f09009c;
-        public static final int TV_task_stdlist_ident=0x7f09009b;
-        public static final int TV_task_stdlist_name=0x7f09009a;
+        public static final int TV_newTask_studentIdent=0x7f09009c;
+        public static final int TV_stdlist_ident=0x7f09009e;
+        public static final int TV_stdlist_name=0x7f09009d;
+        public static final int TV_studentClassName=0x7f090097;
+        public static final int TV_task_date=0x7f090092;
+        public static final int TV_task_desc=0x7f09008f;
+        public static final int TV_task_header=0x7f09008a;
+        public static final int TV_task_name=0x7f09008c;
+        public static final int TV_task_stdlist_class=0x7f0900a4;
+        public static final int TV_task_stdlist_handinDate=0x7f0900a5;
+        public static final int TV_task_stdlist_ident=0x7f0900a3;
+        public static final int TV_task_stdlist_name=0x7f0900a2;
         public static final int VP_stdInfo_pager=0x7f090047;
         public static final int VP_task_pager=0x7f09004a;
         public static final int action_bar=0x7f090031;
@@ -1741,8 +1750,8 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09002e;
         public static final int action_mode_bar_stub=0x7f09002d;
         public static final int action_mode_close_button=0x7f090020;
-        public static final int action_settings=0x7f09009e;
-        public static final int action_writeToLocal=0x7f0900a4;
+        public static final int action_settings=0x7f0900a7;
+        public static final int action_writeToLocal=0x7f0900ad;
         public static final int activity_chooser_view_content=0x7f090021;
         public static final int activity_main=0x7f090040;
         public static final int always=0x7f090014;
@@ -1764,17 +1773,17 @@ containing a value of this type.
         public static final int icon=0x7f090026;
         public static final int ifRoom=0x7f090016;
         public static final int image=0x7f090023;
-        public static final int info=0x7f090098;
+        public static final int info=0x7f09009f;
         public static final int listMode=0x7f09000a;
         public static final int list_item=0x7f090025;
-        public static final int menu_loadData=0x7f0900a2;
-        public static final int menu_newTask=0x7f0900a3;
-        public static final int menu_overflow=0x7f09009f;
-        public static final int menu_resetDB=0x7f0900a1;
-        public static final int menu_settings=0x7f0900a0;
-        public static final int menu_stdList_sort=0x7f0900a5;
-        public static final int menu_stdList_sort_firstNameAsc=0x7f0900a7;
-        public static final int menu_stdList_sort_lastNameAsc=0x7f0900a6;
+        public static final int menu_loadData=0x7f0900ab;
+        public static final int menu_newTask=0x7f0900ac;
+        public static final int menu_overflow=0x7f0900a8;
+        public static final int menu_resetDB=0x7f0900aa;
+        public static final int menu_settings=0x7f0900a9;
+        public static final int menu_stdList_sort=0x7f0900ae;
+        public static final int menu_stdList_sort_firstNameAsc=0x7f0900b0;
+        public static final int menu_stdList_sort_lastNameAsc=0x7f0900af;
         public static final int middle=0x7f09001d;
         public static final int never=0x7f090017;
         public static final int none=0x7f09000f;
@@ -1799,13 +1808,13 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int student_listview=0x7f090049;
         public static final int submit_area=0x7f09003c;
-        public static final int tab1=0x7f09007e;
-        public static final int tab2=0x7f09007f;
-        public static final int tab3=0x7f090080;
+        public static final int tab1=0x7f090084;
+        public static final int tab2=0x7f090085;
+        public static final int tab3=0x7f090086;
         public static final int tabMode=0x7f09000c;
-        public static final int task=0x7f090099;
-        public static final int task_action_Delete=0x7f0900a9;
-        public static final int task_action_Update=0x7f0900a8;
+        public static final int task=0x7f0900a0;
+        public static final int task_action_Delete=0x7f0900b2;
+        public static final int task_action_Update=0x7f0900b1;
         public static final int title=0x7f090027;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
@@ -1880,16 +1889,17 @@ containing a value of this type.
         public static final int fragment_student_info_2=0x7f030027;
         public static final int fragment_students_newtask=0x7f030028;
         public static final int fragment_task_info=0x7f030029;
-        public static final int fragment_task_students=0x7f03002a;
-        public static final int row_classes_list=0x7f03002b;
-        public static final int row_loaddata_files=0x7f03002c;
-        public static final int row_newtask_addclasses=0x7f03002d;
-        public static final int row_newtask_students=0x7f03002e;
-        public static final int row_student_list=0x7f03002f;
-        public static final int row_task_stdlist=0x7f030030;
-        public static final int row_tasks_list=0x7f030031;
-        public static final int stdinfo_tab_stdinfo=0x7f030032;
-        public static final int support_simple_spinner_dropdown_item=0x7f030033;
+        public static final int fragment_task_info_upd=0x7f03002a;
+        public static final int fragment_task_students=0x7f03002b;
+        public static final int row_classes_list=0x7f03002c;
+        public static final int row_loaddata_files=0x7f03002d;
+        public static final int row_newtask_addclasses=0x7f03002e;
+        public static final int row_newtask_students=0x7f03002f;
+        public static final int row_student_list=0x7f030030;
+        public static final int row_task_stdlist=0x7f030031;
+        public static final int row_tasks_list=0x7f030032;
+        public static final int stdinfo_tab_stdinfo=0x7f030033;
+        public static final int support_simple_spinner_dropdown_item=0x7f030034;
     }
     public static final class menu {
         public static final int menu_load_data=0x7f0c0000;
@@ -1992,13 +2002,15 @@ containing a value of this type.
         public static final int std_info_title=0x7f0a0032;
         public static final int std_parent1_title=0x7f0a0033;
         public static final int std_parent2_title=0x7f0a0034;
-        public static final int stdinfo_mail=0x7f0a0040;
         /**  STDINFO 
          */
-        public static final int stdinfo_name=0x7f0a003f;
-        public static final int stdinfo_phone_home=0x7f0a0042;
-        public static final int stdinfo_phone_mobile=0x7f0a0041;
-        public static final int stdinfo_phone_work=0x7f0a0043;
+        public static final int stdinfo_header1=0x7f0a003f;
+        public static final int stdinfo_header2=0x7f0a0040;
+        public static final int stdinfo_mail=0x7f0a0042;
+        public static final int stdinfo_name=0x7f0a0041;
+        public static final int stdinfo_phone_home=0x7f0a0044;
+        public static final int stdinfo_phone_mobile=0x7f0a0043;
+        public static final int stdinfo_phone_work=0x7f0a0045;
         public static final int task_date=0x7f0a003c;
         public static final int task_desc=0x7f0a0018;
         public static final int task_desca=0x7f0a003b;
@@ -2019,11 +2031,13 @@ containing a value of this type.
 
 
 
+
     
 
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
+
 
 
 
@@ -2045,6 +2059,7 @@ containing a value of this type.
          */
         public static final int AppTheme=0x7f0b00ed;
         public static final int BTN=0x7f0b00fb;
+        public static final int BTN_addStdTask=0x7f0b00fc;
         public static final int Base_TextAppearance_AppCompat=0x7f0b0098;
         public static final int Base_TextAppearance_AppCompat_Body1=0x7f0b00a3;
         public static final int Base_TextAppearance_AppCompat_Body2=0x7f0b00a2;
@@ -2372,7 +2387,7 @@ containing a value of this type.
          */
         public static final int Widget_AppCompat_Toolbar=0x7f0b0034;
         public static final int Widget_AppCompat_Toolbar_Button_Navigation=0x7f0b0035;
-        public static final int actionBar=0x7f0b00fc;
+        public static final int actionBar=0x7f0b00fd;
         public static final int newAppBaseTheme=0x7f0b00ec;
         public static final int newAppTheme=0x7f0b00ee;
     }

@@ -20,8 +20,8 @@ class ParentTbl implements BaseColumns {
 	public static final String COL_ID = "_id";
 	public static final int COL_ID_ID = 0;
 
-	public static final String COL_IDENT = "ident";
-	public static final int COL_IDENT_ID = 1;
+	public static final String COL_STDID = "stdid";
+	public static final int COL_STDID_ID = 1;
 
 	public static final String COL_FNAME = "fname";
 	public static final int COL_FNAME_ID = 2;
@@ -49,7 +49,7 @@ class ParentTbl implements BaseColumns {
 	static void CreateTableSQL( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "(" 
 				+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ COL_IDENT + " TEXT NOT NULL, " 
+				+ COL_STDID + " TEXT NOT NULL, " 
 				+ COL_FNAME + " TEXT, "
 				+ COL_LNAME + " TEXT, "
 				+ COL_MAIL + " TEXT, "
@@ -76,7 +76,7 @@ class ParentTbl implements BaseColumns {
 	public static List<Parent> LoadParent (String parentID, SQLiteDatabase db ) {
 		List<Parent> list = new ArrayList<Parent>();
 		
-		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_IDENT + " = ?";
+		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_STDID + " = ?";
 		Cursor cursor = db.rawQuery( sql, new String[] { parentID } );
 		cursor.moveToFirst();
 		while ( ! cursor.isAfterLast() ) {
@@ -92,9 +92,10 @@ class ParentTbl implements BaseColumns {
 	
 	
 	private static Parent CreateFromCursor( Cursor cursor ) {
-		Parent parent = new ParentBean( cursor.getString( COL_IDENT_ID ), cursor.getInt( COL_TYPE_ID ) );
+		Parent parent = new ParentBean( cursor.getString( COL_ID_ID ), cursor.getInt( COL_TYPE_ID ) );
 		
 		parent.setFirstName( cursor.getString( COL_FNAME_ID ) );
+		parent.setStudentID( cursor.getString( COL_STDID_ID ) );
 		parent.setLastName( cursor.getString( COL_LNAME_ID ) );
 		parent.setMail( cursor.getString( COL_MAIL_ID ) );
 		
@@ -110,6 +111,7 @@ class ParentTbl implements BaseColumns {
 		ContentValues parentValues = ParentValues( parent );
 		
 		long retVal = db.insert( TBL_NAME, null, parentValues );
+		parent.setID( String.valueOf( retVal ) );
 		db.close();
 		
 		return retVal;
@@ -123,7 +125,7 @@ class ParentTbl implements BaseColumns {
 	 * @return 1 if successful, 0 otherwise
 	 */
 	public static int UpdateParent( Parent parent, SQLiteDatabase db ) {
-		String sqlFiler = COL_IDENT + " = ?";
+		String sqlFiler = COL_STDID + " = ?";
 		ContentValues cv = ParentValues( parent );
 		
 		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { parent.getID() } );
@@ -138,7 +140,7 @@ class ParentTbl implements BaseColumns {
 	 * @param db
 	 */
 	public static int DeletePhone( String ident, SQLiteDatabase db ) {
-		String sqlFilter = COL_IDENT + " = ?";
+		String sqlFilter = COL_STDID + " = ?";
 		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
 		db.close();
 		
@@ -154,7 +156,7 @@ class ParentTbl implements BaseColumns {
 	private static ContentValues ParentValues( Parent parent ) {
 		ContentValues cv = new ContentValues();
 		
-		cv.put( COL_IDENT, parent.getID() );
+		cv.put( COL_STDID, parent.getStudentID() );
 		cv.put( COL_FNAME, parent.getFirstName() );
 		cv.put( COL_LNAME, parent.getLastName() );
 		cv.put( COL_MAIL, parent.getMail() );
