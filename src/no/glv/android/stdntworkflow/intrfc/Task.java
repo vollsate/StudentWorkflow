@@ -54,6 +54,12 @@ public interface Task {
 	public boolean handIn( String ident );
 	
 	public boolean handIn( String ident, int mode);
+	
+	public boolean isStudentsModified();
+	
+	public void markAsUpdated();
+	
+	public List<StudentTask> getStudentsToUpdate();
 
 	/**
 	 * 
@@ -94,5 +100,27 @@ public interface Task {
 	public void addStudents( List<Student> students );
 
 	public void addStudentTasks( List<StudentTask> students );
+	
+	public boolean isExpired();
+	
+	public void addTaskChangedListener( TaskChangedListener listener );
+	
+	public void notifyStudentRemoved( Student std );
+	
+	public List<StudentTask> getRemovedStudents();
 
+
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
+	static interface TaskChangedListener {
+		
+		/**
+		 * 
+		 * @param std
+		 */
+		public void onStudentRemove( Student std );
+	}
 }

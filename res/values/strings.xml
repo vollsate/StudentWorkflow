@@ -57,8 +57,15 @@
     <string name="task_desca">Beskrivelse</string>
     <string name="task_date">Dato</string>
     
+    <string name="task_std_delete_title">Slette student?</string>
+    <string name="task_std_delete_msg">Navn: {name}</string>
+    
     <string name="task_tab_section1">Info</string>
     <string name="task_tab_section2">Elever</string>
+
+    <string name="task_pending">Venter ..</string>
+    <string name="task_handin"></string>
+    <string name="task_expired">Utgått..</string>
     
 <!-- STDINFO -->
 	<string name="stdinfo_header1">Navn og epost</string>

@@ -164,7 +164,22 @@ public class StudentInTaskTbl {
 		long retVal = 0;
 		
 		String whereClause = COL_IDENT + "=? AND " + COL_TASK + "=?";
-		retVal = db.update( TBL_NAME, StudentInTaskValues( stdTask ), whereClause, new String[] { stdTask.getIdent(), stdTask.getTask() } );
+		retVal = db.update( TBL_NAME, StudentInTaskValues( stdTask ), whereClause, new String[] { stdTask.getIdent(), stdTask.getTaskName() } );
+		
+		return retVal;
+	}
+
+	/**
+	 * 
+	 * @param stdTask
+	 * @param db
+	 * @return
+	 */
+	public static long Delete( StudentTask stdTask, SQLiteDatabase db ) {
+		long retVal = 0;
+		
+		String whereClause = COL_IDENT + "=? AND " + COL_TASK + "=?";
+		retVal = db.delete( TBL_NAME, whereClause, new String[] { stdTask.getIdent(), stdTask.getTaskName() } );
 		
 		return retVal;
 	}

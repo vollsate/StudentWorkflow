@@ -11,8 +11,6 @@ import android.provider.BaseColumns;
 
 class StudentTbl implements BaseColumns {
 	
-	private static final String TAG = StudentTbl.class.getSimpleName();
-
 	public static final String TBL_NAME = "student";
 
 	public static final String COL_IDENT = "ident";
@@ -39,6 +37,9 @@ class StudentTbl implements BaseColumns {
 	public static final String COL_POSTALCODE = "pcode";
 	public static final int COL_POSTALCODE_ID = 7;
 
+	public static final String COL_PHONE = "phone";
+	public static final int COL_PHONE_ID = 8;
+
 	private  StudentTbl() {
 	}
 
@@ -59,7 +60,8 @@ class StudentTbl implements BaseColumns {
 				+ COL_LNAME + " TEXT, " 
 				+ COL_BIRTH + " TEXT, "
 				+ COL_ADR + " TEXT, " 
-				+ COL_POSTALCODE + " TEXT)";
+				+ COL_POSTALCODE + " TEXT, "
+				+ COL_PHONE + " TEXT)";
 		
 		DBUtils.ExecuteSQL( sql, db );
 	}
@@ -107,6 +109,7 @@ class StudentTbl implements BaseColumns {
 		bean.setBirth( cursor.getString( COL_BIRTH_ID ) );
 		bean.setAdress( cursor.getString( COL_ADR_ID ) );
 		bean.setPostalCode( cursor.getString( COL_POSTALCODE_ID ) );
+		bean.setPhone( cursor.getString( COL_PHONE_ID) );
 		
 		return bean;
 	}
@@ -172,6 +175,7 @@ class StudentTbl implements BaseColumns {
 		cv.put( COL_BIRTH, std.getBirth() );
 		cv.put( COL_ADR, std.getAdress() );
 		cv.put( COL_POSTALCODE, std.getPostalCode() );
+		cv.put( COL_PHONE, std.getPhone() );
 		
 		return cv;
 	}

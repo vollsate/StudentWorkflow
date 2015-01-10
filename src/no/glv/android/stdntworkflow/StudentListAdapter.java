@@ -97,7 +97,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 			}
 		} );
 
-		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
+		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.delete );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 
 			@Override

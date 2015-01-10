@@ -4,7 +4,6 @@ import java.util.Date;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
-import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * Keeps track of every student registered and every task they are currently
@@ -17,14 +16,14 @@ public class StudentTaskImpl implements StudentTask {
 
 	private Date handinDate;
 	private int mode;
-	
-	private String task;
-	private String ident;
+
+	private String mTask;
+	private String mIdent;
 	private Student student;
 
 	/**
 	 * 
-	 * @param ident
+	 * @param mIdent
 	 * @param taskName
 	 * @param date
 	 */
@@ -34,14 +33,14 @@ public class StudentTaskImpl implements StudentTask {
 
 	/**
 	 * 
-	 * @param ident
+	 * @param mIdent
 	 * @param taskName
 	 * @param mode
 	 * @param date
 	 */
 	public StudentTaskImpl( String student, String task, int mode, Date date ) {
-		this.ident = student;
-		this.task = task;
+		this.mIdent = student;
+		this.mTask = task;
 		this.mode = mode;
 		this.handinDate = date;
 	}
@@ -53,10 +52,10 @@ public class StudentTaskImpl implements StudentTask {
 	 * @param date
 	 */
 	public StudentTaskImpl( Student student, String task, Date date ) {
-		this( student.getIdent(), task, date);
+		this( student.getIdent(), task, date );
 		this.student = student;
 	}
-	
+
 	/**
 	 * 
 	 * @param student
@@ -65,17 +64,17 @@ public class StudentTaskImpl implements StudentTask {
 	 * @param date
 	 */
 	public StudentTaskImpl( Student student, String task, int mode, Date date ) {
-		this( student.getIdent(), task, mode, date);
+		this( student.getIdent(), task, mode, date );
 		this.student = student;
 	}
-	
+
 	public String getIdent() {
-		return ident;
+		return mIdent;
 	}
 
 	@Override
 	public String getTaskName() {
-		return task;
+		return mTask;
 	}
 
 	@Override
@@ -85,17 +84,16 @@ public class StudentTaskImpl implements StudentTask {
 
 	@Override
 	public void handIn() {
-		if ( handinDate != null )
-			throw new IllegalStateException( "Student " + student + " has already handed in task " + task );
-
-		handinDate = new Date();
+		handIn( MODE_HANDIN );
 	}
-	
+
 	@Override
 	public void handIn( int mode ) {
+		this.mode = mode;
+		
 		switch ( mode ) {
 		case MODE_HANDIN:
-			handIn();
+			if ( handinDate == null ) handinDate = new Date();
 			break;
 
 		case MODE_PENDING:
@@ -121,14 +119,14 @@ public class StudentTaskImpl implements StudentTask {
 	public Student getStudent() {
 		return student;
 	}
-	
+
 	@Override
 	public void setStudent( Student std ) {
 		this.student = std;
 	}
 
 	@Override
-	public String getTask() {
-		return task;
+	public void setTaskName( String name ) {
+		this.mTask = name;
 	}
 }

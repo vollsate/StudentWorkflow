@@ -25,6 +25,9 @@ public interface Student {
 	public String getPostalCode();
 	public void setPostalCode( String val );
 	
+	public String getPhone();
+	public void setPhone( String val );
+	
 	public String getGrade();
 	public void setGrade( String val );
 	

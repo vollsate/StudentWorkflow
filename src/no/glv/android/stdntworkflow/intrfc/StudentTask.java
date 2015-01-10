@@ -32,6 +32,6 @@ public interface StudentTask {
 	
 	public void setStudent( Student std );
 	
-	public String getTask();
+	public void setTaskName( String name );
 
 }

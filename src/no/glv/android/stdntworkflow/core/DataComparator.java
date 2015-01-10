@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class DataComparator {
 	
@@ -12,6 +13,9 @@ public class DataComparator {
 	
 	public static final int SORT_IDENT_ASC = 2;
 	public static final int SORT_IDENT_DSC = 3;
+	
+	public static final int SORT_TASKDATE_ASC = 100;
+	public static final int SORT_TASKDATE_DSC = 101;
 
 	private DataComparator() {
 	}
@@ -55,6 +59,11 @@ public class DataComparator {
 		
 	}
 
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
 	public static class StudentTaskComparator implements Comparator<StudentTask> {
 		
 		private int mode;
@@ -75,6 +84,39 @@ public class DataComparator {
 				
 			case SORT_IDENT_DSC:
 				return rhs.getIdent().compareToIgnoreCase( lhs.getIdent() );
+
+			}
+			
+			return 0;
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
+	public static class TaskComparator implements Comparator<Task> {
+		
+		private int mode;
+		
+		public TaskComparator(  ) {
+			this( SORT_TASKDATE_ASC );
+		}
+
+		public TaskComparator( int mode ) {
+			this.mode = mode;
+		}
+		
+		@Override
+		public int compare( Task lhs, Task rhs ) {
+			switch ( mode ) {
+			case SORT_TASKDATE_ASC:
+				return lhs.getDate().compareTo( rhs.getDate() );
+				
+			case SORT_TASKDATE_DSC:
+				return rhs.getDate().compareTo( lhs.getDate() );
 
 			}
 			

@@ -1376,19 +1376,19 @@ containing a value of this type.
         public static final int abc_config_showMenuShortcutsWhenKeyboardPresent=0x7f050003;
     }
     public static final class color {
-        public static final int abc_background_cache_hint_selector_material_dark=0x7f060031;
-        public static final int abc_background_cache_hint_selector_material_light=0x7f060032;
+        public static final int abc_background_cache_hint_selector_material_dark=0x7f060033;
+        public static final int abc_background_cache_hint_selector_material_light=0x7f060034;
         public static final int abc_input_method_navigation_guard=0x7f060003;
-        public static final int abc_primary_text_disable_only_material_dark=0x7f060033;
-        public static final int abc_primary_text_disable_only_material_light=0x7f060034;
-        public static final int abc_primary_text_material_dark=0x7f060035;
-        public static final int abc_primary_text_material_light=0x7f060036;
-        public static final int abc_search_url_text=0x7f060037;
+        public static final int abc_primary_text_disable_only_material_dark=0x7f060035;
+        public static final int abc_primary_text_disable_only_material_light=0x7f060036;
+        public static final int abc_primary_text_material_dark=0x7f060037;
+        public static final int abc_primary_text_material_light=0x7f060038;
+        public static final int abc_search_url_text=0x7f060039;
         public static final int abc_search_url_text_normal=0x7f060000;
         public static final int abc_search_url_text_pressed=0x7f060002;
         public static final int abc_search_url_text_selected=0x7f060001;
-        public static final int abc_secondary_text_material_dark=0x7f060038;
-        public static final int abc_secondary_text_material_light=0x7f060039;
+        public static final int abc_secondary_text_material_dark=0x7f06003a;
+        public static final int abc_secondary_text_material_light=0x7f06003b;
         public static final int accent_material_dark=0x7f06000f;
         public static final int accent_material_light=0x7f06000e;
         public static final int background_floating_material_dark=0x7f060006;
@@ -1446,6 +1446,8 @@ containing a value of this type.
         public static final int secondary_text_disabled_material_light=0x7f060029;
         public static final int switch_thumb_normal_material_dark=0x7f060012;
         public static final int switch_thumb_normal_material_light=0x7f060013;
+        public static final int task_stdlist_dark=0x7f060032;
+        public static final int task_stdlist_light=0x7f060031;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -1544,7 +1546,9 @@ containing a value of this type.
     
          */
         public static final int activity_horizontal_margin=0x7f07002b;
+        public static final int activity_horizontal_margin_small=0x7f07002d;
         public static final int activity_vertical_margin=0x7f07002c;
+        public static final int activity_vertical_margin_small=0x7f07002e;
         /**  The platform's desired fixed height for a dialog along the major axis
          (the screen is in portrait). This may be either a fraction or a dimension.
  The platform's desired fixed height for a dialog along the major axis
@@ -1633,12 +1637,13 @@ containing a value of this type.
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f020031;
         public static final int abc_textfield_search_material=0x7f020032;
         public static final int calendar=0x7f020033;
-        public static final int ic_action_overflow=0x7f020034;
-        public static final int ic_launcher=0x7f020035;
-        public static final int info=0x7f020036;
-        public static final int ok=0x7f020037;
-        public static final int student=0x7f020038;
-        public static final int task=0x7f020039;
+        public static final int delete=0x7f020034;
+        public static final int ic_action_overflow=0x7f020035;
+        public static final int ic_launcher=0x7f020036;
+        public static final int info=0x7f020037;
+        public static final int ok=0x7f020038;
+        public static final int student=0x7f020039;
+        public static final int task=0x7f02003a;
     }
     public static final class id {
         public static final int BTN_info_update=0x7f090068;
@@ -1761,6 +1766,7 @@ containing a value of this type.
         public static final int container=0x7f09003f;
         public static final int decor_content_parent=0x7f09002f;
         public static final int default_activity_button=0x7f090024;
+        public static final int delete=0x7f0900a0;
         public static final int dialog=0x7f090019;
         public static final int disableHome=0x7f09000d;
         public static final int dropdown=0x7f09001a;
@@ -1812,7 +1818,6 @@ containing a value of this type.
         public static final int tab2=0x7f090085;
         public static final int tab3=0x7f090086;
         public static final int tabMode=0x7f09000c;
-        public static final int task=0x7f0900a0;
         public static final int task_action_Delete=0x7f0900b2;
         public static final int task_action_Update=0x7f0900b1;
         public static final int title=0x7f090027;
@@ -2004,20 +2009,25 @@ containing a value of this type.
         public static final int std_parent2_title=0x7f0a0034;
         /**  STDINFO 
          */
-        public static final int stdinfo_header1=0x7f0a003f;
-        public static final int stdinfo_header2=0x7f0a0040;
-        public static final int stdinfo_mail=0x7f0a0042;
-        public static final int stdinfo_name=0x7f0a0041;
-        public static final int stdinfo_phone_home=0x7f0a0044;
-        public static final int stdinfo_phone_mobile=0x7f0a0043;
-        public static final int stdinfo_phone_work=0x7f0a0045;
+        public static final int stdinfo_header1=0x7f0a0044;
+        public static final int stdinfo_header2=0x7f0a0045;
+        public static final int stdinfo_mail=0x7f0a0047;
+        public static final int stdinfo_name=0x7f0a0046;
+        public static final int stdinfo_phone_home=0x7f0a0049;
+        public static final int stdinfo_phone_mobile=0x7f0a0048;
+        public static final int stdinfo_phone_work=0x7f0a004a;
         public static final int task_date=0x7f0a003c;
         public static final int task_desc=0x7f0a0018;
         public static final int task_desca=0x7f0a003b;
+        public static final int task_expired=0x7f0a0043;
+        public static final int task_handin=0x7f0a0042;
         public static final int task_header=0x7f0a0039;
         public static final int task_name=0x7f0a003a;
-        public static final int task_tab_section1=0x7f0a003d;
-        public static final int task_tab_section2=0x7f0a003e;
+        public static final int task_pending=0x7f0a0041;
+        public static final int task_std_delete_msg=0x7f0a003e;
+        public static final int task_std_delete_title=0x7f0a003d;
+        public static final int task_tab_section1=0x7f0a003f;
+        public static final int task_tab_section2=0x7f0a0040;
         public static final int task_title=0x7f0a0038;
         public static final int title_activity_new=0x7f0a0035;
         public static final int title_activity_new_task=0x7f0a0027;
@@ -2032,11 +2042,17 @@ containing a value of this type.
 
 
 
+
+
+
     
 
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
+
+
+
 
 
 
@@ -2058,8 +2074,8 @@ containing a value of this type.
         /**  Application theme. 
          */
         public static final int AppTheme=0x7f0b00ed;
-        public static final int BTN=0x7f0b00fb;
-        public static final int BTN_addStdTask=0x7f0b00fc;
+        public static final int BTN=0x7f0b00fe;
+        public static final int BTN_addStdTask=0x7f0b00ff;
         public static final int Base_TextAppearance_AppCompat=0x7f0b0098;
         public static final int Base_TextAppearance_AppCompat_Body1=0x7f0b00a3;
         public static final int Base_TextAppearance_AppCompat_Body2=0x7f0b00a2;
@@ -2204,10 +2220,10 @@ containing a value of this type.
     
          */
         public static final int Base_Widget_AppCompat_Toolbar_Button_Navigation=0x7f0b0090;
-        public static final int ET=0x7f0b00f7;
-        public static final int ET_L=0x7f0b00f8;
-        public static final int ET_stdInfo=0x7f0b00fa;
-        public static final int ET_task=0x7f0b00f9;
+        public static final int ET=0x7f0b00fa;
+        public static final int ET_L=0x7f0b00fb;
+        public static final int ET_stdInfo=0x7f0b00fd;
+        public static final int ET_task=0x7f0b00fc;
         public static final int Platform_AppCompat=0x7f0b00c9;
         public static final int Platform_AppCompat_Dialog=0x7f0b00cb;
         public static final int Platform_AppCompat_Light=0x7f0b00ca;
@@ -2228,10 +2244,13 @@ containing a value of this type.
         public static final int TV_header2=0x7f0b00f1;
         public static final int TV_standard=0x7f0b00ef;
         public static final int TV_std=0x7f0b00f2;
-        public static final int TV_std_L=0x7f0b00f5;
-        public static final int TV_std_L_blue=0x7f0b00f6;
-        public static final int TV_std_S=0x7f0b00f4;
+        public static final int TV_std_L=0x7f0b00f8;
+        public static final int TV_std_L_blue=0x7f0b00f9;
+        public static final int TV_std_M=0x7f0b00f6;
+        public static final int TV_std_M_bold=0x7f0b00f7;
+        public static final int TV_std_S=0x7f0b00f5;
         public static final int TV_std_bold=0x7f0b00f3;
+        public static final int TV_std_bold_blue=0x7f0b00f4;
         /**  Text styles 
          */
         public static final int TextAppearance_AppCompat=0x7f0b0038;
@@ -2387,7 +2406,7 @@ containing a value of this type.
          */
         public static final int Widget_AppCompat_Toolbar=0x7f0b0034;
         public static final int Widget_AppCompat_Toolbar_Button_Navigation=0x7f0b0035;
-        public static final int actionBar=0x7f0b00fd;
+        public static final int actionBar=0x7f0b0100;
         public static final int newAppBaseTheme=0x7f0b00ec;
         public static final int newAppTheme=0x7f0b00ee;
     }

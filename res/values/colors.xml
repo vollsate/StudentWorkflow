@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="task_stdlist_light">#E0F0FF</color>
+    <color name="task_stdlist_dark">#CCE6FF</color>
+    
+</resources>

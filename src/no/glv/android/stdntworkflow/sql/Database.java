@@ -178,7 +178,7 @@ public class Database extends SQLiteOpenHelper {
 	 * 
 	 * @param task
 	 */
-	public boolean writeTask( Task task ) {
+	public boolean insertTask( Task task ) {
 		Log.d( TAG, "Inserting new task: " + task.getName() );
 		boolean retVal = true;
 		try {
@@ -228,6 +228,32 @@ public class Database extends SQLiteOpenHelper {
 		Log.d( TAG, "Updated " + rows + " rows" );
 		
 		return rows > 0;
+	}
+	
+	/**
+	 * 
+	 * @param stdTasks
+	 */
+	public void updateStudentTasks( List<StudentTask> stdTasks ) {
+		Iterator<StudentTask> it = stdTasks.iterator();
+		
+		while ( it.hasNext() ) {
+			StudentTask stdTask = it.next();
+			StudentInTaskTbl.Update( stdTask, getWritableDatabase() );
+		}
+	}
+	
+	/**
+	 * 
+	 * @param stdTasks
+	 */
+	public void deleteStudentTasks( List<StudentTask> stdTasks ) {
+		Iterator<StudentTask> it = stdTasks.iterator();
+		
+		while ( it.hasNext() ) {
+			StudentTask stdTask = it.next();
+			StudentInTaskTbl.Delete( stdTask, getWritableDatabase() );
+		}
 	}
 	
 	/**

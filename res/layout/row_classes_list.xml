@@ -9,6 +9,7 @@
         style="@style/TV.std.L.blue"        
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:textSize="20sp" />

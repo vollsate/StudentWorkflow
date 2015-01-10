@@ -4,21 +4,24 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <CheckBox 
+    <CheckBox
         android:id="@+id/CB.task.stdlist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:focusable="false"
+        android:gravity="top"
+        android:textSize="40sp" />
     
     <TextView
         android:id="@+id/TV.task.stdlist.name"
-        style="@style/TV.std"
-        android:layout_toRightOf="@id/CB.task.stdlist"
+        style="@style/TV.std.bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@id/CB.task.stdlist"
+        android:layout_toRightOf="@id/CB.task.stdlist"
         android:ellipsize="marquee"
-        android:text="Navn"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="Navn" />
     
     <TextView
         android:id="@+id/TV.task.stdlist.ident"
@@ -46,38 +49,39 @@
         android:text="Klasse"
         android:singleLine="true"/>
     
-    <TextView
-        android:id="@+id/TV.task.stdlist.handinDate"
-        style="@style/TV.std.S"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        android:layout_marginLeft="10sp"
-        android:layout_alignBottom="@id/TV.task.stdlist.ident"
-        android:layout_toEndOf="@id/TV.task.stdlist.class"
-        android:layout_toRightOf="@id/TV.task.stdlist.class"
-        android:text="Handin: {dd.MM.yyyy}"
-        android:singleLine="true"/>
-    
     <ImageView
         android:id="@+id/info"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_alignTop="@id/CB.task.stdlist"
+        android:layout_width="40dip"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"
+	    android:layout_marginBottom="10sp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:contentDescription="@string/info_desc"
         android:src="@drawable/info" />
 
     <ImageView
-        android:id="@+id/task"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:id="@+id/delete"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"
         android:layout_toLeftOf="@+id/info"
         android:contentDescription="@string/task_desc"
-        android:src="@drawable/task" />
- 
+        android:src="@drawable/delete" />
+
+    <TextView
+        android:id="@+id/TV.task.stdlist.handinDate"
+        style="@style/TV.std.M.bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/CB.task.stdlist"
+        android:layout_toEndOf="@id/TV.task.stdlist.class"
+        android:layout_toRightOf="@+id/CB.task.stdlist"
+        android:gravity="start"
+        android:singleLine="true"
+        android:text="Handin: {dd.MM.yyyy}" />
+
 </RelativeLayout>

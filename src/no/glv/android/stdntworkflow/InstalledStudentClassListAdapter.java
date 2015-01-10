@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,16 +23,13 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	/**  */
 	private static final String TAG = InstalledStudentClassListAdapter.class.getSimpleName();
 
-	private List<String> mClasses;
-
-
 	/**
 	 * 
 	 * @param context
 	 * @param resource
 	 */
-	private InstalledStudentClassListAdapter( Context context, int resource ) {
-		super( context, resource );
+	public InstalledStudentClassListAdapter( Context context ) {
+		this( context, R.layout.row_classes_list, DataHandler.GetInstance().getStudentClassNames() );
 	}
 
 	/**
@@ -40,9 +38,8 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	 * @param resource
 	 * @param objects
 	 */
-	public InstalledStudentClassListAdapter( Context context, int resource, List<String> objects ) {
+	private InstalledStudentClassListAdapter( Context context, int resource, List<String> objects ) {
 		super( context, resource, objects );
-		mClasses = objects;
 	}
 
 	@Override
@@ -52,7 +49,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 		}
 
 		StudentClassHolder holder = (StudentClassHolder) convertView.getTag();
-		holder.textView.setText( mClasses.get( position ).toString() );
+		holder.textView.setText( getItem( position ).toString() );
 		holder.ID = position;
 
 		return convertView;
@@ -73,7 +70,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 		TextView textView = (TextView) myView.findViewById( R.id.TV_studentClassName );
 
 		// Setting the StudentClassname as a TAG for this view
-		textView.setTag( mClasses.get( position ) );
+		textView.setTag( getItem( position ) );
 		textView.setOnClickListener( new View.OnClickListener() {
 
 			@Override

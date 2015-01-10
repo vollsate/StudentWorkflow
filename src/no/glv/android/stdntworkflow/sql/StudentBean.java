@@ -30,6 +30,8 @@ public class StudentBean implements Student {
 	public String adress;
 	public String postalCode;
 	public String grade;
+	
+	public String mPhone;
 
 	private String studentClass;
 
@@ -165,5 +167,15 @@ public class StudentBean implements Student {
 	@Override
 	public void addParents( List<Parent> parents ) {
 		this.parents.addAll( parents );
+	}
+
+	@Override
+	public String getPhone() {
+		return mPhone;
+	}
+
+	@Override
+	public void setPhone( String val ) {
+		this.mPhone = val;
 	}
 }

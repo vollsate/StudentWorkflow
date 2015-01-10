@@ -1,7 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTaskChangedListener;
@@ -29,7 +27,6 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
-	private boolean needUpdate = false;
 	private boolean initiated;
 
 	DataHandler dataHandler;
@@ -61,31 +58,19 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 
 		setTitle( "Student manager" );
 		init();
-		/*
-		 * classesFragment = new InstalledClassesFragment( );
-		 * getFragmentManager().beginTransaction().add( R.id.activity_main,
-		 * classesFragment ).commit();
-		 */
 		createListView();
 	}
 
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-
-		if ( !needUpdate ) return;
-
-		createListView();
-		needUpdate = false;
+		update();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		if ( !needUpdate ) return;
-
-		createListView();
+		update();
 	}
 
 	/**
@@ -94,21 +79,26 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 	private void createListView() {
 		Log.d( TAG, "Creating ListView" );
 
-		ListView listView;
-		List<String> strClasses = dataHandler.getStudentClassNames();
-		listView = (ListView) findViewById( R.id.LV_classes );
-		classesAdapter = new InstalledStudentClassListAdapter( this, R.layout.row_classes_list, strClasses );
+		ListView listView = (ListView) findViewById( R.id.LV_classes );
+		classesAdapter = new InstalledStudentClassListAdapter( this );
 		listView.setAdapter( classesAdapter );
 
-		List<String> strTasks = dataHandler.getTaskNames();
 		listView = (ListView) findViewById( R.id.LV_tasks );
-		taskAdapter = new InstalledTaskListAdapter( this, R.layout.row_tasks_list, strTasks );
+		taskAdapter = new InstalledTaskListAdapter( this );
 		listView.setAdapter( taskAdapter );
 	}
-	
+
+	/**
+	 * 
+	 */
 	private void update() {
-		createListView();
-		needUpdate = false;
+		classesAdapter.clear();
+		classesAdapter.addAll( dataHandler.getStudentClassNames() );
+		classesAdapter.notifyDataSetChanged();
+
+		taskAdapter.clear();
+		taskAdapter.addAll( dataHandler.getTaskNames() );
+		taskAdapter.notifyDataSetChanged();
 	}
 
 	/**
@@ -155,15 +145,11 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 
 	@Override
 	public void onStudentClassUpdate( StudentClass stdClass, int mode ) {
-		if ( classesAdapter != null ) classesAdapter.notifyDataSetChanged();
-
 		update();
 	}
 
 	@Override
 	public void onTaskChange( Task newTask, int mode ) {
-		if ( taskAdapter != null ) taskAdapter.notifyDataSetChanged();
-
 		update();
 	}
 

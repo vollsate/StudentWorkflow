@@ -31,7 +31,6 @@ import no.glv.android.stdntworkflow.sql.ParentBean;
 import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
-import no.glv.android.stdntworkflow.sql.StudentInTaskTbl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Activity;
 import android.content.Context;
@@ -122,15 +121,14 @@ public class DataHandler {
 		stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
 		stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
 		taskChangeListeners = new HashMap<String, DataHandler.OnTaskChangedListener>( 2 );
+		
+		tasks = new TreeMap<String, Task>( );
 	}
 
 	/**
 	 * 
 	 */
 	private void loadTasks() {
-		tasks = new TreeMap<String, Task>( );
-		tasks.comparator();
-
 		List<Task> list = db.loadTasks();
 		Iterator<Task> it = list.iterator();
 
@@ -154,6 +152,7 @@ public class DataHandler {
 		while ( it.hasNext() ) {
 			StudentTask stdTask = it.next();
 			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
+			stdTask.setTaskName( task.getName() );
 		}
 		
 		Collections.sort( stdTasks, new DataComparator.StudentTaskComparator() );
@@ -372,7 +371,7 @@ public class DataHandler {
 		if ( tasks.containsKey( task.getName() ) )
 			throw new IllegalArgumentException( "Task " + task.getName() + " already exists" );
 
-		if ( db.writeTask( task ) ) {
+		if ( db.insertTask( task ) ) {
 			List<StudentTask> stds = db.loadStudentsInTask( task );
 			fillStudentTaskWithStudent( task, stds );
 			task.addStudentTasks( stds );
@@ -388,12 +387,26 @@ public class DataHandler {
 	 * 
 	 * @param stdTask
 	 */
-	public void handin( StudentTask stdTask ) {
-		Task task = tasks.get( stdTask.getTask() );
+	public void handIn( StudentTask stdTask ) {
+		Task task = tasks.get( stdTask.getTaskName() );
 		if ( task.handIn( stdTask.getIdent()  ) )
 			db.updateStudentTask( stdTask );
 	}
+	
+	public void handIn( StudentTask stdTask, int mode ) {
+		switch ( mode ) {
+		case StudentTask.MODE_HANDIN:
+			handIn( stdTask );			
+			break;
 
+		case StudentTask.MODE_PENDING:
+			stdTask.handIn( mode );
+			break;
+
+		default:
+			break;
+		}		
+	}
 	/**
 	 * 
 	 * @param task
@@ -429,12 +442,35 @@ public class DataHandler {
 	/**
 	 * 
 	 */
+	public void commitTask(Task task) {
+		db.insertTask( task );
+	}
+	
+	/**
+	 * 
+	 * @param task
+	 */
+	public void commitStudentsTasks( Task task ) {
+		List<StudentTask> list = task.getStudentsToUpdate();
+		
+		if ( list != null && ! list.isEmpty() )
+			db.updateStudentTasks( list );
+		
+		list = task.getRemovedStudents();
+		if ( list != null && ! list.isEmpty() )
+			db.deleteStudentTasks( list );
+		
+	}
+	
+	/**
+	 * 
+	 */
 	public void commitTasks() {
 		Iterator<Task> it = tasks.values().iterator();
 
 		while ( it.hasNext() ) {
 			Task task = it.next();
-			db.writeTask( task );
+			db.insertTask( task );
 		}
 	}
 
@@ -772,7 +808,7 @@ public class DataHandler {
 		String lName = bean.getLastName().substring( 0, 4 );
 
 		String year = bean.getBirth();
-		year = year.substring( 2, 4 );
+		year = year.substring( year.length() - 2, year.length() );
 
 		ident = year + fName + lName;
 		ident = ident.replace( 'æ', 'e' );

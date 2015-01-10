@@ -1,9 +1,12 @@
 package no.glv.android.stdntworkflow.sql;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.TreeMap;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
@@ -17,6 +20,9 @@ public class TaskImpl implements Task {
 	private String mDesc;
 	private Date mExpirationDate;
 	private int mType;
+	
+	private boolean mModified;
+	private TreeMap<String, StudentTask> mModifiedStudents;
 
 	private TreeMap<String, StudentTask> studentsMap;
 
@@ -24,6 +30,10 @@ public class TaskImpl implements Task {
 	private TreeMap<String, StudentTask> studentsMapPending;
 
 	private List<String> mClasses;
+	
+	private List<TaskChangedListener> listeners;
+	
+	private List<StudentTask> removedStudents;
 
 	/**
 	 * Package protected constructor.
@@ -32,6 +42,23 @@ public class TaskImpl implements Task {
 		mClasses = new ArrayList<String>();
 		studentsMap = new TreeMap<String, StudentTask>();
 		studentsMapPending = new TreeMap<String, StudentTask>();
+		
+		mModified = false;
+		mModifiedStudents = new TreeMap<String, StudentTask>();
+		
+		listeners = new LinkedList<Task.TaskChangedListener>();
+	}
+	
+	@Override
+	public void addTaskChangedListener( TaskChangedListener listener ) {
+		listeners.add( listener );
+	}
+
+	@Override
+	public void notifyStudentRemoved(Student std ) {
+		Iterator<TaskChangedListener> it = listeners.iterator();
+		while ( it.hasNext() ) 
+			it.next().onStudentRemove( std );
 	}
 
 	@Override
@@ -71,12 +98,31 @@ public class TaskImpl implements Task {
 
 	@Override
 	public boolean handIn( String ident, int mode ) {
-		StudentTask stdTask = studentsMapPending.remove( ident );
-		if ( stdTask == null ) return false;
+		StudentTask stdTask = null;
 		
-		stdTask.handIn();
-		studentsMap.put( ident, stdTask );
+		switch ( mode ) {
+		case HANDIN_DATE:
+			stdTask = studentsMapPending.remove( ident );
+			if ( stdTask == null ) return false;
+
+			stdTask.handIn();
+			studentsMap.put( ident, stdTask );
+			break;
+
+		case HANDIN_CANCEL:
+			stdTask = studentsMap.remove( ident );
+			if ( stdTask == null ) return false;
+
+			stdTask.handIn( StudentTask.MODE_PENDING );
+			studentsMapPending.put( ident, stdTask );
+			break;
+
+		default:
+			return false;
+		}
 		
+		mModifiedStudents.put( stdTask.getIdent(), stdTask );
+		mModified = true;
 		return true;
 	}
 
@@ -123,8 +169,15 @@ public class TaskImpl implements Task {
 	public boolean removeStudent( String ident ) {
 		if ( !studentsMapPending.containsKey( ident ) ) return false;
 
-		studentsMapPending.remove( ident );
+		if ( removedStudents == null ) removedStudents = new LinkedList<StudentTask>();
+		removedStudents.add( studentsMapPending.remove( ident ) );
+		
 		return true;
+	}
+	
+	@Override
+	public List<StudentTask> getRemovedStudents() {
+		return removedStudents;
 	}
 
 	/**
@@ -241,6 +294,34 @@ public class TaskImpl implements Task {
 		while ( it.hasNext() ) {
 			addStudentTask( it.next() );
 		}
+	}
+
+	@Override
+	public boolean isStudentsModified() {
+		return mModified;
+	}
+
+	@Override
+	public void markAsUpdated() {
+		if (mModifiedStudents != null )
+			mModifiedStudents.clear();
+		
+		if ( removedStudents != null )
+			removedStudents.clear();
+		
+		mModified = false;
+	}
+
+	@Override
+	public List<StudentTask> getStudentsToUpdate() {
+		return new LinkedList<StudentTask>( mModifiedStudents.values() );
+	}
+
+	@Override
+	public boolean isExpired() {
+		Date today = Calendar.getInstance( Locale.getDefault() ).getTime();
+		
+		return mExpirationDate.before( today );
 	}
 
 }

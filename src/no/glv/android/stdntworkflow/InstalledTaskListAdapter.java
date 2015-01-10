@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,17 +23,18 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	/**  */
 	private static final String TAG = InstalledTaskListAdapter.class.getSimpleName();
 
-	private List<String> mTasks;
+	public InstalledTaskListAdapter( Context context ) {
+		this( context, R.layout.row_tasks_list, DataHandler.GetInstance().getTaskNames() );
+	}
 
-	/**
+		/**
 	 * 
 	 * @param context
 	 * @param resource
 	 * @param objects
 	 */
-	public InstalledTaskListAdapter( Context context, int resource, List<String> objects ) {
+	private InstalledTaskListAdapter( Context context, int resource, List<String> objects ) {
 		super( context, resource, objects );
-		mTasks = objects;
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 		}
 
 		StudentClassHolder holder = (StudentClassHolder) convertView.getTag();
-		holder.textView.setText( mTasks.get( position ).toString() );
+		holder.textView.setText( getItem( position ).toString() );
 		holder.ID = position;
 
 		return convertView;
@@ -58,7 +60,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	private View createView( Context context, ViewGroup parent, int position ) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		View myView = inflater.inflate( R.layout.row_tasks_list, parent, false );
-		myView.setTag( mTasks.get( position ) );
+		myView.setTag( getItem( position ) );
 		myView.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
@@ -76,7 +78,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 		TextView textView = (TextView) myView.findViewById( R.id.TV_main_taskName );
 
 		// Setting the StudentClassname as a TAG for this view
-		textView.setTag( mTasks.get( position ) );
+		textView.setTag( getItem( position ) );
 		textView.setOnClickListener( new View.OnClickListener() {
 
 			@Override
@@ -95,7 +97,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 
 		return myView;
 	}
-
+	
 	/**
 	 * 
 	 * @author GleVoll
