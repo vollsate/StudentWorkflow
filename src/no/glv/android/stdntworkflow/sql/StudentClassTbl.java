@@ -93,6 +93,18 @@ class StudentClassTbl {
 
 		db.close();
 	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @param db
+	 * @return
+	 */
+	public static int Delete( String name, SQLiteDatabase db ) {
+		String sql = COL_NAME + "=?";
+		
+		return db.delete( TBL_NAME, sql, new String[]{ name } );
+	}
 
 	/**
 	 * 

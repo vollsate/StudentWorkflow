@@ -16,6 +16,9 @@ import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class TaskImpl implements Task {
 
+	/** TaskImpl.java */
+	private static final long serialVersionUID = -5893005256995867042L;
+	
 	private String mName;
 	private String mDesc;
 	private Date mExpirationDate;
@@ -23,6 +26,8 @@ public class TaskImpl implements Task {
 	
 	private boolean mModified;
 	private TreeMap<String, StudentTask> mModifiedStudents;
+	
+	private int mCount;
 
 	private TreeMap<String, StudentTask> studentsMap;
 
@@ -31,7 +36,9 @@ public class TaskImpl implements Task {
 
 	private List<String> mClasses;
 	
-	private List<TaskChangedListener> listeners;
+	private List<OnStudentRemovedListener> stdRemListeners;
+	
+	private List<OnStudentHandInListener> stdHandInListeners;
 	
 	private List<StudentTask> removedStudents;
 
@@ -46,17 +53,27 @@ public class TaskImpl implements Task {
 		mModified = false;
 		mModifiedStudents = new TreeMap<String, StudentTask>();
 		
-		listeners = new LinkedList<Task.TaskChangedListener>();
+		stdRemListeners = new LinkedList<Task.OnStudentRemovedListener>();
+		stdHandInListeners = new LinkedList<Task.OnStudentHandInListener>();
 	}
 	
 	@Override
-	public void addTaskChangedListener( TaskChangedListener listener ) {
-		listeners.add( listener );
+	public void addOnStudentHandIndListener( OnStudentHandInListener listener ) {
+		if ( stdHandInListeners.contains( listener ) ) return;
+		
+		stdHandInListeners.add( listener );
+	}
+	
+	@Override
+	public void addOnStudentRemovedListener( OnStudentRemovedListener listener ) {
+		if ( stdRemListeners.contains( listener ) ) return;
+		
+		stdRemListeners.add( listener );
 	}
 
 	@Override
 	public void notifyStudentRemoved(Student std ) {
-		Iterator<TaskChangedListener> it = listeners.iterator();
+		Iterator<OnStudentRemovedListener> it = stdRemListeners.iterator();
 		while ( it.hasNext() ) 
 			it.next().onStudentRemove( std );
 	}
@@ -123,7 +140,18 @@ public class TaskImpl implements Task {
 		
 		mModifiedStudents.put( stdTask.getIdent(), stdTask );
 		mModified = true;
+		
+		notifyHandInListeners( stdTask.getStudent() );
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param std
+	 */
+	private void notifyHandInListeners( Student std ) {
+		Iterator<OnStudentHandInListener> it = stdHandInListeners.iterator();
+		while ( it.hasNext() ) it.next().onStudentHandIn( std );
 	}
 
 	@Override
@@ -172,6 +200,7 @@ public class TaskImpl implements Task {
 		if ( removedStudents == null ) removedStudents = new LinkedList<StudentTask>();
 		removedStudents.add( studentsMapPending.remove( ident ) );
 		
+		mCount--;
 		return true;
 	}
 	
@@ -209,6 +238,7 @@ public class TaskImpl implements Task {
 		else
 			studentsMapPending.put( stdTask.getIdent(), stdTask );
 		
+		mCount++;
 		return true;
 	}
 
@@ -263,6 +293,10 @@ public class TaskImpl implements Task {
 	@Override
 	public List<String> getStudentsPending() {
 		return new ArrayList<String>( studentsMapPending.keySet() );
+	}
+	
+	public int getStudentsPendingCount() {
+		return studentsMapPending.size();
 	}
 
 	@Override
@@ -322,6 +356,11 @@ public class TaskImpl implements Task {
 		Date today = Calendar.getInstance( Locale.getDefault() ).getTime();
 		
 		return mExpirationDate.before( today );
+	}
+
+	@Override
+	public int getStudentCount() {
+		return mCount;
 	}
 
 }

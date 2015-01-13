@@ -44,9 +44,6 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 		int id = item.getItemId();
 
 		switch ( id ) {
-		case R.id.action_writeToLocal:
-			break;
-
 		default:
 			break;
 		}
@@ -77,7 +74,7 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 	 * 
 	 */
 	public void startStudentListActivity() {
-		Intent intent = new Intent( this, StudentClassListActivity.class );
+		Intent intent = new Intent( this, StdClassListActivity.class );
 		BaseActivity.PutStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
 	}

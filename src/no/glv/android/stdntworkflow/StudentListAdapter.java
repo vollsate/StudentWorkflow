@@ -1,5 +1,7 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.List;
+
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Student;
@@ -28,21 +30,13 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	/**  */
 	private static final String TAG = StudentListAdapter.class.getSimpleName();
 
-	/** */
-	private Student[] beans;
-
-	private Context context;
-
 	/**
 	 * 
 	 * @param context
 	 * @param objects
 	 */
 	public StudentListAdapter( Context context, Student[] objects ) {
-		super( context, R.layout.row_student_list, objects );
-
-		this.beans = objects;
-		this.context = context;
+		super( context, R.layout.row_stdclass_list, objects );
 	}
 
 	/**
@@ -50,10 +44,10 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	 */
 	@Override
 	public View getView( int position, View convertView, ViewGroup parent ) {
-		Student student = beans[position];
+		Student student = getItem( position );
 
 		if (convertView == null)
-			convertView = createView( context, parent, student);
+			convertView = createView( parent, student);
 		
 		ViewHolder holder = (ViewHolder) convertView.getTag();
 		holder.imgInfoView.setTag( student );
@@ -76,9 +70,10 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	 * @param parent
 	 * @return
 	 */
-	private View createView( Context context, ViewGroup parent, Student student ) {
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.row_student_list, parent, false );
+	private View createView( ViewGroup parent, Student student ) {
+		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+		View myView = inflater.inflate( R.layout.row_stdclass_list, parent, false );
+		
 		ViewHolder holder = new ViewHolder();
 
 		ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
@@ -97,7 +92,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 			}
 		} );
 
-		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.delete );
+		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
 		imgInfoView.setOnClickListener( new View.OnClickListener() {
 
 			@Override
@@ -124,15 +119,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		myView.setTag( holder );
 
 		return myView;
-	}
-
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public Student getBean( int id ) {
-		return beans[id];
 	}
 
 	static class ViewHolder {

@@ -76,7 +76,7 @@ public class BaseActivity extends ActionBarActivity {
 	 * 
 	 * @return
 	 */
-	public static StudentClass getStudentClassExtra( Intent intent ) {
+	public static StudentClass GetStudentClassExtra( Intent intent ) {
 		Bundle bundle = intent.getExtras();
 		String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 

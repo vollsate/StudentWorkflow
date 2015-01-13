@@ -47,25 +47,25 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public class TaskActivity extends BaseTabActivity implements Task.TaskChangedListener {
+public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemovedListener {
 
 	private BaseTabFragment[] fragments;
 	TaskClassesFragment classesFragment;
 	TaskInfoFragment infoFragment;
 
 	Task mTask;
-	
+
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 
 		mTask = getDataHandler().getTask( getTaskName() );
-		mTask.addTaskChangedListener( this );
-}
-	
+		mTask.addOnStudentRemovedListener( this );
+	}
+
 	@Override
 	public void onStudentRemove( Student std ) {
-		classesFragment.adapter.update();
+		classesFragment.getaAdapter().update();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 		if ( fragments == null ) {
 			classesFragment = new TaskClassesFragment();
 			infoFragment = new TaskInfoFragment();
-			
+
 			fragments = new BaseTabFragment[] { infoFragment, classesFragment };
 		}
 
@@ -122,13 +122,17 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 			if ( getDataHandler().deleteTask( mTask.getName() ) ) finish();
 			return true;
 
+		case R.id.task_action_close:
+			getDataHandler().closeTask( mTask.getName() );
+			return true;
+
 		default:
 			break;
 		}
 
 		return super.onOptionsItemSelected( item );
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -160,11 +164,11 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 	@Override
 	public void onTabReselected( ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
+
 		if ( mTask.isStudentsModified() ) {
 			getDataHandler().commitStudentsTasks( mTask );
 		}
@@ -175,13 +179,16 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener {
-		
+	public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener,
+			Task.OnStudentHandInListener, Task.OnStudentRemovedListener {
+
 		private Task task;
 
 		@Override
 		public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			Task task = getTask();
+			task = getTask();
+			task.addOnStudentHandIndListener( this );
+			task.addOnStudentRemovedListener( this );
 
 			getTextView( R.id.TV_task_header ).setText( getString( R.string.task_header ) );
 
@@ -194,37 +201,52 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 
 				@Override
 				public void onClick( View v ) {
-					Task task = getTask();
 					DatePickerDialogHelper.OpenDatePickerDialog( task.getDate(), getActivity(), TaskInfoFragment.this,
 							false, true );
 
 				}
 			} );
 
+			setCounters();
+
 			return rootView;
 		}
-		
+
+		private void setCounters() {
+			getTextView( R.id.TV_task_studentCount ).setText( String.valueOf( task.getStudentCount() ) );
+			getTextView( R.id.TV_task_pendingCount ).setText( String.valueOf( task.getStudentsPendingCount() ) );
+			getTextView( R.id.TV_task_handinCount ).setText( String.valueOf( task.getStudentsHandedInCount() ) );
+		}
+
+		@Override
+		public void onStudentHandIn( Student std ) {
+			setCounters();
+		}
+
+		@Override
+		public void onStudentRemove( Student std ) {
+			setCounters();
+		}
+
 		/**
 		 * 
 		 * @return
 		 */
 		protected Task getTask() {
-			if ( task == null ) {			
+			if ( task == null ) {
 				String taskName = ((TaskActivity) getBaseTabActivity()).getTaskName();
 				task = getDataHandler().getTask( taskName );
 			}
-			
+
 			return task;
 		}
 
 		@Override
 		public void onDateSet( DatePicker view, int year, int monthOfYear, int dayOfMonth ) {
-			Task task = getTask();
-			
 			Calendar cal = Calendar.getInstance();
 			cal.set( year, monthOfYear, dayOfMonth );
 			task.setDate( cal.getTime() );
-			
+
 			getEditText( R.id.ET_task_date ).setText( BaseActivity.GetDateAsString( task.getDate() ) );
 		}
 
@@ -238,14 +260,14 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class TaskClassesFragment extends BaseTabFragment {
-		
-		StudentListAdapter adapter;
+
+		static StudentListAdapter adapter;
 
 		@Override
 		public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			ListView listView = getListView( R.id.LV_task_students );
 			Task task = getDataHandler().getTask( ((TaskActivity) getBaseTabActivity()).getTaskName() );
-	
+
 			adapter = new StudentListAdapter( getActivity(), BuildStudentList( task ) );
 			adapter.setTask( task );
 			listView.setAdapter( adapter );
@@ -257,11 +279,21 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 		protected int getRootViewID() {
 			return R.layout.fragment_task_students;
 		}
-		
-		ArrayAdapter<StudentTask> getaAdapter() {
+
+		StudentListAdapter getaAdapter() {
 			return adapter;
 		}
 		
+		@Override
+		public void onResume() {
+			super.onResume();
+		}
+		
+		@Override
+		public void onCreate( Bundle savedInstanceState ) {
+			super.onCreate( savedInstanceState );
+		}
+
 	}
 
 	/**
@@ -273,13 +305,13 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 
 		private List<StudentTask> students;
 		private Task mTask;
-		
+
 		public StudentListAdapter( Context ctx, List<StudentTask> stdList ) {
 			super( ctx, R.layout.row_task_stdlist, stdList );
 
 			this.students = stdList;
 		}
-		
+
 		/**
 		 * 
 		 * @param task
@@ -296,11 +328,10 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 			if ( convertView == null ) {
 				convertView = createView( getContext(), parent, stdTask );
 			}
-			
-			if ( position % 2 == 0 ) 
-				convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_dark ) );
-			else
-				convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
+
+			if ( position % 2 == 0 ) convertView.setBackgroundColor( getContext().getResources().getColor(
+					R.color.task_stdlist_dark ) );
+			else convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
 
 			ViewHolder holder = (ViewHolder) convertView.getTag();
 			holder.nameTV.setTag( stdTask );
@@ -310,10 +341,8 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 			holder.handinDateTV.setTag( stdTask );
 			holder.imgInfoView.setTag( stdTask );
 			holder.imgDeleteView.setTag( stdTask );
-			if ( stdTask.isHandedIn() )
-				holder.imgDeleteView.setVisibility( View.INVISIBLE );
-			else
-				holder.imgDeleteView.setVisibility( View.VISIBLE );
+			if ( stdTask.isHandedIn() ) holder.imgDeleteView.setVisibility( View.INVISIBLE );
+			else holder.imgDeleteView.setVisibility( View.VISIBLE );
 			holder.chkBox.setTag( stdTask );
 
 			holder.id = position;
@@ -322,39 +351,33 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 			holder.identTV.setText( std.getIdent() );
 			holder.classTV.setText( std.getStudentClass() );
 			holder.chkBox.setChecked( stdTask.isHandedIn() );
-			
-			boolean isExpired = DataHandler.GetInstance().getTask( stdTask.getTaskName() ).isExpired();
-			String handinDate = getContext().getResources().getString( R.string.task_handin ) ;
-			
-			if ( stdTask.isHandedIn() )
-				handinDate += DBUtils.ConvertToString( stdTask.getHandInDate() );
-			else  if ( ! isExpired )
-				handinDate = getContext().getResources().getString( R.string.task_pending ) ;
-			else
-				handinDate = getContext().getResources().getString( R.string.task_expired ) ;
-			
+
+			boolean isExpired = mTask.isExpired();
+			String handinDate = getContext().getResources().getString( R.string.task_handin );
+
+			if ( stdTask.isHandedIn() ) handinDate += DBUtils.ConvertToString( stdTask.getHandInDate() );
+			else if ( !isExpired ) handinDate = getContext().getResources().getString( R.string.task_pending );
+			else handinDate = getContext().getResources().getString( R.string.task_expired );
+
 			holder.handinDateTV.setText( handinDate );
-			
+
 			setColors( holder, stdTask );
-			
+
 			return convertView;
 		}
-		
+
 		/**
 		 * 
 		 * @param holder
 		 * @param stdTask
 		 */
-		private void setColors( ViewHolder holder, StudentTask stdTask ) {			
-			if ( stdTask.isHandedIn() )
-				holder.handinDateTV.setTextColor( Color.BLACK );
-			
-			else if ( DataHandler.GetInstance().getTask( stdTask.getTaskName() ).isExpired() ) 
-				holder.handinDateTV.setTextColor( Color.RED );
-			else
-				holder.handinDateTV.setTextColor( Color.BLUE );		
+		private void setColors( ViewHolder holder, StudentTask stdTask ) {
+			if ( stdTask.isHandedIn() ) holder.handinDateTV.setTextColor( Color.BLACK );
+
+			else if ( mTask.isExpired() ) holder.handinDateTV.setTextColor( Color.RED );
+			else holder.handinDateTV.setTextColor( Color.BLUE );
 		}
-		
+
 		/**
 		 * 
 		 * @param context
@@ -373,40 +396,40 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 				@Override
 				public void onClick( View v ) {
 					Intent intent = new Intent( getContext(), StdInfoActivity.class );
-					
-					StudentTask stdTask = ( StudentTask ) v.getTag();
+
+					StudentTask stdTask = (StudentTask) v.getTag();
 					BaseActivity.putIdentExtra( stdTask.getStudent(), intent );
 
 					getContext().startActivity( intent );
 				}
 			} );
 
-			holder.imgDeleteView = BaseActivity.GetImageView( myView,  R.id.delete );
+			holder.imgDeleteView = BaseActivity.GetImageView( myView, R.id.delete );
 			holder.imgDeleteView.setOnClickListener( new View.OnClickListener() {
 
 				@Override
 				public void onClick( View v ) {
-					final StudentTask stdTask = ( StudentTask ) v.getTag();
-					
+					final StudentTask stdTask = (StudentTask) v.getTag();
+
 					AlertDialog.Builder builder = new AlertDialog.Builder( getContext() );
 					String msg = getContext().getResources().getString( R.string.task_std_delete_msg );
 					msg = msg.replace( "{name}", stdTask.getStudent().getFirstName() );
-					
+
 					builder.setMessage( msg ).setTitle( R.string.task_std_delete_title );
 					builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
-						
+
 						@Override
 						public void onClick( DialogInterface dialog, int which ) {
-							Task task = DataHandler.GetInstance().getTask( stdTask.getTaskName() );
+							Task task = mTask;
 							task.removeStudent( stdTask.getIdent() );
 							DataHandler.GetInstance().commitStudentsTasks( task );
 							task.markAsUpdated();
 							task.notifyStudentRemoved( stdTask.getStudent() );
 						}
 					} );
-					
+
 					builder.setNegativeButton( "Avbryt", null );
-					
+
 					AlertDialog dialog = builder.create();
 					dialog.show();
 				}
@@ -414,18 +437,17 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 
 			holder.chkBox = BaseActivity.GetCheckBox( myView, R.id.CB_task_stdlist );
 			holder.chkBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
-				
+
 				@Override
 				public void onCheckedChanged( CompoundButton v, boolean isChecked ) {
-					StudentTask stdTask = ( StudentTask ) v.getTag();
-					
+					StudentTask stdTask = (StudentTask) v.getTag();
+
 					if ( stdTask.isHandedIn() == isChecked ) return;
-					
-					Task task = DataHandler.GetInstance().getTask( stdTask.getTaskName() );
-					
+
+					Task task = mTask;
 					if ( isChecked ) task.handIn( stdTask.getIdent() );
 					else task.handIn( stdTask.getIdent(), Task.HANDIN_CANCEL );
-					
+
 					update();
 				}
 			} );
@@ -434,7 +456,7 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 			holder.identTV = (TextView) myView.findViewById( R.id.TV_task_stdlist_ident );
 			holder.classTV = (TextView) myView.findViewById( R.id.TV_task_stdlist_class );
 			holder.handinDateTV = (TextView) myView.findViewById( R.id.TV_task_stdlist_handinDate );
-			
+
 			myView.setTag( holder );
 
 			return myView;
@@ -448,7 +470,7 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 			clear();
 			addAll( students );
 		}
-		
+
 		@Override
 		public void notifyDataSetChanged() {
 			super.notifyDataSetChanged();
@@ -472,7 +494,7 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 		CheckBox chkBox;
 
 	}
-	
+
 	/**
 	 * 
 	 * @param task
@@ -481,7 +503,14 @@ public class TaskActivity extends BaseTabActivity implements Task.TaskChangedLis
 	static List<StudentTask> BuildStudentList( Task task ) {
 		List<StudentTask> stdTasks = task.getStudentsInTask();
 		Collections.sort( stdTasks, new DataComparator.StudentTaskComparator( DataComparator.SORT_IDENT_ASC ) );
-		
+
 		return stdTasks;
+	}
+
+	static final Intent CreateActivityIntent( String taskName, Context ctx ) {
+		Intent intent = new Intent( ctx, TaskActivity.class );
+		BaseActivity.PutTaskNameExtra( taskName, intent );
+
+		return intent;
 	}
 }

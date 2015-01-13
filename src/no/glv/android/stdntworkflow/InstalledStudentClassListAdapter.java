@@ -29,7 +29,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	 * @param resource
 	 */
 	public InstalledStudentClassListAdapter( Context context ) {
-		this( context, R.layout.row_classes_list, DataHandler.GetInstance().getStudentClassNames() );
+		this( context, R.layout.row_installed_class, DataHandler.GetInstance().getStudentClassNames() );
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 	 */
 	private View createView( Context context, ViewGroup parent, int position ) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.row_classes_list, parent, false );
+		View myView = inflater.inflate( R.layout.row_installed_class, parent, false );
 		StudentClassHolder holder = new StudentClassHolder();
 
 		TextView textView = (TextView) myView.findViewById( R.id.TV_studentClassName );
@@ -77,7 +77,7 @@ public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 			public void onClick( View v ) {
 				Log.d( TAG, "" + v.getTag() );
 
-				Intent intent = new Intent( getContext(), StudentClassListActivity.class );
+				Intent intent = new Intent( getContext(), StdClassListActivity.class );
 				String studentClass = (String) v.getTag();
 				BaseActivity.PutStudentClassExtra( studentClass, intent );
 				InstalledStudentClassListAdapter.this.getContext().startActivity( intent );

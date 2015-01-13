@@ -12,13 +12,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
 /**
  * Main task that shows the first page.
  * 
  * - The user may look at a class or a task - A new task may be loaded - A new
  * class may be installed
+ * 
+ * Uses fragments to show the installed classes and installed tasks.
  * 
  * @author GleVoll
  *
@@ -31,23 +32,21 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 
 	DataHandler dataHandler;
 	InstalledClassesFragment classesFragment;
-
-	InstalledStudentClassListAdapter classesAdapter;
-	InstalledTaskListAdapter taskAdapter;
+	InstalledTasksFragment tasksFragment;
 
 	/**
-	 * Will initiate the Datahandler for the rest of the applicaion.
+	 * Will initiate the {@link DataHandler} for the rest of the application.
 	 * 
 	 * Listeners for StudentClass change and Task change are added
 	 */
 	private void init() {
 		if ( initiated ) return;
 
+		Log.d( TAG, "Initiating DataHandler" );
 		dataHandler = DataHandler.Init( getApplicationContext() );
 		dataHandler.addOnStudentClassChangeListener( this );
 		dataHandler.addOnTaskChangeListener( this );
 
-		getActionBar().setIcon( null );
 		initiated = true;
 	}
 
@@ -58,7 +57,28 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 
 		setTitle( "Student manager" );
 		init();
-		createListView();
+		// createListView();
+
+		if ( savedInstanceState == null ) {
+			classesFragment = new InstalledClassesFragment();
+			Bundle args = new Bundle();
+			args.putInt( InstalledClassesFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
+			classesFragment.setArguments( args );
+			getFragmentManager().beginTransaction().add( R.id.FR_installedClasses_container, classesFragment ).commit();
+
+			tasksFragment = new InstalledTasksFragment();
+			args = new Bundle();
+			args.putInt( InstalledTasksFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
+			tasksFragment.setArguments( args );
+			getFragmentManager().beginTransaction().add( R.id.FR_installedTasks_container, tasksFragment ).commit();
+		}
+		else {
+			classesFragment = (InstalledClassesFragment) getFragmentManager().findFragmentById(
+					R.id.FR_installedClasses_container );
+
+			tasksFragment = (InstalledTasksFragment) getFragmentManager().findFragmentById(
+					R.id.FR_installedTasks_container );
+		}
 	}
 
 	@Override
@@ -76,29 +96,7 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 	/**
 	 * 
 	 */
-	private void createListView() {
-		Log.d( TAG, "Creating ListView" );
-
-		ListView listView = (ListView) findViewById( R.id.LV_classes );
-		classesAdapter = new InstalledStudentClassListAdapter( this );
-		listView.setAdapter( classesAdapter );
-
-		listView = (ListView) findViewById( R.id.LV_tasks );
-		taskAdapter = new InstalledTaskListAdapter( this );
-		listView.setAdapter( taskAdapter );
-	}
-
-	/**
-	 * 
-	 */
 	private void update() {
-		classesAdapter.clear();
-		classesAdapter.addAll( dataHandler.getStudentClassNames() );
-		classesAdapter.notifyDataSetChanged();
-
-		taskAdapter.clear();
-		taskAdapter.addAll( dataHandler.getTaskNames() );
-		taskAdapter.notifyDataSetChanged();
 	}
 
 	/**
@@ -125,6 +123,7 @@ public class MainActivity extends Activity implements OnStudentClassChangeListen
 
 		case R.id.menu_resetDB:
 			Database.GetInstance( getApplicationContext() ).runCreate();
+			update();
 			break;
 
 		case R.id.menu_newTask:

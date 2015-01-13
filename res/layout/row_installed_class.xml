@@ -1,0 +1,9 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/TV.studentClassName"
+    style="@style/TV.std.L.blue"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5sp"
+    android:ellipsize="marquee"
+    android:singleLine="true"
+    android:textSize="20sp" />

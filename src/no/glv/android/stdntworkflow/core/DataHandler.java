@@ -282,7 +282,7 @@ public class DataHandler {
 	private void notifyStudentChagnge( Student std, int mode ) {
 		Iterator<OnStudentChangedListener> it = stdChangeListeners.values().iterator();
 		while ( it.hasNext() ) {
-			it.next().onStudenChange( std, mode );
+			it.next().onStudentChange( std, mode );
 		}
 	}
 
@@ -438,6 +438,13 @@ public class DataHandler {
 
 		return false;
 	}
+	
+	public boolean closeTask( String name ) {
+		Task task = getTask( name );
+		task.setType( Task.TASK_CLOSED );
+		
+		return db.updateTask( task, task.getName() );
+	}
 
 	/**
 	 * 
@@ -558,6 +565,29 @@ public class DataHandler {
 		
 		notifyStudentClassAdd( stdClass );		
 	}
+	
+	public boolean deleteStudentClass( String name ) {
+		if ( ! stdClasses.containsKey( name ) ) return false;
+		
+		if ( stdClassHasTasks( name ) ) return false;
+		
+		StudentClass stdcClass = stdClasses.remove( name );
+		db.deleteStdClass( stdcClass );
+		
+		
+		notifyStudentClassDel( stdcClass );
+		return true;
+	}
+	
+	public boolean stdClassHasTasks( String stdClassName ) {
+		Iterator<Task> it = tasks.values().iterator();
+		while (it.hasNext()) {
+			Task task = it.next();
+			if ( task.getClasses().contains( stdClassName ) ) return true;
+		}
+		
+		return false;
+	}
 
 	/**
 	 * 
@@ -577,6 +607,14 @@ public class DataHandler {
 	 */
 	private void notifyStudentClassAdd( StudentClass stdClass ) {
 		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
+	}
+
+	private void notifyStudentClassDel( StudentClass stdClass ) {
+		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_DEL );
+	}
+
+	private void notifyStudentClassUpdate( StudentClass stdClass ) {
+		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_UPD );
 	}
 
 	/**
@@ -787,7 +825,12 @@ public class DataHandler {
 		phone = new PhoneBean( Phone.MOBIL );
 		phone.setParentID( parent.getID() );
 		phone.setStudentID( bean.getIdent() );
-		phone.setNumber( Long.parseLong( params[index++] ) );
+		try {
+			phone.setNumber( Long.parseLong( params[index++] ) );
+		}
+		catch ( Exception e ) {
+			phone.setNumber( 0 );
+		}
 		parent.addPhone( phone );
 		parent.setMail( params[index++] );
 		
@@ -1089,7 +1132,7 @@ public class DataHandler {
 	 */
 	public static interface OnStudentChangedListener extends OnChangeListener {
 
-		public void onStudenChange( Student std, int mode );
+		public void onStudentChange( Student std, int mode );
 	}
 
 	/**

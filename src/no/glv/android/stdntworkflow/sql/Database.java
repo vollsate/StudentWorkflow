@@ -319,6 +319,16 @@ public class Database extends SQLiteOpenHelper {
 
 		StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
 	}
+	
+	public long deleteStdClass( StudentClass stdClass ) {
+		List<Student> list = stdClass.getStudents();
+		for ( int i=0 ; i<list.size(); i++) {
+			Student std = list.get( i );
+			StudentTbl.Delete( std.getIdent(), getWritableDatabase() );
+		}
+		
+		return StudentClassTbl.Delete( stdClass.getName(), getWritableDatabase() );
+	}
 
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------

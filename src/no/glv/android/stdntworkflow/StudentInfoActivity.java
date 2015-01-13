@@ -73,7 +73,7 @@ public class StudentInfoActivity extends BaseActivity implements OnStudentChange
 	}
 	
 	@Override
-	public void onStudenChange( Student std, int mode ) {
+	public void onStudentChange( Student std, int mode ) {
 		needUpdate = true;
 		createView();
 	}

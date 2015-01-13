@@ -1,0 +1,44 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".StudentListActivity" >
+
+    <item
+        android:id="@+id/menu.overflow"
+        android:icon="@drawable/ic_action_overflow"
+        android:orderInCategory="90"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings">
+        <menu>
+            <item
+                android:id="@+id/menu.stdList.sort"
+                android:orderInCategory="10"
+                android:title="Sorter ..."
+                app:showAsAction="never">
+                <menu>
+                    <item
+                        android:id="@+id/menu.stdList.sort.lastNameAsc"
+                        android:orderInCategory="1"
+                        android:showAsAction="never"
+                        android:title="Etternavn, stigenede"/>
+                    <item
+                        android:id="@+id/menu.stdList.sort.firstNameAsc"
+                        android:orderInCategory="1"
+                        android:showAsAction="never"
+                        android:title="Fornavn, stigenede"/>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/menu.stdlist.delete"
+                android:orderInCategory="100"
+                android:title="Slett"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/action_settings"
+                android:orderInCategory="100"
+                android:title="@string/action_settings"
+                app:showAsAction="never"/>
+            </menu>
+    </item>
+
+</menu>

@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
-import no.glv.android.stdntworkflow.sql.StudentBean;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -45,7 +42,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	 */
 	ViewPager mViewPager;
 
-	private Student bean;
+	Student bean;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -148,19 +145,19 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 			switch ( position ) {
 			case 0:
 				if ( fr == null ) {
-					fr = new StdInfoFragment(  ).setStudent( bean );;
+					fr = new StdInfoFragment(  );
 				}
 				break;
 
 			case 1:
 				if ( fr == null ) {
-					fr = new StdParentPrimaryFragment(  ).setStudent( bean );
+					fr = new StdParentPrimaryFragment(  );
 				}
 				break;
 
 			case 2:
 				if ( fr == null ) {
-					fr = new StdParentSecundaryFragment( ).setStudent( bean );
+					fr = new StdParentSecundaryFragment( );
 				}
 				break;
 
@@ -200,15 +197,9 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
 		private Student bean;
 		
-		public StdParentPrimaryFragment setStudent( Student bean ) {
-			this.bean = bean;
-			return this;
-		}
-
-
-
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+			bean = ( (StdInfoActivity) getActivity()).bean;
 			View rootView = inflater.inflate( R.layout.fragment_std_parent1, container, false );
 			List<Parent> parents = bean.getParents();
 			
@@ -263,15 +254,9 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
 		private Student bean;
 		
-		public StdParentSecundaryFragment setStudent( Student bean ) {
-			this.bean = bean;
-			return this;
-		}
-
-
-
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+			bean = ( (StdInfoActivity) getActivity()).bean;
 			View rootView = inflater.inflate( R.layout.fragment_std_parent2, container, false );
 			List<Parent> parents = bean.getParents();
 			
@@ -324,13 +309,9 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 		
 		private Student bean;
 		
-		public StdInfoFragment setStudent( Student bean ) {
-			this.bean = bean;
-			return this;
-		}
-
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+			bean = ( (StdInfoActivity) getActivity()).bean;
 			View rootView = inflater.inflate( R.layout.fragment_std_info, container, false );
 
 			TextView tv = (TextView) rootView.findViewById( R.id.TV_info_header );
@@ -354,6 +335,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 			editText = (EditText) rootView.findViewById( R.id.ET_info_adr );
 			editText.setText( bean.getAdress() );
 
+/*
 			Button btn = (Button) rootView.findViewById( R.id.BTN_info_update );
 			btn.setTag( bean );
 			btn.setOnClickListener( new View.OnClickListener() {
@@ -376,7 +358,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 					DataHandler.GetInstance().updateStudent( bean, oldIdent );
 				}
 			} );
-
+*/
 			return rootView;
 		}
 	}

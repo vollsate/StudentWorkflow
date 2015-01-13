@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.SettingsManager;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
@@ -169,10 +170,10 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 			holder = ( ViewHolder ) convertView.getTag();
 			
 			Student std = students.get( position ); 
-			String tag = std.getIdent();
-
+			String text = DataHandler.GetInstance().getSettingsManager().getNewTaskText( std );
+			
 			holder.studentIdent.setTag( std );
-			holder.studentIdent.setText( tag );
+			holder.studentIdent.setText( text );
 			
 			holder.cBox.setTag( std );
 			holder.cBox.setChecked( true );

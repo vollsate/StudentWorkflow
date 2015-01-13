@@ -5,7 +5,9 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.sql.Database;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,31 +27,40 @@ import android.widget.ListView;
  * @author GleVoll
  *
  */
-public class StudentClassListActivity extends BaseActivity implements OnClickListener, OnStudentChangedListener {
+public class StdClassListActivity extends Activity implements OnClickListener, OnStudentChangedListener {
 
-	private static final String TAG = StudentClassListActivity.class.getSimpleName();
+	private static final String TAG = StdClassListActivity.class.getSimpleName();
 	
 	private static final String CLASS_REPLACE = "{klasse}";
 
 	/**  */
 	private StudentClass stdClass;
 	
-	private boolean needUpdate;
+	StudentListAdapter adapter;
 	
 	/**
 	 * 
 	 */
-	public StudentClassListActivity() {
+	public StdClassListActivity() {
 		DataHandler.GetInstance().addOnStudentChangeListener( this );
 	}
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_studentclass_list );
+		setContentView( R.layout.activity_stdclass_list );
 		
 		Log.d( TAG, "onCreate" );
-		update();
+		
+		stdClass = BaseActivity.GetStudentClassExtra( this.getIntent() );
+
+		String title = getResources().getString( R.string.activity_studentList_title );
+		title = title.replace( CLASS_REPLACE, stdClass.getName() );
+		setTitle( title );
+
+		ListView listView = (ListView) findViewById( R.id.student_listview );
+		adapter = new StudentListAdapter( this, stdClass.toArray() );
+		listView.setAdapter( adapter );
 	}
 	
 	@Override
@@ -60,30 +71,12 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 		update();
 	}
 	
-	private void update() {
-		needUpdate = true;
-		createView();
-	}
-	
 	/**
 	 * 
 	 */
-	private void createView() {
-		if (! needUpdate ) return;
-		
-		ListView listView = (ListView) findViewById( R.id.student_listview );
-		stdClass = BaseActivity.getStudentClassExtra( this.getIntent() );
-		
-		String title = getResources().getString( R.string.activity_studentList_title );
-		title = title.replace( CLASS_REPLACE, stdClass.getName() );
-		
-		setTitle( title );
-
-		StudentListAdapter adapter = new StudentListAdapter( this, stdClass.toArray() );
-		adapter.notifyDataSetChanged();
-		listView.setAdapter( adapter );
-		
-		needUpdate = false;
+	private void update() {
+		//adapter.clear();
+		//adapter.addAll( stdClass.toArray() );
 	}
 	
 	@Override
@@ -95,16 +88,8 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 	}
 	
 	@Override
-	protected void onResumeFragments() {
-		super.onResumeFragments();
-		
-		Log.d( TAG, "onResumeFragments()" );
-	}
-	
-	@Override
-	public void onStudenChange( Student std, int mode ) {
-		needUpdate = true;
-		createView();
+	public void onStudentChange( Student std, int mode ) {
+		update();
 	}
 
 	/**
@@ -116,7 +101,7 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		getMenuInflater().inflate( R.menu.menu_student_list, menu );
+		getMenuInflater().inflate( R.menu.menu_stdclass_list, menu );
 		return true;
 	}
 
@@ -127,11 +112,12 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 		switch ( id ) {
 		case R.id.action_settings:
 			break;
-
-		case R.id.action_writeToLocal:
-			Database.GetInstance( getApplicationContext() ).insertStudentClass( stdClass );
-			return true;
 			
+		case R.id.menu_stdlist_delete:
+			DataHandler.GetInstance().deleteStudentClass( stdClass.getName() );
+			finish();
+			break;
+
 		case R.id.menu_stdList_sort_firstNameAsc:
 			DataHandler.GetInstance().getSettingsManager().sortByFirstNameAsc( stdClass.getName() );
 			update();
@@ -145,5 +131,18 @@ public class StudentClassListActivity extends BaseActivity implements OnClickLis
 		}
 		
 		return super.onOptionsItemSelected( item );		
+	}
+	
+	/**
+	 * 
+	 * @param stdClassName
+	 * @param ctx
+	 * @return
+	 */
+	static final Intent CreateActivityIntent(String stdClassName, Context ctx ) {
+		Intent intent = new Intent( ctx, StdClassListActivity.class );
+		BaseActivity.PutStudentClassExtra( stdClassName, intent );
+		
+		return intent;
 	}
 }

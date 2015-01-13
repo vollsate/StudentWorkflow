@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow.intrfc;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,12 +14,16 @@ import java.util.List;
  * @author GleVoll
  *
  */
-public interface Task {
+public interface Task extends Serializable {
 	
 	public static final int HANDIN_DATE = 0;
 	public static final int HANDIN_SICK = 1;
 	public static final int HANDIN_AWAY = 2;
 	public static final int HANDIN_CANCEL = 3;
+	
+	public static final int TASK_OPEN = 0;
+	public static final int TASK_CLOSED = 1;
+	public static final int TASK_EXPIRED  = 2;
 
 	public static final String EXTRA_TASKNAME =  BaseValues.EXTRA_BASEPARAM +  "task";
 
@@ -69,6 +74,10 @@ public interface Task {
 
 	public List<String> getStudentsPending();
 
+	public int getStudentsPendingCount();
+	
+	public int getStudentCount();
+	
 	public List<String> getClasses();
 
 	public void addClass( StudentClass stdClass );
@@ -103,7 +112,9 @@ public interface Task {
 	
 	public boolean isExpired();
 	
-	public void addTaskChangedListener( TaskChangedListener listener );
+	public void addOnStudentRemovedListener( OnStudentRemovedListener listener );
+	
+	public void addOnStudentHandIndListener( OnStudentHandInListener listener );
 	
 	public void notifyStudentRemoved( Student std );
 	
@@ -115,7 +126,7 @@ public interface Task {
 	 * @author GleVoll
 	 *
 	 */
-	static interface TaskChangedListener {
+	static interface OnStudentRemovedListener {
 		
 		/**
 		 * 
@@ -123,4 +134,15 @@ public interface Task {
 		 */
 		public void onStudentRemove( Student std );
 	}
+	
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
+	static interface OnStudentHandInListener {
+		
+		public void onStudentHandIn( Student std );
+	}
+	
 }

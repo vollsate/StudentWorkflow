@@ -26,18 +26,19 @@
     <ImageView
         android:id="@+id/info"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:contentDescription="@string/info_desc"
         android:src="@drawable/info" />
 
     <ImageView
-        android:id="@+id/delete"
+        android:id="@+id/task"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"
         android:layout_toLeftOf="@+id/info"
