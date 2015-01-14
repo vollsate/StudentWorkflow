@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.SettingsManager;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;

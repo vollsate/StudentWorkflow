@@ -2,7 +2,6 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTaskChangedListener;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
@@ -11,9 +10,12 @@ import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -82,7 +84,7 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter implements 
 				startActivity( intent );
 			}
 		} );
-		
+						
 		return textView;
 	}
 	

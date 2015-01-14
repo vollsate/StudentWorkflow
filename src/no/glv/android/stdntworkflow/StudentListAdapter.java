@@ -1,7 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Student;

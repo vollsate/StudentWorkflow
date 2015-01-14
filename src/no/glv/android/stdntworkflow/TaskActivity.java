@@ -149,7 +149,7 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 		mTask.setDate( date );
 
 		getDataHandler().updateTask( mTask, oldName );
-		classesFragment.adapter.notifyDataSetChanged();
+		TaskClassesFragment.adapter.notifyDataSetChanged();
 	}
 
 	@Override
