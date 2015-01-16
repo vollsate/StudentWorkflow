@@ -17,44 +17,43 @@ import android.view.MenuInflater;
  *
  */
 public class InstalledTasksFragment extends InstalledDataFragment {
-	
-	public InstalledTasksFragment() {
-		super();
-		DataHandler.GetInstance().addOnTaskChangeListener( this );		
+
+    public InstalledTasksFragment() {
+	super();
+	DataHandler.GetInstance().addOnTaskChangeListener( this );
+    }
+
+    @Override
+    public int getViewGruopLayoutID() {
+	return R.layout.fr_installedtasks;
+    }
+
+    @Override
+    public List<String> getNames() {
+	Iterator<Task> tasks = dataHandler.getTasks().iterator();
+	List<String> list = new ArrayList<String>();
+
+	while ( tasks.hasNext() ) {
+	    Task task = tasks.next();
+	    if ( task.getType() == Task.TASK_OPEN ) list.add( task.getName() );
 	}
 
-	@Override
-	public int getViewGruopLayoutID() {
-		return R.layout.fr_installedtasks;
-	}
+	return list;
+    }
 
-	@Override
-	public List<String> getNames() {
-		Iterator<Task> tasks = dataHandler.getTasks().iterator();
-		List<String> list = new ArrayList<String>(  );
+    @Override
+    public int getRowLayoutID() {
+	return R.layout.row_installed_class;
+    }
 
-		while ( tasks.hasNext() ) {
-			Task task = tasks.next();
-			if ( task.getType() == Task.TASK_OPEN )
-				list.add( task.getName() );
-		}
-		
-		return list;
-	}
+    @Override
+    public Intent createIntent( String name, Context context ) {
+	return TaskActivity.CreateActivityIntent( name, context );
+    }
 
-	@Override
-	public int getRowLayoutID() {
-		return R.layout.row_installed_class;
-	}
-
-	@Override
-	public Intent createIntent( String name, Context context ) {
-		return TaskActivity.CreateActivityIntent( name, context );
-	}
-
-	@Override
-	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
-		// super.onCreateOptionsMenu( menu, inflater );
-		inflater.inflate( R.menu.menu_fr_installedclasses, menu );
-	}
+    @Override
+    public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
+	// super.onCreateOptionsMenu( menu, inflater );
+	inflater.inflate( R.menu.menu_fr_installedclasses, menu );
+    }
 }

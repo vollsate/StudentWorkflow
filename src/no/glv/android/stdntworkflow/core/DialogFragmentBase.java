@@ -7,45 +7,43 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A dialog that will list every known student added to the task. The user may choose to remove certain
- * students from the list, if needed.
+ * A dialog that will list every known student added to the task. The user may
+ * choose to remove certain students from the list, if needed.
  * 
  * @author GleVoll
  *
  */
 public abstract class DialogFragmentBase extends DialogFragment {
-	
-	private View rootView;
-	
-	@Override
-	public void onCreate( Bundle savedInstanceState ) {
-		super.onCreate( savedInstanceState );
-	}
-	
-	
-	protected abstract int getRootViewID(); 
-	
-	protected abstract String getTitle();
-	
-	@Override
-	public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		if ( rootView == null )
-			rootView = inflater.inflate( getRootViewID(), container, false );
 
-		buildView(rootView);
-		
-		getDialog().setTitle( getTitle() );
-		
-		return rootView;
-	}
-	
-	protected abstract void buildView( View rootView );
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected DataHandler getDataHander() {
-		return DataHandler.GetInstance();
-	}
+    private View rootView;
+
+    @Override
+    public void onCreate( Bundle savedInstanceState ) {
+	super.onCreate( savedInstanceState );
+    }
+
+    protected abstract int getRootViewID();
+
+    protected abstract String getTitle();
+
+    @Override
+    public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+	if ( rootView == null ) rootView = inflater.inflate( getRootViewID(), container, false );
+
+	buildView( rootView );
+
+	getDialog().setTitle( getTitle() );
+
+	return rootView;
+    }
+
+    protected abstract void buildView( View rootView );
+
+    /**
+     * 
+     * @return
+     */
+    protected DataHandler getDataHander() {
+	return DataHandler.GetInstance();
+    }
 }

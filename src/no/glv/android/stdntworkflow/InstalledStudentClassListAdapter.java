@@ -20,86 +20,86 @@ import android.widget.TextView;
  */
 public class InstalledStudentClassListAdapter extends ArrayAdapter<String> {
 
-	/**  */
-	private static final String TAG = InstalledStudentClassListAdapter.class.getSimpleName();
+    /**  */
+    private static final String TAG = InstalledStudentClassListAdapter.class.getSimpleName();
 
-	/**
-	 * 
-	 * @param context
-	 * @param resource
-	 */
-	public InstalledStudentClassListAdapter( Context context ) {
-		this( context, R.layout.row_installed_class, DataHandler.GetInstance().getStudentClassNames() );
+    /**
+     * 
+     * @param context
+     * @param resource
+     */
+    public InstalledStudentClassListAdapter( Context context ) {
+	this( context, R.layout.row_installed_class, DataHandler.GetInstance().getStudentClassNames() );
+    }
+
+    /**
+     * 
+     * @param context
+     * @param resource
+     * @param objects
+     */
+    private InstalledStudentClassListAdapter( Context context, int resource, List<String> objects ) {
+	super( context, resource, objects );
+    }
+
+    @Override
+    public View getView( int position, View convertView, ViewGroup parent ) {
+	if ( convertView == null ) {
+	    convertView = createView( getContext(), parent, position );
 	}
 
-	/**
-	 * 
-	 * @param context
-	 * @param resource
-	 * @param objects
-	 */
-	private InstalledStudentClassListAdapter( Context context, int resource, List<String> objects ) {
-		super( context, resource, objects );
-	}
+	StudentClassHolder holder = (StudentClassHolder) convertView.getTag();
+	holder.textView.setText( getItem( position ).toString() );
+	holder.ID = position;
 
-	@Override
-	public View getView( int position, View convertView, ViewGroup parent ) {
-		if ( convertView == null ) {
-			convertView = createView( getContext(), parent, position );
-		}
+	return convertView;
+    }
 
-		StudentClassHolder holder = (StudentClassHolder) convertView.getTag();
-		holder.textView.setText( getItem( position ).toString() );
-		holder.ID = position;
+    /**
+     * 
+     * @param context
+     * @param parent
+     * @param position
+     * @return
+     */
+    private View createView( Context context, ViewGroup parent, int position ) {
+	LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+	View myView = inflater.inflate( R.layout.row_installed_class, parent, false );
+	StudentClassHolder holder = new StudentClassHolder();
 
-		return convertView;
-	}
+	TextView textView = (TextView) myView.findViewById( R.id.TV_studentClassName );
 
-	/**
-	 * 
-	 * @param context
-	 * @param parent
-	 * @param position
-	 * @return
-	 */
-	private View createView( Context context, ViewGroup parent, int position ) {
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.row_installed_class, parent, false );
-		StudentClassHolder holder = new StudentClassHolder();
+	// Setting the StudentClassname as a TAG for this view
+	textView.setTag( getItem( position ) );
+	textView.setOnClickListener( new View.OnClickListener() {
 
-		TextView textView = (TextView) myView.findViewById( R.id.TV_studentClassName );
+	    @Override
+	    public void onClick( View v ) {
+		Log.d( TAG, "" + v.getTag() );
 
-		// Setting the StudentClassname as a TAG for this view
-		textView.setTag( getItem( position ) );
-		textView.setOnClickListener( new View.OnClickListener() {
+		Intent intent = new Intent( getContext(), StdClassListActivity.class );
+		String studentClass = (String) v.getTag();
+		BaseActivity.PutStudentClassExtra( studentClass, intent );
+		InstalledStudentClassListAdapter.this.getContext().startActivity( intent );
+	    }
+	} );
 
-			@Override
-			public void onClick( View v ) {
-				Log.d( TAG, "" + v.getTag() );
+	holder.textView = textView;
+	holder.ID = position;
+	myView.setTag( holder );
 
-				Intent intent = new Intent( getContext(), StdClassListActivity.class );
-				String studentClass = (String) v.getTag();
-				BaseActivity.PutStudentClassExtra( studentClass, intent );
-				InstalledStudentClassListAdapter.this.getContext().startActivity( intent );
-			}
-		} );
+	return myView;
+    }
 
-		holder.textView = textView;
-		holder.ID = position;
-		myView.setTag( holder );
+    /**
+     * 
+     * @author GleVoll
+     *
+     */
+    static class StudentClassHolder {
 
-		return myView;
-	}
+	TextView textView;
+	int ID;
 
-	/**
-	 * 
-	 * @author GleVoll
-	 *
-	 */
-	static class StudentClassHolder {
-
-		TextView textView;
-		int ID;
-
-	}
+    }
 }

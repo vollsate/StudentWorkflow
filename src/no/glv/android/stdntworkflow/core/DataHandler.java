@@ -31,6 +31,7 @@ import no.glv.android.stdntworkflow.sql.ParentBean;
 import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
+import no.glv.android.stdntworkflow.sql.StudentInTaskTbl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Activity;
 import android.content.Context;
@@ -44,1105 +45,1107 @@ import android.util.Log;
  */
 public class DataHandler {
 
-	private static final String TAG = DataHandler.class.getSimpleName();
+    private static final String TAG = DataHandler.class.getSimpleName();
 
-	private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
-	private static final String STUDENT_IN_TASK_SEP = "=";
-	private static final String STUDENT_PROPERTY_SEP = ";";
-	private static final String STUDENT_IN_TASK_DELIM = ",";
+    private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
+    private static final String STUDENT_IN_TASK_SEP = "=";
+    private static final String STUDENT_PROPERTY_SEP = ";";
+    private static final String STUDENT_IN_TASK_DELIM = ",";
 
-	private static String STDCLASS_FILE_SUFFIX = ".csv";
+    private static String STDCLASS_FILE_SUFFIX = ".csv";
 
-	/** A map of all the tasks the students are involved in */
-	private static HashMap<String, StudentTaskImpl> studentInTasks;
+    /** A map of all the tasks the students are involved in */
+    private static HashMap<String, StudentTaskImpl> studentInTasks;
 
-	private static boolean islocalStudentClassesLoaded = false;
+    private static boolean islocalStudentClassesLoaded = false;
 
-	private Database db;
-	private SettingsManager sManager;
+    private Database db;
+    private SettingsManager sManager;
 
-	private TreeMap<String, StudentClass> stdClasses;
-	private TreeMap<String, Task> tasks;
+    private TreeMap<String, StudentClass> stdClasses;
+    private TreeMap<String, Task> tasks;
 
-	private static DataHandler instance;
-	private static boolean isInitiated = false;
+    private static DataHandler instance;
+    private static boolean isInitiated = false;
 
-	// Listeners
-	private Map<String, OnTaskChangedListener> taskChangeListeners;
-	private Map<String, OnStudentClassChangeListener> stdClassChangeListeners;
-	private Map<String, OnStudentChangedListener> stdChangeListeners;
+    // Listeners
+    private Map<String, OnTaskChangedListener> taskChangeListeners;
+    private Map<String, OnStudentClassChangeListener> stdClassChangeListeners;
+    private Map<String, OnStudentChangedListener> stdChangeListeners;
 
-	/**
+    /**
+     * 
+     * @return
+     * @throws IllegalStateException
+     *             if Init has not been called first!
+     */
+    public static final DataHandler GetInstance() {
+	if ( !isInitiated ) throw new IllegalStateException( "DataHandler not inititated" );
+
+	return instance;
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // INIT
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @param db
+     *            The database to use
+     */
+    public static final DataHandler Init( Context ctx ) {
+	if ( isInitiated ) return instance;
+
+	if ( instance == null ) instance = new DataHandler( new Database( ctx ) );
+
+	instance.loadStudentClasses();
+	instance.loadTasks();
+
+	isInitiated = true;
+	return instance;
+    }
+
+    /**
+     * 
+     * @param db
+     */
+    private DataHandler( Database db ) {
+	this.db = db;
+
+	sManager = new SettingsManager();
+
+	stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
+	stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
+	taskChangeListeners = new HashMap<String, DataHandler.OnTaskChangedListener>( 2 );
+
+	tasks = new TreeMap<String, Task>();
+    }
+
+    /**
 	 * 
-	 * @return
-	 * @throws IllegalStateException
-	 *             if Init has not been called first!
 	 */
-	public static final DataHandler GetInstance() {
-		if ( !isInitiated ) throw new IllegalStateException( "DataHandler not inititated" );
+    private void loadTasks() {
+	List<Task> list = db.loadTasks();
+	Iterator<Task> it = list.iterator();
 
-		return instance;
+	while ( it.hasNext() ) {
+	    Task task = it.next();
+	    List<StudentTask> stdTasks = db.loadStudentsInTask( task );
+	    fillStudentTaskWithStudent( task, stdTasks );
+
+	    task.addStudentTasks( stdTasks );
+	    tasks.put( task.getName(), task );
+	}
+    }
+
+    /**
+     * 
+     * @param task
+     * @param stdTasks
+     */
+    private void fillStudentTaskWithStudent( Task task, List<StudentTask> stdTasks ) {
+	Iterator<StudentTask> it = stdTasks.iterator();
+	while ( it.hasNext() ) {
+	    StudentTask stdTask = it.next();
+	    stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
+	    stdTask.setTaskName( task.getName() );
+
+	    String stdClass = stdTask.getStudent().getStudentClass();
+	    task.addClass( getStudentClass( stdClass ) );
 	}
 
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// INIT
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
+	Collections.sort( stdTasks, new DataComparator.StudentTaskComparator() );
+    }
 
-	/**
+    /**
 	 * 
-	 * @param db
-	 *            The database to use
 	 */
-	public static final DataHandler Init( Context ctx ) {
-		if ( instance == null ) instance = new DataHandler( new Database( ctx ) );
+    private void loadStudentClasses() {
+	stdClasses = new TreeMap<String, StudentClass>();
 
-		instance.loadStudentClasses();
-		instance.loadTasks();
-
-		isInitiated = true;
-		return instance;
+	List<StudentClass> list = db.loadStudentClasses();
+	Iterator<StudentClass> it = list.iterator();
+	while ( it.hasNext() ) {
+	    StudentClass stdClass = it.next();
+	    fillStudentClassWithStudents( stdClass );
+	    stdClasses.put( stdClass.getName(), stdClass );
 	}
 
-	/**
-	 * 
-	 * @param db
-	 */
-	private DataHandler( Database db ) {
-		this.db = db;
+    }
 
-		sManager = new SettingsManager();
+    /**
+     * 
+     * @param stdClass
+     */
+    private void fillStudentClassWithStudents( StudentClass stdClass ) {
+	List<Student> stList = db.loadStudentsFromClass( stdClass.getName() );
+	Collections.sort( stList, new DataComparator.StudentComparator() );
 
-		stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
-		stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
-		taskChangeListeners = new HashMap<String, DataHandler.OnTaskChangedListener>( 2 );
-		
-		tasks = new TreeMap<String, Task>( );
+	stdClass.addAll( stList );
+
+	Iterator<Student> stds = stdClass.getStudents().iterator();
+	while ( stds.hasNext() ) {
+	    Student student = stds.next();
+	    student.addParents( db.loadParents( student.getIdent() ) );
+
+	    Iterator<Parent> parIt = student.getParents().iterator();
+	    while ( parIt.hasNext() ) {
+		Parent parent = parIt.next();
+		parent.addPhones( db.loadPhone( parent.getStudentID(), parent.getID() ) );
+	    }
+	}
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public Task createTask() {
+	return db.createNewTask();
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public SettingsManager getSettingsManager() {
+	return sManager;
+    }
+
+    public void listDB() {
+	Log.v( TAG, db.loadAllStudentTask().toString() );
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // STUDENT
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @param ident
+     * @return
+     */
+    public Student getStudentById( String ident ) {
+	Student std = null;
+
+	Iterator<String> it = stdClasses.keySet().iterator();
+	while ( it.hasNext() ) {
+	    std = getStudentById( it.next(), ident );
+	    if ( std != null ) break;
 	}
 
-	/**
-	 * 
-	 */
-	private void loadTasks() {
-		List<Task> list = db.loadTasks();
-		Iterator<Task> it = list.iterator();
+	return std;
+    }
 
-		while ( it.hasNext() ) {
-			Task task = it.next();
-			List<StudentTask> stdTasks = db.loadStudentsInTask( task );
-			fillStudentTaskWithStudent( task, stdTasks );
+    /**
+     * 
+     * @param stdClassName
+     * @param ident
+     * @return
+     */
+    public Student getStudentById( String stdClassName, String ident ) {
+	Student std = null;
 
-			task.addStudentTasks( stdTasks );
-			tasks.put( task.getName(), task );
-		}
+	StudentClass stdClass = stdClasses.get( stdClassName );
+	std = stdClass.getStudentByIdent( ident );
+
+	return std;
+    }
+
+    /**
+     * 
+     * @param std
+     * @param oldIdent
+     * 
+     * @return true if successful
+     */
+    public boolean updateStudent( Student std, String oldIdent ) {
+	int retVal = 0;
+	try {
+	    retVal = db.updateStudent( std, oldIdent );
+	    notifyStudentUpdate( std );
+	}
+	catch ( Exception e ) {
+	    Log.e( TAG, "Failed to update student: " + std.getIdent(), e );
 	}
 
-	/**
-	 * 
-	 * @param task
-	 * @param stdTasks
-	 */
-	private void fillStudentTaskWithStudent( Task task, List<StudentTask> stdTasks ) {
-		Iterator<StudentTask> it = stdTasks.iterator();
-		while ( it.hasNext() ) {
-			StudentTask stdTask = it.next();
-			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
-			stdTask.setTaskName( task.getName() );
-		}
-		
-		Collections.sort( stdTasks, new DataComparator.StudentTaskComparator() );
+	return retVal > 0;
+    }
+
+    /**
+     * 
+     * @param std
+     */
+    private void notifyStudentChagnge( Student std, int mode ) {
+	Iterator<OnStudentChangedListener> it = stdChangeListeners.values().iterator();
+	while ( it.hasNext() ) {
+	    it.next().onStudentChange( std, mode );
+	}
+    }
+
+    /**
+     * 
+     * @param std
+     */
+    private void notifyStudentUpdate( Student std ) {
+	notifyStudentChagnge( std, OnStudentChangedListener.MODE_UPD );
+    }
+
+    /**
+     * 
+     * @param std
+     */
+    private void notifyStudentDelete( Student std ) {
+	notifyStudentChagnge( std, OnStudentChangedListener.MODE_DEL );
+    }
+
+    /**
+     * 
+     * @param std
+     */
+    private void notifyStudenAdd( Student std ) {
+	notifyStudentChagnge( std, OnStudentChangedListener.MODE_ADD );
+    }
+
+    /**
+     * 
+     * @param listener
+     */
+    public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
+	String name = listener.getClass().getSimpleName();
+	if ( stdChangeListeners.containsKey( name ) ) return;
+
+	stdChangeListeners.put( name, listener );
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // TASK
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @return A List of all the Tasks loaded
+     */
+    public List<String> getTaskNames() {
+	return new ArrayList<String>( tasks.keySet() );
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public List<Task> getTasks() {
+	return new ArrayList<Task>( tasks.values() );
+    }
+
+    /**
+     * 
+     * @param name
+     *            Name of {@link Task} to find.
+     * @return The actual task, or NULL if not found
+     */
+    public Task getTask( String name ) {
+	return tasks.get( name );
+    }
+
+    /**
+     * Adds the task to the database. The task will be filled with instances of
+     * {@link StudentTask} objects linking the {@link Student} to the
+     * {@link Task}.
+     * 
+     * @param task
+     */
+    public DataHandler addTask( Task task ) {
+	if ( task == null ) throw new NullPointerException( "Task to add cannot be NULL!" );
+
+	if ( task.getName() == null ) throw new NullPointerException( "Name of task cannot be NULL!" );
+
+	if ( tasks.containsKey( task.getName() ) ) throw new IllegalArgumentException( "Task " + task.getName()
+		+ " already exists" );
+
+	if ( db.insertTask( task ) ) {
+	    List<StudentTask> stds = db.loadStudentsInTask( task );
+	    fillStudentTaskWithStudent( task, stds );
+	    task.addStudentTasks( stds );
+
+	    tasks.put( task.getName(), task );
+	    notifyTaskAdd( task );
 	}
 
-	/**
-	 * 
-	 */
-	private void loadStudentClasses() {
-		stdClasses = new TreeMap<String, StudentClass>();
+	return this;
+    }
 
-		List<StudentClass> list = db.loadStudentClasses();
-		Iterator<StudentClass> it = list.iterator();
-		while ( it.hasNext() ) {
-			StudentClass stdClass = it.next();
-			fillStudentClassWithStudents( stdClass );
-			stdClasses.put( stdClass.getName(), stdClass );
-		}
-		
+    /**
+     * 
+     * @param stdTask
+     */
+    public void handIn( StudentTask stdTask ) {
+	Task task = tasks.get( stdTask.getTaskName() );
+	if ( task.handIn( stdTask.getIdent() ) ) db.updateStudentTask( stdTask );
+    }
+
+    public void handIn( StudentTask stdTask, int mode ) {
+	switch ( mode ) {
+	case StudentTask.MODE_HANDIN:
+	    handIn( stdTask );
+	    break;
+
+	case StudentTask.MODE_PENDING:
+	    stdTask.handIn( mode );
+	    break;
+
+	default:
+	    break;
 	}
-	
-	/**
+    }
+
+    /**
+     * 
+     * @param task
+     * @param oldName
+     */
+    public boolean updateTask( Task task, String oldName ) {
+	Log.d( TAG, "Updating task: " + oldName );
+	if ( db.updateTask( task, oldName ) ) {
+	    notifyTaskUpdate( task );
+	    return true;
+	}
+
+	return false;
+    }
+
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    public boolean deleteTask( String name ) {
+	Task task = getTask( name );
+
+	if ( db.deleteTask( name ) ) {
+	    tasks.remove( name );
+	    notifyTaskDelete( task );
+	    return true;
+	}
+
+	return false;
+    }
+
+    public boolean closeTask( String name ) {
+	Task task = getTask( name );
+	task.setType( Task.TASK_CLOSED );
+
+	return db.updateTask( task, task.getName() );
+    }
+
+    /**
 	 * 
-	 * @param stdClass
 	 */
-	private void fillStudentClassWithStudents( StudentClass stdClass ) {
-		List<Student> stList = db.loadStudentsFromClass( stdClass.getName() );
-		Collections.sort( stList, new DataComparator.StudentComparator() );
-		
-		stdClass.addAll( stList );
-		
-		Iterator <Student> stds = stdClass.getStudents().iterator();
-		while ( stds.hasNext() ) {
-			Student student = stds.next();
-			student.addParents( db.loadParents( student.getIdent() ) );
-			
-			Iterator<Parent> parIt = student.getParents().iterator();
-			while ( parIt.hasNext() ) {
-				Parent parent = parIt.next();
-				parent.addPhones( db.loadPhone( parent.getStudentID(), parent.getID() ) );
+    public void commitTask( Task task ) {
+	db.insertTask( task );
+    }
+
+    /**
+     * 
+     * @param task
+     */
+    public void commitStudentsTasks( Task task ) {
+	List<StudentTask> list = task.getStudentsToUpdate();
+
+	if ( list != null && !list.isEmpty() ) db.updateStudentTasks( list );
+
+	list = task.getRemovedStudents();
+	if ( list != null && !list.isEmpty() ) db.deleteStudentTasks( list );
+
+    }
+
+    /**
+	 * 
+	 */
+    public void commitTasks() {
+	Iterator<Task> it = tasks.values().iterator();
+
+	while ( it.hasNext() ) {
+	    Task task = it.next();
+	    db.insertTask( task );
+	}
+    }
+
+    /**
+     * 
+     * @param newTask
+     */
+    private void notifyTaskChange( Task newTask, int mode ) {
+	if ( taskChangeListeners.isEmpty() ) return;
+
+	Iterator<OnTaskChangedListener> it = taskChangeListeners.values().iterator();
+	while ( it.hasNext() )
+	    it.next().onTaskChange( newTask, mode );
+    }
+
+    /**
+     * 
+     * @param newTask
+     */
+    private void notifyTaskAdd( Task newTask ) {
+	notifyTaskChange( newTask, OnTaskChangedListener.MODE_ADD );
+    }
+
+    /**
+     * 
+     * @param newTask
+     */
+    private void notifyTaskDelete( Task oldTask ) {
+	notifyTaskChange( oldTask, OnTaskChangedListener.MODE_DEL );
+    }
+
+    /**
+     * 
+     * @param task
+     */
+    private void notifyTaskUpdate( Task task ) {
+	notifyTaskChange( task, OnTaskChangedListener.MODE_UPD );
+    }
+
+    /**
+     * 
+     * @param listener
+     */
+    public void addOnTaskChangeListener( OnTaskChangedListener listener ) {
+	String name = listener.getClass().getSimpleName();
+	if ( taskChangeListeners.containsKey( name ) ) return;
+
+	taskChangeListeners.put( name, listener );
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // STUDENTCLASS
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @return
+     */
+    public List<String> getStudentClassNames() {
+	return new ArrayList<String>( stdClasses.keySet() );
+    }
+
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    public StudentClass getStudentClass( String name ) {
+	return stdClasses.get( name );
+    }
+
+    /**
+     * 
+     * @param stdClass
+     */
+    public void addStudentClass( StudentClass stdClass ) {
+	db.insertStudentClass( stdClass );
+	stdClasses.put( stdClass.getName(), stdClass );
+
+	notifyStudentClassAdd( stdClass );
+    }
+
+    public boolean deleteStudentClass( String name ) {
+	if ( !stdClasses.containsKey( name ) ) return false;
+
+	if ( stdClassHasTasks( name ) ) return false;
+
+	StudentClass stdcClass = stdClasses.remove( name );
+	db.deleteStdClass( stdcClass );
+
+	notifyStudentClassDel( stdcClass );
+	return true;
+    }
+
+    public boolean stdClassHasTasks( String stdClassName ) {
+	Iterator<Task> it = tasks.values().iterator();
+	while ( it.hasNext() ) {
+	    Task task = it.next();
+	    if ( task.getClasses().contains( stdClassName ) ) return true;
+	}
+
+	return false;
+    }
+
+    /**
+     * 
+     * @param stdClass
+     */
+    private void notifyStudentClassChange( StudentClass stdClass, int mode ) {
+	if ( stdClassChangeListeners.isEmpty() ) return;
+
+	Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.values().iterator();
+	while ( it.hasNext() )
+	    it.next().onStudentClassUpdate( stdClass, mode );
+    }
+
+    /**
+     * 
+     * @param stdClass
+     */
+    private void notifyStudentClassAdd( StudentClass stdClass ) {
+	notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
+    }
+
+    private void notifyStudentClassDel( StudentClass stdClass ) {
+	notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_DEL );
+    }
+
+    private void notifyStudentClassUpdate( StudentClass stdClass ) {
+	notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_UPD );
+    }
+
+    /**
+     * 
+     * @param listener
+     */
+    public void addOnStudentClassChangeListener( OnStudentClassChangeListener listener ) {
+	String name = listener.getClass().getSimpleName();
+	if ( stdClassChangeListeners.containsKey( name ) ) return;
+
+	stdClassChangeListeners.put( name, listener );
+    }
+
+    /**
+     * 
+     * @param ctx
+     * @return
+     */
+    public List<String> getFilesFromDownloadDir() {
+	List<String> list = new ArrayList<String>();
+
+	File externalDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS );
+	File[] files = externalDir.listFiles();
+	for ( int i = 0; i < files.length; i++ ) {
+	    File f = files[i];
+	    if ( f.isFile() && f.getName().endsWith( STDCLASS_FILE_SUFFIX ) ) list.add( f.getName() );
+	}
+
+	return list;
+    }
+
+    /**
+     * Loads a CSV file with semicolon separated entries. The file MUST have an
+     * header line, and the headers MUST be in this order: - Klasse - Født -
+     * Fullt navn
+     * 
+     * @return A ready formatted StudentClass instance
+     * @throws IOException
+     *             if any I/O error occurs
+     */
+    public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
+	FileInputStream fis;
+	BufferedReader buff = null;
+
+	File externalDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS );
+	String fName = externalDir.getAbsolutePath() + "/" + fileName;
+	String stdClassName = fileName.substring( 0, fileName.length() - 4 );
+	StudentClass stdClass = new StudentClassImpl( stdClassName );
+
+	try {
+	    fis = new FileInputStream( new File( fName ) );
+	}
+	catch ( FileNotFoundException fnfEx ) {
+	    Log.e( TAG, "LoadStudentClass(): File not found: " + fName, fnfEx );
+	    throw fnfEx;
+	}
+	catch ( RuntimeException e ) {
+	    Log.e( TAG, "LoadStudentClass(): Unknown error: " + fName, e );
+	    throw e;
+	}
+
+	ArrayList<Student> list = new ArrayList<Student>();
+
+	try {
+	    buff = new BufferedReader( new InputStreamReader( fis, "CP1252" ) );
+	    // Read the first header
+	    buff.readLine();
+
+	    String stdLine;
+	    while ( ( stdLine = buff.readLine() ) != null ) {
+		Student newStudent = CreateStudentFromString( stdLine, stdClassName, "dd.MM.yyyy" );
+		list.add( newStudent );
+	    }
+	}
+	catch ( IOException ioe ) {
+	    Log.e( TAG, "LoadStudentClass(): Error loading file: " + fName, ioe );
+	    throw ioe;
+	}
+
+	try {
+	    buff.close();
+	    fis.close();
+	}
+	catch ( IOException e ) {
+	    Log.e( TAG, "LoadStudentClass(): Error closing file: " + fName, e );
+	}
+
+	Log.v( TAG, list.toString() );
+	stdClass.addAll( list );
+	return stdClass;
+
+    }
+
+    /**
+     * 
+     * @param stdString
+     *            A new Student implementation from a semicolon separated
+     *            String.
+     * @return
+     */
+    private static Student CreateStudentFromString( String stdString, String className, String datePattern ) {
+	StudentBean bean = new StudentBean( className );
+
+	String[] params = stdString.split( STUDENT_PROPERTY_SEP );
+	if ( params.length == 11 ) return CreateOldStudentFromstring( bean, params, datePattern );
+
+	int index = 0;
+
+	bean.lName = params[index++];
+	bean.fName = params[index++];
+	bean.birth = DBUtils.ConvertStringToDate( params[index++], datePattern );
+	bean.adress = params[index++];
+	bean.mIdent = CreateStudentIdent( bean );
+
+	bean.addParent( CreateParent( params, index, bean.getIdent(), Parent.PRIMARY ) );
+
+	index = 10;
+	bean.addParent( CreateParent( params, index, bean.getIdent(), Parent.SECUNDARY ) );
+
+	return bean;
+
+    }
+
+    /**
+     * 
+     * @param params
+     * @param start
+     * @param id
+     * @param type
+     * @return
+     */
+    private static Parent CreateParent( String[] params, int start, String id, int type ) {
+	Parent parent = new ParentBean( null, type );
+	parent.setStudentID( id );
+	parent.setLastName( params[start++] );
+	parent.setFirstName( params[start++] );
+
+	if ( params.length >= 13 ) parent.addPhone( CreatePhone( params[start++], Phone.MOBIL, id ) );
+	if ( params.length >= 14 ) parent.addPhone( CreatePhone( params[start++], Phone.WORK, id ) );
+	if ( params.length >= 15 ) parent.addPhone( CreatePhone( params[start++], Phone.HOME, id ) );
+
+	if ( params.length >= 16 ) parent.setMail( params[start++] );
+
+	return parent;
+    }
+
+    /**
+     * 
+     * @param param
+     * @param type
+     * @param id
+     * @return
+     */
+    private static Phone CreatePhone( String param, int type, String id ) {
+	if ( param == null ) return null;
+	if ( !( param.length() > 0 ) ) return null;
+
+	PhoneBean phone = new PhoneBean( type );
+	phone.setNumber( Long.parseLong( param ) );
+	phone.setStudentID( id );
+
+	return phone;
+    }
+
+    /**
+     * 
+     * @param bean
+     * @param params
+     * @param datePattern
+     * @return
+     */
+    private static Student CreateOldStudentFromstring( StudentBean bean, String[] params, String datePattern ) {
+	Parent parent = null;
+	Phone phone = null;
+	String[] subParams;
+	int index = 0;
+
+	bean.grade = params[index++];
+	bean.birth = DBUtils.ConvertStringToDate( params[index++], datePattern );
+	bean.setFullName( params[index++] );
+	bean.adress = params[index++];
+	bean.postalCode = params[index++];
+
+	bean.mIdent = CreateStudentIdent( bean );
+
+	parent = new ParentBean( bean.getIdent(), Parent.PRIMARY );
+	subParams = params[index++].split( "," );
+	parent.setLastName( subParams[0].trim() );
+	parent.setFirstName( subParams[1].trim() );
+
+	phone = new PhoneBean( Phone.MOBIL );
+	phone.setStudentID( bean.getIdent() );
+	phone.setParentID( parent.getID() );
+	phone.setNumber( Long.parseLong( params[index++] ) );
+	parent.addPhone( phone );
+	parent.setMail( params[index++] );
+	bean.addParent( parent );
+
+	parent = new ParentBean( bean.getIdent(), Parent.SECUNDARY );
+	subParams = params[index++].split( "," );
+	parent.setLastName( subParams[0].trim() );
+	parent.setFirstName( subParams[1].trim() );
+
+	phone = new PhoneBean( Phone.MOBIL );
+	phone.setParentID( parent.getID() );
+	phone.setStudentID( bean.getIdent() );
+	try {
+	    phone.setNumber( Long.parseLong( params[index++] ) );
+	}
+	catch ( Exception e ) {
+	    phone.setNumber( 0 );
+	}
+	parent.addPhone( phone );
+	parent.setMail( params[index++] );
+
+	bean.addParent( parent );
+
+	return bean;
+    }
+
+    /**
+     * 
+     * @param bean
+     * @return A new Ident
+     */
+    private static String CreateStudentIdent( Student bean ) {
+	String ident = null;
+
+	String fName = bean.getFirstName().substring( 0, 3 );
+	String lName = bean.getLastName().substring( 0, 4 );
+
+	String year = bean.getBirth();
+	year = year.substring( year.length() - 2, year.length() );
+
+	ident = year + fName + lName;
+	ident = ident.replace( 'æ', 'e' );
+	ident = ident.replace( 'ø', 'o' );
+	ident = ident.replace( 'å', 'a' );
+
+	Log.d( TAG, "Creating ident: " + ident );
+	return ident.toLowerCase( Locale.getDefault() );
+    }
+
+    /**
+     * 
+     * @param std
+     * @return
+     */
+    private static String StudentToDataString( Student std ) {
+	StringBuffer sb = new StringBuffer();
+
+	sb.append( std.getGrade() ).append( STUDENT_PROPERTY_SEP );
+	sb.append( ( (StudentBean) std ).birhtToString() ).append( STUDENT_PROPERTY_SEP );
+	sb.append( std.getLastName() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
+	sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
+	sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
+	/*
+	 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
+	 * 
+	 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent2Mail() );
+	 */
+	return sb.toString();
+    }
+
+    /**
+     * 
+     * @return
+     */
+    private static String WriteDataHeader() {
+	StringBuffer sb = new StringBuffer();
+
+	sb.append( "Klasse" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Født" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Fullt navn" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Adresse" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Postnr" ).append( STUDENT_PROPERTY_SEP );
+
+	sb.append( "Foresatt 1 navn" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Foresatt 1 mobil" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Foresatt 1 e-post" ).append( STUDENT_PROPERTY_SEP );
+
+	sb.append( "Foresatt 2 navn" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Foresatt 2 mobil" ).append( STUDENT_PROPERTY_SEP );
+	sb.append( "Foresatt 2 e-post" ).append( STUDENT_PROPERTY_SEP );
+
+	return sb.toString();
+    }
+
+    /**
+     * Loads every locally stored StudentClass. Every classfile MUST have the
+     * suffix STDCLASS_FILE_SUFFIX
+     * 
+     * @param ctx
+     *            The Context used to access the local filesystem
+     */
+    public static void LoadLocalStudentClasses( Context ctx ) {
+	if ( islocalStudentClassesLoaded ) return;
+
+	File[] files = ctx.getFilesDir().listFiles();
+	String stdClassName, classFile = null;
+
+	try {
+	    for ( int i = 0; i < files.length; i++ ) {
+		classFile = files[i].getName();
+		if ( classFile.endsWith( STDCLASS_FILE_SUFFIX ) ) {
+		    stdClassName = classFile.substring( 0, classFile.length() - STDCLASS_FILE_SUFFIX.length() );
+
+		    StudentClass stdClass = new StudentClassImpl( stdClassName );
+		    List<Student> list = Database.GetInstance( ctx ).loadStudentsFromClass( stdClassName );
+
+		    if ( !list.isEmpty() ) {
+			stdClass.addAll( list );
+		    } else {
+			FileInputStream fis = ctx.openFileInput( classFile );
+			BufferedReader reader = new BufferedReader( new InputStreamReader( fis ) );
+
+			String readLine;
+			while ( ( readLine = reader.readLine() ) != null ) {
+			    Student student = CreateStudentFromString( readLine, stdClassName, BaseValues.DATE_PATTERN );
+			    stdClass.add( student );
 			}
+		    }
+
+		    GetInstance().addStudentClass( stdClass );
 		}
+	    }
 	}
-	
-	/**
+	catch ( Exception e ) {
+	    Log.e( TAG, "Cannot load localStudentClass: " + classFile, e );
+	}
+
+	islocalStudentClassesLoaded = true;
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // STUDENTS IN TASKS
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @param activity
+     */
+    public static void LoadStudentInTasks( Activity activity ) {
+	if ( studentInTasks == null ) studentInTasks = new HashMap<String, StudentTaskImpl>();
+
+	FileInputStream fis;
+	BufferedReader buff;
+
+	try {
+	    fis = activity.openFileInput( STUDENT_IN_TASK_FILENAME );
+	    buff = new BufferedReader( new InputStreamReader( fis ) );
+
+	    String readLine = null;
+	    while ( ( readLine = buff.readLine() ) != null ) {
+		StudentTaskImpl std = CreateStudentInTasksFromString( readLine );
+		studentInTasks.put( std.getIdent(), std );
+	    }
+
+	    fis.close();
+	}
+	catch ( FileNotFoundException e ) {
+	    Log.e( TAG, "Cannot load " + STUDENT_IN_TASK_FILENAME, e );
+	}
+	catch ( IOException ioe ) {
+	    Log.e( TAG, "Failure reading data from " + STUDENT_IN_TASK_FILENAME, ioe );
+	}
+    }
+
+    /**
+     * 
+     * @param ctx
+     * @param stds
+     * @param append
+     */
+    public static void WriteStudentInTasks( Context ctx, HashMap<String, StudentTaskImpl> stds, boolean append ) {
+	if ( studentInTasks == null ) return;
+
+	FileOutputStream fos;
+	BufferedWriter buff;
+
+	try {
+	    fos = ctx.openFileOutput( STUDENT_IN_TASK_FILENAME, Context.MODE_PRIVATE );
+	    buff = new BufferedWriter( new OutputStreamWriter( fos ) );
+
+	    Iterator<String> it = studentInTasks.keySet().iterator();
+	    while ( it.hasNext() ) {
+		StudentTaskImpl std = studentInTasks.get( it.next() );
+		String data = CreateStringFromStudentsInTasks( std );
+
+		buff.write( data );
+		buff.newLine();
+	    }
+	}
+	catch ( FileNotFoundException e ) {
+	    Log.e( TAG, "Cannot write " + STUDENT_IN_TASK_FILENAME, e );
+	}
+	catch ( IOException ioe ) {
+	    Log.e( TAG, "Failure writing data to " + STUDENT_IN_TASK_FILENAME, ioe );
+	}
+    }
+
+    /**
+     * 
+     * @param std
+     * @return
+     */
+    private static String CreateStringFromStudentsInTasks( StudentTaskImpl std ) {
+	StringBuffer sb = new StringBuffer();
+	/*
+	 * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size =
+	 * std.getEngagedTasks().size() - 1; for ( int i = 0; i < size; i++ ) {
+	 * sb.append( std.getEngagedTasks().get( i ) ).append(
+	 * STUDENT_IN_TASK_DELIM ); }
 	 * 
-	 * @return
+	 * sb.append( std.getEngagedTasks().get( size ) );
 	 */
-	public Task createTask() {
-		return db.createNewTask();
+	return sb.toString();
+    }
+
+    /**
+     * 
+     * @param data
+     * @return
+     */
+    private static StudentTaskImpl CreateStudentInTasksFromString( String data ) {
+	String[] params = data.split( STUDENT_IN_TASK_SEP );
+	String ident = params[0].trim();
+
+	params = params[1].split( STUDENT_IN_TASK_DELIM );
+	List<String> tasks = new ArrayList<String>( params.length );
+	for ( int i = 0; i < params.length; i++ ) {
+	    tasks.add( params[i] );
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public SettingsManager getSettingsManager() {
-		return sManager;
+	return null; // new StudentTaskImpl( ident, tasks );
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // UTIL METHODS
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * Checks if external storage is available for read and write
+     */
+    public static boolean isExternalStorageWritable() {
+	String state = Environment.getExternalStorageState();
+	if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
+	    return true;
 	}
+	return false;
+    }
 
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// STUDENT
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-
-	/**
-	 * 
-	 * @param ident
-	 * @return
-	 */
-	public Student getStudentById( String ident ) {
-		Student std = null;
-
-		Iterator<String> it = stdClasses.keySet().iterator();
-		while ( it.hasNext() ) {
-			std = getStudentById( it.next(), ident );
-			if ( std != null ) break;
-		}
-
-		return std;
+    /**
+     * Checks if external storage is available to at least read
+     */
+    public static boolean isExternalStorageReadable() {
+	String state = Environment.getExternalStorageState();
+	if ( Environment.MEDIA_MOUNTED.equals( state ) || Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
+	    return true;
 	}
+	return false;
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // LISTENER
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    public static interface OnChangeListener {
+	public static final int MODE_ADD = 1;
+	public static final int MODE_DEL = 2;
+	public static final int MODE_UPD = 3;
+    }
+
+    /**
+     * 
+     * @author GleVoll
+     *
+     */
+    public static interface OnTaskChangedListener extends OnChangeListener {
+
+	public void onTaskChange( Task newTask, int mode );
+    }
+
+    /**
+     * 
+     * @author GleVoll
+     *
+     */
+    public static interface OnStudentChangedListener extends OnChangeListener {
+
+	public void onStudentChange( Student std, int mode );
+    }
+
+    /**
+     * 
+     * @author GleVoll
+     *
+     */
+    public static interface OnStudentClassChangeListener extends OnChangeListener {
+
+	public void onStudentClassUpdate( StudentClass stdClass, int mode );
+    }
 
-	/**
-	 * 
-	 * @param stdClassName
-	 * @param ident
-	 * @return
-	 */
-	public Student getStudentById( String stdClassName, String ident ) {
-		Student std = null;
-
-		StudentClass stdClass = stdClasses.get( stdClassName );
-		std = stdClass.getStudentByIdent( ident );
-
-		return std;
-	}
-
-	/**
-	 * 
-	 * @param std
-	 * @param oldIdent
-	 * 
-	 * @return true if successful
-	 */
-	public boolean updateStudent( Student std, String oldIdent ) {
-		int retVal = 0;
-		try {
-			retVal = db.updateStudent( std, oldIdent );
-			notifyStudentUpdate( std );
-		}
-		catch ( Exception e ) {
-			Log.e( TAG, "Failed to update student: " + std.getIdent(), e );
-		}
-
-		return retVal > 0;
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	private void notifyStudentChagnge( Student std, int mode ) {
-		Iterator<OnStudentChangedListener> it = stdChangeListeners.values().iterator();
-		while ( it.hasNext() ) {
-			it.next().onStudentChange( std, mode );
-		}
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	private void notifyStudentUpdate( Student std ) {
-		notifyStudentChagnge( std, OnStudentChangedListener.MODE_UPD );
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	private void notifyStudentDelete( Student std ) {
-		notifyStudentChagnge( std, OnStudentChangedListener.MODE_DEL );
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	private void notifyStudenAdd( Student std ) {
-		notifyStudentChagnge( std, OnStudentChangedListener.MODE_ADD );
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
-		String name = listener.getClass().getSimpleName();
-		if ( stdChangeListeners.containsKey( name ) ) return;
-
-		stdChangeListeners.put( name, listener );
-	}
-
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// TASK
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-
-	/**
-	 * 
-	 * @return A List of all the Tasks loaded
-	 */
-	public List<String> getTaskNames() {
-		return new ArrayList<String>( tasks.keySet() );
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public List<Task> getTasks() {
-		return new ArrayList<Task>( tasks.values() );
-	}
-
-	/**
-	 * 
-	 * @param name
-	 *            Name of {@link Task} to find.
-	 * @return The actual task, or NULL if not found
-	 */
-	public Task getTask( String name ) {
-		return tasks.get( name );
-	}
-
-	/**
-	 * Adds the task to the database. The task will be filled with instances of {@link StudentTask} objects
-	 * linking the {@link Student} to the {@link Task}. 
-	 * 
-	 * @param task
-	 */
-	public DataHandler addTask( Task task ) {
-		if ( task == null ) throw new NullPointerException( "Task to add cannot be NULL!" );
-
-		if ( task.getName() == null ) throw new NullPointerException( "Name of task cannot be NULL!" );
-
-		if ( tasks.containsKey( task.getName() ) )
-			throw new IllegalArgumentException( "Task " + task.getName() + " already exists" );
-
-		if ( db.insertTask( task ) ) {
-			List<StudentTask> stds = db.loadStudentsInTask( task );
-			fillStudentTaskWithStudent( task, stds );
-			task.addStudentTasks( stds );
-
-			tasks.put( task.getName(), task );
-			notifyTaskAdd( task );
-		}
-
-		return this;
-	}
-	
-	/**
-	 * 
-	 * @param stdTask
-	 */
-	public void handIn( StudentTask stdTask ) {
-		Task task = tasks.get( stdTask.getTaskName() );
-		if ( task.handIn( stdTask.getIdent()  ) )
-			db.updateStudentTask( stdTask );
-	}
-	
-	public void handIn( StudentTask stdTask, int mode ) {
-		switch ( mode ) {
-		case StudentTask.MODE_HANDIN:
-			handIn( stdTask );			
-			break;
-
-		case StudentTask.MODE_PENDING:
-			stdTask.handIn( mode );
-			break;
-
-		default:
-			break;
-		}		
-	}
-	/**
-	 * 
-	 * @param task
-	 * @param oldName
-	 */
-	public boolean updateTask( Task task, String oldName ) {
-		Log.d( TAG, "Updating task: " + oldName );
-		if ( db.updateTask( task, oldName ) ) {
-			notifyTaskUpdate( task );
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public boolean deleteTask( String name ) {
-		Task task = getTask( name );
-
-		if ( db.deleteTask( name ) ) {
-			tasks.remove( name );
-			notifyTaskDelete( task );
-			return true;
-		}
-
-		return false;
-	}
-	
-	public boolean closeTask( String name ) {
-		Task task = getTask( name );
-		task.setType( Task.TASK_CLOSED );
-		
-		return db.updateTask( task, task.getName() );
-	}
-
-	/**
-	 * 
-	 */
-	public void commitTask(Task task) {
-		db.insertTask( task );
-	}
-	
-	/**
-	 * 
-	 * @param task
-	 */
-	public void commitStudentsTasks( Task task ) {
-		List<StudentTask> list = task.getStudentsToUpdate();
-		
-		if ( list != null && ! list.isEmpty() )
-			db.updateStudentTasks( list );
-		
-		list = task.getRemovedStudents();
-		if ( list != null && ! list.isEmpty() )
-			db.deleteStudentTasks( list );
-		
-	}
-	
-	/**
-	 * 
-	 */
-	public void commitTasks() {
-		Iterator<Task> it = tasks.values().iterator();
-
-		while ( it.hasNext() ) {
-			Task task = it.next();
-			db.insertTask( task );
-		}
-	}
-
-	/**
-	 * 
-	 * @param newTask
-	 */
-	private void notifyTaskChange( Task newTask, int mode ) {
-		if ( taskChangeListeners.isEmpty() ) return;
-
-		Iterator<OnTaskChangedListener> it = taskChangeListeners.values().iterator();
-		while ( it.hasNext() )
-			it.next().onTaskChange( newTask, mode );
-	}
-
-	/**
-	 * 
-	 * @param newTask
-	 */
-	private void notifyTaskAdd( Task newTask ) {
-		notifyTaskChange( newTask, OnTaskChangedListener.MODE_ADD );
-	}
-
-	/**
-	 * 
-	 * @param newTask
-	 */
-	private void notifyTaskDelete( Task oldTask ) {
-		notifyTaskChange( oldTask, OnTaskChangedListener.MODE_DEL );
-	}
-
-	/**
-	 * 
-	 * @param task
-	 */
-	private void notifyTaskUpdate( Task task ) {
-		notifyTaskChange( task, OnTaskChangedListener.MODE_UPD );
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void addOnTaskChangeListener( OnTaskChangedListener listener ) {
-		String name = listener.getClass().getSimpleName();
-		if ( taskChangeListeners.containsKey( name ) ) return;
-
-		taskChangeListeners.put( name, listener );
-	}
-
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// STUDENTCLASS
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-
-	/**
-	 * 
-	 * @return
-	 */
-	public List<String> getStudentClassNames() {
-		return new ArrayList<String>( stdClasses.keySet() );
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public StudentClass getStudentClass( String name ) {
-		return stdClasses.get( name );
-	}
-
-	/**
-	 * 
-	 * @param stdClass
-	 */
-	public void addStudentClass( StudentClass stdClass ) {
-		db.insertStudentClass( stdClass );
-		stdClasses.put( stdClass.getName(), stdClass );
-		
-		notifyStudentClassAdd( stdClass );		
-	}
-	
-	public boolean deleteStudentClass( String name ) {
-		if ( ! stdClasses.containsKey( name ) ) return false;
-		
-		if ( stdClassHasTasks( name ) ) return false;
-		
-		StudentClass stdcClass = stdClasses.remove( name );
-		db.deleteStdClass( stdcClass );
-		
-		
-		notifyStudentClassDel( stdcClass );
-		return true;
-	}
-	
-	public boolean stdClassHasTasks( String stdClassName ) {
-		Iterator<Task> it = tasks.values().iterator();
-		while (it.hasNext()) {
-			Task task = it.next();
-			if ( task.getClasses().contains( stdClassName ) ) return true;
-		}
-		
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param stdClass
-	 */
-	private void notifyStudentClassChange( StudentClass stdClass, int mode ) {
-		if ( stdClassChangeListeners.isEmpty() ) return;
-
-		Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.values().iterator();
-		while ( it.hasNext() )
-			it.next().onStudentClassUpdate( stdClass, mode );
-	}
-
-	/**
-	 * 
-	 * @param stdClass
-	 */
-	private void notifyStudentClassAdd( StudentClass stdClass ) {
-		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
-	}
-
-	private void notifyStudentClassDel( StudentClass stdClass ) {
-		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_DEL );
-	}
-
-	private void notifyStudentClassUpdate( StudentClass stdClass ) {
-		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_UPD );
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void addOnStudentClassChangeListener( OnStudentClassChangeListener listener ) {
-		String name = listener.getClass().getSimpleName();
-		if ( stdClassChangeListeners.containsKey( name ) ) return;
-
-		stdClassChangeListeners.put( name, listener );
-	}
-
-	/**
-	 * 
-	 * @param ctx
-	 * @return
-	 */
-	public List<String> getFilesFromDownloadDir() {
-		List<String> list = new ArrayList<String>();
-
-		File externalDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS );
-		File[] files = externalDir.listFiles();
-		for ( int i = 0; i < files.length; i++ ) {
-			File f = files[i];
-			if ( f.isFile() && f.getName().endsWith( STDCLASS_FILE_SUFFIX ) ) list.add( f.getName() );
-		}
-
-		return list;
-	}
-
-	/**
-	 * Loads a CSV file with semicolon separated entries. The file MUST have an
-	 * header line, and the headers MUST be in this order: - Klasse - Født -
-	 * Fullt navn
-	 * 
-	 * @return A ready formatted StudentClass instance
-	 * @throws IOException
-	 *             if any I/O error occurs
-	 */
-	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
-		FileInputStream fis;
-		BufferedReader buff = null;
-
-		File externalDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS );
-		String fName = externalDir.getAbsolutePath() + "/" + fileName;
-		String stdClassName = fileName.substring( 0, fileName.length() - 4 );
-		StudentClass stdClass = new StudentClassImpl( stdClassName );
-
-		try {
-			fis = new FileInputStream( new File( fName ) );
-		}
-		catch ( FileNotFoundException fnfEx ) {
-			Log.e( TAG, "LoadStudentClass(): File not found: " + fName, fnfEx );
-			throw fnfEx;
-		}
-		catch ( RuntimeException e ) {
-			Log.e( TAG, "LoadStudentClass(): Unknown error: " + fName, e );
-			throw e;
-		}
-
-		ArrayList<Student> list = new ArrayList<Student>();
-
-		try {
-			buff = new BufferedReader( new InputStreamReader( fis, "CP1252" ) );
-			// Read the first header
-			buff.readLine();
-
-			String stdLine;
-			while ( (stdLine = buff.readLine()) != null ) {
-				Student newStudent = CreateStudentFromString( stdLine, stdClassName, "dd.MM.yyyy" );
-				list.add( newStudent );
-			}
-		}
-		catch ( IOException ioe ) {
-			Log.e( TAG, "LoadStudentClass(): Error loading file: " + fName, ioe );
-			throw ioe;
-		}
-
-		try {
-			buff.close();
-			fis.close();
-		}
-		catch ( IOException e ) {
-			Log.e( TAG, "LoadStudentClass(): Error closing file: " + fName, e );
-		}
-
-		Log.v( TAG, list.toString() );
-		stdClass.addAll( list );
-		return stdClass;
-
-	}
-
-	/**
-	 * 
-	 * @param stdString
-	 *            A new Student implementation from a semicolon separated
-	 *            String.
-	 * @return
-	 */
-	private static Student CreateStudentFromString( String stdString, String className, String datePattern ) {
-		StudentBean bean = new StudentBean( className );
-
-		String[] params = stdString.split( STUDENT_PROPERTY_SEP );
-		if ( params.length == 11 ) return CreateOldStudentFromstring( bean, params, datePattern );
-
-		int index = 0;
-
-		bean.lName = params[index++];
-		bean.fName = params[index++];
-		bean.birth = DBUtils.ConvertStringToDate( params[index++], datePattern );
-		bean.adress = params[index++];
-		bean.mIdent = CreateStudentIdent( bean );
-
-		bean.addParent( CreateParent( params, index, bean.getIdent(), Parent.PRIMARY ) );
-
-		index = 10;
-		bean.addParent( CreateParent( params, index, bean.getIdent(), Parent.SECUNDARY ) );
-
-		return bean;
-
-	}
-
-	/**
-	 * 
-	 * @param params
-	 * @param start
-	 * @param id
-	 * @param type
-	 * @return
-	 */
-	private static Parent CreateParent( String[] params, int start, String id, int type ) {
-		Parent parent = new ParentBean( null, type );
-		parent.setStudentID( id );
-		parent.setLastName( params[start++] );
-		parent.setFirstName( params[start++] );
-
-		if ( params.length >= 13 )
-			parent.addPhone( CreatePhone( params[start++], Phone.MOBIL, id ) );
-		if ( params.length >= 14 )
-			parent.addPhone( CreatePhone( params[start++], Phone.WORK, id ) );
-		if ( params.length >= 15 )
-			parent.addPhone( CreatePhone( params[start++], Phone.HOME, id ) );
-		
-		if ( params.length >= 16 )
-			parent.setMail( params[start++] );
-
-		return parent;
-	}
-
-	/**
-	 * 
-	 * @param param
-	 * @param type
-	 * @param id
-	 * @return
-	 */
-	private static Phone CreatePhone( String param, int type, String id ) {
-		if ( param == null ) return null;
-		if ( !(param.length() > 0) ) return null;
-
-		PhoneBean phone = new PhoneBean( type );
-		phone.setNumber( Long.parseLong( param ) );
-		phone.setStudentID( id );
-
-		return phone;
-	}
-
-	/**
-	 * 
-	 * @param bean
-	 * @param params
-	 * @param datePattern
-	 * @return
-	 */
-	private static Student CreateOldStudentFromstring( StudentBean bean, String[] params, String datePattern ) {
-		Parent parent = null;
-		Phone phone = null;
-		String[] subParams;
-		int index = 0;
-
-		bean.grade = params[index++];
-		bean.birth = DBUtils.ConvertStringToDate( params[index++], datePattern );
-		bean.setFullName( params[index++] );
-		bean.adress = params[index++];
-		bean.postalCode = params[index++];
-
-		bean.mIdent = CreateStudentIdent( bean );
-
-		parent = new ParentBean( bean.getIdent(), Parent.PRIMARY );
-		subParams = params[index++].split( "," );
-		parent.setLastName( subParams[0].trim() );
-		parent.setFirstName( subParams[1].trim() );
-
-		phone = new PhoneBean( Phone.MOBIL );
-		phone.setStudentID( bean.getIdent() );
-		phone.setParentID( parent.getID() );
-		phone.setNumber( Long.parseLong( params[index++] ) );
-		parent.addPhone( phone );
-		parent.setMail( params[index++] );
-		bean.addParent( parent );
-
-		parent = new ParentBean( bean.getIdent(), Parent.SECUNDARY );
-		subParams = params[index++].split( "," );
-		parent.setLastName( subParams[0].trim() );
-		parent.setFirstName( subParams[1].trim() );
-
-		phone = new PhoneBean( Phone.MOBIL );
-		phone.setParentID( parent.getID() );
-		phone.setStudentID( bean.getIdent() );
-		try {
-			phone.setNumber( Long.parseLong( params[index++] ) );
-		}
-		catch ( Exception e ) {
-			phone.setNumber( 0 );
-		}
-		parent.addPhone( phone );
-		parent.setMail( params[index++] );
-		
-		bean.addParent( parent );
-
-		return bean;
-	}
-
-	/**
-	 * 
-	 * @param bean
-	 * @return A new Ident
-	 */
-	private static String CreateStudentIdent( Student bean ) {
-		String ident = null;
-
-		String fName = bean.getFirstName().substring( 0, 3 );
-		String lName = bean.getLastName().substring( 0, 4 );
-
-		String year = bean.getBirth();
-		year = year.substring( year.length() - 2, year.length() );
-
-		ident = year + fName + lName;
-		ident = ident.replace( 'æ', 'e' );
-		ident = ident.replace( 'ø', 'o' );
-		ident = ident.replace( 'å', 'a' );
-
-		Log.d( TAG, "Creating ident: " + ident );
-		return ident.toLowerCase( Locale.getDefault() );
-	}
-
-	/**
-	 * 
-	 * @param std
-	 * @return
-	 */
-	private static String StudentToDataString( Student std ) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append( std.getGrade() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( ((StudentBean) std).birhtToString() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getLastName() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
-		/*
-		 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
-		 * 
-		 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Mail() );
-		 */
-		return sb.toString();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private static String WriteDataHeader() {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append( "Klasse" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Født" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Fullt navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Adresse" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Postnr" ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( "Foresatt 1 navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 1 mobil" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 1 e-post" ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( "Foresatt 2 navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 2 mobil" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 2 e-post" ).append( STUDENT_PROPERTY_SEP );
-
-		return sb.toString();
-	}
-
-	/**
-	 * Loads every locally stored StudentClass. Every classfile MUST have the
-	 * suffix STDCLASS_FILE_SUFFIX
-	 * 
-	 * @param ctx
-	 *            The Context used to access the local filesystem
-	 */
-	public static void LoadLocalStudentClasses( Context ctx ) {
-		if ( islocalStudentClassesLoaded ) return;
-
-		File[] files = ctx.getFilesDir().listFiles();
-		String stdClassName, classFile = null;
-
-		try {
-			for ( int i = 0; i < files.length; i++ ) {
-				classFile = files[i].getName();
-				if ( classFile.endsWith( STDCLASS_FILE_SUFFIX ) ) {
-					stdClassName = classFile.substring( 0, classFile.length() - STDCLASS_FILE_SUFFIX.length() );
-
-					StudentClass stdClass = new StudentClassImpl( stdClassName );
-					List<Student> list = Database.GetInstance( ctx ).loadStudentsFromClass( stdClassName );
-
-					if ( !list.isEmpty() ) {
-						stdClass.addAll( list );
-					}
-					else {
-						FileInputStream fis = ctx.openFileInput( classFile );
-						BufferedReader reader = new BufferedReader( new InputStreamReader( fis ) );
-
-						String readLine;
-						while ( (readLine = reader.readLine()) != null ) {
-							Student student = CreateStudentFromString( readLine, stdClassName, BaseValues.DATE_PATTERN );
-							stdClass.add( student );
-						}
-					}
-
-					GetInstance().addStudentClass( stdClass );
-				}
-			}
-		}
-		catch ( Exception e ) {
-			Log.e( TAG, "Cannot load localStudentClass: " + classFile, e );
-		}
-
-		islocalStudentClassesLoaded = true;
-	}
-
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// STUDENTS IN TASKS
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-
-	/**
-	 * 
-	 * @param activity
-	 */
-	public static void LoadStudentInTasks( Activity activity ) {
-		if ( studentInTasks == null ) studentInTasks = new HashMap<String, StudentTaskImpl>();
-
-		FileInputStream fis;
-		BufferedReader buff;
-
-		try {
-			fis = activity.openFileInput( STUDENT_IN_TASK_FILENAME );
-			buff = new BufferedReader( new InputStreamReader( fis ) );
-
-			String readLine = null;
-			while ( (readLine = buff.readLine()) != null ) {
-				StudentTaskImpl std = CreateStudentInTasksFromString( readLine );
-				studentInTasks.put( std.getIdent(), std );
-			}
-
-			fis.close();
-		}
-		catch ( FileNotFoundException e ) {
-			Log.e( TAG, "Cannot load " + STUDENT_IN_TASK_FILENAME, e );
-		}
-		catch ( IOException ioe ) {
-			Log.e( TAG, "Failure reading data from " + STUDENT_IN_TASK_FILENAME, ioe );
-		}
-	}
-
-	/**
-	 * 
-	 * @param ctx
-	 * @param stds
-	 * @param append
-	 */
-	public static void WriteStudentInTasks( Context ctx, HashMap<String, StudentTaskImpl> stds, boolean append ) {
-		if ( studentInTasks == null ) return;
-
-		FileOutputStream fos;
-		BufferedWriter buff;
-
-		try {
-			fos = ctx.openFileOutput( STUDENT_IN_TASK_FILENAME, Context.MODE_PRIVATE );
-			buff = new BufferedWriter( new OutputStreamWriter( fos ) );
-
-			Iterator<String> it = studentInTasks.keySet().iterator();
-			while ( it.hasNext() ) {
-				StudentTaskImpl std = studentInTasks.get( it.next() );
-				String data = CreateStringFromStudentsInTasks( std );
-
-				buff.write( data );
-				buff.newLine();
-			}
-		}
-		catch ( FileNotFoundException e ) {
-			Log.e( TAG, "Cannot write " + STUDENT_IN_TASK_FILENAME, e );
-		}
-		catch ( IOException ioe ) {
-			Log.e( TAG, "Failure writing data to " + STUDENT_IN_TASK_FILENAME, ioe );
-		}
-	}
-
-	/**
-	 * 
-	 * @param std
-	 * @return
-	 */
-	private static String CreateStringFromStudentsInTasks( StudentTaskImpl std ) {
-		StringBuffer sb = new StringBuffer();
-		/*
-		 * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size =
-		 * std.getEngagedTasks().size() - 1; for ( int i = 0; i < size; i++ ) {
-		 * sb.append( std.getEngagedTasks().get( i ) ).append(
-		 * STUDENT_IN_TASK_DELIM ); }
-		 * 
-		 * sb.append( std.getEngagedTasks().get( size ) );
-		 */
-		return sb.toString();
-	}
-
-	/**
-	 * 
-	 * @param data
-	 * @return
-	 */
-	private static StudentTaskImpl CreateStudentInTasksFromString( String data ) {
-		String[] params = data.split( STUDENT_IN_TASK_SEP );
-		String ident = params[0].trim();
-
-		params = params[1].split( STUDENT_IN_TASK_DELIM );
-		List<String> tasks = new ArrayList<String>( params.length );
-		for ( int i = 0; i < params.length; i++ ) {
-			tasks.add( params[i] );
-		}
-
-		return null; // new StudentTaskImpl( ident, tasks );
-	}
-
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// UTIL METHODS
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Checks if external storage is available for read and write
-	 */
-	public static boolean isExternalStorageWritable() {
-		String state = Environment.getExternalStorageState();
-		if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if external storage is available to at least read
-	 */
-	public static boolean isExternalStorageReadable() {
-		String state = Environment.getExternalStorageState();
-		if ( Environment.MEDIA_MOUNTED.equals( state ) || Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
-			return true;
-		}
-		return false;
-	}
-
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// LISTENER
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-
-	public static interface OnChangeListener {
-		public static final int MODE_ADD = 1;
-		public static final int MODE_DEL = 2;
-		public static final int MODE_UPD = 3;
-	}
-
-	/**
-	 * 
-	 * @author GleVoll
-	 *
-	 */
-	public static interface OnTaskChangedListener extends OnChangeListener {
-
-		public void onTaskChange( Task newTask, int mode );
-	}
-
-	/**
-	 * 
-	 * @author GleVoll
-	 *
-	 */
-	public static interface OnStudentChangedListener extends OnChangeListener {
-
-		public void onStudentChange( Student std, int mode );
-	}
-
-	/**
-	 * 
-	 * @author GleVoll
-	 *
-	 */
-	public static interface OnStudentClassChangeListener extends OnChangeListener {
-
-		public void onStudentClassUpdate( StudentClass stdClass, int mode );
-	}
-	
 }

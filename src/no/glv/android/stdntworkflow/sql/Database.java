@@ -16,337 +16,343 @@ import android.util.Log;
 
 public class Database extends SQLiteOpenHelper {
 
-	private static final String TAG = Database.class.getSimpleName();
+    private static final String TAG = Database.class.getSimpleName();
 
-	public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 1;
 
-	public static final String DB_NAME = "stdwrkflw";
+    public static final String DB_NAME = "stdwrkflw";
 
-	private static Database instance;
+    private static Database instance;
 
-	/**
+    /**
+     * 
+     * @param ctx
+     * @return
+     */
+    public static Database GetInstance( Context ctx ) {
+	if ( instance == null ) instance = new Database( ctx );
+
+	return instance;
+    }
+
+    public Database( Context context ) {
+	// public Database( Context context, String name, CursorFactory factory,
+	// int version, DatabaseErrorHandler errorHandler )
+	super( context, DB_NAME, null, DB_VERSION, null );
+	// runCreate();
+    }
+
+    /**
 	 * 
-	 * @param ctx
-	 * @return
 	 */
-	public static Database GetInstance( Context ctx ) {
-		if ( instance == null ) instance = new Database( ctx );
+    public void runCreate() {
+	SQLiteDatabase db = getWritableDatabase();
 
-		return instance;
-	}
+	onUpgrade( db, 1, 1 );
+	onCreate( db );
 
-	public Database( Context context ) {
-		// public Database( Context context, String name, CursorFactory factory,
-		// int version, DatabaseErrorHandler errorHandler )
-		super( context, DB_NAME, null, DB_VERSION, null );
-		//runCreate();
-	}
+	db.close();
+    }
 
-	/**
-	 * 
-	 */
-	public void runCreate() {
-		SQLiteDatabase db = getWritableDatabase();
-		
-		onUpgrade( db, 1, 1 );
-		onCreate( db );
-		
-		db.close();
-	}
+    @Override
+    public void onCreate( SQLiteDatabase db ) {
+	Log.d( TAG, "Creating tables .. " );
+	StudentTbl.CreateTableSQL( db );
+	StudentClassTbl.CreateTable( db );
+	TaskTbl.CreateTable( db );
+	StudentInTaskTbl.CreateTable( db );
+	PhoneTbl.CreateTableSQL( db );
+	ParentTbl.CreateTableSQL( db );
+    }
 
-	@Override
-	public void onCreate( SQLiteDatabase db ) {
-		Log.d( TAG, "Creating tables .. " );
-		StudentTbl.CreateTableSQL( db );
-		StudentClassTbl.CreateTable( db );
-		TaskTbl.CreateTable( db );
-		StudentInTaskTbl.CreateTable( db );
-		PhoneTbl.CreateTableSQL( db );
-		ParentTbl.CreateTableSQL( db );
-	}
+    @Override
+    public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
+	Log.d( TAG, "Dropping tables .." );
+	StudentTbl.DropTable( db );
+	StudentClassTbl.DropTable( db );
+	TaskTbl.DropTable( db );
+	StudentInTaskTbl.DropTable( db );
+	PhoneTbl.DropTable( db );
+	ParentTbl.DropTable( db );
+    }
 
-	@Override
-	public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
-		Log.d( TAG, "Dropping tables .." );
-		StudentTbl.DropTable( db );
-		StudentClassTbl.DropTable( db );
-		TaskTbl.DropTable( db );
-		StudentInTaskTbl.DropTable( db );
-		PhoneTbl.DropTable( db );
-		ParentTbl.DropTable( db );
-	}
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // STUDENT
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
 
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// STUDENT
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
+    public List<Parent> loadParents( String id ) {
+	return ParentTbl.LoadParent( id, getReadableDatabase() );
+    }
 
-	public List<Parent> loadParents( String id ) {
-		return ParentTbl.LoadParent( id, getReadableDatabase() );
-	}
-	
-	public List<Phone> loadPhone( String stdID, String parentID ) {
-		return PhoneTbl.LoadParentPhone( stdID, parentID, getReadableDatabase() );
-	}
-	
-	/**
-	 * 
-	 * @param stdClass
-	 * @return
-	 */
-	public List<Student> loadStudentsFromClass( String stdClass ) {
-		return StudentTbl.LoadStudentFromClass( stdClass, getReadableDatabase() );
-	}
+    public List<Phone> loadPhone( String stdID, String parentID ) {
+	return PhoneTbl.LoadParentPhone( stdID, parentID, getReadableDatabase() );
+    }
 
-	/**
-	 * Will insert the {@link Student} in the StudentTbl and every {@link Parent} and {@link Phone} related
-	 * to the student.
-	 * 
-	 * @param student
-	 */
-	public boolean insertStudent( Student student ) {
-		Log.d( TAG, "Inserting student: " + student.getIdent() );
-		boolean success = true;
-		
-		StudentTbl.Insert( student, getWritableDatabase() );
-		
-		Iterator<Parent> it = student.getParents().iterator();
-		while ( it.hasNext() ) {
-			insertParent( it.next() );
-		}
-		
-		return success;
-	}
-	
-	private void insertParent( Parent parent ) {
-		ParentTbl.InsertParent( parent, getWritableDatabase() );
-		
-		Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
-		while ( pIt.hasNext() ) {
-			Phone p = pIt.next();
-			p.setParentID( parent.getID() );
-			PhoneTbl.InsertPhone( p, getWritableDatabase() );
-		}
+    /**
+     * 
+     * @param stdClass
+     * @return
+     */
+    public List<Student> loadStudentsFromClass( String stdClass ) {
+	return StudentTbl.LoadStudentFromClass( stdClass, getReadableDatabase() );
+    }
+
+    /**
+     * Will insert the {@link Student} in the StudentTbl and every
+     * {@link Parent} and {@link Phone} related to the student.
+     * 
+     * @param student
+     */
+    public boolean insertStudent( Student student ) {
+	Log.d( TAG, "Inserting student: " + student.getIdent() );
+	boolean success = true;
+
+	StudentTbl.Insert( student, getWritableDatabase() );
+
+	Iterator<Parent> it = student.getParents().iterator();
+	while ( it.hasNext() ) {
+	    insertParent( it.next() );
 	}
 
-	/**
-	 * 
-	 * @param std
-	 * @param oldIdent
-	 */
-	public int updateStudent( Student std, String oldIdent ) {
-		if ( ! std.getIdent().equals( oldIdent ) )
-			removeStudent( oldIdent );
+	return success;
+    }
 
-		Log.d( TAG, "Updating student: " + std.getIdent() );
-		return StudentTbl.Update( std, getWritableDatabase() );
-	}
+    private void insertParent( Parent parent ) {
+	ParentTbl.InsertParent( parent, getWritableDatabase() );
 
-	/**
-	 * 
-	 * @param ident
-	 */
-	public int removeStudent( String ident ) {
-		Log.d( TAG, "Deleting student: " + ident );
-		return StudentTbl.Delete( ident, getWritableDatabase() );
+	Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
+	while ( pIt.hasNext() ) {
+	    Phone p = pIt.next();
+	    p.setParentID( parent.getID() );
+	    PhoneTbl.InsertPhone( p, getWritableDatabase() );
 	}
+    }
 
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// TASK
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
+    /**
+     * 
+     * @param std
+     * @param oldIdent
+     */
+    public int updateStudent( Student std, String oldIdent ) {
+	if ( !std.getIdent().equals( oldIdent ) ) removeStudent( oldIdent );
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Task createNewTask() {
-		return new TaskImpl();
-	}
-	
-	/**
-	 * 
-	 * @param task
-	 */
-	public boolean insertTask( Task task ) {
-		Log.d( TAG, "Inserting new task: " + task.getName() );
-		boolean retVal = true;
-		try {
-			TaskTbl.InsertTask( task, getWritableDatabase() );			
-			StudentInTaskTbl.InsertAll( task, getWritableDatabase() );	
-		}
-		catch ( Exception e ) {
-			Log.e( TAG, "Failure in adding task: " + task.getName(), e );
-			retVal = false;
-		}
-		
-		return retVal;
-	}
-	
-	public boolean updateStudentTask( StudentTask stdTask) {
-		if (StudentInTaskTbl.Update( stdTask, getWritableDatabase() ) != 1 )
-			return false;
-		
-		return true;
-	}
+	Log.d( TAG, "Updating student: " + std.getIdent() );
+	return StudentTbl.Update( std, getWritableDatabase() );
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public List<Task> loadTasks() {
-		return TaskTbl.loadAllTasks( getReadableDatabase() );
+    /**
+     * 
+     * @param ident
+     */
+    public int removeStudent( String ident ) {
+	Log.d( TAG, "Deleting student: " + ident );
+	return StudentTbl.Delete( ident, getWritableDatabase() );
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // TASK
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @return
+     */
+    public Task createNewTask() {
+	return new TaskImpl();
+    }
+
+    /**
+     * 
+     * @param task
+     */
+    public boolean insertTask( Task task ) {
+	Log.d( TAG, "Inserting new task: " + task.getName() );
+	boolean retVal = true;
+	try {
+	    TaskTbl.InsertTask( task, getWritableDatabase() );
+	    StudentInTaskTbl.InsertAll( task, getWritableDatabase() );
 	}
-	
-	/**
-	 * 
-	 * @param task
-	 * @param oldName
-	 * @return
-	 */
-	public boolean updateTask( Task task, String oldName ) {
-		int rows = 0;
-		
-		try {
-			rows = TaskTbl.updateTask( task, oldName, getWritableDatabase() );
-		}
-		catch ( RuntimeException e ) {
-			Log.e( TAG, "Cannot update task: " + oldName, e );
-			e.printStackTrace();
-		}
-		
-		Log.d( TAG, "Updated " + rows + " rows" );
-		
-		return rows > 0;
-	}
-	
-	/**
-	 * 
-	 * @param stdTasks
-	 */
-	public void updateStudentTasks( List<StudentTask> stdTasks ) {
-		Iterator<StudentTask> it = stdTasks.iterator();
-		
-		while ( it.hasNext() ) {
-			StudentTask stdTask = it.next();
-			StudentInTaskTbl.Update( stdTask, getWritableDatabase() );
-		}
-	}
-	
-	/**
-	 * 
-	 * @param stdTasks
-	 */
-	public void deleteStudentTasks( List<StudentTask> stdTasks ) {
-		Iterator<StudentTask> it = stdTasks.iterator();
-		
-		while ( it.hasNext() ) {
-			StudentTask stdTask = it.next();
-			StudentInTaskTbl.Delete( stdTask, getWritableDatabase() );
-		}
-	}
-	
-	/**
-	 * 
-	 * @param taskName
-	 * @return
-	 */
-	public boolean deleteTask( String taskName ) {
-		int rows = 0;
-		
-		try {
-			rows = TaskTbl.DeleteTask( taskName, getWritableDatabase() );
-		}
-		catch ( RuntimeException e ) {
-			Log.e( TAG, "Cannot update task: " + taskName, e );
-			e.printStackTrace();
-		}
-		
-		Log.d( TAG, "Detelted " + rows + " rows" );
-		
-		return rows > 0;
+	catch ( Exception e ) {
+	    Log.e( TAG, "Failure in adding task: " + task.getName(), e );
+	    retVal = false;
 	}
 
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// STUDENTCLASS
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
+	return retVal;
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public List<StudentClass> loadStudentClasses() {
-		try {
-			SQLiteDatabase db = getReadableDatabase();		
-			return StudentClassTbl.LoadStudentClasses( db );			
-		}
-		catch ( RuntimeException e ) {
-			Log.e( TAG, "Cannot load studentClasses", e );
-			throw e;
-		}
+    public boolean updateStudentTask( StudentTask stdTask ) {
+	if ( StudentInTaskTbl.Update( stdTask, getWritableDatabase() ) != 1 ) return false;
 
+	return true;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public List<Task> loadTasks() {
+	return TaskTbl.loadAllTasks( getReadableDatabase() );
+    }
+
+    /**
+     * 
+     * @param task
+     * @param oldName
+     * @return
+     */
+    public boolean updateTask( Task task, String oldName ) {
+	int rows = 0;
+
+	try {
+	    rows = TaskTbl.updateTask( task, oldName, getWritableDatabase() );
+	}
+	catch ( RuntimeException e ) {
+	    Log.e( TAG, "Cannot update task: " + oldName, e );
+	    e.printStackTrace();
 	}
 
-	/**
-	 * 
-	 * @param stdClass
-	 */
-	public void insertStudentClass( StudentClass stdClass ) {
-		List<Student> list = stdClass.getStudents();
-		Iterator<Student> it = list.iterator();
+	Log.d( TAG, "Updated " + rows + " rows" );
 
-		while ( it.hasNext() ) {
-			Student std = it.next();
-			std.setStudentClass( stdClass.getName() );
-			insertStudent( std );
-		}
+	return rows > 0;
+    }
 
-		StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
+    /**
+     * 
+     * @param stdTasks
+     */
+    public void updateStudentTasks( List<StudentTask> stdTasks ) {
+	Iterator<StudentTask> it = stdTasks.iterator();
+
+	while ( it.hasNext() ) {
+	    StudentTask stdTask = it.next();
+	    StudentInTaskTbl.Update( stdTask, getWritableDatabase() );
 	}
-	
-	public long deleteStdClass( StudentClass stdClass ) {
-		List<Student> list = stdClass.getStudents();
-		for ( int i=0 ; i<list.size(); i++) {
-			Student std = list.get( i );
-			StudentTbl.Delete( std.getIdent(), getWritableDatabase() );
-		}
-		
-		return StudentClassTbl.Delete( stdClass.getName(), getWritableDatabase() );
+    }
+
+    /**
+     * 
+     * @param stdTasks
+     */
+    public void deleteStudentTasks( List<StudentTask> stdTasks ) {
+	Iterator<StudentTask> it = stdTasks.iterator();
+
+	while ( it.hasNext() ) {
+	    StudentTask stdTask = it.next();
+	    StudentInTaskTbl.Delete( stdTask, getWritableDatabase() );
+	}
+    }
+
+    /**
+     * 
+     * @param taskName
+     * @return
+     */
+    public boolean deleteTask( String taskName ) {
+	int rows = 0;
+
+	try {
+	    rows = TaskTbl.DeleteTask( taskName, getWritableDatabase() );
+	}
+	catch ( RuntimeException e ) {
+	    Log.e( TAG, "Cannot update task: " + taskName, e );
+	    e.printStackTrace();
 	}
 
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	//
-	// STUDENT IN TASK
-	//
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	// --------------------------------------------------------------------------------------------------------
-	
-	/**
-	 * 
-	 * @param task
-	 * @return
-	 */
-	public List<StudentTask> loadStudentsInTask( Task task ) {
-		return StudentInTaskTbl.LoadAll( getReadableDatabase(), task );
+	Log.d( TAG, "Detelted " + rows + " rows" );
+
+	return rows > 0;
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // STUDENTCLASS
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @return
+     */
+    public List<StudentClass> loadStudentClasses() {
+	try {
+	    SQLiteDatabase db = getReadableDatabase();
+	    return StudentClassTbl.LoadStudentClasses( db );
 	}
-	
+	catch ( RuntimeException e ) {
+	    Log.e( TAG, "Cannot load studentClasses", e );
+	    throw e;
+	}
+
+    }
+
+    /**
+     * 
+     * @param stdClass
+     */
+    public void insertStudentClass( StudentClass stdClass ) {
+	List<Student> list = stdClass.getStudents();
+	Iterator<Student> it = list.iterator();
+
+	while ( it.hasNext() ) {
+	    Student std = it.next();
+	    std.setStudentClass( stdClass.getName() );
+	    insertStudent( std );
+	}
+
+	StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
+    }
+
+    public long deleteStdClass( StudentClass stdClass ) {
+	List<Student> list = stdClass.getStudents();
+	for ( int i = 0; i < list.size(); i++ ) {
+	    Student std = list.get( i );
+	    StudentTbl.Delete( std.getIdent(), getWritableDatabase() );
+	}
+
+	return StudentClassTbl.Delete( stdClass.getName(), getWritableDatabase() );
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    //
+    // STUDENT IN TASK
+    //
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * 
+     * @param task
+     * @return
+     */
+    public List<StudentTask> loadStudentsInTask( Task task ) {
+	return StudentInTaskTbl.LoadAll( getReadableDatabase(), task );
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public List<StudentTask> loadAllStudentTask() {
+	return StudentInTaskTbl.LoadAll( getReadableDatabase() );
+    }
+
 }

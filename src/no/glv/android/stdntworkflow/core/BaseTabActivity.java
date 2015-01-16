@@ -27,224 +27,221 @@ import android.widget.TextView;
  */
 public abstract class BaseTabActivity extends Activity implements ActionBar.TabListener {
 
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a {@link FragmentPagerAdapter}
-	 * derivative, which will keep every loaded fragment in memory. If this
-	 * becomes too memory intensive, it may be best to switch to a
-	 * {@link android.support.v13.app.FragmentStatePagerAdapter}.
-	 */
-	PagerAdapterExt mAdapter;
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a {@link FragmentPagerAdapter}
+     * derivative, which will keep every loaded fragment in memory. If this
+     * becomes too memory intensive, it may be best to switch to a
+     * {@link android.support.v13.app.FragmentStatePagerAdapter}.
+     */
+    PagerAdapterExt mAdapter;
 
-	/**
-	 * @return The R.layout ID the corresponds to a ViewPager XML element
-	 */
-	public abstract int getLayoutID();
+    /**
+     * @return The R.layout ID the corresponds to a ViewPager XML element
+     */
+    public abstract int getLayoutID();
+
+    /**
+     * 
+     * @return The R.id ID to the ViewPager XML element
+     */
+    public abstract int getViewpagerID();
+
+    /**
+     * 
+     * @return
+     */
+    public abstract BaseTabFragment[] getFragments();
+
+    /**
+     * 
+     * @return
+     */
+    public abstract String[] getTabTitles();
+
+    /**
+     * 
+     * @return
+     */
+    protected DataHandler getDataHandler() {
+	return DataHandler.GetInstance();
+    }
+
+    protected String getTabTitle() {
+	return getTitle().toString();
+    }
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    ViewPager mViewPager;
+
+    @Override
+    protected void onCreate( Bundle savedInstanceState ) {
+	super.onCreate( savedInstanceState );
+	setContentView( getLayoutID() );
+
+	// Set up the action bar.
+	final ActionBar actionBar = getActionBar();
+	actionBar.setNavigationMode( ActionBar.NAVIGATION_MODE_TABS );
+	setTitle( getTabTitle() );
+
+	// Create the adapter that will return a fragment for each of the two
+	// primary sections of the activity.
+	mAdapter = new PagerAdapterExt( getFragmentManager() );
+	mAdapter.baseTabActivity = this;
+	mAdapter.fragments = getFragments();
+	mAdapter.titles = getTabTitles();
+
+	// Set up the ViewPager with the sections adapter.
+	mViewPager = (ViewPager) findViewById( getViewpagerID() );
+	mViewPager.setAdapter( mAdapter );
+
+	// When swiping between different sections, select the corresponding
+	// tab. We can also use ActionBar.Tab#select() to do this if we have
+	// a reference to the Tab.
+	mViewPager.setOnPageChangeListener( new ViewPager.SimpleOnPageChangeListener() {
+	    @Override
+	    public void onPageSelected( int position ) {
+		actionBar.setSelectedNavigationItem( position );
+	    }
+	} );
+
+	// For each of the sections in the app, add a tab to the action bar.
+	for ( int i = 0; i < mAdapter.getCount(); i++ ) {
+	    // Create a tab with text corresponding to the page title defined by
+	    // the adapter. Also specify this Activity object, which implements
+	    // the TabListener interface, as the callback (listener) for when
+	    // this tab is selected.
+	    actionBar.addTab( actionBar.newTab().setText( mAdapter.getPageTitle( i ) ).setTabListener( this ) );
+	}
+    }
+
+    @Override
+    public void onTabSelected( ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
+	// When the given tab is selected, switch to the corresponding page in
+	// the ViewPager.
+	mViewPager.setCurrentItem( tab.getPosition() );
+    }
+
+    /**
+     * 
+     * @author GleVoll
+     *
+     */
+    public class PagerAdapterExt extends FragmentPagerAdapter {
+
+	BaseTabFragment[] fragments;
+	String[] titles;
+	BaseTabActivity baseTabActivity;
 
 	/**
 	 * 
-	 * @return The R.id ID to the ViewPager XML element
+	 * @param fm
 	 */
-	public abstract int getViewpagerID();
+	public PagerAdapterExt( FragmentManager fm ) {
+	    super( fm );
+	}
+
+	protected BaseTabActivity getBaseTabActivity() {
+	    if ( baseTabActivity == null ) baseTabActivity = BaseTabActivity.this;
+
+	    return baseTabActivity;
+	}
+
+	public void setFragments( BaseTabFragment[] frs ) {
+	    this.fragments = frs;
+	}
+
+	@Override
+	public Fragment getItem( int position ) {
+	    fragments[position].baseTabActivity = getBaseTabActivity();
+	    return fragments[position];
+	}
+
+	@Override
+	public int getCount() {
+	    return fragments.length;
+	}
+
+	@Override
+	public CharSequence getPageTitle( int position ) {
+	    return titles[position].toUpperCase( Locale.getDefault() );
+
+	}
+    }
+
+    /**
+     * 
+     * @author GleVoll
+     *
+     */
+    public abstract static class BaseTabFragment extends Fragment {
+
+	protected View rootView;
+	BaseTabActivity baseTabActivity;
+
+	public BaseTabFragment() {
+	    super();
+
+	    Log.d( getClass().getSimpleName(), "Instantiating: " + getClass().toString() );
+	}
 
 	/**
-	 * 
-	 * @return
-	 */
-	public abstract BaseTabFragment[] getFragments();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract String[] getTabTitles();
-	
+		 * 
+		 */
+	public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+	    rootView = inflater.inflate( getRootViewID(), container, false );
+	    return doCreateView( inflater, container, savedInstanceState );
+	}
+
+	protected BaseTabActivity getBaseTabActivity() {
+	    return (BaseTabActivity) getActivity();
+	}
+
 	/**
 	 * 
 	 * @return
 	 */
 	protected DataHandler getDataHandler() {
-		return DataHandler.GetInstance();
-	}
-	
-	protected String getTabTitle() {
-		return getTitle().toString();
-	}
-	
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
-	ViewPager mViewPager;
-
-	@Override
-	protected void onCreate( Bundle savedInstanceState ) {
-		super.onCreate( savedInstanceState );
-		setContentView( getLayoutID() );
-
-		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode( ActionBar.NAVIGATION_MODE_TABS );
-		setTitle( getTabTitle() );
-
-		// Create the adapter that will return a fragment for each of the two
-		// primary sections of the activity.
-		mAdapter = new PagerAdapterExt( getFragmentManager() );
-		mAdapter.baseTabActivity = this;
-		mAdapter.fragments = getFragments();
-		mAdapter.titles = getTabTitles();
-		
-
-		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById( getViewpagerID() );
-		mViewPager.setAdapter( mAdapter );
-
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
-		mViewPager.setOnPageChangeListener( new ViewPager.SimpleOnPageChangeListener() {
-			@Override
-			public void onPageSelected( int position ) {
-				actionBar.setSelectedNavigationItem( position );
-			}
-		} );
-
-		// For each of the sections in the app, add a tab to the action bar.
-		for ( int i = 0; i < mAdapter.getCount(); i++ ) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
-			actionBar.addTab( actionBar.newTab().setText( mAdapter.getPageTitle( i ) ).setTabListener( this ) );
-		}
+	    return getBaseTabActivity().getDataHandler();
 	}
 
-	@Override
-	public void onTabSelected( ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
-		mViewPager.setCurrentItem( tab.getPosition() );
-	}
-	
 	/**
 	 * 
-	 * @author GleVoll
-	 *
+	 * @return
 	 */
-	public class PagerAdapterExt extends FragmentPagerAdapter {
+	protected abstract int getRootViewID();
 
-		BaseTabFragment[] fragments;
-		String[] titles;
-		BaseTabActivity baseTabActivity;
-
-		/**
-		 * 
-		 * @param fm
-		 */
-		public PagerAdapterExt( FragmentManager fm ) {
-			super( fm );
-		}
-		
-		protected BaseTabActivity getBaseTabActivity() {
-			if ( baseTabActivity == null ) 
-				baseTabActivity = BaseTabActivity.this;
-			
-			return baseTabActivity;
-		}
-		
-		public void setFragments( BaseTabFragment[] frs ) {
-			this.fragments = frs;
-		}
-
-		@Override
-		public Fragment getItem( int position ) {
-			fragments[position].baseTabActivity = getBaseTabActivity();
-			return fragments[position];
-		}
-
-		@Override
-		public int getCount() {
-			return fragments.length;
-		}
-
-		@Override
-		public CharSequence getPageTitle( int position ) {
-			return titles[position].toUpperCase( Locale.getDefault() );
-			
-		}
-	}
-	
 	/**
 	 * 
-	 * @author GleVoll
-	 *
+	 * @param inflater
+	 * @param container
+	 * @param savedInstanceState
+	 * @return
 	 */
-	public abstract static class BaseTabFragment extends Fragment {
-		
-		protected View rootView;
-		BaseTabActivity baseTabActivity;
-		
-		public BaseTabFragment() {
-			super();
-			
-			Log.d( getClass().getSimpleName(), "Instantiating: " + getClass().toString() );
-		}
-		
-		/**
-		 * 
-		 */
-		public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			rootView = inflater.inflate( getRootViewID(), container, false );
-			return doCreateView( inflater, container, savedInstanceState );
-		}
-		
-		protected BaseTabActivity getBaseTabActivity() {
-			return ( BaseTabActivity ) getActivity();
-		}
-		
-		/**
-		 * 
-		 * @return
-		 */
-		protected DataHandler getDataHandler() {
-			return getBaseTabActivity().getDataHandler();
-		}
-		
-		/**
-		 * 
-		 * @return
-		 */
-		protected abstract int getRootViewID();
-		
-		/**
-		 * 
-		 * @param inflater
-		 * @param container
-		 * @param savedInstanceState
-		 * @return
-		 */
-		protected abstract View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState );
-		
-		/**
-		 * 
-		 * @param id
-		 * @return
-		 */
-		protected EditText getEditText( int id ) {
-			return ( EditText ) rootView.findViewById( id );
-		}
-		
-		protected TextView getTextView( int id ) {
-			return ( TextView ) rootView.findViewById( id );
-		}
-		
-		protected ListView getListView( int id ) {
-			return ( ListView ) rootView.findViewById( id );
-		}
-		
-		protected Button getButton( int id ) {
-			return ( Button ) rootView.findViewById( id );
-		}
+	protected abstract View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState );
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected EditText getEditText( int id ) {
+	    return (EditText) rootView.findViewById( id );
 	}
 
+	protected TextView getTextView( int id ) {
+	    return (TextView) rootView.findViewById( id );
+	}
+
+	protected ListView getListView( int id ) {
+	    return (ListView) rootView.findViewById( id );
+	}
+
+	protected Button getButton( int id ) {
+	    return (Button) rootView.findViewById( id );
+	}
+    }
 
 }

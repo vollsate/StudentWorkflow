@@ -27,178 +27,172 @@ import android.widget.ImageView;
  *
  */
 public class BaseActivity extends ActionBarActivity {
-	
-	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
-	
-	private Bundle bundle;
-	
-	/**
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
+
+    private Bundle bundle;
+
+    /**
 	 * 
 	 */
-	public BaseActivity() {
-		super();
-	}
+    public BaseActivity() {
+	super();
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Student getStudentByFirstName() {
-		Bundle bundle = getIntent().getExtras();
+    /**
+     * 
+     * @return
+     */
+    public Student getStudentByFirstName() {
+	Bundle bundle = getIntent().getExtras();
 
-		String sName = bundle.getString( Student.EXTRA_STUDENTNAME );
-		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
+	String sName = bundle.getString( Student.EXTRA_STUDENTNAME );
+	String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
-		StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
-		Student bean = stdClass.getStudentByFirstName( sName );
+	StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
+	Student bean = stdClass.getStudentByFirstName( sName );
 
-		return bean;
-	}
+	return bean;
+    }
 
-	
-	public static List<String> GetTasks( Context ctx ) {
-		return DataHandler.GetInstance().getTaskNames();
-	}
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public Bundle getBundle() {
-		if (bundle == null ) bundle = new Bundle();
-		return bundle;
-	}
-	
+    public static List<String> GetTasks( Context ctx ) {
+	return DataHandler.GetInstance().getTaskNames();
+    }
 
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static StudentClass GetStudentClassExtra( Intent intent ) {
-		Bundle bundle = intent.getExtras();
-		String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
+    /**
+     * 
+     * @return
+     */
+    public Bundle getBundle() {
+	if ( bundle == null ) bundle = new Bundle();
+	return bundle;
+    }
 
-		return DataHandler.GetInstance().getStudentClass( className );
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static Student GetStudentByIdentExtra( Intent intent ) {
-		Bundle bundle = intent.getExtras();
+    /**
+     * 
+     * @return
+     */
+    public static StudentClass GetStudentClassExtra( Intent intent ) {
+	Bundle bundle = intent.getExtras();
+	String className = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
-		String sName = bundle.getString( Student.EXTRA_IDENT );
-		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
+	return DataHandler.GetInstance().getStudentClass( className );
+    }
 
-		StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
-		Student bean = stdClass.getStudentByIdent( sName );
+    /**
+     * 
+     * @return
+     */
+    public static Student GetStudentByIdentExtra( Intent intent ) {
+	Bundle bundle = intent.getExtras();
 
-		return bean;		
-	}
+	String sName = bundle.getString( Student.EXTRA_IDENT );
+	String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
 
-	public Student getStudentByIdentExtra() {
-		return GetStudentByIdentExtra( getIntent() );
-	}
-	
-	
-	/**
-	 * 
-	 * @param studentClass
-	 * @param intent
-	 */
-	public static void PutStudentClassExtra( String stdClass, Intent intent ) {
-		intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, stdClass );
+	StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
+	Student bean = stdClass.getStudentByIdent( sName );
 
-	}
+	return bean;
+    }
 
-	public static void putStudentNameExtra( Student std, Intent intent ) {
-		intent.putExtra( Student.EXTRA_STUDENTNAME, std.getFirstName() );
+    public Student getStudentByIdentExtra() {
+	return GetStudentByIdentExtra( getIntent() );
+    }
 
-	}
+    /**
+     * 
+     * @param studentClass
+     * @param intent
+     */
+    public static void PutStudentClassExtra( String stdClass, Intent intent ) {
+	intent.putExtra( StudentClass.EXTRA_STUDENTCLASS, stdClass );
 
-	public static void putStudentIdentExtra( Student std, Intent intent ) {
-		putStudentIdentExtra( std.getIdent(), intent );
+    }
 
-	}
+    public static void putStudentNameExtra( Student std, Intent intent ) {
+	intent.putExtra( Student.EXTRA_STUDENTNAME, std.getFirstName() );
 
-	public static void putStudentIdentExtra( String std, Intent intent ) {
-		intent.putExtra( Student.EXTRA_IDENT, std );
-	}
-	
-	public static void PutTaskNameExtra( String taskName, Intent intent ) {
-		if ( intent == null ) return;
-		
-		intent.putExtra( Task.EXTRA_TASKNAME , taskName );
-	}
-	
-	public static String GetTaskNameExtra( Intent intent ) {
-		if ( intent == null ) return null;
-		
-		return intent.getStringExtra( Task.EXTRA_TASKNAME );
-	}
+    }
 
-	
-	/**
-	 * 
-	 * @param std
-	 * @param stdClass
-	 * @param intent
-	 */
-	public static void putIdentExtra( Student std, Intent intent ) {
-		PutStudentClassExtra( std.getStudentClass(), intent );
-		putStudentIdentExtra( std, intent );
+    public static void putStudentIdentExtra( Student std, Intent intent ) {
+	putStudentIdentExtra( std.getIdent(), intent );
+
+    }
+
+    public static void putStudentIdentExtra( String std, Intent intent ) {
+	intent.putExtra( Student.EXTRA_IDENT, std );
+    }
+
+    public static void PutTaskNameExtra( String taskName, Intent intent ) {
+	if ( intent == null ) return;
+
+	intent.putExtra( Task.EXTRA_TASKNAME, taskName );
+    }
+
+    public static String GetTaskNameExtra( Intent intent ) {
+	if ( intent == null ) return null;
+
+	return intent.getStringExtra( Task.EXTRA_TASKNAME );
+    }
+
+    /**
+     * 
+     * @param std
+     * @param stdClass
+     * @param intent
+     */
+    public static void putIdentExtra( Student std, Intent intent ) {
+	PutStudentClassExtra( std.getStudentClass(), intent );
+	putStudentIdentExtra( std, intent );
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public static String GetDateAsString() {
+	return GetDateAsString( new Date() );
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     */
+    public static String GetDateAsString( Date date ) {
+	return sdf.format( date );
+    }
+
+    /**
+     * 
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
+    public static String GetDateAsString( int year, int month, int day ) {
+	Calendar cal = Calendar.getInstance();
+	cal.set( year, month, day );
+
+	return sdf.format( cal.getTime() );
+    }
+
+    public static Date GetDateFromString( String date ) {
+	try {
+	    return sdf.parse( date );
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static String GetDateAsString() {
-		return GetDateAsString( new Date() );
+	catch ( ParseException e ) {
+	    // TODO: handle exception
+	    return null;
 	}
-	
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 */
-	public static String GetDateAsString(Date date) {
-		return sdf.format( date );
-	}
-	
-	/**
-	 * 
-	 * @param year
-	 * @param month
-	 * @param day
-	 * @return
-	 */
-	public static String GetDateAsString(int year, int month, int day) {
-		Calendar cal = Calendar.getInstance();
-		cal.set( year, month, day );
-		
-		return sdf.format( cal.getTime() );
-	}
-	
-	public static Date GetDateFromString( String date ) {
-		try {
-			return sdf.parse( date );			
-		}
-		catch ( ParseException e ) {
-			// TODO: handle exception
-			return null;
-		}
-	}
-	
-	public static CheckBox GetCheckBox( View rootView, int id ) {
-		return ( CheckBox ) rootView.findViewById( id );
-	}
-	
-	public static ImageView GetImageView( View rootView, int id ) {
-		return (ImageView) rootView.findViewById( id );
-	}
-	
+    }
+
+    public static CheckBox GetCheckBox( View rootView, int id ) {
+	return (CheckBox) rootView.findViewById( id );
+    }
+
+    public static ImageView GetImageView( View rootView, int id ) {
+	return (ImageView) rootView.findViewById( id );
+    }
+
 }

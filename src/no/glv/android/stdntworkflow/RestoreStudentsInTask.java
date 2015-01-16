@@ -7,11 +7,12 @@ import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DialogFragmentBase;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,13 +27,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * A dialog that will list every known student added to the task. The user may
- * choose to remove certain students from the list, if needed.
  * 
  * @author GleVoll
  *
  */
-public class AddedStudentsToTaskFragment extends DialogFragmentBase {
+public class RestoreStudentsInTask extends DialogFragmentBase {
 
     private Task task;
     private OnStudentsVerifiedListener listener;
@@ -42,6 +41,13 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	if ( task == null ) task = (Task) getArguments().getSerializable( Task.EXTRA_TASKNAME );
 
 	return task;
+    }
+
+    OnStudentsVerifiedListener getListener() {
+	if ( listener == null ) listener = (OnStudentsVerifiedListener) getArguments().getSerializable(
+		OnStudentsVerifiedListener.EXTRA_NAME );
+
+	return listener;
     }
 
     public void setOnVerifiedListener( OnStudentsVerifiedListener listener ) {
@@ -102,7 +108,7 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	    public void onClick( View v ) {
 		fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 
-		listener.onStudentsVerified( task );
+		getListener().onStudentsVerified( task );
 	    }
 	} );
 
@@ -192,7 +198,11 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	    holder.studentIdent.setText( text );
 
 	    holder.cBox.setTag( std );
-	    holder.cBox.setChecked( true );
+
+	    if ( task.hasStudent( std.getIdent() ) ) holder.cBox.setChecked( true );
+	    else
+		holder.cBox.setChecked( false );
+
 	    holder.cBox.setOnCheckedChangeListener( this );
 
 	    return convertView;
@@ -210,6 +220,21 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
     static class ViewHolder {
 	TextView studentIdent;
 	CheckBox cBox;
+    }
+
+    /**
+     * 
+     * @param args
+     * @param manager
+     */
+    static void StartFragment( Bundle args, FragmentManager manager ) {
+	RestoreStudentsInTask fragment = new RestoreStudentsInTask();
+
+	fragment.setArguments( args );
+
+	FragmentTransaction ft = manager.beginTransaction();
+	fragment.show( ft, RestoreStudentsInTask.class.getSimpleName() );
+
     }
 
     /**

@@ -20,7 +20,7 @@ import android.widget.TextView;
  * This Adapter will list all the student in a given StudentClass. This class
  * will load a XML layout row: row_student_list.
  * 
- * This list MUST display the first name of every student, and the 
+ * This list MUST display the first name of every student, and the
  * 
  * 
  * @author GleVoll
@@ -28,115 +28,115 @@ import android.widget.TextView;
  */
 public class StudentListAdapter extends ArrayAdapter<Student> {
 
-	/**  */
-	private static final String TAG = StudentListAdapter.class.getSimpleName();
-	
-	private SettingsManager mSettingsManager;
+    /**  */
+    private static final String TAG = StudentListAdapter.class.getSimpleName();
 
-	/**
+    private SettingsManager mSettingsManager;
+
+    /**
+     * 
+     * @param context
+     * @param objects
+     */
+    public StudentListAdapter( Context context, List<Student> objects ) {
+	super( context, R.layout.row_stdclass_list, objects );
+	mSettingsManager = DataHandler.GetInstance().getSettingsManager();
+    }
+
+    /**
 	 * 
-	 * @param context
-	 * @param objects
 	 */
-	public StudentListAdapter( Context context, List<Student> objects ) {
-		super( context, R.layout.row_stdclass_list, objects );
-		mSettingsManager = DataHandler.GetInstance().getSettingsManager();
-	}
+    @Override
+    public View getView( int position, View convertView, ViewGroup parent ) {
+	Student student = getItem( position );
 
-	/**
-	 * 
-	 */
-	@Override
-	public View getView( int position, View convertView, ViewGroup parent ) {
-		Student student = getItem( position );
+	if ( convertView == null ) convertView = createView( parent, student );
 
-		if (convertView == null)
-			convertView = createView( parent, student);
-		
-		ViewHolder holder = (ViewHolder) convertView.getTag();
-		holder.imgInfoView.setTag( student );
-		holder.imgTaskView.setTag( student );
-		holder.id = position;
-		
-		if ( mSettingsManager.isShowFullname() )
-			holder.textView.setText( student.getFirstName() + " " + student.getLastName() );
-		else
-			holder.textView.setText( student.getFirstName() );
-			
-		holder.identText.setText( student.getIdent() );
+	ViewHolder holder = (ViewHolder) convertView.getTag();
+	holder.imgInfoView.setTag( student );
+	holder.imgTaskView.setTag( student );
+	holder.id = position;
 
-		if ( position % 2 == 0 ) convertView.setBackgroundColor( getContext().getResources().getColor(
-				R.color.task_stdlist_dark ) );
-		else convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
+	if ( mSettingsManager.isShowFullname() ) holder.textView.setText( student.getFirstName() + " "
+		+ student.getLastName() );
+	else
+	    holder.textView.setText( student.getFirstName() );
 
-		return convertView;
-	}
+	holder.identText.setText( student.getIdent() );
 
-	/**
-	 * 
-	 * @param context
-	 * @param parent
-	 * @return
-	 */
-	private View createView( ViewGroup parent, Student student ) {
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.row_stdclass_list, parent, false );
-		
-		ViewHolder holder = new ViewHolder();
+	if ( position % 2 == 0 ) convertView.setBackgroundColor( getContext().getResources().getColor(
+		R.color.task_stdlist_dark ) );
+	else
+	    convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
 
-		ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
-		imgInfoView.setOnClickListener( new View.OnClickListener() {
+	return convertView;
+    }
 
-			@Override
-			public void onClick( View v ) {
-				Log.d( TAG, "" + v.getTag() );
+    /**
+     * 
+     * @param context
+     * @param parent
+     * @return
+     */
+    private View createView( ViewGroup parent, Student student ) {
+	LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+	View myView = inflater.inflate( R.layout.row_stdclass_list, parent, false );
 
-				Intent intent = new Intent( getContext(), StudentInfoActivity.class );
+	ViewHolder holder = new ViewHolder();
 
-				Student std = (Student) v.getTag();
-				BaseActivity.putIdentExtra( std, intent );
+	ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
+	imgInfoView.setOnClickListener( new View.OnClickListener() {
 
-				getContext().startActivity( intent );
-			}
-		} );
+	    @Override
+	    public void onClick( View v ) {
+		Log.d( TAG, "" + v.getTag() );
 
-		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
-		imgInfoView.setOnClickListener( new View.OnClickListener() {
+		Intent intent = new Intent( getContext(), StudentInfoActivity.class );
 
-			@Override
-			public void onClick( View v ) {
-				Log.d( TAG, "" + v.getTag() );
+		Student std = (Student) v.getTag();
+		BaseActivity.putIdentExtra( std, intent );
 
-				Intent intent = new Intent( getContext(), StdInfoActivity.class );
-				Student std = (Student) v.getTag();
-				BaseActivity.putIdentExtra( std, intent );
-				getContext().startActivity( intent );
-			}
-		} );
+		getContext().startActivity( intent );
+	    }
+	} );
 
-		TextView textView = (TextView) myView.findViewById( R.id.TV_stdlist_name );
-		textView.setTag( student );
-		holder.textView = textView;
+	ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
+	imgInfoView.setOnClickListener( new View.OnClickListener() {
 
-		textView = (TextView) myView.findViewById( R.id.TV_stdlist_ident );
-		holder.identText = textView;
-		
-		holder.imgInfoView = imgInfoView;
-		holder.imgTaskView = imgTaskView;
+	    @Override
+	    public void onClick( View v ) {
+		Log.d( TAG, "" + v.getTag() );
 
-		myView.setTag( holder );
+		Intent intent = new Intent( getContext(), StdInfoActivity.class );
+		Student std = (Student) v.getTag();
+		BaseActivity.putIdentExtra( std, intent );
+		getContext().startActivity( intent );
+	    }
+	} );
 
-		return myView;
-	}
+	TextView textView = (TextView) myView.findViewById( R.id.TV_stdlist_name );
+	textView.setTag( student );
+	holder.textView = textView;
 
-	static class ViewHolder {
-		int id;
+	textView = (TextView) myView.findViewById( R.id.TV_stdlist_ident );
+	holder.identText = textView;
 
-		TextView textView;
-		TextView identText;
-		ImageView imgInfoView;
-		ImageView imgTaskView;
+	holder.imgInfoView = imgInfoView;
+	holder.imgTaskView = imgTaskView;
 
-	}
+	myView.setTag( holder );
+
+	return myView;
+    }
+
+    static class ViewHolder {
+	int id;
+
+	TextView textView;
+	TextView identText;
+	ImageView imgInfoView;
+	ImageView imgTaskView;
+
+    }
 
 }
