@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	
+    <string name="ok">OK</string>
+    <string name="cancel">Avbryt</string>
+    
+    
     <!-- MAIN -->
     <string name="app_name">StudentWorkflow</string>
     <string name="def">To be altered</string>
@@ -28,7 +32,6 @@
     <string name="TV.task.info.text">        Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en 
         korrekt innleveringsdato.</string>
     <string name="title_activity_new_task">NewTaskActivity</string>
-    <string name="newTask.added.toast">Ny oppgave [{task}] lagt til!</string>
     <string name="loadData.added.toast">Ny klasse [{class}] lagt til!</string>
     <string name="stdInfo.fName">Fornavn: </string>
     <string name="stdInfo.lName">Etternavn: </string>
@@ -43,11 +46,21 @@
     <string name="std_parent2_title">Foresatt 2</string>
     <string name="title_activity_new">NewActivity</string>
 
+    <!-- NEW TASK -->
+    
+    <string name="newTask.added.toast">Ny oppgave [{task}] lagt til!</string>
+    <string name="newTask.addStudents.msg">Legg til studenter ..</string>
+    
     <!-- TASKS -->
 
+    <string name="task_menu_addStudent">Legg til elev</string>
     <string name="task_menu_delete">Slett</string>
     <string name="task_menu_update">Oppdater</string>
     <string name="task_menu_close">Steng</string>
+    
+    <string name="task.delete.msg">{task}</string>
+    <string name="task.delete.title">Vil du slette denne oppgaven?</string>
+    
     <string name="task_title">Oppgaver</string>
     <string name="task_header">Info om oppgave</string>
     <string name="task_name">Navn</string>

@@ -161,6 +161,8 @@ public class TaskImpl implements Task {
 
 	@Override
 	public void addClass( StudentClass stdClass ) {
+		if ( mClasses.contains(stdClass.getName() ) ) return;
+		
 		mClasses.add( stdClass.getName() );
 
 		Iterator<Student> it = stdClass.iterator();

@@ -3,6 +3,8 @@ package no.glv.android.stdntworkflow;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
@@ -16,6 +18,7 @@ import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.sql.DBUtils;
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -114,12 +117,16 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		switch ( item.getItemId() ) {
+		case R.id.task_action_addStudent:
+			addStudent();
+			return true;
+
 		case R.id.task_action_Update:
 			updateTask();
 			return true;
 
 		case R.id.task_action_Delete:
-			if ( getDataHandler().deleteTask( mTask.getName() ) ) finish();
+			deleteTask();
 			return true;
 
 		case R.id.task_action_close:
@@ -131,6 +138,48 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 		}
 
 		return super.onOptionsItemSelected( item );
+	}
+	
+	private void addStudent() {
+		Iterator<String> it = mTask.getClasses().iterator();
+		List<Student> students = new LinkedList<Student>();
+		
+		DataHandler handler = DataHandler.GetInstance();
+		
+		while ( it.hasNext() ) {
+			students.addAll( handler.getStudentClass( it.next() ).getStudents() );
+		}
+		
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void deleteTask() {
+		AlertDialog.Builder builder = new AlertDialog.Builder( this );
+		
+		//String msg = getResources().getString( R.string.task_delete_msg).replace(target, replacement)
+		builder.setTitle( getResources().getString(R.string.task_delete_title) );
+		builder.setMessage( mTask.getName() );
+		
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if ( getDataHandler().deleteTask( mTask.getName() ) ) finish();		
+			}
+		});
+		
+		builder.setNegativeButton( R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		
+		AlertDialog dialog = builder.create();	
+		dialog.show();
 	}
 
 	/**

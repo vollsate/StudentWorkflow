@@ -50,7 +50,7 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_stdclass_list );
 		
-		Log.d( TAG, "onCreate" );
+		Log.d( TAG, "onCreate()" );
 		
 		stdClass = BaseActivity.GetStudentClassExtra( this.getIntent() );
 
@@ -59,31 +59,20 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 		setTitle( title );
 
 		ListView listView = (ListView) findViewById( R.id.student_listview );
-		adapter = new StudentListAdapter( this, stdClass.toArray() );
+		adapter = new StudentListAdapter( this, stdClass.getStudents() );
 		listView.setAdapter( adapter );
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		Log.d( TAG, "onResume()" );
-		update();
 	}
 	
 	/**
 	 * 
 	 */
 	private void update() {
-		//adapter.clear();
-		//adapter.addAll( stdClass.toArray() );
+		adapter.notifyDataSetChanged();
 	}
 	
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		
-		Log.d( TAG, "onRestart()" );
 		update();
 	}
 	

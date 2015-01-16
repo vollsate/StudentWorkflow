@@ -10,6 +10,11 @@
         android:title="@string/action_settings">
         <menu>
             <item
+                android:id="@+id/task.action.addStudent"
+                android:orderInCategory="100"
+                android:showAsAction="always"
+                android:title="@string/task_menu_addStudent"/>
+            <item
                 android:id="@+id/task.action.Update"
                 android:orderInCategory="100"
                 android:showAsAction="always"
@@ -20,6 +25,7 @@
                 android:showAsAction="always"
                 android:title="@string/task_menu_close"/>
             <item
+                
                 android:id="@+id/task.action.Delete"
                 android:orderInCategory="100"
                 android:showAsAction="ifRoom"

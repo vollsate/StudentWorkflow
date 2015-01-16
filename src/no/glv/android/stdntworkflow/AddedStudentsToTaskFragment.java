@@ -1,15 +1,16 @@
 package no.glv.android.stdntworkflow;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -31,15 +32,19 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public class AddedStudentsToTaskFragment extends DialogFragment {
+public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	
 	public static final String EXTRA_TASKNAME = BaseValues.EXTRA_BASEPARAM + "TaskName";
 	
 	private Task task;
 	private OnStudentsVerifiedListener listener;
+	ListView listView;
 
-	public void setTask( Task task ) {
-		this.task = task;
+	Task getTask() {
+		if ( task == null )		
+			task = ( Task ) getArguments().getSerializable(EXTRA_TASKNAME);
+		
+		return task;
 	}
 	
 	public void setOnVerifiedListener( OnStudentsVerifiedListener listener ) {
@@ -47,21 +52,42 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	}
 	
 	@Override
-	public void onCreate( Bundle savedInstanceState ) {
-		super.onCreate( savedInstanceState );
+	protected int getRootViewID() {
+		return R.layout.fragment_students_newtask;
 	}
 	
+	@Override
+	protected String getTitle() {
+		return getResources().getString( R.string.newTask_addStudents_msg );
+	}
 	
 	@Override
-	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		View rootView = inflater.inflate( R.layout.fragment_students_newtask, container, false );
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
+		if ( savedInstanceState != null ) {
+			task = (Task)savedInstanceState.getSerializable( Task.EXTRA_TASKNAME );
+			listener = (OnStudentsVerifiedListener) savedInstanceState.getSerializable(OnStudentsVerifiedListener.EXTRA_NAME);
+		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putSerializable( OnStudentsVerifiedListener.EXTRA_NAME, listener);
+		outState.putSerializable(Task.EXTRA_TASKNAME, task);
+	}
+	
+	@Override
+	public void buildView( View rootView ) {
 		buildAdapter( rootView );
 		buildButton( rootView );
-		
-		getDialog().setTitle( "Add students to: " + task.getName() );
-		
-		return rootView;
 	}
 	
 	/**
@@ -69,12 +95,13 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	 * @param rootView
 	 */
 	private void buildButton( View rootView ) {
+		final Fragment fr = this;
+
 		Button btn = ( Button ) rootView.findViewById( R.id.BTN_newTask_verifyStudents );
 		btn.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
 			public void onClick( View v ) {
-				Fragment fr = AddedStudentsToTaskFragment.this;
 				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 				
 				listener.onStudentsVerified( task );
@@ -86,7 +113,6 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 			
 			@Override
 			public void onClick( View v ) {
-				Fragment fr = AddedStudentsToTaskFragment.this;
 				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 			}
 		} );
@@ -98,9 +124,11 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	 * @param rootView
 	 */
 	private void buildAdapter(View rootView ) {
+		if ( listView != null ) return;
+		
 		List<Student> students = createStudentList();
 		
-		ListView listView = ( ListView ) rootView.findViewById( R.id.LV_newTask_addedStudents );
+		listView = ( ListView ) rootView.findViewById( R.id.LV_newTask_addedStudents );
 		AddedStudentsAdapter adapter = new AddedStudentsAdapter( getActivity(), R.id.LV_newTask_addedStudents, students );
 		adapter.setTask( task );
 		listView.setAdapter( adapter );
@@ -112,7 +140,7 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	 * @return
 	 */
 	private List<Student> createStudentList( ) {
-		List<String> mClasses = task.getClasses();
+		List<String> mClasses = getTask().getClasses();
 		List<Student> students = new ArrayList<Student>();
 		
 		Iterator<String> it = mClasses.iterator();
@@ -134,14 +162,11 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	 */
 	public static class AddedStudentsAdapter extends ArrayAdapter<Student> implements OnCheckedChangeListener {
 		
-		private List<Student> students;
 		private Task task;
 		
 		
 		public AddedStudentsAdapter( Context context, int resource, List<Student> objects ) {
 			super( context, resource, objects );
-			
-			this.students = objects;
 		}
 		
 		void setTask( Task task ) {
@@ -168,8 +193,8 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 			
 			holder = ( ViewHolder ) convertView.getTag();
 			
-			Student std = students.get( position ); 
-			String text = DataHandler.GetInstance().getSettingsManager().getNewTaskText( std );
+			Student std = getItem( position ); 
+			String text = DataHandler.GetInstance().getSettingsManager().getStdInfoWhenNewTask( std );
 			
 			holder.studentIdent.setTag( std );
 			holder.studentIdent.setText( text );
@@ -204,9 +229,15 @@ public class AddedStudentsToTaskFragment extends DialogFragment {
 	 * @author GleVoll
 	 *
 	 */
-	public static interface OnStudentsVerifiedListener {
+	public static interface OnStudentsVerifiedListener extends Serializable {
+		
+		public static final String EXTRA_NAME = OnStudentsVerifiedListener.class.getSimpleName();
 		
 		public void onStudentsVerified(Task task);
+		
+		public void addStudent( Student std );
+		
+		public void removeStudent( Student std);
 	}
 
 }

@@ -39,6 +39,8 @@
         android:layout_width="wrap_content"
         android:layout_column="1"
         android:layout_gravity="bottom|fill_horizontal"
+        android:layout_marginLeft="5sp"
+        android:layout_marginStart="5sp"
         android:layout_row="1"
         android:gravity="start"
         android:hint="Content"

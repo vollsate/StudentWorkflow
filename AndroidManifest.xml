@@ -5,7 +5,8 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
@@ -55,11 +56,6 @@
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_task">
-        </activity>
-        <activity
-            android:name=".NewActivity"
-            android:theme="@android:style/Theme.Holo"
-            android:label="@string/title_activity_new" >
         </activity>
     </application>
 

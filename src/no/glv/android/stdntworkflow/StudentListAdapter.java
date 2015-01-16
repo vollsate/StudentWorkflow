@@ -1,7 +1,10 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.List;
+
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.SettingsManager;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.content.Context;
 import android.content.Intent;
@@ -27,14 +30,17 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
 	/**  */
 	private static final String TAG = StudentListAdapter.class.getSimpleName();
+	
+	private SettingsManager mSettingsManager;
 
 	/**
 	 * 
 	 * @param context
 	 * @param objects
 	 */
-	public StudentListAdapter( Context context, Student[] objects ) {
+	public StudentListAdapter( Context context, List<Student> objects ) {
 		super( context, R.layout.row_stdclass_list, objects );
+		mSettingsManager = DataHandler.GetInstance().getSettingsManager();
 	}
 
 	/**
@@ -52,12 +58,16 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		holder.imgTaskView.setTag( student );
 		holder.id = position;
 		
-		if ( DataHandler.GetInstance().getSettingsManager().isShowFullname() )
+		if ( mSettingsManager.isShowFullname() )
 			holder.textView.setText( student.getFirstName() + " " + student.getLastName() );
 		else
 			holder.textView.setText( student.getFirstName() );
 			
 		holder.identText.setText( student.getIdent() );
+
+		if ( position % 2 == 0 ) convertView.setBackgroundColor( getContext().getResources().getColor(
+				R.color.task_stdlist_dark ) );
+		else convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
 
 		return convertView;
 	}

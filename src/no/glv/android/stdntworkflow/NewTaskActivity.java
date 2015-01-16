@@ -8,6 +8,7 @@ import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
+import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -33,6 +34,9 @@ import android.widget.Toast;
  */
 public class NewTaskActivity extends Activity implements OnClickListener, OnDateSetListener, OnStudentsVerifiedListener {
 
+	
+	/** NewTaskActivity.java */
+	private static final long serialVersionUID = -324574706355660925L;
 	private static final String TAG = NewTaskActivity.class.getSimpleName();
 	private Task task;
 
@@ -40,7 +44,10 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_new_task );
-		task = DataHandler.GetInstance().createTask();
+		if ( savedInstanceState != null )
+			task = ( Task ) savedInstanceState.getSerializable( Task.EXTRA_TASKNAME );
+		else
+			task = DataHandler.GetInstance().createTask();
 
 		Button btn = (Button) findViewById( R.id.BTN_newTask_create );
 		btn.setOnClickListener( this );
@@ -52,8 +59,15 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 
 		AddClassToTaskFragment fragment = new AddClassToTaskFragment();
 		Bundle args = new Bundle();
-		args.putSerializable( "task", task );
+		args.putSerializable( Task.EXTRA_TASKNAME, task );		
 		ViewGroupAdapter.beginFragmentTransaction( getFragmentManager(), fragment, args, R.id.LL_newTask_classes );
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putSerializable(Task.EXTRA_TASKNAME, task);
 	}
 
 	@Override
@@ -111,7 +125,10 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 
 		// Show FragmentDialog to confirm all the students in the task
 		AddedStudentsToTaskFragment fragment = new AddedStudentsToTaskFragment();
-		fragment.setTask( task );
+		Bundle args = new Bundle();
+		args.putSerializable( AddedStudentsToTaskFragment.EXTRA_TASKNAME, task);
+		fragment.setArguments(args);
+		
 		fragment.setOnVerifiedListener( this );
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -135,6 +152,16 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 		Toast.makeText( this, msg, Toast.LENGTH_LONG ).show();
 
 		finish();
+	}
+	
+	@Override
+	public void addStudent(Student std) {
+		task.addStudent( std );
+	}
+	
+	@Override
+	public void removeStudent(Student std) {
+		task.removeStudent( std.getIdent() );
 	}
 
 }
