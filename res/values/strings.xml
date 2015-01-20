@@ -73,7 +73,11 @@
     <string name="std_info_title">Elev</string>
     <string name="std_parent1_title">Foresatt 1</string>
     <string name="std_parent2_title">Foresatt 2</string>
-
+    
+    <string name="stdInfo.header.nameAdr">Navn og adresse</string>
+    <string name="stdInfo.header.google">Google konto</string>
+    <string name="stdInfo.google"><u>{google}</u></string>
+    
     <!-- NEW TASK -->
 
     <string name="newTask.added.toast">Ny oppgave [{task}] lagt til!</string>
