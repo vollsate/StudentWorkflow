@@ -1,8 +1,10 @@
 package no.glv.android.stdntworkflow.intrfc;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import android.os.Parcelable;
 import no.glv.android.stdntworkflow.core.DataHandler;
 
 /**
@@ -62,7 +64,7 @@ import no.glv.android.stdntworkflow.core.DataHandler;
  * 
  * @author GleVoll
  */
-public interface Task {
+public interface Task extends Serializable {
 
     /** The normal flag for handing in a task. */
     public static final int HANDIN_DATE = 0;
@@ -315,7 +317,8 @@ public interface Task {
      * This method will only remove the student from the ones who have not
      * handed in the assignment (task).
      * 
-     * <p>The task will be in the state of <tt>modified</tt> and the removed
+     * <p>
+     * The task will be in the state of <tt>modified</tt> and the removed
      * student will be moved to the tasks history as an removed student. Commit
      * the change to the database before calling <tt>markAsCommitted</tt>
      * 
