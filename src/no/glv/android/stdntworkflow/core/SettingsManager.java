@@ -3,9 +3,9 @@ package no.glv.android.stdntworkflow.core;
 import java.util.Collections;
 import java.util.List;
 
-import android.util.Log;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import android.util.Log;
 
 public class SettingsManager {
 
@@ -76,6 +76,22 @@ public class SettingsManager {
 	List<Student> list = DataHandler.GetInstance().getStudentClass( className ).getStudents();
 	Collections.sort( list, new DataComparator.StudentComparator( DataComparator.SORT_FIRSTNAME_ASC ) );
 	Log.d( TAG, "Sorted list: " + list.toString() );
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getStudentSortType() {
+	return DataComparator.SORT_FIRSTNAME_ASC;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getStudentClassSortType() {
+	return DataComparator.SORT_IDENT_ASC;
     }
 
 }
