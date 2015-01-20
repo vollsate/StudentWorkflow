@@ -3,7 +3,6 @@ package no.glv.android.stdntworkflow.sql;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Setting;
 import android.content.ContentValues;
 import android.database.Cursor;
