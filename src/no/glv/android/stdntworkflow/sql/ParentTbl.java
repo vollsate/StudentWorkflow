@@ -65,16 +65,19 @@ class ParentTbl implements BaseColumns {
     }
 
     /**
+     * Load the parent to a specific student ID. If ident is null, loads every parent.
      * 
-     * @param stdClass
+     * @param ident The student id to look for. May be null.
      * @param db
      * @return
      */
-    public static List<Parent> LoadParent( String parentID, SQLiteDatabase db ) {
+    public static List<Parent> LoadParent( String ident, SQLiteDatabase db ) {
 	List<Parent> list = new ArrayList<Parent>();
 
-	String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_STDID + " = ?";
-	Cursor cursor = db.rawQuery( sql, new String[] { parentID } );
+	String sql = "SELECT * FROM " + TBL_NAME;
+	if ( ident != null ) sql += " WHERE " + COL_STDID + " = ?";
+	
+	Cursor cursor = db.rawQuery( sql, new String[] { ident } );
 	cursor.moveToFirst();
 	while ( !cursor.isAfterLast() ) {
 	    list.add( CreateFromCursor( cursor ) );
