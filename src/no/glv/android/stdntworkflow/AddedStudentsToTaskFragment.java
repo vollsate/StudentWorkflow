@@ -46,6 +46,16 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 
 	return task;
     }
+    
+    Task getTask(Bundle b) {
+	if ( b != null ) {
+	    String name = b.getString( Task.EXTRA_TASKNAME );
+	    task = DataHandler.GetInstance().getTask( name );
+	}
+	else task = getTask();
+	
+	return task;
+    }
 
     public void setOnVerifiedListener( OnStudentsVerifiedListener listener ) {
 	this.listener = listener;
@@ -61,14 +71,13 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	return getResources().getString( R.string.newTask_addStudents_msg );
     }
 
-    @Override
+    /**
+     * 
+     */
     public void onCreate( Bundle savedInstanceState ) {
 	super.onCreate( savedInstanceState );
-
-	if ( savedInstanceState != null ) {
-	    String name = savedInstanceState.getString( Task.EXTRA_TASKNAME );
-	    task = DataHandler.GetInstance().getTask( name );
-	}
+	
+	getTask( savedInstanceState );
     }
 
     @Override
