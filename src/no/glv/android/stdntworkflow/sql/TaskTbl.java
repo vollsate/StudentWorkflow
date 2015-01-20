@@ -24,7 +24,7 @@ public class TaskTbl {
     public static final String COL_NAME = "name";
     public static final String COL_DESC = "desc";
     public static final String COL_DATE = "date";
-    public static final String COL_TYPE = "type";
+    public static final String COL_STATE = "type";
 
     private TaskTbl() {
     }
@@ -36,7 +36,7 @@ public class TaskTbl {
      */
     public static boolean CreateTable( SQLiteDatabase db ) {
 	String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_NAME + " TEXT PRIMARY KEY UNIQUE, " + COL_DESC + " TEXT, "
-		+ COL_DATE + " LONG NOT NULL, " + COL_TYPE + " INTEGER)";
+		+ COL_DATE + " LONG NOT NULL, " + COL_STATE + " INTEGER)";
 
 	return DBUtils.ExecuteSQL( sql, db );
     }
@@ -82,7 +82,7 @@ public class TaskTbl {
 	task.setName( cursor.getString( 0 ) );
 	task.setDescription( cursor.getString( 1 ) );
 	task.setDate( new Date( cursor.getLong( 2 ) ) );
-	task.setType( cursor.getInt( 3 ) );
+	task.setState( cursor.getInt( 3 ) );
 
 	return task;
     }
@@ -115,7 +115,7 @@ public class TaskTbl {
 	cv.put( COL_NAME, task.getName() );
 	cv.put( COL_DESC, task.getDesciption() );
 	cv.put( COL_DATE, task.getDate().getTime() );
-	cv.put( COL_TYPE, task.getType() );
+	cv.put( COL_STATE, task.getState() );
 
 	return cv;
     }
