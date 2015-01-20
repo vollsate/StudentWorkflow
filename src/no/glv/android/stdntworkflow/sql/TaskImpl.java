@@ -16,19 +16,19 @@ import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class TaskImpl implements Task {
 
-    /** TaskImpl.java */
-    private static final long serialVersionUID = -5893005256995867042L;
+    private static final String TAG = Task.class.getName();
 
     private int ID;
     private String mName;
     private String mDesc;
     private Date mExpirationDate;
-    private int mType;
+    private int mState;
 
     private boolean mModified;
     private TreeMap<String, StudentTask> mModifiedStudents;
 
-    private int mCount;
+    private int mStdCount;
+    private int mStdClassCount;
 
     /** The map containing the students who has finished the task */
     private TreeMap<String, StudentTask> studentsMap;
@@ -38,11 +38,7 @@ public class TaskImpl implements Task {
 
     private List<String> mClasses;
 
-    private List<OnStudentRemovedListener> stdRemListeners;
-
-    private List<OnStudentHandInListener> stdHandInListeners;
-
-    private List<OnStudentAddListener> stdAddListeners;
+    private LinkedList<OnTaskChangeListener> mTaskChangeListeners;
 
     private List<StudentTask> removedStudents;
 
@@ -66,84 +62,52 @@ public class TaskImpl implements Task {
 	addedClasses = new LinkedList<String>();
 	removedClasses = new LinkedList<String>();
 
-	stdRemListeners = new LinkedList<Task.OnStudentRemovedListener>();
-	stdHandInListeners = new LinkedList<Task.OnStudentHandInListener>();
-	stdAddListeners = new LinkedList<Task.OnStudentAddListener>();
+	mTaskChangeListeners = new LinkedList<Task.OnTaskChangeListener>();
+
+	mState = TASK_STATE_OPEN;
     }
 
     @Override
-    public void addOnStudentHandIndListener( OnStudentHandInListener listener ) {
-	if ( stdHandInListeners.contains( listener ) ) return;
+    public void addOnTaskChangeListener( OnTaskChangeListener listener ) {
+	if ( mTaskChangeListeners.contains( listener ) ) return;
 
-	stdHandInListeners.add( listener );
+	mTaskChangeListeners.add( listener );
     }
 
     @Override
-    public void removeOnStudentHandInListener( OnStudentHandInListener listener ) {
-	if ( !stdHandInListeners.contains( listener ) ) return;
+    public void removeOnTaskChangeListener( OnTaskChangeListener listener ) {
+	if ( !mTaskChangeListeners.contains( listener ) ) return;
 
-	stdHandInListeners.remove( listener );
+	mTaskChangeListeners.remove( listener );
     }
 
-    @Override
-    public void addOnStudentRemovedListener( OnStudentRemovedListener listener ) {
-	if ( stdRemListeners.contains( listener ) ) return;
+    /**
+     * 
+     */
+    public void notifyChange() {
+	// Iterator<StudentTask> it = null;
 
-	stdRemListeners.add( listener );
-    }
+	if ( removedStudents != null ) {
+	    notifyChange( OnTaskChangeListener.MODE_STD_DEL );
+	}
 
-    @Override
-    public void removeOnStudentRemovedListener( OnStudentRemovedListener listener ) {
-	if ( !stdRemListeners.contains( listener ) ) return;
+	if ( addedStudents != null ) {
+	    notifyChange( OnTaskChangeListener.MODE_STD_ADD );
+	}
 
-	stdRemListeners.remove( listener );
-    }
-
-    @Override
-    public void addOnStudentAddListener( OnStudentAddListener listener ) {
-	if ( stdAddListeners.contains( listener ) ) return;
-
-	stdAddListeners.add( listener );
-    }
-
-    @Override
-    public void removeOnStudentAddListener( OnStudentAddListener listener ) {
-	if ( !stdAddListeners.contains( listener ) ) return;
-
-	stdAddListeners.remove( listener );
-    }
-
-    public void notifyStudentRemoved( Student std ) {
-	Iterator<OnStudentRemovedListener> it = stdRemListeners.iterator();
-	while ( it.hasNext() )
-	    it.next().onStudentRemove( std );
-    }
-
-    public void notifyStudentAdd( Student std ) {
-	Iterator<OnStudentAddListener> it = stdAddListeners.iterator();
-	while ( it.hasNext() )
-	    it.next().onStudentAdd( std );
+	if ( mModifiedStudents != null ) {
+	    notifyChange( OnTaskChangeListener.MODE_STD_UPD );
+	}
     }
 
     /**
      * 
      */
     public void notifyChange( int mode ) {
-	Iterator<StudentTask> it = null;
-	
-	if ( removedStudents != null ) {
-	    it = removedStudents.iterator();
-	    while ( it.hasNext() ) {
-		notifyStudentRemoved( it.next().getStudent() );
-	    }
-	}
+	Iterator<OnTaskChangeListener> it = mTaskChangeListeners.iterator();
+	while ( it.hasNext() )
+	    it.next().onTaskChange( this, mode );
 
-	if ( addedStudents != null ) {
-	    it = addedStudents.iterator();
-	    while ( it.hasNext() ) {
-		notifyStudentAdd( it.next().getStudent() );
-	    }
-	}
     }
 
     @Override
@@ -154,6 +118,7 @@ public class TaskImpl implements Task {
     @Override
     public void setID( int id ) {
 	this.ID = id;
+	mModified = true;
     }
 
     @Override
@@ -167,18 +132,19 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public int getType() {
-	return mType;
+    public int getState() {
+	return mState;
     }
 
     @Override
-    public void setType( int type ) {
-	this.mType = type;
+    public void setState( int type ) {
+	this.mState = type;
+	mModified = true;
     }
 
     @Override
-    public List<String> getStudentsHandedIn() {
-	return new ArrayList<String>( studentsMap.keySet() );
+    public List<StudentTask> getStudentsHandedIn() {
+	return new ArrayList<StudentTask>( studentsMap.values() );
     }
 
     @Override
@@ -219,18 +185,8 @@ public class TaskImpl implements Task {
 	mModifiedStudents.put( stdTask.getIdent(), stdTask );
 	mModified = true;
 
-	notifyHandInListeners( stdTask.getStudent() );
+	notifyChange();
 	return true;
-    }
-
-    /**
-     * 
-     * @param std
-     */
-    private void notifyHandInListeners( Student std ) {
-	Iterator<OnStudentHandInListener> it = stdHandInListeners.iterator();
-	while ( it.hasNext() )
-	    it.next().onStudentHandIn( std );
     }
 
     @Override
@@ -245,7 +201,6 @@ public class TaskImpl implements Task {
 	while ( it.hasNext() ) {
 	    addStudent( it.next() );
 	}
-
     }
 
     @Override
@@ -254,11 +209,15 @@ public class TaskImpl implements Task {
 
 	mClasses.add( stdClass );
 	addedClasses.add( stdClass );
+
+	mStdClassCount++;
+	mModified = true;
     }
 
     @Override
     public void setName( String name ) {
 	mName = name;
+	mModified = true;
     }
 
     /**
@@ -271,8 +230,8 @@ public class TaskImpl implements Task {
 	if ( !mClasses.contains( stdClass.getName() ) ) return;
 
 	mClasses.remove( stdClass.getName() );
-	List<Student> list = stdClass.getStudents();
-	Iterator<Student> it = list.iterator();
+	
+	Iterator<Student> it = stdClass.getStudents().iterator();
 	while ( it.hasNext() ) {
 	    removeStudent( it.next().getIdent() );
 	}
@@ -286,7 +245,7 @@ public class TaskImpl implements Task {
 	if ( removedStudents == null ) removedStudents = new LinkedList<StudentTask>();
 	removedStudents.add( studentsMapPending.remove( ident ) );
 
-	mCount--;
+	mStdCount--;
 	return true;
     }
 
@@ -294,30 +253,31 @@ public class TaskImpl implements Task {
     public List<StudentTask> getRemovedStudents() {
 	return removedStudents;
     }
-    
+
     @Override
     public List<String> getAddedClasses() {
-        return addedClasses;
+	return addedClasses;
     }
-    
+
     @Override
     public List<String> getRemovedClasses() {
-        return removedClasses;
+	return removedClasses;
     }
 
     /**
      * Will only add to students pending
      * 
-     * @return true if the students gets added successfully, false if not added correctly or if the student has already
-     *         handed in the assignment
+     * @return true if the students gets added successfully, false if not added
+     *         correctly or if the student has already handed in the assignment
      */
     @Override
     public boolean addStudent( Student std ) {
 	if ( std == null ) return false;
 	if ( hasStudent( std.getIdent() ) ) return false;
 
-	StudentTask stdTask = new StudentTaskImpl( std, mName, null );
+	StudentTask stdTask = new StudentTaskImpl( std, mName, null /* no handinDate */);
 
+	// Make sure to update the removed students, if the user makes a mistake ..
 	if ( removedStudents.contains( std.getIdent() ) ) removedStudents.remove( std.getIdent() );
 
 	return addStudentTask( stdTask );
@@ -338,10 +298,11 @@ public class TaskImpl implements Task {
 
 	if ( addedStudents == null ) addedStudents = new LinkedList<StudentTask>();
 	addedStudents.add( stdTask );
-	
-	notifyStudentAdd( stdTask.getStudent() );
 
-	mCount++;
+	notifyChange();
+
+	mModified = true;
+	mStdCount++;
 	return true;
     }
 
@@ -380,7 +341,7 @@ public class TaskImpl implements Task {
 
     @Override
     public List<String> getStudentNames() {
-	List<String> stds = new ArrayList<String>();
+	List<String> stds = new LinkedList<String>();
 
 	stds.addAll( studentsMap.keySet() );
 	stds.addAll( studentsMapPending.keySet() );
@@ -396,11 +357,12 @@ public class TaskImpl implements Task {
     @Override
     public void setDescription( String desc ) {
 	mDesc = desc;
+	mModified = true;
     }
 
     @Override
-    public List<String> getStudentsPending() {
-	return new ArrayList<String>( studentsMapPending.keySet() );
+    public List<StudentTask> getStudentsPending() {
+	return new ArrayList<StudentTask>( studentsMapPending.values() );
     }
 
     public int getStudentsPendingCount() {
@@ -410,6 +372,7 @@ public class TaskImpl implements Task {
     @Override
     public void setDate( Date date ) {
 	this.mExpirationDate = date;
+	mModified = true;
     }
 
     @Override
@@ -439,16 +402,16 @@ public class TaskImpl implements Task {
     }
 
     @Override
-    public boolean isStudentsModified() {
+    public boolean isModified() {
 	return mModified;
     }
 
     @Override
-    public void markAsUpdated() {
+    public void markAsCommitted() {
 	if ( mModifiedStudents != null ) mModifiedStudents.clear();
 	if ( removedStudents != null ) removedStudents.clear();
 	if ( addedStudents != null ) addedStudents.clear();
-	
+
 	addedClasses.clear();
 	removedClasses.clear();
 
@@ -462,14 +425,22 @@ public class TaskImpl implements Task {
 
     @Override
     public boolean isExpired() {
-	Date today = Calendar.getInstance( Locale.getDefault() ).getTime();
+	Calendar cal = Calendar.getInstance( Locale.getDefault() );
 
-	return mExpirationDate.before( today );
+	int year = cal.get( Calendar.YEAR );
+	int month = cal.get( Calendar.MONDAY );
+	int day = cal.get( Calendar.DAY_OF_MONTH );
+
+	cal.set( year, month, day - 1 );
+	Date todayPlussOne = cal.getTime();
+
+	// return mExpirationDate.getTime() <= todayPlussOne.getTime();
+	return mExpirationDate.before( todayPlussOne );
     }
 
     @Override
     public int getStudentCount() {
-	return mCount;
+	return mStdCount;
     }
 
 }
