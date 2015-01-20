@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TreeMap;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
@@ -39,6 +40,22 @@ import android.os.Environment;
 import android.util.Log;
 
 /**
+ * This class is the hub of the application. Every operation on any date MUST be
+ * done through this class.
+ * 
+ * <p>
+ * The SQL package is very important. The {@link Database} is the hub for
+ * communicating with the database. The SQL package also implements the
+ * interface package <code>(.intrfc)</code>.
+ * 
+ * <p>
+ * Any changes to the data structure is logged and maintained by this class.
+ * That means that listeners are the way to keep up with any changes. Take note
+ * that the {@link Task} class also provide a listener interface:
+ * {@link OnTaskChangeListener}.
+ * 
+ * <p>
+ * 
  * 
  * @author GleVoll
  *
@@ -61,12 +78,16 @@ public class DataHandler {
 
     private static boolean islocalStudentClassesLoaded = false;
 
-    private Database db;
-    private SettingsManager sManager;
+    private final Database db;
+    private final SettingsManager sManager;
 
+    /** All the loaded classes from the database */
     private TreeMap<String, StudentClass> stdClasses;
+
+    /** All the loaded tasks from the database */
     private TreeMap<String, Task> tasks;
 
+    /** Singleton instance */
     private static DataHandler instance;
     private static boolean isInitiated = false;
 
@@ -97,8 +118,19 @@ public class DataHandler {
     // --------------------------------------------------------------------------------------------------------
 
     /**
+     * Will initiate the DataHandler. If already initiated, the method will
+     * return quietly.
      * 
-     * @param db The database to use
+     * The Context parameter is used to initialize the database. The
+     * {@link Database} will only allow one instance, so this needs to work
+     * properly or an {@link IllegalStateException} is thrown.
+     * 
+     * <p>
+     * Any open tasks will be loaded, and every known {@link StudentClass} will
+     * be loaded.
+     * 
+     * @param ctx
+     * @return The singleton instance.
      */
     public static final DataHandler Init( Context ctx ) {
 	if ( isInitiated ) return instance;
@@ -125,9 +157,12 @@ public class DataHandler {
     }
 
     /**
-     * 
+     * This will reset (delete and recreate) the database. MUST be called with
+     * caution.
      */
     public void resetDB() {
+	Log.d( TAG, "resetting database" );
+
 	db.runCreate();
 	initiateMaps();
 
@@ -138,44 +173,49 @@ public class DataHandler {
     /**
      * Will initiate all the listener maps.
      */
-    void initiateListeners() {
+    private void initiateListeners() {
 	stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
 	stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
 	taskChangeListeners = new HashMap<String, DataHandler.OnTasksChangedListener>( 2 );
     }
 
     /**
-     * Will initiate the Maps used to contain the DB. Called initially from the constructor.
+     * Will initiate the Maps used to contain the DB. Called initially from the
+     * constructor.
      * 
-     * If {@link resetDB} is called, all the Maps will be reset by an invocation of this method.
+     * If {@link resetDB} is called, all the Maps will be reset by an invocation
+     * of this method.
      */
-    void initiateMaps() {
+    private void initiateMaps() {
 	stdClasses = new TreeMap<String, StudentClass>();
 	tasks = new TreeMap<String, Task>();
     }
 
     /**
-     * Loads the tasks from the DB and and initialize every task with it's corresponding {@link StudentTask} instance.
+     * Loads the tasks from the DB and and initialize every task with it's
+     * corresponding {@link StudentTask} instance.
      * 
-     * <li>
+     * The loadStudentClasses() metod MUST be called first.
+     * 
+     * <blockquote>
      * <ul>
-     * Load every task
+     * <li>Load every task
+     * <li>Load every corresponding StudentTask
+     * <li>Fill the StudentTask with the Student instance
      * </ul>
-     * <ul>
-     * Load every corresponding StudentTask
-     * </ul>
-     * <ul>
-     * Fill the StudentTask with the Student instance
-     * </ul>
-     * </li>
+     * </blockquote>
      */
     private void loadTasks() {
+	if ( stdClasses.size() == 0 ) throw new IllegalStateException(
+		"The method DataHandler.loadStudentClasses() is not called." );
+
 	List<Task> list = db.loadTasks();
 	Iterator<Task> it = list.iterator();
 
 	while ( it.hasNext() ) {
 	    Task task = it.next();
 	    List<StudentTask> stdTasks = db.loadStudentsInTask( task );
+	    // Make sure the StudentTask is properly set up.
 	    setUpStudentTask( task, stdTasks );
 
 	    task.addStudentTasks( stdTasks );
@@ -185,8 +225,10 @@ public class DataHandler {
     }
 
     /**
-     * Fills the {@link StudentTask} with the corresponding {@link Student} instance and the corresponding {@link Task}
-     * data.
+     * Fills the {@link StudentTask} with the corresponding {@link Student}
+     * instance and the corresponding {@link Task} data.
+     * 
+     * The complete list will be sorted by the default listing: ident ascending.
      * 
      * @param task The task the StudentTask instance is connected to.
      * @param stdTasks
@@ -201,12 +243,14 @@ public class DataHandler {
 	    task.addClassName( stdClass );
 	}
 
-	Collections.sort( stdTasks, new DataComparator.StudentTaskComparator() );
+	// Sort the list
+	int sortType = getSettingsManager().getStudentClassSortType();
+	Collections.sort( stdTasks, new DataComparator.StudentTaskComparator( sortType ) );
     }
 
     /**
-     * Loads all the {@link StudentClass} found in the DB. All the instances is filled with the corresponding
-     * {@link Student} instance.
+     * Loads all the {@link StudentClass} found in the DB. All the instances is
+     * filled with the corresponding {@link Student} instance.
      */
     private void loadStudentClasses() {
 	List<StudentClass> list = db.loadStudentClasses();
@@ -220,7 +264,11 @@ public class DataHandler {
     }
 
     /**
-     * Fills the {@link StudentClass} instance with the students, and
+     * Fills the {@link StudentClass} instance with the students, and populate
+     * the the student with the corresponding {@link Parent} instances and
+     * {@link Phone} instance.
+     * 
+     * <p>
      * 
      * @param stdClass
      */
@@ -238,7 +286,8 @@ public class DataHandler {
     }
 
     /**
-     * Populates the {@link Student} instance with the parents and the phone data
+     * Populates the {@link Student} instance with the parents and the phone
+     * data
      * 
      * @param student The student to populate
      */
@@ -270,10 +319,19 @@ public class DataHandler {
     }
 
     /**
-     * 
+     * Lists the entire Database to the logCat. 
      */
     public void listDB() {
 	Log.v( TAG, db.loadAllStudentTask().toString() );
+    }
+    
+    @SuppressWarnings( "rawtypes" )
+    public Map<String, List> getAllData() {
+	HashMap<String, List> entireDB = new HashMap<String, List>();
+	
+	entireDB.put( "parents", db.loadParents( null ) );
+	
+	return entireDB;
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -421,8 +479,9 @@ public class DataHandler {
     }
 
     /**
-     * Adds the task to the database. The task will be filled with instances of {@link StudentTask} objects linking the
-     * {@link Student} to the {@link Task}.
+     * Adds the task to the database. The task will be filled with instances of
+     * {@link StudentTask} objects linking the {@link Student} to the
+     * {@link Task}.
      * 
      * @param task
      */
@@ -636,15 +695,16 @@ public class DataHandler {
     // --------------------------------------------------------------------------------------------------------
 
     /**
-     * Checks to see if a {@link StudentClass} is deletable. If the Studentclass is involved in a 
-     * specific, and open Task, the StudentClass cannot be deleted.
+     * Checks to see if a {@link StudentClass} is deletable. If the Studentclass
+     * is involved in a specific, and open Task, the StudentClass cannot be
+     * deleted.
      * 
      * @param stdClass The {@link StudentClass} to check.
      * @return true if deletable
      */
     public boolean isStudentClassDeletable( StudentClass stdClass ) {
 	boolean deletable = true;
-	
+
 	Iterator<Task> it = tasks.values().iterator();
 	while ( it.hasNext() ) {
 	    Task t = it.next();
@@ -652,20 +712,20 @@ public class DataHandler {
 		deletable = false;
 	    }
 	}
-	
+
 	return deletable;
     }
-    
+
     /**
-     * Returns a list of strings containing the names of all the tasks the {@link StudentClass} is 
-     * involved in.
+     * Returns a list of strings containing the names of all the tasks the
+     * {@link StudentClass} is involved in.
      * 
      * @param stdClass
      * @return A list of names, or an empty list
      */
     public List<String> getStudentClassInvolvedInTask( StudentClass stdClass ) {
 	LinkedList<String> list = new LinkedList<String>();
-	
+
 	Iterator<Task> it = tasks.values().iterator();
 	while ( it.hasNext() ) {
 	    Task t = it.next();
@@ -673,10 +733,10 @@ public class DataHandler {
 		list.add( t.getName() );
 	    }
 	}
-	
+
 	return list;
     }
-    
+
     /**
      * 
      * @return
@@ -791,8 +851,9 @@ public class DataHandler {
     }
 
     /**
-     * Loads a CSV file with semicolon separated entries. The file MUST have an header line, and the headers MUST be in
-     * this order: - Klasse - Født - Fullt navn
+     * Loads a CSV file with semicolon separated entries. The file MUST have an
+     * header line, and the headers MUST be in this order: - Klasse - Født -
+     * Fullt navn
      * 
      * @return A ready formatted StudentClass instance
      * @throws IOException if any I/O error occurs
@@ -852,7 +913,8 @@ public class DataHandler {
 
     /**
      * 
-     * @param stdString A new Student implementation from a semicolon separated String.
+     * @param stdString A new Student implementation from a semicolon separated
+     *            String.
      * @return
      */
     private static Student CreateStudentFromString( String stdString, String className, String datePattern ) {
@@ -1012,11 +1074,12 @@ public class DataHandler {
 	sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
 	sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
 	/*
-	 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP ); sb.append( std.getParent1Phone() ).append(
-	 * STUDENT_PROPERTY_SEP ); sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
-	 * 
-	 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP ); sb.append( std.getParent2Phone() ).append(
-	 * STUDENT_PROPERTY_SEP ); sb.append( std.getParent2Mail() );
+	 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent2Mail() );
 	 */
 	return sb.toString();
     }
@@ -1046,7 +1109,8 @@ public class DataHandler {
     }
 
     /**
-     * Loads every locally stored StudentClass. Every classfile MUST have the suffix STDCLASS_FILE_SUFFIX
+     * Loads every locally stored StudentClass. Every classfile MUST have the
+     * suffix STDCLASS_FILE_SUFFIX
      * 
      * @param ctx The Context used to access the local filesystem
      */
@@ -1171,10 +1235,11 @@ public class DataHandler {
     private static String CreateStringFromStudentsInTasks( StudentTaskImpl std ) {
 	StringBuffer sb = new StringBuffer();
 	/*
-	 * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size = std.getEngagedTasks().size() - 1; for (
-	 * int i = 0; i < size; i++ ) { sb.append( std.getEngagedTasks().get( i ) ).append( STUDENT_IN_TASK_DELIM ); }
-	 * 
-	 * sb.append( std.getEngagedTasks().get( size ) );
+	 * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size =
+	 * std.getEngagedTasks().size() - 1; for ( int i = 0; i < size; i++ ) {
+	 * sb.append( std.getEngagedTasks().get( i ) ).append(
+	 * STUDENT_IN_TASK_DELIM ); } sb.append( std.getEngagedTasks().get( size
+	 * ) );
 	 */
 	return sb.toString();
     }
