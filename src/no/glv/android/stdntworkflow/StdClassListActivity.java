@@ -28,7 +28,7 @@ import android.widget.Toast;
 /**
  * This activity will show all the students in a certain class.
  * 
- * The activity should be able to: - Update the name of the class TODO - Delete the class
+ * The activity should be able to: - Update the name of the class
  * 
  * @author GleVoll
  *
