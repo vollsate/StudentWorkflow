@@ -22,7 +22,6 @@ public class SettingsManager {
     private int newTaskUse = NEWTASK_USEIDENT;
 
     public SettingsManager() {
-	// TODO Auto-generated constructor stub
     }
 
     public boolean isShowFullname() {
