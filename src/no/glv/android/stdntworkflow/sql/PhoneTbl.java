@@ -48,7 +48,7 @@ class PhoneTbl implements BaseColumns {
 	String sql = "CREATE TABLE " + TBL_NAME + "("
 		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 		+ COL_STDID + " TEXT NOT NULL, "
-		+ COL_PARENTID + " TEXT NOT NULL, "
+		+ COL_PARENTID + " TEXT, "
 		+ COL_PHONE + " LONG, "
 		+ COL_TYPE + " INTEGER)";
 
