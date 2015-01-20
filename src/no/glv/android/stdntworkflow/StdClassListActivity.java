@@ -2,9 +2,7 @@ package no.glv.android.stdntworkflow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import no.glv.android.stdntworkflow.core.AlertDialogHelper;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
@@ -24,8 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Adapter;
 import android.widget.ListView;
 import android.widget.Toast;
 

@@ -1,7 +1,6 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -61,16 +59,11 @@ public class MainActivity extends Activity {
 
 	setTitle( getResources().getString( R.string.app_name ) );
 	init();
-	modifyActionBar();
 
 	getInstalledClassesFR( savedInstanceState, false );
 	getInstalledTasksFR( savedInstanceState, false );
     }
     
-    private void modifyActionBar() {
-	ActionBar ab = getActionBar();
-    }
-
     /**
      * 
      * @param inState

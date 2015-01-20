@@ -12,7 +12,6 @@ import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -34,8 +33,6 @@ import android.widget.Toast;
  */
 public class NewTaskActivity extends Activity implements OnClickListener, OnDateSetListener, OnStudentsVerifiedListener {
 
-    /** NewTaskActivity.java */
-    private static final long serialVersionUID = -324574706355660925L;
     private static final String TAG = NewTaskActivity.class.getSimpleName();
     private Task task;
 
