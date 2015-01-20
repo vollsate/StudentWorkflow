@@ -37,8 +37,10 @@ class SettingTbl implements BaseColumns {
      * @param db Do not close!
      */
     static void CreateTableSQL( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_NAME
-		+ " TEXT, " + COL_VALUE + " TEXT)";
+	String sql = "CREATE TABLE " + TBL_NAME + "("
+		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+		+ COL_NAME + " TEXT, "
+		+ COL_VALUE + " TEXT)";
 
 	DBUtils.ExecuteSQL( sql, db );
     }
@@ -88,8 +90,8 @@ class SettingTbl implements BaseColumns {
 	ContentValues parentValues = SettingValues( setting );
 
 	long retVal = db.insert( TBL_NAME, null, parentValues );
-	
-	//setting.setID( String.valueOf( retVal ) );
+
+	// setting.setID( String.valueOf( retVal ) );
 	db.close();
 
 	return retVal;

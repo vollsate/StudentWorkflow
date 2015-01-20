@@ -43,13 +43,16 @@ class ParentTbl implements BaseColumns {
      * 
      * DO NOT CLOSE THE SQLiteDatabase
      * 
-     * @param db
-     *            Do not close!
+     * @param db Do not close!
      */
     static void CreateTableSQL( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_STDID
-		+ " TEXT NOT NULL, " + COL_FNAME + " TEXT, " + COL_LNAME + " TEXT, " + COL_MAIL + " TEXT, " + COL_TYPE
-		+ " INTEGER)";
+	String sql = "CREATE TABLE " + TBL_NAME + "("
+		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+		+ COL_STDID + " TEXT NOT NULL, "
+		+ COL_FNAME + " TEXT, "
+		+ COL_LNAME + " TEXT, "
+		+ COL_MAIL + " TEXT, "
+		+ COL_TYPE + " INTEGER)";
 
 	DBUtils.ExecuteSQL( sql, db );
     }
@@ -113,8 +116,7 @@ class ParentTbl implements BaseColumns {
     /**
      * 
      * @param parent
-     * @param db
-     *            Is closed after use
+     * @param db Is closed after use
      * 
      * @return 1 if successful, 0 otherwise
      */

@@ -16,8 +16,6 @@ import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class TaskImpl implements Task {
 
-    private static final String TAG = Task.class.getName();
-
     private int ID;
     private String mName;
     private String mDesc;

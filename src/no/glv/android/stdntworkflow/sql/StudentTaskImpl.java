@@ -6,7 +6,8 @@ import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 
 /**
- * Keeps track of every student registered and every task they are currently engaged in.
+ * Keeps track of every student registered and every task they are currently
+ * engaged in.
  * 
  * @author GleVoll
  *
@@ -151,7 +152,7 @@ public class StudentTaskImpl implements StudentTask {
 
 	return sb.toString();
     }
-    
+
     public String toSimpleString() {
 	return "_ID=" + ID + ", ident=" + mIdent;
     }

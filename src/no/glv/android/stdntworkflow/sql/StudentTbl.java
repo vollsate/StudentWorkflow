@@ -48,13 +48,19 @@ class StudentTbl implements BaseColumns {
      * 
      * DO NOT CLOSE THE SQLiteDatabase
      * 
-     * @param db
-     *            Do not close!
+     * @param db Do not close!
      */
     static void CreateTableSQL( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_IDENT + " TEXT PRIMARY KEY UNIQUE, " + COL_CLASS
-		+ " TEXT, " + COL_GRADE + " TEXT, " + COL_FNAME + " TEXT, " + COL_LNAME + " TEXT, " + COL_BIRTH
-		+ " TEXT, " + COL_ADR + " TEXT, " + COL_POSTALCODE + " TEXT, " + COL_PHONE + " TEXT)";
+	String sql = "CREATE TABLE " + TBL_NAME + "("
+		+ COL_IDENT + " TEXT PRIMARY KEY UNIQUE, "
+		+ COL_CLASS + " TEXT, "
+		+ COL_GRADE + " TEXT, "
+		+ COL_FNAME + " TEXT, "
+		+ COL_LNAME + " TEXT, "
+		+ COL_BIRTH + " TEXT, "
+		+ COL_ADR + " TEXT, "
+		+ COL_POSTALCODE + " TEXT, "
+		+ COL_PHONE + " TEXT)";
 
 	DBUtils.ExecuteSQL( sql, db );
     }
@@ -121,8 +127,7 @@ class StudentTbl implements BaseColumns {
     /**
      * 
      * @param std
-     * @param db
-     *            Is closed after use
+     * @param db Is closed after use
      * 
      * @return 1 if successful, 0 otherwise
      */

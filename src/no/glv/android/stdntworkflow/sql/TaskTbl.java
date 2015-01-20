@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author GleVoll
  *
  */
-public class TaskTbl {
+class TaskTbl {
 
     /** Name of the TABLE in the SQLite database */
     public static final String TBL_NAME = "tasks";
@@ -31,20 +31,21 @@ public class TaskTbl {
 
     /**
      * 
-     * @param db
-     *            Is NOT closed after use!
+     * @param db Is NOT closed after use!
      */
     public static boolean CreateTable( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_NAME + " TEXT PRIMARY KEY UNIQUE, " + COL_DESC + " TEXT, "
-		+ COL_DATE + " LONG NOT NULL, " + COL_STATE + " INTEGER)";
+	String sql = "CREATE TABLE " + TBL_NAME + "("
+		+ COL_NAME + " TEXT PRIMARY KEY UNIQUE, "
+		+ COL_DESC + " TEXT, "
+		+ COL_DATE + " LONG NOT NULL, "
+		+ COL_STATE + " INTEGER)";
 
 	return DBUtils.ExecuteSQL( sql, db );
     }
 
     /**
      * 
-     * @param db
-     *            Is NOT closed after use!
+     * @param db Is NOT closed after use!
      */
     public static boolean DropTable( SQLiteDatabase db ) {
 	return DBUtils.ExecuteSQL( "DROP TABLE IF EXISTS " + TBL_NAME, db );
@@ -90,8 +91,7 @@ public class TaskTbl {
     /**
      * 
      * @param task
-     * @param db
-     *            Is closed after use
+     * @param db Is closed after use
      * @return
      */
     public static long InsertTask( Task task, SQLiteDatabase db ) {
@@ -123,12 +123,10 @@ public class TaskTbl {
     /**
      * Updates a specific task
      * 
-     * @param task
-     *            The {@link Task} to update, with all the new values
-     * @param oldName
-     *            The name of the old task. If null, the current name is used.
-     * @param db
-     *            Is closed after use
+     * @param task The {@link Task} to update, with all the new values
+     * @param oldName The name of the old task. If null, the current name is
+     *            used.
+     * @param db Is closed after use
      * @return 0 if no update, otherwise 1
      */
     public static int updateTask( Task task, String oldName, SQLiteDatabase db ) {
@@ -148,8 +146,7 @@ public class TaskTbl {
     /**
      * 
      * @param taskName
-     * @param db
-     *            Is closed after use
+     * @param db Is closed after use
      * 
      * @return 1 if task deleted, 0 otherwise
      */

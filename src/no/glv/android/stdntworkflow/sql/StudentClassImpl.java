@@ -31,7 +31,6 @@ public class StudentClassImpl implements StudentClass {
 
     /*
      * (non-Javadoc)
-     * 
      * @see no.glv.android.stdntworkflow.core.StudentClass#getName()
      */
     @Override
@@ -51,7 +50,6 @@ public class StudentClassImpl implements StudentClass {
 
     /*
      * (non-Javadoc)
-     * 
      * @see
      * no.glv.android.stdntworkflow.core.StudentClass#getStudentByFirstName()
      */

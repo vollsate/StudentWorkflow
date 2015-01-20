@@ -42,13 +42,15 @@ class PhoneTbl implements BaseColumns {
      * 
      * DO NOT CLOSE THE SQLiteDatabase
      * 
-     * @param db
-     *            Do not close!
+     * @param db Do not close!
      */
     static void CreateTableSQL( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_STDID
-		+ " TEXT NOT NULL, " + COL_PARENTID + " TEXT NOT NULL, " + COL_PHONE + " LONG, " + COL_TYPE
-		+ " INTEGER)";
+	String sql = "CREATE TABLE " + TBL_NAME + "("
+		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+		+ COL_STDID + " TEXT NOT NULL, "
+		+ COL_PARENTID + " TEXT NOT NULL, "
+		+ COL_PHONE + " LONG, "
+		+ COL_TYPE + " INTEGER)";
 
 	Log.v( TAG, "Executing SQL: " + sql );
 	db.execSQL( sql );
@@ -107,8 +109,7 @@ class PhoneTbl implements BaseColumns {
     /**
      * 
      * @param std
-     * @param db
-     *            Is closed after use
+     * @param db Is closed after use
      */
     public static long InsertPhone( Phone phone, SQLiteDatabase db ) {
 	ContentValues phoneValues = PhoneValues( phone );
@@ -122,8 +123,7 @@ class PhoneTbl implements BaseColumns {
     /**
      * 
      * @param phone
-     * @param db
-     *            Is closed after use
+     * @param db Is closed after use
      * 
      * @return 1 if successful, 0 otherwise
      */

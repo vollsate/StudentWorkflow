@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class StudentTaskTbl {
+class StudentTaskTbl {
 
     private static final String TAG = StudentTaskTbl.class.getSimpleName();
 
@@ -34,11 +34,11 @@ public class StudentTaskTbl {
      * @param db
      */
     public static void CreateTable( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" 
-		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
-		+ COL_TASK + " TEXT NOT NULL, " 
-		+ COL_IDENT + " TEXT NOT NULL, " 
-		+ COL_DATE + " LONG, " 
+	String sql = "CREATE TABLE " + TBL_NAME + "("
+		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+		+ COL_TASK + " TEXT NOT NULL, "
+		+ COL_IDENT + " TEXT NOT NULL, "
+		+ COL_DATE + " LONG, "
 		+ COL_MODE + " LONG NOT NULL)";
 
 	Log.v( TAG, "Executing SQL: " + sql );
@@ -158,7 +158,7 @@ public class StudentTaskTbl {
      */
     private static int InsertOneST( StudentTask task, SQLiteDatabase db ) {
 	long rowNum = db.insert( TBL_NAME, null, StudentTaskValues( task ) );
-	
+
 	task.setID( (int) rowNum );
 	return (int) rowNum;
     }
@@ -207,7 +207,7 @@ public class StudentTaskTbl {
 
 	String whereClause = COL_ID + "=?";
 	Log.d( TAG, whereClause );
-	
+
 	retVal = (int) db.delete( TBL_NAME, whereClause, new String[] { String.valueOf( stdTask.getID() ) } );
 
 	return retVal;
