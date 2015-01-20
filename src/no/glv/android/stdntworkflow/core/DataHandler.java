@@ -179,7 +179,7 @@ public class DataHandler {
 	    setUpStudentTask( task, stdTasks );
 
 	    task.addStudentTasks( stdTasks );
-	    task.markAsUpdated();
+	    task.markAsCommitted();
 	    tasks.put( task.getName(), task );
 	}
     }
@@ -522,7 +522,7 @@ public class DataHandler {
      */
     public boolean closeTask( String name ) {
 	Task task = getTask( name );
-	task.setType( Task.TASK_CLOSED );
+	task.setState( Task.TASK_STATE_CLOSED );
 
 	return db.updateTask( task, task.getName() );
     }
@@ -562,7 +562,7 @@ public class DataHandler {
 	}
 
 	if ( change > 0 ) task.notifyChange( change );
-	task.markAsUpdated();
+	task.markAsCommitted();
     }
 
     /**
