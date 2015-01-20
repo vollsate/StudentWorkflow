@@ -77,7 +77,8 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 
     @Override
     public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
-	Toast.makeText( this, stdClass.getStudents().get( position ).getIdent(), Toast.LENGTH_LONG ).show();
+	Student std = stdClass.getStudents().get( position );
+	StdInfoActivity.StartActivity( this, std );
     }
 
     /**

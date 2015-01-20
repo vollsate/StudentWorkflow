@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This Adapter will list all the student in a given StudentClass. This class
@@ -53,7 +54,6 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	if ( convertView == null ) convertView = createView( parent, student );
 
 	ViewHolder holder = (ViewHolder) convertView.getTag();
-	holder.imgInfoView.setTag( student );
 	holder.imgTaskView.setTag( student );
 	holder.id = position;
 
@@ -63,6 +63,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	    holder.textView.setText( student.getFirstName() );
 
 	holder.identText.setText( student.getIdent() );
+	holder.birthText.setText( student.getBirth() );
 
 	if ( position % 2 == 0 ) convertView.setBackgroundColor( getContext().getResources().getColor(
 		R.color.task_stdlist_dark ) );
@@ -84,33 +85,13 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
 	ViewHolder holder = new ViewHolder();
 
-	ImageView imgInfoView = (ImageView) myView.findViewById( R.id.info );
-	imgInfoView.setOnClickListener( new View.OnClickListener() {
-
-	    @Override
-	    public void onClick( View v ) {
-		Log.d( TAG, "" + v.getTag() );
-
-		Intent intent = new Intent( getContext(), StdInfoActivity.class );
-
-		Student std = (Student) v.getTag();
-		BaseActivity.putIdentExtra( std, intent );
-
-		getContext().startActivity( intent );
-	    }
-	} );
-
 	ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
-	imgInfoView.setOnClickListener( new View.OnClickListener() {
+	imgTaskView.setOnClickListener( new View.OnClickListener() {
 
 	    @Override
 	    public void onClick( View v ) {
-		Log.d( TAG, "" + v.getTag() );
-
-		Intent intent = new Intent( getContext(), StdInfoActivity.class );
-		Student std = (Student) v.getTag();
-		BaseActivity.putIdentExtra( std, intent );
-		getContext().startActivity( intent );
+		Toast.makeText( getContext(), "Will implement individual StudentTask soon..", Toast.LENGTH_LONG )
+			.show();
 	    }
 	} );
 
@@ -121,7 +102,9 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	textView = (TextView) myView.findViewById( R.id.TV_stdlist_ident );
 	holder.identText = textView;
 
-	holder.imgInfoView = imgInfoView;
+	textView = (TextView) myView.findViewById( R.id.TV_stdlist_birth );
+	holder.birthText = textView;
+
 	holder.imgTaskView = imgTaskView;
 
 	myView.setTag( holder );
@@ -134,7 +117,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 
 	TextView textView;
 	TextView identText;
-	ImageView imgInfoView;
+	TextView birthText;
 	ImageView imgTaskView;
 
     }

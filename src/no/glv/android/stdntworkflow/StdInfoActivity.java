@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.SettingsManager;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
@@ -12,6 +14,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -48,8 +53,6 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
     protected void onCreate( Bundle savedInstanceState ) {
 	super.onCreate( savedInstanceState );
 	setContentView( R.layout.activity_std_info );
-	
-	
 
 	// Set up the action bar.
 	final ActionBar actionBar = getActionBar();
@@ -146,26 +149,26 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	    Fragment fr = fragments[position];
 
 	    switch ( position ) {
-	    case 0:
-		if ( fr == null ) {
-		    fr = new StdInfoFragment();
-		}
-		break;
+		case 0:
+		    if ( fr == null ) {
+			fr = new StdInfoFragment();
+		    }
+		    break;
 
-	    case 1:
-		if ( fr == null ) {
-		    fr = new StdParentPrimaryFragment();
-		}
-		break;
+		case 1:
+		    if ( fr == null ) {
+			fr = new StdParentPrimaryFragment();
+		    }
+		    break;
 
-	    case 2:
-		if ( fr == null ) {
-		    fr = new StdParentSecundaryFragment();
-		}
-		break;
+		case 2:
+		    if ( fr == null ) {
+			fr = new StdParentSecundaryFragment();
+		    }
+		    break;
 
-	    default:
-		break;
+		default:
+		    break;
 	    }
 
 	    fragments[position] = fr;
@@ -182,12 +185,12 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	public CharSequence getPageTitle( int position ) {
 	    Locale l = Locale.getDefault();
 	    switch ( position ) {
-	    case 0:
-		return getString( R.string.std_info_title ).toUpperCase( l );
-	    case 1:
-		return getString( R.string.std_parent1_title ).toUpperCase( l );
-	    case 2:
-		return getString( R.string.std_parent2_title ).toUpperCase( l );
+		case 0:
+		    return getString( R.string.std_info_title ).toUpperCase( l );
+		case 1:
+		    return getString( R.string.std_parent1_title ).toUpperCase( l );
+		case 2:
+		    return getString( R.string.std_parent2_title ).toUpperCase( l );
 	    }
 	    return null;
 	}
@@ -316,9 +319,10 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 	    bean = ( (StdInfoActivity) getActivity() ).bean;
 	    View rootView = inflater.inflate( R.layout.fragment_std_info, container, false );
+	    SettingsManager manager = DataHandler.GetInstance().getSettingsManager();
 
 	    TextView tv = (TextView) rootView.findViewById( R.id.TV_info_header );
-	    tv.setText( bean.getIdent() );
+	    //tv.setText( bean.getIdent() );
 
 	    EditText editText = (EditText) rootView.findViewById( R.id.ET_info_firstName );
 	    editText.setText( bean.getFirstName() );
@@ -338,29 +342,27 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	    editText = (EditText) rootView.findViewById( R.id.ET_info_adr );
 	    editText.setText( bean.getAdress() );
 
-	    /*
-	     * Button btn = (Button) rootView.findViewById( R.id.BTN_info_update
-	     * ); btn.setTag( bean ); btn.setOnClickListener( new
-	     * View.OnClickListener() {
-	     * 
-	     * @Override public void onClick( View v ) { StudentBean bean =
-	     * (StudentBean) v.getTag(); View rootView = v.getRootView();
-	     * 
-	     * EditText editText = (EditText) rootView.findViewById(
-	     * R.id.ET_info_firstName ); bean.setFirstName(
-	     * editText.getText().toString() );
-	     * 
-	     * editText = (EditText) rootView.findViewById(
-	     * R.id.ET_info_LastName ); bean.setLastName(
-	     * editText.getText().toString() );
-	     * 
-	     * editText = (EditText) rootView.findViewById( R.id.ET_info_ident
-	     * ); String oldIdent = bean.getIdent(); bean.setIdent(
-	     * editText.getText().toString() );
-	     * 
-	     * DataHandler.GetInstance().updateStudent( bean, oldIdent ); } } );
-	     */
+	    tv = (TextView) rootView.findViewById( R.id.TV_info_google );
+
+	    String msg = getResources().getString( R.string.stdInfo_google );
+	    msg = msg.replace( "{google}", bean.getIdent() + "@" + manager.getGoogleAccount() );
+	    tv.setPaintFlags(tv.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+	    tv.setText( msg );
+
 	    return rootView;
 	}
+    }
+
+    /**
+     * 
+     * @param ctx
+     * @param std
+     */
+    public static void StartActivity( Context ctx, Student std ) {
+	Intent intent = new Intent( ctx, StdInfoActivity.class );
+	BaseActivity.putIdentExtra( std, intent );
+
+	ctx.startActivity( intent );
+
     }
 }

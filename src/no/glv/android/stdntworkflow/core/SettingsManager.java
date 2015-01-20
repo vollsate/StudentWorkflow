@@ -14,6 +14,8 @@ public class SettingsManager {
     public static final int NEWTASK_USEIDENT = 0;
     public static final int NEWTASK_USEFIRSTNAME = 1;
     public static final int NEWTASK_USEFULLNAME = 2;
+    
+    public static final String GOOGLE_ACCOUNT = "harestuaskole.org";
 
     private boolean showFullname = true;
 
@@ -92,6 +94,14 @@ public class SettingsManager {
      */
     public int getStudentClassSortType() {
 	return DataComparator.SORT_IDENT_ASC;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getGoogleAccount() {
+	return GOOGLE_ACCOUNT;
     }
 
 }
