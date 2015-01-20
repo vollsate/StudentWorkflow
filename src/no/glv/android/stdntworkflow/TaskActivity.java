@@ -224,7 +224,7 @@ public class TaskActivity extends BaseTabActivity {
 	    getDataHandler().commitStudentsTasks( mTask );
 	}
 
-	mTask.markAsUpdated();
+	mTask.markAsCommitted();
     }
 
     /**
