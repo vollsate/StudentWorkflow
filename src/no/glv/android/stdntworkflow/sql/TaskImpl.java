@@ -16,6 +16,8 @@ import no.glv.android.stdntworkflow.intrfc.Task;
 
 public class TaskImpl implements Task {
 
+    /** TaskImpl.java */
+    private static final long serialVersionUID = -4612900329709063169L;
     private int ID;
     private String mName;
     private String mDesc;
