@@ -7,6 +7,6 @@
         android:id="@+id/action_std_upd"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        android:showAsAction="never"/>
 
 </menu>
