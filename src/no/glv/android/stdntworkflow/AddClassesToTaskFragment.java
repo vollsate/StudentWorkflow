@@ -9,7 +9,6 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -33,8 +32,6 @@ import android.widget.Toast;
  */
 public class AddClassesToTaskFragment extends AddStudentsToTaskFragment implements OnStudentsVerifiedListener {
 
-    /** AddClassesToTaskFragment.java */
-    private static final long serialVersionUID = 5666993920910543863L;
     ListView listView;
 
     @Override
