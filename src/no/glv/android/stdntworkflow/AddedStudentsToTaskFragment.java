@@ -39,7 +39,10 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
     ListView listView;
 
     Task getTask() {
-	if ( task == null ) task = (Task) getArguments().getSerializable( Task.EXTRA_TASKNAME );
+	if ( task == null ) {
+	    String name = getArguments().getString( Task.EXTRA_TASKNAME );
+	    DataHandler.GetInstance().getTask( name );
+	}
 
 	return task;
     }
@@ -63,9 +66,8 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	super.onCreate( savedInstanceState );
 
 	if ( savedInstanceState != null ) {
-	    task = (Task) savedInstanceState.getSerializable( Task.EXTRA_TASKNAME );
-	    listener = (OnStudentsVerifiedListener) savedInstanceState
-		    .getSerializable( OnStudentsVerifiedListener.EXTRA_NAME );
+	    String name = savedInstanceState.getString( Task.EXTRA_TASKNAME );
+	    task = DataHandler.GetInstance().getTask( name );
 	}
     }
 
@@ -78,7 +80,7 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
     public void onSaveInstanceState( Bundle outState ) {
 	super.onSaveInstanceState( outState );
 
-	outState.putSerializable( Task.EXTRA_TASKNAME, task );
+	outState.putString( Task.EXTRA_TASKNAME, task.getName() );
     }
 
     @Override
@@ -216,7 +218,7 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
     public static AddedStudentsToTaskFragment StartFragment(Task task, OnStudentsVerifiedListener listener, FragmentManager manager) {
 	AddedStudentsToTaskFragment fragment = new AddedStudentsToTaskFragment();
 	Bundle args = new Bundle();
-	args.putSerializable( Task.EXTRA_TASKNAME, task );
+	args.putString( Task.EXTRA_TASKNAME, task.getName() );
 	fragment.setArguments( args );
 
 	fragment.setOnVerifiedListener( listener );
