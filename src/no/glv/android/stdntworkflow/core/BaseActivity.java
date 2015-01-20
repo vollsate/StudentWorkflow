@@ -14,10 +14,10 @@ import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -26,15 +26,10 @@ import android.widget.ImageView;
  * @author GleVoll
  *
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends Activity {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
 
-    private Bundle bundle;
-
-    /**
-	 * 
-	 */
     public BaseActivity() {
 	super();
     }
@@ -57,15 +52,6 @@ public class BaseActivity extends ActionBarActivity {
 
     public static List<String> GetTasks( Context ctx ) {
 	return DataHandler.GetInstance().getTaskNames();
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public Bundle getBundle() {
-	if ( bundle == null ) bundle = new Bundle();
-	return bundle;
     }
 
     /**
@@ -177,6 +163,12 @@ public class BaseActivity extends ActionBarActivity {
 	return sdf.format( cal.getTime() );
     }
 
+    /**
+     * 
+     * 
+     * @param date 
+     * @return The Date instance or null if some error occurs.
+     */
     public static Date GetDateFromString( String date ) {
 	try {
 	    return sdf.parse( date );
