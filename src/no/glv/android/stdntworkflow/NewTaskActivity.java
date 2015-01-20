@@ -54,7 +54,7 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 
 	AddClassToTaskFragment fragment = new AddClassToTaskFragment();
 	Bundle args = new Bundle();
-	args.putString( Task.EXTRA_TASKNAME, task.getName() );
+	args.putSerializable( Task.EXTRA_TASKNAME, task );
 	ViewGroupAdapter.beginFragmentTransaction( getFragmentManager(), fragment, args, R.id.LL_newTask_classes );
     }
 
