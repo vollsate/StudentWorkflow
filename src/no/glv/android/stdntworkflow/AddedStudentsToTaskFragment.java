@@ -1,17 +1,17 @@
 package no.glv.android.stdntworkflow;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DialogFragmentBase;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -78,7 +78,6 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
     public void onSaveInstanceState( Bundle outState ) {
 	super.onSaveInstanceState( outState );
 
-	outState.putSerializable( OnStudentsVerifiedListener.EXTRA_NAME, listener );
 	outState.putSerializable( Task.EXTRA_TASKNAME, task );
     }
 
@@ -206,6 +205,28 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 		task.addStudent( std );
 	}
     }
+    
+    /**
+     * 
+     * @param task
+     * @param listener
+     * @param manager
+     * @return
+     */
+    public static AddedStudentsToTaskFragment StartFragment(Task task, OnStudentsVerifiedListener listener, FragmentManager manager) {
+	AddedStudentsToTaskFragment fragment = new AddedStudentsToTaskFragment();
+	Bundle args = new Bundle();
+	args.putSerializable( Task.EXTRA_TASKNAME, task );
+	fragment.setArguments( args );
+
+	fragment.setOnVerifiedListener( listener );
+
+	FragmentTransaction ft = manager.beginTransaction();
+	fragment.show( ft, fragment.getClass().getSimpleName() );
+	
+	return fragment;
+	
+    }
 
     static class ViewHolder {
 	TextView studentIdent;
@@ -217,7 +238,7 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
      * @author GleVoll
      *
      */
-    public static interface OnStudentsVerifiedListener extends Serializable {
+    public static interface OnStudentsVerifiedListener {
 
 	public static final String EXTRA_NAME = OnStudentsVerifiedListener.class.getSimpleName();
 

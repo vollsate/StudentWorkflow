@@ -3,19 +3,11 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
-import no.glv.android.stdntworkflow.core.DataHandler.OnTaskChangedListener;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,21 +17,15 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public abstract class InstalledDataFragment extends ViewGroupAdapter implements OnStudentClassChangeListener,
-	OnTaskChangedListener {
-
+public abstract class InstalledDataFragment extends ViewGroupAdapter  {
+    
     public static final String EXTRA_SHOWCOUNT = BaseValues.EXTRA_BASEPARAM + "classesCount";
 
-    int showClassesCount;
+    protected int showClassesCount;
 
     @Override
     public final void doCreate( Bundle savedInstanceState ) {
 	showClassesCount = getArguments().getInt( EXTRA_SHOWCOUNT, 1 );
-    }
-
-    @Override
-    public void onResume() {
-	super.onResume();
     }
 
     public abstract int getViewGruopLayoutID();
@@ -82,56 +68,40 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter implements 
 	    @Override
 	    public void onClick( View v ) {
 		Intent intent = createIntent( name, getActivity() );
-		startActivity( intent );
+		if ( intent != null )
+		    startActivity( intent );
 	    }
 	} );
 
 	return textView;
     }
 
+    /**
+     * Get the intent for an onClick event in this Fragment.
+     * 
+     * @param name
+     * @param context
+     * @return
+     */
     public abstract Intent createIntent( String name, Context context );
-
-    @Override
-    public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
-	// super.onCreateOptionsMenu( menu, inflater );
-	inflater.inflate( R.menu.menu_fr_installedclasses, menu );
-    }
-
-    @Override
-    public void onTaskChange( Task newTask, int mode ) {
-	onDataChange( newTask.getName(), mode );
-    }
-
-    @Override
-    public void onStudentClassUpdate( StudentClass stdClass, int mode ) {
-	onDataChange( stdClass.getName(), mode );
-    }
 
     /**
      * 
      * @param name
      * @param mode
      */
-    private void onDataChange( String name, int mode ) {
+    public void onDataChange( int mode ) {
 	ViewGroup rootView = getRootView();
 	switch ( mode ) {
-	case OnStudentClassChangeListener.MODE_ADD:
-	case OnStudentClassChangeListener.MODE_UPD:
-	    rootView.removeAllViewsInLayout();
-	    doCreateView( rootView );
-	    break;
+	    case OnStudentClassChangeListener.MODE_ADD:
+	    case OnStudentClassChangeListener.MODE_UPD:
+	    case OnStudentClassChangeListener.MODE_DEL:
+		rootView.removeAllViewsInLayout();
+		notifyDataSetChanged();
+		break;
 
-	case OnStudentClassChangeListener.MODE_DEL:
-	    rootView.removeAllViewsInLayout();
-	    doCreateView( rootView );
-	    /*
-	     * for ( int i=0 ; i<rootView.getChildCount() ; i++ ) { TextView tv
-	     * = ( TextView ) rootView.getChildAt( i ); if (
-	     * tv.getText().toString().equals( name ) ) { rootView.removeViewAt(
-	     * i ); } }
-	     */
-	default:
-	    break;
+	    default:
+		break;
 	}
     }
 }

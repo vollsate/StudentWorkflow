@@ -91,7 +91,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 	    public void onClick( View v ) {
 		Log.d( TAG, "" + v.getTag() );
 
-		Intent intent = new Intent( getContext(), StudentInfoActivity.class );
+		Intent intent = new Intent( getContext(), StdInfoActivity.class );
 
 		Student std = (Student) v.getTag();
 		BaseActivity.putIdentExtra( std, intent );

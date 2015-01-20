@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="true">
-        <color android:color="@color/textview_hover" />
+        <color android:color="@color/textview_pressed" />
     </item>
 
 </selector>

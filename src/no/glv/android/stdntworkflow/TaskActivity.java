@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -36,18 +37,18 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Shows detailed information about a specific task.
  * 
- * The {@link Task} have information about itself and when it's due, and
- * information about all the students currently involved in the Task: pending,
- * cancelled or handed in (finished).
+ * The {@link Task} have information about itself and when it's due, and information about all the students currently
+ * involved in the Task: pending, cancelled or handed in (finished).
  * 
  * @author GleVoll
  *
  */
-public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemovedListener {
+public class TaskActivity extends BaseTabActivity {
 
     private BaseTabFragment[] fragments;
     TaskClassesFragment classesFragment;
@@ -60,12 +61,6 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 	super.onCreate( savedInstanceState );
 
 	mTask = getDataHandler().getTask( getTaskName() );
-	mTask.addOnStudentRemovedListener( this );
-    }
-
-    @Override
-    public void onStudentRemove( Student std ) {
-	classesFragment.getaAdapter().update();
     }
 
     @Override
@@ -114,70 +109,59 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
 	switch ( item.getItemId() ) {
-	case R.id.task_action_addStudent:
-	    addStudent();
-	    return true;
+	    case R.id.task_action_addStudent:
+		addStudent();
+		return true;
 
-	case R.id.task_action_Update:
-	    updateTask();
-	    return true;
+	    case R.id.task_action_addClass:
+		addClass();
+		return true;
 
-	case R.id.task_action_Delete:
-	    deleteTask();
-	    return true;
+	    case R.id.task_action_Update:
+		updateTask();
+		return true;
 
-	case R.id.task_action_close:
-	    getDataHandler().closeTask( mTask.getName() );
-	    return true;
+	    case R.id.task_action_Delete:
+		deleteTask();
+		return true;
 
-	default:
-	    break;
+	    case R.id.task_action_close:
+		getDataHandler().closeTask( mTask.getName() );
+		return true;
+
+	    default:
+		break;
 	}
 
 	return super.onOptionsItemSelected( item );
     }
 
     /**
-     * TODO: Implement this properly
+     * Adds a class to the {@link Task}. The fragment started will only show the available
      */
-    private void addStudent() {
+    private void addClass() {
 	Bundle args = new Bundle();
-	args.putSerializable( Task.EXTRA_TASKNAME, mTask );
-	args.putSerializable( RestoreStudentsInTask.OnStudentsVerifiedListener.EXTRA_NAME,
-		new RestoreStudentsInTask.OnStudentsVerifiedListener() {
+	args.putString( Task.EXTRA_TASKNAME, mTask.getName() );
 
-		    /** TaskActivity.java */
-		    private static final long serialVersionUID = 1L;
-
-		    @Override
-		    public void removeStudent( Student std ) {
-			// TODO Auto-generated method stub
-
-		    }
-
-		    @Override
-		    public void onStudentsVerified( Task task ) {
-			classesFragment.adapter.notifyDataSetChanged();
-		    }
-
-		    @Override
-		    public void addStudent( Student std ) {
-			// TODO Auto-generated method stub
-
-		    }
-		} );
-
-	RestoreStudentsInTask.StartFragment( args, getFragmentManager() );
+	AddClassesToTaskFragment.StartFragment( args, getFragmentManager() );
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
+    private void addStudent() {
+	Bundle args = new Bundle();
+	args.putString( Task.EXTRA_TASKNAME, mTask.getName() );
+
+	AddStudentsToTaskFragment.StartFragment( args, getFragmentManager() );
+    }
+
+    /**
+     * Will attempt to delete the Task and then finish the activity.
+     */
     private void deleteTask() {
 	AlertDialog.Builder builder = new AlertDialog.Builder( this );
 
-	// String msg = getResources().getString(
-	// R.string.task_delete_msg).replace(target, replacement)
 	builder.setTitle( getResources().getString( R.string.task_delete_title ) );
 	builder.setMessage( mTask.getName() );
 
@@ -201,8 +185,8 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
     private void updateTask() {
 	String newName = ( (TextView) findViewById( R.id.ET_task_name ) ).getText().toString();
 	String newDesc = ( (TextView) findViewById( R.id.ET_task_desc ) ).getText().toString();
@@ -216,7 +200,7 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 	mTask.setDate( date );
 
 	getDataHandler().updateTask( mTask, oldName );
-	TaskClassesFragment.adapter.notifyDataSetChanged();
+	classesFragment.adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -247,15 +231,24 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
      * A placeholder fragment containing a simple view.
      */
     public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener,
-	    Task.OnStudentHandInListener, Task.OnStudentRemovedListener {
+	    Task.OnStudentHandInListener, Task.OnStudentRemovedListener, Task.OnStudentAddListener {
 
 	private Task task;
+
+	@Override
+	public void onDestroy() {
+	    super.onDestroy();
+	    task.removeOnStudentRemovedListener( this );
+	    task.removeOnStudentHandInListener( this );
+	    task.removeOnStudentAddListener( this );
+	}
 
 	@Override
 	public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 	    task = getTask();
 	    task.addOnStudentHandIndListener( this );
 	    task.addOnStudentRemovedListener( this );
+	    task.addOnStudentAddListener( this );
 
 	    getTextView( R.id.TV_task_header ).setText( getString( R.string.task_header ) );
 
@@ -275,10 +268,29 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 	    } );
 
 	    setCounters();
+	    getInstalledClassesFR( savedInstanceState );
 
 	    return rootView;
 	}
 
+	/**
+	 * 
+	 * @param inState
+	 * @param forceReplace
+	 * @return
+	 */
+	private InstalledClassesInTaskFragment getInstalledClassesFR( Bundle inState ) {
+	    if ( inState == null ) {
+		return InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager(), false );
+	    }
+
+	    return (InstalledClassesInTaskFragment) getFragmentManager().findFragmentById(
+		    R.id.FR_installedClasses_container );
+	}
+
+	/**
+	 * 
+	 */
 	private void setCounters() {
 	    getTextView( R.id.TV_task_studentCount ).setText( String.valueOf( task.getStudentCount() ) );
 	    getTextView( R.id.TV_task_pendingCount ).setText( String.valueOf( task.getStudentsPendingCount() ) );
@@ -292,6 +304,11 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 
 	@Override
 	public void onStudentRemove( Student std ) {
+	    setCounters();
+	}
+
+	@Override
+	public void onStudentAdd( Student std ) {
 	    setCounters();
 	}
 
@@ -328,32 +345,51 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
      */
     public static class TaskClassesFragment extends BaseTabFragment {
 
-	static StudentListAdapter adapter;
+	StudentListAdapter adapter;
+	Task mTask;
 
 	@Override
 	public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 	    ListView listView = getListView( R.id.LV_task_students );
-	    Task task = getDataHandler().getTask( ( (TaskActivity) getBaseTabActivity() ).getTaskName() );
+	    mTask = getDataHandler().getTask( ( (TaskActivity) getBaseTabActivity() ).getTaskName() );
 
-	    adapter = new StudentListAdapter( getActivity(), BuildStudentList( task ) );
-	    adapter.setTask( task );
+	    if ( adapter == null ) {
+		adapter = new StudentListAdapter( getActivity(), BuildStudentList( mTask ) );
+		mTask.addOnStudentRemovedListener( adapter );
+		mTask.addOnStudentAddListener( adapter );
+	    }
+
+	    adapter.setTask( mTask );
 	    listView.setAdapter( adapter );
-
 	    return rootView;
+	}
+
+	@Override
+	public void onDestroy() {
+	    mTask.removeOnStudentRemovedListener( adapter );
+	    mTask.removeOnStudentAddListener( adapter );
+
+	    super.onDestroy();
+	}
+	
+	@Override
+	public void onResume() {
+	    super.onResume();
+	    
+	    adapter.setTask( mTask );
+	}
+
+	@Override
+	public void onSaveInstanceState( Bundle outState ) {
+	    super.onSaveInstanceState( outState );
+	    outState.putString( Task.EXTRA_TASKNAME, mTask.getName() );
+
+	    // outState.putSerializable( StudentListAdapter.class.getSimpleName(), adapter );
 	}
 
 	@Override
 	protected int getRootViewID() {
 	    return R.layout.fragment_task_students;
-	}
-
-	StudentListAdapter getaAdapter() {
-	    return adapter;
-	}
-
-	@Override
-	public void onResume() {
-	    super.onResume();
 	}
 
 	@Override
@@ -368,15 +404,16 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
      * @author GleVoll
      *
      */
-    static class StudentListAdapter extends ArrayAdapter<StudentTask> {
+    static class StudentListAdapter extends ArrayAdapter<StudentTask> implements Serializable,
+	    Task.OnStudentRemovedListener, Task.OnStudentAddListener {
 
-	private List<StudentTask> students;
+	/** TaskActivity.java */
+	private static final long serialVersionUID = 1L;
+
 	private Task mTask;
 
 	public StudentListAdapter( Context ctx, List<StudentTask> stdList ) {
 	    super( ctx, R.layout.row_task_stdlist, stdList );
-
-	    this.students = stdList;
 	}
 
 	/**
@@ -388,8 +425,18 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 	}
 
 	@Override
+	public void onStudentRemove( Student std ) {
+	    update();
+	}
+
+	@Override
+	public void onStudentAdd( Student std ) {
+	    update();
+	}
+
+	@Override
 	public View getView( int position, View convertView, ViewGroup parent ) {
-	    StudentTask stdTask = students.get( position );
+	    StudentTask stdTask = getItem( position );
 	    Student std = stdTask.getStudent();
 
 	    if ( convertView == null ) {
@@ -484,7 +531,8 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 
 		    AlertDialog.Builder builder = new AlertDialog.Builder( getContext() );
 		    String msg = getContext().getResources().getString( R.string.task_std_delete_msg );
-		    msg = msg.replace( "{name}", stdTask.getStudent().getFirstName() );
+		    msg = msg.replace( "{name}", stdTask.getStudent().getLastName() + ", "
+			    + stdTask.getStudent().getFirstName() );
 
 		    builder.setMessage( msg ).setTitle( R.string.task_std_delete_title );
 		    builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
@@ -494,8 +542,13 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 			    Task task = mTask;
 			    task.removeStudent( stdTask.getIdent() );
 			    DataHandler.GetInstance().commitStudentsTasks( task );
-			    task.markAsUpdated();
-			    task.notifyStudentRemoved( stdTask.getStudent() );
+
+			    String stdName = stdTask.getStudent().getLastName() + ", "
+				    + stdTask.getStudent().getFirstName();
+			    String msg = getContext().getResources().getString( R.string.task_student_deleted );
+			    msg = msg.replace( "{std}", stdName );
+			    Toast t = Toast.makeText( getContext(), msg, Toast.LENGTH_LONG );
+			    t.show();
 			}
 		    } );
 
@@ -538,15 +591,10 @@ public class TaskActivity extends BaseTabActivity implements Task.OnStudentRemov
 		 * 
 		 */
 	public void update() {
-	    students = BuildStudentList( mTask );
 	    clear();
-	    addAll( students );
+	    addAll( BuildStudentList( mTask ) );
 	}
 
-	@Override
-	public void notifyDataSetChanged() {
-	    super.notifyDataSetChanged();
-	}
     }
 
     /**

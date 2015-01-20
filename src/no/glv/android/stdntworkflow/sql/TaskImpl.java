@@ -19,6 +19,7 @@ public class TaskImpl implements Task {
     /** TaskImpl.java */
     private static final long serialVersionUID = -5893005256995867042L;
 
+    private int ID;
     private String mName;
     private String mDesc;
     private Date mExpirationDate;
@@ -29,6 +30,7 @@ public class TaskImpl implements Task {
 
     private int mCount;
 
+    /** The map containing the students who has finished the task */
     private TreeMap<String, StudentTask> studentsMap;
 
     /** List of students who has not yet handed in their assignment */
@@ -40,7 +42,15 @@ public class TaskImpl implements Task {
 
     private List<OnStudentHandInListener> stdHandInListeners;
 
+    private List<OnStudentAddListener> stdAddListeners;
+
     private List<StudentTask> removedStudents;
+
+    private List<StudentTask> addedStudents;
+
+    private List<String> addedClasses;
+
+    private List<String> removedClasses;
 
     /**
      * Package protected constructor.
@@ -52,9 +62,13 @@ public class TaskImpl implements Task {
 
 	mModified = false;
 	mModifiedStudents = new TreeMap<String, StudentTask>();
+	removedStudents = new LinkedList<StudentTask>();
+	addedClasses = new LinkedList<String>();
+	removedClasses = new LinkedList<String>();
 
 	stdRemListeners = new LinkedList<Task.OnStudentRemovedListener>();
 	stdHandInListeners = new LinkedList<Task.OnStudentHandInListener>();
+	stdAddListeners = new LinkedList<Task.OnStudentAddListener>();
     }
 
     @Override
@@ -65,6 +79,13 @@ public class TaskImpl implements Task {
     }
 
     @Override
+    public void removeOnStudentHandInListener( OnStudentHandInListener listener ) {
+	if ( !stdHandInListeners.contains( listener ) ) return;
+
+	stdHandInListeners.remove( listener );
+    }
+
+    @Override
     public void addOnStudentRemovedListener( OnStudentRemovedListener listener ) {
 	if ( stdRemListeners.contains( listener ) ) return;
 
@@ -72,10 +93,67 @@ public class TaskImpl implements Task {
     }
 
     @Override
+    public void removeOnStudentRemovedListener( OnStudentRemovedListener listener ) {
+	if ( !stdRemListeners.contains( listener ) ) return;
+
+	stdRemListeners.remove( listener );
+    }
+
+    @Override
+    public void addOnStudentAddListener( OnStudentAddListener listener ) {
+	if ( stdAddListeners.contains( listener ) ) return;
+
+	stdAddListeners.add( listener );
+    }
+
+    @Override
+    public void removeOnStudentAddListener( OnStudentAddListener listener ) {
+	if ( !stdAddListeners.contains( listener ) ) return;
+
+	stdAddListeners.remove( listener );
+    }
+
     public void notifyStudentRemoved( Student std ) {
 	Iterator<OnStudentRemovedListener> it = stdRemListeners.iterator();
 	while ( it.hasNext() )
 	    it.next().onStudentRemove( std );
+    }
+
+    public void notifyStudentAdd( Student std ) {
+	Iterator<OnStudentAddListener> it = stdAddListeners.iterator();
+	while ( it.hasNext() )
+	    it.next().onStudentAdd( std );
+    }
+
+    /**
+     * 
+     */
+    public void notifyChange( int mode ) {
+	Iterator<StudentTask> it = null;
+	
+	if ( removedStudents != null ) {
+	    it = removedStudents.iterator();
+	    while ( it.hasNext() ) {
+		notifyStudentRemoved( it.next().getStudent() );
+	    }
+	}
+
+	if ( addedStudents != null ) {
+	    it = addedStudents.iterator();
+	    while ( it.hasNext() ) {
+		notifyStudentAdd( it.next().getStudent() );
+	    }
+	}
+    }
+
+    @Override
+    public int getID() {
+	return ID;
+    }
+
+    @Override
+    public void setID( int id ) {
+	this.ID = id;
     }
 
     @Override
@@ -118,24 +196,24 @@ public class TaskImpl implements Task {
 	StudentTask stdTask = null;
 
 	switch ( mode ) {
-	case HANDIN_DATE:
-	    stdTask = studentsMapPending.remove( ident );
-	    if ( stdTask == null ) return false;
+	    case HANDIN_DATE:
+		stdTask = studentsMapPending.remove( ident );
+		if ( stdTask == null ) return false;
 
-	    stdTask.handIn();
-	    studentsMap.put( ident, stdTask );
-	    break;
+		stdTask.handIn();
+		studentsMap.put( ident, stdTask );
+		break;
 
-	case HANDIN_CANCEL:
-	    stdTask = studentsMap.remove( ident );
-	    if ( stdTask == null ) return false;
+	    case HANDIN_CANCEL:
+		stdTask = studentsMap.remove( ident );
+		if ( stdTask == null ) return false;
 
-	    stdTask.handIn( StudentTask.MODE_PENDING );
-	    studentsMapPending.put( ident, stdTask );
-	    break;
+		stdTask.handIn( StudentTask.MODE_PENDING );
+		studentsMapPending.put( ident, stdTask );
+		break;
 
-	default:
-	    return false;
+	    default:
+		return false;
 	}
 
 	mModifiedStudents.put( stdTask.getIdent(), stdTask );
@@ -162,15 +240,20 @@ public class TaskImpl implements Task {
 
     @Override
     public void addClass( StudentClass stdClass ) {
-	if ( mClasses.contains( stdClass.getName() ) ) return;
-
-	mClasses.add( stdClass.getName() );
-
+	addClassName( stdClass.getName() );
 	Iterator<Student> it = stdClass.iterator();
 	while ( it.hasNext() ) {
 	    addStudent( it.next() );
 	}
 
+    }
+
+    @Override
+    public void addClassName( String stdClass ) {
+	if ( mClasses.contains( stdClass ) ) return;
+
+	mClasses.add( stdClass );
+	addedClasses.add( stdClass );
     }
 
     @Override
@@ -211,12 +294,22 @@ public class TaskImpl implements Task {
     public List<StudentTask> getRemovedStudents() {
 	return removedStudents;
     }
+    
+    @Override
+    public List<String> getAddedClasses() {
+        return addedClasses;
+    }
+    
+    @Override
+    public List<String> getRemovedClasses() {
+        return removedClasses;
+    }
 
     /**
      * Will only add to students pending
      * 
-     * @return true if the students gets added successfully, false if not added
-     *         correctly or if the student has already handed in the assignment
+     * @return true if the students gets added successfully, false if not added correctly or if the student has already
+     *         handed in the assignment
      */
     @Override
     public boolean addStudent( Student std ) {
@@ -224,6 +317,9 @@ public class TaskImpl implements Task {
 	if ( hasStudent( std.getIdent() ) ) return false;
 
 	StudentTask stdTask = new StudentTaskImpl( std, mName, null );
+
+	if ( removedStudents.contains( std.getIdent() ) ) removedStudents.remove( std.getIdent() );
+
 	return addStudentTask( stdTask );
     }
 
@@ -240,8 +336,18 @@ public class TaskImpl implements Task {
 	else
 	    studentsMapPending.put( stdTask.getIdent(), stdTask );
 
+	if ( addedStudents == null ) addedStudents = new LinkedList<StudentTask>();
+	addedStudents.add( stdTask );
+	
+	notifyStudentAdd( stdTask.getStudent() );
+
 	mCount++;
 	return true;
+    }
+
+    @Override
+    public List<StudentTask> getAddedStudents() {
+	return addedStudents;
     }
 
     @Override
@@ -340,14 +446,17 @@ public class TaskImpl implements Task {
     @Override
     public void markAsUpdated() {
 	if ( mModifiedStudents != null ) mModifiedStudents.clear();
-
 	if ( removedStudents != null ) removedStudents.clear();
+	if ( addedStudents != null ) addedStudents.clear();
+	
+	addedClasses.clear();
+	removedClasses.clear();
 
 	mModified = false;
     }
 
     @Override
-    public List<StudentTask> getStudentsToUpdate() {
+    public List<StudentTask> getUpdatedStudents() {
 	return new LinkedList<StudentTask>( mModifiedStudents.values() );
     }
 

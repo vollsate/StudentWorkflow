@@ -1,13 +1,12 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -16,11 +15,17 @@ import android.view.MenuInflater;
  * @author GleVoll
  *
  */
-public class InstalledTasksFragment extends InstalledDataFragment {
+public class InstalledTasksFragment extends InstalledDataFragment implements OnTasksChangedListener {
 
     public InstalledTasksFragment() {
 	super();
-	DataHandler.GetInstance().addOnTaskChangeListener( this );
+    }
+    
+    @Override
+    public void onCreate( Bundle savedInstanceState ) {
+        super.onCreate( savedInstanceState );
+        
+        dataHandler.addOnTaskChangeListener( this );
     }
 
     @Override
@@ -30,15 +35,7 @@ public class InstalledTasksFragment extends InstalledDataFragment {
 
     @Override
     public List<String> getNames() {
-	Iterator<Task> tasks = dataHandler.getTasks().iterator();
-	List<String> list = new ArrayList<String>();
-
-	while ( tasks.hasNext() ) {
-	    Task task = tasks.next();
-	    if ( task.getType() == Task.TASK_OPEN ) list.add( task.getName() );
-	}
-
-	return list;
+	return dataHandler.getTaskNames();
     }
 
     @Override
@@ -53,7 +50,11 @@ public class InstalledTasksFragment extends InstalledDataFragment {
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
-	// super.onCreateOptionsMenu( menu, inflater );
 	inflater.inflate( R.menu.menu_fr_installedclasses, menu );
+    }
+    
+    @Override
+    public void onTaskChange( Task newTask, int mode ) {
+	onDataChange( mode );
     }
 }

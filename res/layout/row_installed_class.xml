@@ -3,9 +3,10 @@
     style="@style/TV.std.L.blue"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5sp"
-    android:layout_marginEnd="5sp"
+    android:paddingTop="5sp"
+    android:paddingBottom="5sp"
     android:layout_marginRight="5sp"
+    android:layout_marginEnd="5sp"
     android:ellipsize="marquee"
     android:singleLine="true"
     android:background="@drawable/main_textview"/>

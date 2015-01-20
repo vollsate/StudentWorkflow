@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +19,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class LoadableFilesFragment extends DialogFragment {
+public class LoadableFilesFragment extends DialogFragmentBase {
 
     public static final String EXTRA_TASKNAME = BaseValues.EXTRA_BASEPARAM + "TaskName";
 
@@ -31,15 +31,19 @@ public class LoadableFilesFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-	View rootView = inflater.inflate( R.layout.fragment_loaddata_files, container, false );
+    protected int getRootViewID() {
+	return R.layout.fragment_loaddata_files;
+    }
 
+    @Override
+    protected String getTitle() {
+	return "Load a file ..";
+    }
+
+    @Override
+    protected void buildView( View rootView ) {
 	buildAdapter( rootView );
 	buildButton( rootView );
-
-	getDialog().setTitle( "Load a file .." );
-
-	return rootView;
     }
 
     /**
@@ -52,16 +56,9 @@ public class LoadableFilesFragment extends DialogFragment {
 
 	    @Override
 	    public void onClick( View v ) {
-		LoadableFilesFragment.this.removeFragment();
+		LoadableFilesFragment.this.finish();
 	    }
 	} );
-    }
-
-    /**
-	 * 
-	 */
-    void removeFragment() {
-	getFragmentManager().beginTransaction().remove( this ).commit();
     }
 
     /**
@@ -133,7 +130,7 @@ public class LoadableFilesFragment extends DialogFragment {
 		Log.d( "", e.toString() );
 	    }
 
-	    fragment.removeFragment();
+	    fragment.finish();
 	}
     }
 

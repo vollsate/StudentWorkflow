@@ -48,6 +48,8 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
     protected void onCreate( Bundle savedInstanceState ) {
 	super.onCreate( savedInstanceState );
 	setContentView( R.layout.activity_std_info );
+	
+	
 
 	// Set up the action bar.
 	final ActionBar actionBar = getActionBar();
@@ -56,6 +58,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
 	bean = BaseActivity.GetStudentByIdentExtra( getIntent() );
 	Log.d( TAG, "Student: " + bean );
+	setTitle( bean.getFirstName() + " " + bean.getLastName() );
 
 	// Create the adapter that will return a fragment for each of the three
 	// primary sections of the activity.
@@ -90,7 +93,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
 	// Inflate the menu; this adds items to the action bar if it is present.
-	getMenuInflater().inflate( R.menu.task, menu );
+	getMenuInflater().inflate( R.menu.menu_std_info, menu );
 	return true;
     }
 

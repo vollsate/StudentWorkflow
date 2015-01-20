@@ -38,6 +38,10 @@ public abstract class DialogFragmentBase extends DialogFragment {
     }
 
     protected abstract void buildView( View rootView );
+    
+    protected void finish() {
+	getFragmentManager().beginTransaction().remove( this ).commit();	
+    }
 
     /**
      * 

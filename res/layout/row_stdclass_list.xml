@@ -7,6 +7,9 @@
     <TextView
         android:id="@+id/TV.stdlist.name"
         style="@style/TV.std"
+        android:layout_marginStart="@dimen/padding_stdlist_small"
+        android:layout_marginLeft="@dimen/padding_stdlist_small"
+        android:paddingTop="@dimen/padding_stdlist_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
@@ -15,6 +18,7 @@
     <TextView
         android:id="@+id/TV.stdlist.ident"
         style="@style/TV.std.S"
+        android:paddingBottom="@dimen/padding_stdlist_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/TV.stdlist.name"
@@ -25,17 +29,19 @@
     
     <ImageView
         android:id="@+id/info"
+        android:layout_marginTop="@dimen/padding_stdlist_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="2dip"
-        android:layout_marginRight="2dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
         android:contentDescription="@string/info_desc"
         android:src="@drawable/info" />
 
     <ImageView
         android:id="@+id/task"
+        android:layout_marginTop="@dimen/padding_stdlist_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
@@ -43,6 +49,6 @@
         android:layout_marginRight="2dip"
         android:layout_toLeftOf="@+id/info"
         android:contentDescription="@string/task_desc"
-        android:src="@drawable/task" />
+        android:src="@drawable/ic_action_task" />
  
 </RelativeLayout>

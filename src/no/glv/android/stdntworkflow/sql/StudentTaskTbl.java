@@ -12,12 +12,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class StudentInTaskTbl {
+public class StudentTaskTbl {
 
-    private static final String TAG = StudentInTaskTbl.class.getSimpleName();
+    private static final String TAG = StudentTaskTbl.class.getSimpleName();
 
     public static final String TBL_NAME = "stdntsk";
 
+    public static final String COL_ID = "_ID";
     public static final String COL_TASK = "task";
     public static final String COL_IDENT = "ident";
     public static final String COL_DATE = "date";
@@ -25,7 +26,7 @@ public class StudentInTaskTbl {
     /** Weather or not student has delivered (IN | PENDING | EXPIRED | LATE ) */
     public static final String COL_MODE = "mode";
 
-    private StudentInTaskTbl() {
+    private StudentTaskTbl() {
     }
 
     /**
@@ -33,9 +34,12 @@ public class StudentInTaskTbl {
      * @param db
      */
     public static void CreateTable( SQLiteDatabase db ) {
-	String sql = "CREATE TABLE " + TBL_NAME + "(" + "_ID INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_TASK
-		+ " TEXT NOT NULL, " + COL_IDENT + " TEXT NOT NULL, " + COL_DATE + " LONG, " + COL_MODE
-		+ " LONG NOT NULL)";
+	String sql = "CREATE TABLE " + TBL_NAME + "(" 
+		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
+		+ COL_TASK + " TEXT NOT NULL, " 
+		+ COL_IDENT + " TEXT NOT NULL, " 
+		+ COL_DATE + " LONG, " 
+		+ COL_MODE + " LONG NOT NULL)";
 
 	Log.v( TAG, "Executing SQL: " + sql );
 	db.execSQL( sql );
@@ -57,7 +61,7 @@ public class StudentInTaskTbl {
      * @param db
      * @return
      */
-    public static List<StudentTask> LoadAll( SQLiteDatabase db, Task task ) {
+    public static List<StudentTask> LoadAllInTask( SQLiteDatabase db, Task task ) {
 	String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_TASK + "=?";
 
 	Cursor cursor = db.rawQuery( sql, new String[] { task.getName() } );
@@ -120,6 +124,7 @@ public class StudentInTaskTbl {
      * @return
      */
     private static StudentTask CreateFromCursor( Cursor cursor ) {
+	int id = cursor.getInt( 0 );
 	String task = cursor.getString( 1 );
 	String ident = cursor.getString( 2 );
 	long dateL = cursor.getLong( 3 );
@@ -128,6 +133,7 @@ public class StudentInTaskTbl {
 	if ( dateL > 0 ) date = new Date( dateL );
 
 	StudentTaskImpl impl = new StudentTaskImpl( ident, task, mode, date );
+	impl.setID( id );
 
 	return impl;
     }
@@ -138,8 +144,8 @@ public class StudentInTaskTbl {
      * @param db
      * @return
      */
-    public static long Insert( StudentTask task, SQLiteDatabase db ) {
-	long retVal = InsertOneST( task, db );
+    public static int Insert( StudentTask task, SQLiteDatabase db ) {
+	int retVal = InsertOneST( task, db );
 	db.close();
 	return retVal;
     }
@@ -147,11 +153,14 @@ public class StudentInTaskTbl {
     /**
      * 
      * @param task
-     * @param db
+     * @param db Does NOT close the connection
      * @return
      */
-    private static long InsertOneST( StudentTask task, SQLiteDatabase db ) {
-	return db.insert( TBL_NAME, null, StudentInTaskValues( task ) );
+    private static int InsertOneST( StudentTask task, SQLiteDatabase db ) {
+	long rowNum = db.insert( TBL_NAME, null, StudentTaskValues( task ) );
+	
+	task.setID( (int) rowNum );
+	return (int) rowNum;
     }
 
     /**
@@ -164,9 +173,8 @@ public class StudentInTaskTbl {
 	Iterator<StudentTask> it = task.getStudentsInTask().iterator();
 	while ( it.hasNext() ) {
 	    StudentTask st = it.next();
-
-	    StudentTaskImpl impl = new StudentTaskImpl( st.getIdent(), task.getName(), StudentTask.MODE_PENDING, null );
-	    InsertOneST( impl, db );
+	    st.setTaskName( task.getName() );
+	    InsertOneST( st, db );
 	}
 
 	db.close();
@@ -182,7 +190,7 @@ public class StudentInTaskTbl {
 	long retVal = 0;
 
 	String whereClause = COL_IDENT + "=? AND " + COL_TASK + "=?";
-	retVal = db.update( TBL_NAME, StudentInTaskValues( stdTask ), whereClause, new String[] { stdTask.getIdent(),
+	retVal = db.update( TBL_NAME, StudentTaskValues( stdTask ), whereClause, new String[] { stdTask.getIdent(),
 		stdTask.getTaskName() } );
 
 	return retVal;
@@ -194,11 +202,13 @@ public class StudentInTaskTbl {
      * @param db
      * @return
      */
-    public static long Delete( StudentTask stdTask, SQLiteDatabase db ) {
-	long retVal = 0;
+    public static int Delete( StudentTask stdTask, SQLiteDatabase db ) {
+	int retVal = 0;
 
-	String whereClause = COL_IDENT + "=? AND " + COL_TASK + "=?";
-	retVal = db.delete( TBL_NAME, whereClause, new String[] { stdTask.getIdent(), stdTask.getTaskName() } );
+	String whereClause = COL_ID + "=?";
+	Log.d( TAG, whereClause );
+	
+	retVal = (int) db.delete( TBL_NAME, whereClause, new String[] { String.valueOf( stdTask.getID() ) } );
 
 	return retVal;
     }
@@ -208,7 +218,7 @@ public class StudentInTaskTbl {
      * @param task
      * @return
      */
-    private static ContentValues StudentInTaskValues( StudentTask task ) {
+    private static ContentValues StudentTaskValues( StudentTask task ) {
 	ContentValues cv = new ContentValues();
 
 	cv.put( COL_TASK, task.getTaskName() );

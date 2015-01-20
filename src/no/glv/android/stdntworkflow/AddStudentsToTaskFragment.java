@@ -1,6 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +8,7 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -25,33 +25,36 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 
  * @author GleVoll
  *
  */
-public class RestoreStudentsInTask extends DialogFragmentBase {
+public class AddStudentsToTaskFragment extends DialogFragmentBase {
 
-    private Task task;
-    private OnStudentsVerifiedListener listener;
+    Task mTask;
     ListView listView;
 
-    Task getTask() {
-	if ( task == null ) task = (Task) getArguments().getSerializable( Task.EXTRA_TASKNAME );
+    /**
+     * 
+     * @param savedInstanceState
+     * @return
+     */
+    Task getTask( Bundle savedInstanceState) {
+	if ( mTask != null ) return mTask;
+	
+	String name = null;
+	if ( savedInstanceState != null ) {
+	    name = savedInstanceState.getString( Task.EXTRA_TASKNAME ); 
+	}
+	else {
+	    name = getArguments().getString( Task.EXTRA_TASKNAME );
+	}
 
-	return task;
-    }
-
-    OnStudentsVerifiedListener getListener() {
-	if ( listener == null ) listener = (OnStudentsVerifiedListener) getArguments().getSerializable(
-		OnStudentsVerifiedListener.EXTRA_NAME );
-
-	return listener;
-    }
-
-    public void setOnVerifiedListener( OnStudentsVerifiedListener listener ) {
-	this.listener = listener;
+	mTask = DataHandler.GetInstance().getTask( name );
+	return mTask;
     }
 
     @Override
@@ -67,25 +70,13 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
     @Override
     public void onCreate( Bundle savedInstanceState ) {
 	super.onCreate( savedInstanceState );
-
-	if ( savedInstanceState != null ) {
-	    task = (Task) savedInstanceState.getSerializable( Task.EXTRA_TASKNAME );
-	    listener = (OnStudentsVerifiedListener) savedInstanceState
-		    .getSerializable( OnStudentsVerifiedListener.EXTRA_NAME );
-	}
-    }
-
-    @Override
-    public void onResume() {
-	super.onResume();
+	getTask( savedInstanceState );
     }
 
     @Override
     public void onSaveInstanceState( Bundle outState ) {
 	super.onSaveInstanceState( outState );
-
-	outState.putSerializable( OnStudentsVerifiedListener.EXTRA_NAME, listener );
-	outState.putSerializable( Task.EXTRA_TASKNAME, task );
+	outState.putString( Task.EXTRA_TASKNAME, mTask.getName() );
     }
 
     @Override
@@ -98,7 +89,7 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
      * 
      * @param rootView
      */
-    private void buildButton( View rootView ) {
+    protected void buildButton( View rootView ) {
 	final Fragment fr = this;
 
 	Button btn = (Button) rootView.findViewById( R.id.BTN_newTask_verifyStudents );
@@ -106,9 +97,24 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
 
 	    @Override
 	    public void onClick( View v ) {
-		fr.getFragmentManager().beginTransaction().remove( fr ).commit();
+		getFragmentManager().beginTransaction().remove( fr ).commit();
 
-		getListener().onStudentsVerified( task );
+		List<StudentTask> stdTasks = mTask.getAddedStudents();
+		Iterator<StudentTask> it = stdTasks.iterator();
+		StringBuffer sb = new StringBuffer();
+		String msg = fr.getActivity().getResources().getString( R.string.task_student_added );
+
+		while ( it.hasNext() ) {
+		    Student std = it.next().getStudent();
+		    String stdName = std.getLastName() + ", " + std.getFirstName();
+		    
+		    sb.append( stdName ).append( "\n" );
+		}
+		msg = msg.replace( "{std}", sb.toString() );
+
+		Toast t = Toast.makeText( fr.getActivity(), msg, Toast.LENGTH_LONG );
+		DataHandler.GetInstance().commitStudentsTasks( mTask );
+		t.show();
 	    }
 	} );
 
@@ -117,7 +123,7 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
 
 	    @Override
 	    public void onClick( View v ) {
-		fr.getFragmentManager().beginTransaction().remove( fr ).commit();
+		getFragmentManager().beginTransaction().remove( fr ).commit();
 	    }
 	} );
     }
@@ -126,14 +132,14 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
      * 
      * @param rootView
      */
-    private void buildAdapter( View rootView ) {
+    protected void buildAdapter( View rootView ) {
 	if ( listView != null ) return;
 
 	List<Student> students = createStudentList();
 
 	listView = (ListView) rootView.findViewById( R.id.LV_newTask_addedStudents );
 	AddedStudentsAdapter adapter = new AddedStudentsAdapter( getActivity(), R.id.LV_newTask_addedStudents, students );
-	adapter.setTask( task );
+	adapter.setTask( mTask );
 	listView.setAdapter( adapter );
     }
 
@@ -141,15 +147,22 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
      * 
      * @return
      */
-    private List<Student> createStudentList() {
-	List<String> mClasses = getTask().getClasses();
+    protected List<Student> createStudentList() {
+	List<String> mClasses = mTask.getClasses();
 	List<Student> students = new ArrayList<Student>();
 
 	Iterator<String> it = mClasses.iterator();
 	while ( it.hasNext() ) {
 	    String className = it.next();
 	    StudentClass stdClass = DataHandler.GetInstance().getStudentClass( className );
-	    students.addAll( stdClass.getStudents() );
+	    
+	    Iterator<Student> itStd = stdClass.getStudents().iterator();
+	    while ( itStd.hasNext() ) {
+		Student std = itStd.next();
+		if ( mTask.hasStudent( std.getIdent() ) ) continue;
+		
+		students.add( std );
+	    }
 	}
 
 	return students;
@@ -177,6 +190,7 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
 		 */
 	@Override
 	public View getView( int position, View convertView, ViewGroup parent ) {
+	    Student std = getItem( position );
 	    ViewHolder holder = null;
 
 	    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -191,18 +205,12 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
 
 	    holder = (ViewHolder) convertView.getTag();
 
-	    Student std = getItem( position );
 	    String text = DataHandler.GetInstance().getSettingsManager().getStdInfoWhenNewTask( std );
 
 	    holder.studentIdent.setTag( std );
 	    holder.studentIdent.setText( text );
 
 	    holder.cBox.setTag( std );
-
-	    if ( task.hasStudent( std.getIdent() ) ) holder.cBox.setChecked( true );
-	    else
-		holder.cBox.setChecked( false );
-
 	    holder.cBox.setOnCheckedChangeListener( this );
 
 	    return convertView;
@@ -228,29 +236,13 @@ public class RestoreStudentsInTask extends DialogFragmentBase {
      * @param manager
      */
     static void StartFragment( Bundle args, FragmentManager manager ) {
-	RestoreStudentsInTask fragment = new RestoreStudentsInTask();
+	AddStudentsToTaskFragment fragment = new AddStudentsToTaskFragment();
 
 	fragment.setArguments( args );
 
 	FragmentTransaction ft = manager.beginTransaction();
-	fragment.show( ft, RestoreStudentsInTask.class.getSimpleName() );
+	fragment.show( ft, AddStudentsToTaskFragment.class.getSimpleName() );
 
-    }
-
-    /**
-     * 
-     * @author GleVoll
-     *
-     */
-    public static interface OnStudentsVerifiedListener extends Serializable {
-
-	public static final String EXTRA_NAME = OnStudentsVerifiedListener.class.getSimpleName();
-
-	public void onStudentsVerified( Task task );
-
-	public void addStudent( Student std );
-
-	public void removeStudent( Student std );
     }
 
 }

@@ -6,5 +6,7 @@
 
     <dimen name="activity_horizontal_margin_small">6dp</dimen>
     <dimen name="activity_vertical_margin_small">6dp</dimen>
+    
+    <dimen name="padding_stdlist_small">8sp</dimen>
 
 </resources>

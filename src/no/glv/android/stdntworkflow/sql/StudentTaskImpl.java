@@ -6,8 +6,7 @@ import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 
 /**
- * Keeps track of every student registered and every task they are currently
- * engaged in.
+ * Keeps track of every student registered and every task they are currently engaged in.
  * 
  * @author GleVoll
  *
@@ -17,6 +16,7 @@ public class StudentTaskImpl implements StudentTask {
     private Date handinDate;
     private int mode;
 
+    private int ID;
     private String mTask;
     private String mIdent;
     private Student student;
@@ -38,11 +38,21 @@ public class StudentTaskImpl implements StudentTask {
      * @param mode
      * @param date
      */
-    public StudentTaskImpl( String student, String task, int mode, Date date ) {
-	this.mIdent = student;
+    public StudentTaskImpl( String ident, String task, int mode, Date date ) {
+	this.mIdent = ident;
 	this.mTask = task;
 	this.mode = mode;
 	this.handinDate = date;
+    }
+
+    @Override
+    public int getID() {
+	return ID;
+    }
+
+    @Override
+    public void setID( int id ) {
+	this.ID = id;
     }
 
     /**
@@ -92,16 +102,16 @@ public class StudentTaskImpl implements StudentTask {
 	this.mode = mode;
 
 	switch ( mode ) {
-	case MODE_HANDIN:
-	    if ( handinDate == null ) handinDate = new Date();
-	    break;
+	    case MODE_HANDIN:
+		if ( handinDate == null ) handinDate = new Date();
+		break;
 
-	case MODE_PENDING:
-	    handinDate = null;
-	    break;
+	    case MODE_PENDING:
+		handinDate = null;
+		break;
 
-	default:
-	    break;
+	    default:
+		break;
 	}
     }
 
@@ -128,5 +138,21 @@ public class StudentTaskImpl implements StudentTask {
     @Override
     public void setTaskName( String name ) {
 	this.mTask = name;
+    }
+
+    @Override
+    public String toString() {
+	StringBuffer sb = new StringBuffer();
+
+	sb.append( "_ID=" ).append( this.ID ).append( ", " );
+	sb.append( "task=" ).append( this.mTask ).append( ", " );
+	sb.append( "ident=" ).append( this.mIdent ).append( ", " );
+	sb.append( "mode=" ).append( this.mode );
+
+	return sb.toString();
+    }
+    
+    public String toSimpleString() {
+	return "_ID=" + ID + ", ident=" + mIdent;
     }
 }

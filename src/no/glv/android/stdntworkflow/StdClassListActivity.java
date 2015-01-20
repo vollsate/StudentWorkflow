@@ -1,12 +1,21 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.AlertDialogHelper;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
+import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,18 +23,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Adapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * This activity will show all the students in a certain class.
  * 
- * The activity should be able to: - Update the name of the class TODO - Delete
- * the class
+ * The activity should be able to: - Update the name of the class TODO - Delete the class
  * 
  * @author GleVoll
  *
  */
-public class StdClassListActivity extends Activity implements OnClickListener, OnStudentChangedListener {
+public class StdClassListActivity extends Activity implements OnClickListener, OnStudentChangedListener,
+	AdapterView.OnItemClickListener {
 
     private static final String TAG = StdClassListActivity.class.getSimpleName();
 
@@ -36,11 +49,14 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 
     StudentListAdapter adapter;
 
+    DataHandler dataHandler;
+
     /**
 	 * 
 	 */
     public StdClassListActivity() {
-	DataHandler.GetInstance().addOnStudentChangeListener( this );
+	dataHandler = DataHandler.GetInstance();
+	dataHandler.addOnStudentChangeListener( this );
     }
 
     @Override
@@ -52,13 +68,20 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 
 	stdClass = BaseActivity.GetStudentClassExtra( this.getIntent() );
 
-	String title = getResources().getString( R.string.activity_studentList_title );
+	String title = getResources().getString( R.string.activity_stdlist_title );
 	title = title.replace( CLASS_REPLACE, stdClass.getName() );
 	setTitle( title );
 
 	ListView listView = (ListView) findViewById( R.id.student_listview );
 	adapter = new StudentListAdapter( this, stdClass.getStudents() );
 	listView.setAdapter( adapter );
+
+	listView.setOnItemClickListener( this );
+    }
+
+    @Override
+    public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
+	Toast.makeText( this, stdClass.getStudents().get( position ).getIdent(), Toast.LENGTH_LONG ).show();
     }
 
     /**
@@ -80,8 +103,8 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
     public void onClick( View v ) {
 	Log.d( TAG, "onClick: " + v );
     }
@@ -97,27 +120,117 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 	int id = item.getItemId();
 
 	switch ( id ) {
-	case R.id.action_settings:
-	    break;
+	    case R.id.menu_stdlist_delete:
+		deleteClass();
+		break;
 
-	case R.id.menu_stdlist_delete:
-	    DataHandler.GetInstance().deleteStudentClass( stdClass.getName() );
-	    finish();
-	    break;
+	    case R.id.menu_stdList_sort_firstNameAsc:
+		DataHandler.GetInstance().getSettingsManager().sortByFirstNameAsc( stdClass.getName() );
+		update();
+		return true;
 
-	case R.id.menu_stdList_sort_firstNameAsc:
-	    DataHandler.GetInstance().getSettingsManager().sortByFirstNameAsc( stdClass.getName() );
-	    update();
-	    return true;
+	    case R.id.menu_stdList_sort_lastNameAsc:
+		DataHandler.GetInstance().getSettingsManager().sortByLastNameAsc( stdClass.getName() );
+		update();
+		return true;
 
-	case R.id.menu_stdList_sort_lastNameAsc:
-	    DataHandler.GetInstance().getSettingsManager().sortByLastNameAsc( stdClass.getName() );
-	    update();
-	    return true;
+	    case R.id.menu_stdlist_mail:
+		sendMail();
+		return true;
 
 	}
 
 	return super.onOptionsItemSelected( item );
+    }
+
+    /**
+     * 
+     */
+    private void sendMail() {
+	ArrayList<String> list = new ArrayList<String>();
+	Iterator<Student> stds = stdClass.getStudents().iterator();
+
+	while ( stds.hasNext() ) {
+	    Student std = stds.next();
+
+	    for ( int i = 0; i < std.getParents().size(); i++ ) {
+		Parent par = std.getParents().get( i );
+		if ( par.getMail() != null ) list.add( par.getMail() );
+	    }
+	}
+
+	String[] mails = new String[list.size()];
+	int i=0;
+	for ( String name : list ) {
+	    mails[i++] = name;
+	}
+
+	Intent intent = new Intent( Intent.ACTION_SEND );
+	intent.setType( "message/rfc822" );
+	intent.putExtra( Intent.EXTRA_EMAIL, mails );
+	intent.putExtra( Intent.EXTRA_SUBJECT, getResources().getString( R.string.stdlist_mail_subject ) );
+	intent.putExtra( Intent.EXTRA_TEXT, getResources().getString( R.string.stdlist_mail_body ) );
+	try {
+	    startActivity( Intent.createChooser( intent, "Send mail..." ) );
+	}
+	catch ( android.content.ActivityNotFoundException ex ) {
+	    Toast.makeText( this, "There are no email clients installed.", Toast.LENGTH_SHORT ).show();
+	}
+    }
+
+    /**
+     * 
+     */
+    private void deleteClass() {
+	boolean canDel = dataHandler.isStudentClassDeletable( stdClass );
+	AlertDialog.Builder builder = new Builder( this );
+	String msg = null, title = null;
+
+	if ( !canDel ) {
+	    msg = getResources().getString( R.string.stdlist_del_isInvolved_msg )
+		    .replace( "{class}", stdClass.getName() )
+		    .replace( "{task}", dataHandler.getStudentClassInvolvedInTask( stdClass ).toString() );
+	    title = getResources().getString( R.string.stdlist_del_isInvolved_title );
+
+	    builder.setIcon( R.drawable.ic_action_error );
+	    builder.setNeutralButton( R.string.ok, new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick( DialogInterface dialog, int which ) {
+		}
+	    } );
+	}
+	else {
+	    msg = getResources().getString( R.string.stdlist_del_msg ).replace( "{class}", stdClass.getName() );
+	    title = getResources().getString( R.string.stdlist_del_title );
+
+	    builder.setIcon( R.drawable.ic_action_alert );
+	    builder.setNegativeButton( getResources().getString( R.string.cancel ),
+		    new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick( DialogInterface dialog, int which ) {
+			    // Left empty on purpose
+			}
+		    } );
+
+	    builder.setPositiveButton( getResources().getString( R.string.ok ), new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick( DialogInterface dialog, int which ) {
+		    String msg = getResources().getString( R.string.stdlist_del_msg ).replace( "{class}",
+			    stdClass.getName() );
+		    DataHandler.GetInstance().deleteStudentClass( stdClass.getName() );
+		    Toast.makeText( StdClassListActivity.this, msg, Toast.LENGTH_LONG ).show();
+		    finish();
+		}
+	    } );
+	}
+
+	builder.setMessage( msg ).setTitle( title );
+	AlertDialog dialog = builder.create();
+	dialog.show();
+
     }
 
     /**

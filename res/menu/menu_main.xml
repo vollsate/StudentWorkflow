@@ -12,26 +12,31 @@
         <menu>
             <item
                 android:id="@+id/menu.settings"
+                android:icon="@drawable/ic_action_settings"
                 android:orderInCategory="90"
                 android:title="@string/action_settings"
                 android:showAsAction="never"/>
             <item
                 android:id="@+id/menu.resetDB"
+                android:icon="@drawable/ic_action_reset"
                 android:orderInCategory="100"
                 android:title="@string/action_resetDB"
                 android:showAsAction="never"/>
             <item
                 android:id="@+id/menu.listDB"
+                android:icon="@drawable/ic_action_storage"
                 android:orderInCategory="100"
                 android:title="@string/action_listDB"
                 android:showAsAction="never"/>
             <item
                 android:id="@+id/menu.loadData"
+                android:icon="@drawable/ic_action_add_stdclass"
                 android:orderInCategory="10"
                 android:title="@string/action_loadData"
                 android:showAsAction="never"/>
             <item
                 android:id="@+id/menu.newTask"
+                android:icon="@drawable/ic_action_task"
                 android:orderInCategory="11"
                 android:title="@string/action_newTask"
                 android:showAsAction="ifRoom"/>

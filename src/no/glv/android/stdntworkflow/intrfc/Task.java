@@ -35,6 +35,10 @@ public interface Task extends Serializable {
     public static final String PROP_TYPE = "TYPE";
     public static final String PROP_DATE = "DATE";
 
+    public void setID( int id );
+    
+    public int getID();
+    
     public String getName();
 
     public void setName( String name );
@@ -62,8 +66,14 @@ public interface Task extends Serializable {
     public boolean isStudentsModified();
 
     public void markAsUpdated();
+    
+    public List<StudentTask> getAddedStudents();
 
-    public List<StudentTask> getStudentsToUpdate();
+    public List<StudentTask> getUpdatedStudents();
+    
+    public List<String> getAddedClasses();
+    
+    public List<String> getRemovedClasses();
 
     /**
      * 
@@ -80,6 +90,8 @@ public interface Task extends Serializable {
     public List<String> getClasses();
 
     public void addClass( StudentClass stdClass );
+
+    public void addClassName( String stdClass );
 
     public void removeClass( StudentClass stdClass );
 
@@ -113,11 +125,50 @@ public interface Task extends Serializable {
 
     public void addOnStudentRemovedListener( OnStudentRemovedListener listener );
 
+    public void removeOnStudentRemovedListener( OnStudentRemovedListener listener );
+
+    public void removeOnStudentHandInListener( OnStudentHandInListener listener );
+
     public void addOnStudentHandIndListener( OnStudentHandInListener listener );
 
-    public void notifyStudentRemoved( Student std );
+    public void addOnStudentAddListener( OnStudentAddListener listener );
+
+    public void removeOnStudentAddListener( OnStudentAddListener listener );
+    
+    public void notifyChange( int mode );
 
     public List<StudentTask> getRemovedStudents();
+    
+    /**
+     * 
+     * @author glevoll
+     *
+     */
+    public static interface OnTaskChangeListener {
+	
+	public static final int MODE_DATE_CHANGE = 2;
+	public static final int MODE_NAME_CHANGE = 4;
+	public static final int MODE_DESC_CHANGE = 8;
+	
+	public static final int MODE_STD_ADD = 16;
+	public static final int MODE_STD_DEL = 32;
+	public static final int MODE_STD_UPD = 64;
+	
+	public static final int MODE_CLS_ADD = 128;
+	public static final int MODE_CLS_DEL = 264;
+	public static final int MODE_CLS_UPD = 512;
+	
+	
+	/**
+	 * A callback method to inform that a task has changed in's state somehow.
+	 * 
+	 * Triggered by a call to the {@link Task.notifyTaskChange(int)}
+	 * 	
+	 * @param task
+	 * @param mode
+	 */
+	public void onTaskChange( Task task, int mode );
+    }
 
     /**
      * 
@@ -141,6 +192,16 @@ public interface Task extends Serializable {
     static interface OnStudentHandInListener {
 
 	public void onStudentHandIn( Student std );
+    }
+
+    /**
+     * 
+     * @author glevoll
+     *
+     */
+    static interface OnStudentAddListener {
+
+	public void onStudentAdd( Student std );
     }
 
 }

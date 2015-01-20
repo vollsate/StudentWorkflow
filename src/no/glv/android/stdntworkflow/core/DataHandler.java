@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TreeMap;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
@@ -25,13 +25,13 @@ import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import no.glv.android.stdntworkflow.sql.DBUtils;
 import no.glv.android.stdntworkflow.sql.Database;
 import no.glv.android.stdntworkflow.sql.ParentBean;
 import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
-import no.glv.android.stdntworkflow.sql.StudentInTaskTbl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Activity;
 import android.content.Context;
@@ -46,6 +46,8 @@ import android.util.Log;
 public class DataHandler {
 
     private static final String TAG = DataHandler.class.getSimpleName();
+
+    public static final int MODE_RESETDB = Integer.MAX_VALUE;
 
     private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
     private static final String STUDENT_IN_TASK_SEP = "=";
@@ -69,15 +71,14 @@ public class DataHandler {
     private static boolean isInitiated = false;
 
     // Listeners
-    private Map<String, OnTaskChangedListener> taskChangeListeners;
-    private Map<String, OnStudentClassChangeListener> stdClassChangeListeners;
-    private Map<String, OnStudentChangedListener> stdChangeListeners;
+    private HashMap<String, OnTasksChangedListener> taskChangeListeners;
+    private HashMap<String, OnStudentClassChangeListener> stdClassChangeListeners;
+    private HashMap<String, OnStudentChangedListener> stdChangeListeners;
 
     /**
      * 
      * @return
-     * @throws IllegalStateException
-     *             if Init has not been called first!
+     * @throws IllegalStateException if Init has not been called first!
      */
     public static final DataHandler GetInstance() {
 	if ( !isInitiated ) throw new IllegalStateException( "DataHandler not inititated" );
@@ -97,8 +98,7 @@ public class DataHandler {
 
     /**
      * 
-     * @param db
-     *            The database to use
+     * @param db The database to use
      */
     public static final DataHandler Init( Context ctx ) {
 	if ( isInitiated ) return instance;
@@ -120,17 +120,55 @@ public class DataHandler {
 	this.db = db;
 
 	sManager = new SettingsManager();
+	initiateMaps();
+	initiateListeners();
+    }
 
+    /**
+     * 
+     */
+    public void resetDB() {
+	db.runCreate();
+	initiateMaps();
+
+	notifyStudentClassChange( null, OnStudentClassChangeListener.MODE_DEL );
+	notifyTaskChange( null, OnTasksChangedListener.MODE_DEL );
+    }
+
+    /**
+     * Will initiate all the listener maps.
+     */
+    void initiateListeners() {
 	stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
 	stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
-	taskChangeListeners = new HashMap<String, DataHandler.OnTaskChangedListener>( 2 );
+	taskChangeListeners = new HashMap<String, DataHandler.OnTasksChangedListener>( 2 );
+    }
 
+    /**
+     * Will initiate the Maps used to contain the DB. Called initially from the constructor.
+     * 
+     * If {@link resetDB} is called, all the Maps will be reset by an invocation of this method.
+     */
+    void initiateMaps() {
+	stdClasses = new TreeMap<String, StudentClass>();
 	tasks = new TreeMap<String, Task>();
     }
 
     /**
-	 * 
-	 */
+     * Loads the tasks from the DB and and initialize every task with it's corresponding {@link StudentTask} instance.
+     * 
+     * <li>
+     * <ul>
+     * Load every task
+     * </ul>
+     * <ul>
+     * Load every corresponding StudentTask
+     * </ul>
+     * <ul>
+     * Fill the StudentTask with the Student instance
+     * </ul>
+     * </li>
+     */
     private void loadTasks() {
 	List<Task> list = db.loadTasks();
 	Iterator<Task> it = list.iterator();
@@ -138,53 +176,55 @@ public class DataHandler {
 	while ( it.hasNext() ) {
 	    Task task = it.next();
 	    List<StudentTask> stdTasks = db.loadStudentsInTask( task );
-	    fillStudentTaskWithStudent( task, stdTasks );
+	    setUpStudentTask( task, stdTasks );
 
 	    task.addStudentTasks( stdTasks );
+	    task.markAsUpdated();
 	    tasks.put( task.getName(), task );
 	}
     }
 
     /**
+     * Fills the {@link StudentTask} with the corresponding {@link Student} instance and the corresponding {@link Task}
+     * data.
      * 
-     * @param task
+     * @param task The task the StudentTask instance is connected to.
      * @param stdTasks
      */
-    private void fillStudentTaskWithStudent( Task task, List<StudentTask> stdTasks ) {
+    private void setUpStudentTask( Task task, List<StudentTask> stdTasks ) {
 	Iterator<StudentTask> it = stdTasks.iterator();
 	while ( it.hasNext() ) {
 	    StudentTask stdTask = it.next();
 	    stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
-	    stdTask.setTaskName( task.getName() );
 
 	    String stdClass = stdTask.getStudent().getStudentClass();
-	    task.addClass( getStudentClass( stdClass ) );
+	    task.addClassName( stdClass );
 	}
 
 	Collections.sort( stdTasks, new DataComparator.StudentTaskComparator() );
     }
 
     /**
-	 * 
-	 */
+     * Loads all the {@link StudentClass} found in the DB. All the instances is filled with the corresponding
+     * {@link Student} instance.
+     */
     private void loadStudentClasses() {
-	stdClasses = new TreeMap<String, StudentClass>();
-
 	List<StudentClass> list = db.loadStudentClasses();
 	Iterator<StudentClass> it = list.iterator();
 	while ( it.hasNext() ) {
 	    StudentClass stdClass = it.next();
-	    fillStudentClassWithStudents( stdClass );
+	    populateStudentClass( stdClass );
 	    stdClasses.put( stdClass.getName(), stdClass );
 	}
 
     }
 
     /**
+     * Fills the {@link StudentClass} instance with the students, and
      * 
      * @param stdClass
      */
-    private void fillStudentClassWithStudents( StudentClass stdClass ) {
+    private void populateStudentClass( StudentClass stdClass ) {
 	List<Student> stList = db.loadStudentsFromClass( stdClass.getName() );
 	Collections.sort( stList, new DataComparator.StudentComparator() );
 
@@ -193,17 +233,27 @@ public class DataHandler {
 	Iterator<Student> stds = stdClass.getStudents().iterator();
 	while ( stds.hasNext() ) {
 	    Student student = stds.next();
-	    student.addParents( db.loadParents( student.getIdent() ) );
-
-	    Iterator<Parent> parIt = student.getParents().iterator();
-	    while ( parIt.hasNext() ) {
-		Parent parent = parIt.next();
-		parent.addPhones( db.loadPhone( parent.getStudentID(), parent.getID() ) );
-	    }
+	    populateStudent( student );
 	}
     }
 
     /**
+     * Populates the {@link Student} instance with the parents and the phone data
+     * 
+     * @param student The student to populate
+     */
+    private void populateStudent( Student student ) {
+	student.addParents( db.loadParents( student.getIdent() ) );
+
+	Iterator<Parent> parIt = student.getParents().iterator();
+	while ( parIt.hasNext() ) {
+	    Parent parent = parIt.next();
+	    parent.addPhones( db.loadPhone( parent.getStudentID(), parent.getID() ) );
+	}
+    }
+
+    /**
+     * Creates a new empty {@link Task} instance.
      * 
      * @return
      */
@@ -219,6 +269,9 @@ public class DataHandler {
 	return sManager;
     }
 
+    /**
+     * 
+     */
     public void listDB() {
 	Log.v( TAG, db.loadAllStudentTask().toString() );
     }
@@ -325,8 +378,9 @@ public class DataHandler {
      * @param listener
      */
     public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
-	String name = listener.getClass().getSimpleName();
-	if ( stdChangeListeners.containsKey( name ) ) return;
+	String name = listener.getClass().getName();
+
+	if ( stdChangeListeners.containsKey( name ) ) stdChangeListeners.remove( name );
 
 	stdChangeListeners.put( name, listener );
     }
@@ -359,8 +413,7 @@ public class DataHandler {
 
     /**
      * 
-     * @param name
-     *            Name of {@link Task} to find.
+     * @param name Name of {@link Task} to find.
      * @return The actual task, or NULL if not found
      */
     public Task getTask( String name ) {
@@ -368,9 +421,8 @@ public class DataHandler {
     }
 
     /**
-     * Adds the task to the database. The task will be filled with instances of
-     * {@link StudentTask} objects linking the {@link Student} to the
-     * {@link Task}.
+     * Adds the task to the database. The task will be filled with instances of {@link StudentTask} objects linking the
+     * {@link Student} to the {@link Task}.
      * 
      * @param task
      */
@@ -384,7 +436,7 @@ public class DataHandler {
 
 	if ( db.insertTask( task ) ) {
 	    List<StudentTask> stds = db.loadStudentsInTask( task );
-	    fillStudentTaskWithStudent( task, stds );
+	    setUpStudentTask( task, stds );
 	    task.addStudentTasks( stds );
 
 	    tasks.put( task.getName(), task );
@@ -405,16 +457,16 @@ public class DataHandler {
 
     public void handIn( StudentTask stdTask, int mode ) {
 	switch ( mode ) {
-	case StudentTask.MODE_HANDIN:
-	    handIn( stdTask );
-	    break;
+	    case StudentTask.MODE_HANDIN:
+		handIn( stdTask );
+		break;
 
-	case StudentTask.MODE_PENDING:
-	    stdTask.handIn( mode );
-	    break;
+	    case StudentTask.MODE_PENDING:
+		stdTask.handIn( mode );
+		break;
 
-	default:
-	    break;
+	    default:
+		break;
 	}
     }
 
@@ -425,12 +477,23 @@ public class DataHandler {
      */
     public boolean updateTask( Task task, String oldName ) {
 	Log.d( TAG, "Updating task: " + oldName );
-	if ( db.updateTask( task, oldName ) ) {
-	    notifyTaskUpdate( task );
-	    return true;
+	if ( !db.updateTask( task, oldName ) ) return false;
+
+	if ( !task.getName().equals( oldName ) ) {
+	    List<StudentTask> stdTasks = task.getStudentsInTask();
+	    Iterator<StudentTask> it = stdTasks.iterator();
+	    while ( it.hasNext() ) {
+		it.next().setTaskName( task.getName() );
+	    }
+
+	    db.updateStudentTasks( stdTasks );
 	}
 
-	return false;
+	tasks.remove( oldName );
+	tasks.put( task.getName(), task );
+
+	notifyTaskUpdate( task );
+	return true;
     }
 
     /**
@@ -442,6 +505,8 @@ public class DataHandler {
 	Task task = getTask( name );
 
 	if ( db.deleteTask( name ) ) {
+	    db.deleteStudentTasks( task.getStudentsInTask() );
+
 	    tasks.remove( name );
 	    notifyTaskDelete( task );
 	    return true;
@@ -450,6 +515,11 @@ public class DataHandler {
 	return false;
     }
 
+    /**
+     * 
+     * @param name
+     * @return
+     */
     public boolean closeTask( String name ) {
 	Task task = getTask( name );
 	task.setType( Task.TASK_CLOSED );
@@ -458,8 +528,10 @@ public class DataHandler {
     }
 
     /**
-	 * 
-	 */
+     * Commits a {@link Task} to the DB.
+     * 
+     * @param task
+     */
     public void commitTask( Task task ) {
 	db.insertTask( task );
     }
@@ -469,24 +541,39 @@ public class DataHandler {
      * @param task
      */
     public void commitStudentsTasks( Task task ) {
-	List<StudentTask> list = task.getStudentsToUpdate();
+	List<StudentTask> list = task.getUpdatedStudents();
+	int change = 0;
 
-	if ( list != null && !list.isEmpty() ) db.updateStudentTasks( list );
+	if ( list != null && !list.isEmpty() ) {
+	    db.updateStudentTasks( list );
+	    change = OnTaskChangeListener.MODE_STD_UPD;
+	}
 
 	list = task.getRemovedStudents();
-	if ( list != null && !list.isEmpty() ) db.deleteStudentTasks( list );
+	if ( list != null && !list.isEmpty() ) {
+	    db.deleteStudentTasks( list );
+	    change = OnTaskChangeListener.MODE_STD_DEL;
+	}
 
+	list = task.getAddedStudents();
+	if ( list != null && !list.isEmpty() ) {
+	    db.insertStudentTasks( list );
+	    change = OnTaskChangeListener.MODE_STD_ADD;
+	}
+
+	if ( change > 0 ) task.notifyChange( change );
+	task.markAsUpdated();
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
     public void commitTasks() {
 	Iterator<Task> it = tasks.values().iterator();
 
 	while ( it.hasNext() ) {
 	    Task task = it.next();
-	    db.insertTask( task );
+	    commitTask( task );
 	}
     }
 
@@ -497,7 +584,7 @@ public class DataHandler {
     private void notifyTaskChange( Task newTask, int mode ) {
 	if ( taskChangeListeners.isEmpty() ) return;
 
-	Iterator<OnTaskChangedListener> it = taskChangeListeners.values().iterator();
+	Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 	while ( it.hasNext() )
 	    it.next().onTaskChange( newTask, mode );
     }
@@ -507,7 +594,7 @@ public class DataHandler {
      * @param newTask
      */
     private void notifyTaskAdd( Task newTask ) {
-	notifyTaskChange( newTask, OnTaskChangedListener.MODE_ADD );
+	notifyTaskChange( newTask, OnTasksChangedListener.MODE_ADD );
     }
 
     /**
@@ -515,7 +602,7 @@ public class DataHandler {
      * @param newTask
      */
     private void notifyTaskDelete( Task oldTask ) {
-	notifyTaskChange( oldTask, OnTaskChangedListener.MODE_DEL );
+	notifyTaskChange( oldTask, OnTasksChangedListener.MODE_DEL );
     }
 
     /**
@@ -523,16 +610,17 @@ public class DataHandler {
      * @param task
      */
     private void notifyTaskUpdate( Task task ) {
-	notifyTaskChange( task, OnTaskChangedListener.MODE_UPD );
+	notifyTaskChange( task, OnTasksChangedListener.MODE_UPD );
     }
 
     /**
      * 
      * @param listener
      */
-    public void addOnTaskChangeListener( OnTaskChangedListener listener ) {
-	String name = listener.getClass().getSimpleName();
-	if ( taskChangeListeners.containsKey( name ) ) return;
+    public void addOnTaskChangeListener( OnTasksChangedListener listener ) {
+	String name = listener.getClass().getName();
+
+	if ( taskChangeListeners.containsKey( name ) ) taskChangeListeners.remove( name );
 
 	taskChangeListeners.put( name, listener );
     }
@@ -547,6 +635,48 @@ public class DataHandler {
     // --------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------
 
+    /**
+     * Checks to see if a {@link StudentClass} is deletable. If the Studentclass is involved in a 
+     * specific, and open Task, the StudentClass cannot be deleted.
+     * 
+     * @param stdClass The {@link StudentClass} to check.
+     * @return true if deletable
+     */
+    public boolean isStudentClassDeletable( StudentClass stdClass ) {
+	boolean deletable = true;
+	
+	Iterator<Task> it = tasks.values().iterator();
+	while ( it.hasNext() ) {
+	    Task t = it.next();
+	    if ( t.getClasses().contains( stdClass.getName() ) ) {
+		deletable = false;
+	    }
+	}
+	
+	return deletable;
+    }
+    
+    /**
+     * Returns a list of strings containing the names of all the tasks the {@link StudentClass} is 
+     * involved in.
+     * 
+     * @param stdClass
+     * @return A list of names, or an empty list
+     */
+    public List<String> getStudentClassInvolvedInTask( StudentClass stdClass ) {
+	LinkedList<String> list = new LinkedList<String>();
+	
+	Iterator<Task> it = tasks.values().iterator();
+	while ( it.hasNext() ) {
+	    Task t = it.next();
+	    if ( t.getClasses().contains( stdClass.getName() ) ) {
+		list.add( t.getName() );
+	    }
+	}
+	
+	return list;
+    }
+    
     /**
      * 
      * @return
@@ -575,6 +705,11 @@ public class DataHandler {
 	notifyStudentClassAdd( stdClass );
     }
 
+    /**
+     * 
+     * @param name
+     * @return
+     */
     public boolean deleteStudentClass( String name ) {
 	if ( !stdClasses.containsKey( name ) ) return false;
 
@@ -630,8 +765,9 @@ public class DataHandler {
      * @param listener
      */
     public void addOnStudentClassChangeListener( OnStudentClassChangeListener listener ) {
-	String name = listener.getClass().getSimpleName();
-	if ( stdClassChangeListeners.containsKey( name ) ) return;
+	String name = listener.getClass().getName();
+
+	if ( stdClassChangeListeners.containsKey( name ) ) stdClassChangeListeners.remove( name );
 
 	stdClassChangeListeners.put( name, listener );
     }
@@ -655,13 +791,11 @@ public class DataHandler {
     }
 
     /**
-     * Loads a CSV file with semicolon separated entries. The file MUST have an
-     * header line, and the headers MUST be in this order: - Klasse - Født -
-     * Fullt navn
+     * Loads a CSV file with semicolon separated entries. The file MUST have an header line, and the headers MUST be in
+     * this order: - Klasse - Født - Fullt navn
      * 
      * @return A ready formatted StudentClass instance
-     * @throws IOException
-     *             if any I/O error occurs
+     * @throws IOException if any I/O error occurs
      */
     public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 	FileInputStream fis;
@@ -718,9 +852,7 @@ public class DataHandler {
 
     /**
      * 
-     * @param stdString
-     *            A new Student implementation from a semicolon separated
-     *            String.
+     * @param stdString A new Student implementation from a semicolon separated String.
      * @return
      */
     private static Student CreateStudentFromString( String stdString, String className, String datePattern ) {
@@ -880,13 +1012,11 @@ public class DataHandler {
 	sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
 	sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
 	/*
-	 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
-	 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
-	 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
+	 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP ); sb.append( std.getParent1Phone() ).append(
+	 * STUDENT_PROPERTY_SEP ); sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
 	 * 
-	 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
-	 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
-	 * sb.append( std.getParent2Mail() );
+	 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP ); sb.append( std.getParent2Phone() ).append(
+	 * STUDENT_PROPERTY_SEP ); sb.append( std.getParent2Mail() );
 	 */
 	return sb.toString();
     }
@@ -916,11 +1046,9 @@ public class DataHandler {
     }
 
     /**
-     * Loads every locally stored StudentClass. Every classfile MUST have the
-     * suffix STDCLASS_FILE_SUFFIX
+     * Loads every locally stored StudentClass. Every classfile MUST have the suffix STDCLASS_FILE_SUFFIX
      * 
-     * @param ctx
-     *            The Context used to access the local filesystem
+     * @param ctx The Context used to access the local filesystem
      */
     public static void LoadLocalStudentClasses( Context ctx ) {
 	if ( islocalStudentClassesLoaded ) return;
@@ -939,7 +1067,8 @@ public class DataHandler {
 
 		    if ( !list.isEmpty() ) {
 			stdClass.addAll( list );
-		    } else {
+		    }
+		    else {
 			FileInputStream fis = ctx.openFileInput( classFile );
 			BufferedReader reader = new BufferedReader( new InputStreamReader( fis ) );
 
@@ -1042,10 +1171,8 @@ public class DataHandler {
     private static String CreateStringFromStudentsInTasks( StudentTaskImpl std ) {
 	StringBuffer sb = new StringBuffer();
 	/*
-	 * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size =
-	 * std.getEngagedTasks().size() - 1; for ( int i = 0; i < size; i++ ) {
-	 * sb.append( std.getEngagedTasks().get( i ) ).append(
-	 * STUDENT_IN_TASK_DELIM ); }
+	 * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size = std.getEngagedTasks().size() - 1; for (
+	 * int i = 0; i < size; i++ ) { sb.append( std.getEngagedTasks().get( i ) ).append( STUDENT_IN_TASK_DELIM ); }
 	 * 
 	 * sb.append( std.getEngagedTasks().get( size ) );
 	 */
@@ -1123,7 +1250,7 @@ public class DataHandler {
      * @author GleVoll
      *
      */
-    public static interface OnTaskChangedListener extends OnChangeListener {
+    public static interface OnTasksChangedListener extends OnChangeListener {
 
 	public void onTaskChange( Task newTask, int mode );
     }

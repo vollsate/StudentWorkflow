@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow.sql;
 import java.util.Iterator;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.DBException;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
@@ -60,7 +61,7 @@ public class Database extends SQLiteOpenHelper {
 	StudentTbl.CreateTableSQL( db );
 	StudentClassTbl.CreateTable( db );
 	TaskTbl.CreateTable( db );
-	StudentInTaskTbl.CreateTable( db );
+	StudentTaskTbl.CreateTable( db );
 	PhoneTbl.CreateTableSQL( db );
 	ParentTbl.CreateTableSQL( db );
     }
@@ -71,7 +72,7 @@ public class Database extends SQLiteOpenHelper {
 	StudentTbl.DropTable( db );
 	StudentClassTbl.DropTable( db );
 	TaskTbl.DropTable( db );
-	StudentInTaskTbl.DropTable( db );
+	StudentTaskTbl.DropTable( db );
 	PhoneTbl.DropTable( db );
 	ParentTbl.DropTable( db );
     }
@@ -182,7 +183,7 @@ public class Database extends SQLiteOpenHelper {
 	boolean retVal = true;
 	try {
 	    TaskTbl.InsertTask( task, getWritableDatabase() );
-	    StudentInTaskTbl.InsertAll( task, getWritableDatabase() );
+	    StudentTaskTbl.InsertAll( task, getWritableDatabase() );
 	}
 	catch ( Exception e ) {
 	    Log.e( TAG, "Failure in adding task: " + task.getName(), e );
@@ -193,7 +194,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public boolean updateStudentTask( StudentTask stdTask ) {
-	if ( StudentInTaskTbl.Update( stdTask, getWritableDatabase() ) != 1 ) return false;
+	if ( StudentTaskTbl.Update( stdTask, getWritableDatabase() ) != 1 ) return false;
 
 	return true;
     }
@@ -237,7 +238,7 @@ public class Database extends SQLiteOpenHelper {
 
 	while ( it.hasNext() ) {
 	    StudentTask stdTask = it.next();
-	    StudentInTaskTbl.Update( stdTask, getWritableDatabase() );
+	    StudentTaskTbl.Update( stdTask, getWritableDatabase() );
 	}
     }
 
@@ -250,7 +251,24 @@ public class Database extends SQLiteOpenHelper {
 
 	while ( it.hasNext() ) {
 	    StudentTask stdTask = it.next();
-	    StudentInTaskTbl.Delete( stdTask, getWritableDatabase() );
+	    int rows = StudentTaskTbl.Delete( stdTask, getWritableDatabase() );
+	    if ( rows == 0 || rows > 1 ) {
+		if ( rows == 0 ) throw new DBException( "Unable to delete StudentTask: " + stdTask.toSimpleString() );
+		
+		if ( rows > 1 )	throw new DBException( "More than one row deleted when deleting StudentTask: " + stdTask.toSimpleString() );
+	    }
+	}
+    }
+    
+    public void insertStudentTasks( List<StudentTask> stdTasks ) {
+	Iterator<StudentTask> it = stdTasks.iterator();
+
+	while ( it.hasNext() ) {
+	    StudentTask stdTask = it.next();
+	    int rows = StudentTaskTbl.Insert( stdTask, getWritableDatabase() );
+	    if ( rows == 0 ) {
+		if ( rows == 0 ) throw new DBException( "Unable to insert StudentTask: " + stdTask.toSimpleString() );
+	    }
 	}
     }
 
@@ -344,7 +362,7 @@ public class Database extends SQLiteOpenHelper {
      * @return
      */
     public List<StudentTask> loadStudentsInTask( Task task ) {
-	return StudentInTaskTbl.LoadAll( getReadableDatabase(), task );
+	return StudentTaskTbl.LoadAllInTask( getReadableDatabase(), task );
     }
 
     /**
@@ -352,7 +370,7 @@ public class Database extends SQLiteOpenHelper {
      * @return
      */
     public List<StudentTask> loadAllStudentTask() {
-	return StudentInTaskTbl.LoadAll( getReadableDatabase() );
+	return StudentTaskTbl.LoadAll( getReadableDatabase() );
     }
 
 }

@@ -122,16 +122,7 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 	task.setDate( BaseActivity.GetDateFromString( dateStr ) );
 
 	// Show FragmentDialog to confirm all the students in the task
-	AddedStudentsToTaskFragment fragment = new AddedStudentsToTaskFragment();
-	Bundle args = new Bundle();
-	args.putSerializable( Task.EXTRA_TASKNAME, task );
-	fragment.setArguments( args );
-
-	fragment.setOnVerifiedListener( this );
-
-	FragmentTransaction ft = getFragmentManager().beginTransaction();
-	fragment.show( ft, getClass().getSimpleName() );
-
+	AddedStudentsToTaskFragment.StartFragment( task, this, getFragmentManager() );
 	return true;
     }
 
