@@ -14,6 +14,7 @@ import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
+import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import no.glv.android.stdntworkflow.sql.DBUtils;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -42,8 +43,9 @@ import android.widget.Toast;
 /**
  * Shows detailed information about a specific task.
  * 
- * The {@link Task} have information about itself and when it's due, and information about all the students currently
- * involved in the Task: pending, cancelled or handed in (finished).
+ * The {@link Task} have information about itself and when it's due, and
+ * information about all the students currently involved in the Task: pending,
+ * cancelled or handed in (finished).
  * 
  * @author GleVoll
  *
@@ -137,7 +139,8 @@ public class TaskActivity extends BaseTabActivity {
     }
 
     /**
-     * Adds a class to the {@link Task}. The fragment started will only show the available
+     * Adds a class to the {@link Task}. The fragment started will only show the
+     * available
      */
     private void addClass() {
 	Bundle args = new Bundle();
@@ -158,6 +161,9 @@ public class TaskActivity extends BaseTabActivity {
 
     /**
      * Will attempt to delete the Task and then finish the activity.
+     * 
+     * Will first show an {@link AlertDialog} that will ask to confirm the
+     * deletion. If so, the task is removed and the activity is finished.
      */
     private void deleteTask() {
 	AlertDialog.Builder builder = new AlertDialog.Builder( this );
@@ -169,16 +175,14 @@ public class TaskActivity extends BaseTabActivity {
 
 	    @Override
 	    public void onClick( DialogInterface dialog, int which ) {
-		if ( getDataHandler().deleteTask( mTask.getName() ) ) finish();
+		// Delete and finish
+		if ( getDataHandler().deleteTask( mTask.getName() ) ) {
+		    finish();
+		}
 	    }
 	} );
 
-	builder.setNegativeButton( R.string.cancel, new DialogInterface.OnClickListener() {
-
-	    @Override
-	    public void onClick( DialogInterface dialog, int which ) {
-	    }
-	} );
+	builder.setNegativeButton( R.string.cancel, null);
 
 	AlertDialog dialog = builder.create();
 	dialog.show();
@@ -220,7 +224,7 @@ public class TaskActivity extends BaseTabActivity {
     protected void onDestroy() {
 	super.onDestroy();
 
-	if ( mTask.isStudentsModified() ) {
+	if ( mTask.isModified() ) {
 	    getDataHandler().commitStudentsTasks( mTask );
 	}
 
@@ -231,24 +235,20 @@ public class TaskActivity extends BaseTabActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener,
-	    Task.OnStudentHandInListener, Task.OnStudentRemovedListener, Task.OnStudentAddListener {
+	    Task.OnTaskChangeListener {
 
 	private Task task;
 
 	@Override
 	public void onDestroy() {
 	    super.onDestroy();
-	    task.removeOnStudentRemovedListener( this );
-	    task.removeOnStudentHandInListener( this );
-	    task.removeOnStudentAddListener( this );
+	    task.removeOnTaskChangeListener( this );
 	}
 
 	@Override
 	public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 	    task = getTask();
-	    task.addOnStudentHandIndListener( this );
-	    task.addOnStudentRemovedListener( this );
-	    task.addOnStudentAddListener( this );
+	    task.addOnTaskChangeListener( this );
 
 	    getTextView( R.id.TV_task_header ).setText( getString( R.string.task_header ) );
 
@@ -298,17 +298,7 @@ public class TaskActivity extends BaseTabActivity {
 	}
 
 	@Override
-	public void onStudentHandIn( Student std ) {
-	    setCounters();
-	}
-
-	@Override
-	public void onStudentRemove( Student std ) {
-	    setCounters();
-	}
-
-	@Override
-	public void onStudentAdd( Student std ) {
+	public void onTaskChange( Task task, int mode ) {
 	    setCounters();
 	}
 
@@ -332,6 +322,7 @@ public class TaskActivity extends BaseTabActivity {
 	    task.setDate( cal.getTime() );
 
 	    getEditText( R.id.ET_task_date ).setText( BaseActivity.GetDateAsString( task.getDate() ) );
+	    task.notifyChange( OnTaskChangeListener.MODE_DATE_CHANGE );
 	}
 
 	@Override
@@ -355,8 +346,7 @@ public class TaskActivity extends BaseTabActivity {
 
 	    if ( adapter == null ) {
 		adapter = new StudentListAdapter( getActivity(), BuildStudentList( mTask ) );
-		mTask.addOnStudentRemovedListener( adapter );
-		mTask.addOnStudentAddListener( adapter );
+		mTask.addOnTaskChangeListener( adapter );
 	    }
 
 	    adapter.setTask( mTask );
@@ -366,16 +356,15 @@ public class TaskActivity extends BaseTabActivity {
 
 	@Override
 	public void onDestroy() {
-	    mTask.removeOnStudentRemovedListener( adapter );
-	    mTask.removeOnStudentAddListener( adapter );
+	    mTask.removeOnTaskChangeListener( adapter );
 
 	    super.onDestroy();
 	}
-	
+
 	@Override
 	public void onResume() {
 	    super.onResume();
-	    
+
 	    adapter.setTask( mTask );
 	}
 
@@ -384,7 +373,8 @@ public class TaskActivity extends BaseTabActivity {
 	    super.onSaveInstanceState( outState );
 	    outState.putString( Task.EXTRA_TASKNAME, mTask.getName() );
 
-	    // outState.putSerializable( StudentListAdapter.class.getSimpleName(), adapter );
+	    // outState.putSerializable(
+	    // StudentListAdapter.class.getSimpleName(), adapter );
 	}
 
 	@Override
@@ -405,7 +395,7 @@ public class TaskActivity extends BaseTabActivity {
      *
      */
     static class StudentListAdapter extends ArrayAdapter<StudentTask> implements Serializable,
-	    Task.OnStudentRemovedListener, Task.OnStudentAddListener {
+	    Task.OnTaskChangeListener {
 
 	/** TaskActivity.java */
 	private static final long serialVersionUID = 1L;
@@ -425,12 +415,7 @@ public class TaskActivity extends BaseTabActivity {
 	}
 
 	@Override
-	public void onStudentRemove( Student std ) {
-	    update();
-	}
-
-	@Override
-	public void onStudentAdd( Student std ) {
+	public void onTaskChange( Task task, int mode ) {
 	    update();
 	}
 
