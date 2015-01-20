@@ -15,6 +15,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * The main entry point into the database. This will keep only one instance, and
+ * throw an exception is somebody tries to instantiate the database more than once.
+ * 
+ * @author glevoll
+ *
+ */
 public class Database extends SQLiteOpenHelper {
 
     private static final String TAG = Database.class.getSimpleName();
@@ -36,16 +43,21 @@ public class Database extends SQLiteOpenHelper {
 	return instance;
     }
 
+    /**
+     * 
+     * @param context The context used to create the database.
+     * @throws IllegalStateException is database already instantiated
+     */
     public Database( Context context ) {
-	// public Database( Context context, String name, CursorFactory factory,
-	// int version, DatabaseErrorHandler errorHandler )
 	super( context, DB_NAME, null, DB_VERSION, null );
-	// runCreate();
+
+	if ( instance != null ) throw new IllegalStateException();
+	if ( instance == null ) instance = this;
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
     public void runCreate() {
 	SQLiteDatabase db = getWritableDatabase();
 
@@ -124,7 +136,11 @@ public class Database extends SQLiteOpenHelper {
 	return success;
     }
 
-    private void insertParent( Parent parent ) {
+    /**
+     * 
+     * @param parent
+     */
+    public void insertParent( Parent parent ) {
 	ParentTbl.InsertParent( parent, getWritableDatabase() );
 
 	Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
@@ -193,6 +209,11 @@ public class Database extends SQLiteOpenHelper {
 	return retVal;
     }
 
+    /**
+     * 
+     * @param stdTask
+     * @return
+     */
     public boolean updateStudentTask( StudentTask stdTask ) {
 	if ( StudentTaskTbl.Update( stdTask, getWritableDatabase() ) != 1 ) return false;
 
@@ -200,6 +221,8 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
+     * Loads all the tasks in the database. Does not differentiate between
+     * states.
      * 
      * @return
      */
@@ -254,12 +277,17 @@ public class Database extends SQLiteOpenHelper {
 	    int rows = StudentTaskTbl.Delete( stdTask, getWritableDatabase() );
 	    if ( rows == 0 || rows > 1 ) {
 		if ( rows == 0 ) throw new DBException( "Unable to delete StudentTask: " + stdTask.toSimpleString() );
-		
-		if ( rows > 1 )	throw new DBException( "More than one row deleted when deleting StudentTask: " + stdTask.toSimpleString() );
+
+		if ( rows > 1 ) throw new DBException( "More than one row deleted when deleting StudentTask: "
+			+ stdTask.toSimpleString() );
 	    }
 	}
     }
-    
+
+    /**
+     * 
+     * @param stdTasks
+     */
     public void insertStudentTasks( List<StudentTask> stdTasks ) {
 	Iterator<StudentTask> it = stdTasks.iterator();
 
@@ -336,6 +364,11 @@ public class Database extends SQLiteOpenHelper {
 	StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
     }
 
+    /**
+     * 
+     * @param stdClass
+     * @return
+     */
     public long deleteStdClass( StudentClass stdClass ) {
 	List<Student> list = stdClass.getStudents();
 	for ( int i = 0; i < list.size(); i++ ) {
