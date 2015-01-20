@@ -54,7 +54,7 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 
 	AddClassToTaskFragment fragment = new AddClassToTaskFragment();
 	Bundle args = new Bundle();
-	args.putSerializable( Task.EXTRA_TASKNAME, task );
+	args.putString( Task.EXTRA_TASKNAME, task.getName() );
 	ViewGroupAdapter.beginFragmentTransaction( getFragmentManager(), fragment, args, R.id.LL_newTask_classes );
     }
 
@@ -62,7 +62,7 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
     protected void onSaveInstanceState( Bundle outState ) {
 	super.onSaveInstanceState( outState );
 
-	outState.putSerializable( Task.EXTRA_TASKNAME, task );
+	outState.putString( Task.EXTRA_TASKNAME, task.getName() );
     }
 
     @Override
