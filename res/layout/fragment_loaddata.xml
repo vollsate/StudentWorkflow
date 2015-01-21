@@ -33,4 +33,11 @@
         android:layout_height="wrap_content"
         android:text="Last inn fra fil" />
 
+    <Button
+        style="@style/BTN"
+        android:id="@+id/BTN.loadXML"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Last inn fra XML" />
+
 </LinearLayout>

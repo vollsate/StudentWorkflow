@@ -74,9 +74,15 @@
     <string name="std_parent1_title">Foresatt 1</string>
     <string name="std_parent2_title">Foresatt 2</string>
     
+    <string name="action_stdinfo_update">Oppdater</string>
+    
     <string name="stdInfo.header.nameAdr">Navn og adresse</string>
     <string name="stdInfo.header.google">Google konto</string>
     <string name="stdInfo.google"><u>{google}</u></string>
+    
+    <string name="stdInfo.mail.desc">Send epost</string>
+    <string name="stdInfo.sms.desc">Send SMS</string>
+    <string name="stdInfo.call.desc">Ring</string>
     
     <!-- NEW TASK -->
 

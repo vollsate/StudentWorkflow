@@ -6,4 +6,7 @@
 
     <color name="textview_hover">#E0F0FF</color>
     <color name="textview_pressed">#CCE6FF</color>
+
+    
+    <color name="row_stdlist_pressed">#FFC266</color>
 </resources>
