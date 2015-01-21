@@ -37,4 +37,6 @@ public interface Parent {
 
     public Phone getPhone( int type );
 
+    public long getPhoneNumber( int type );
+
 }

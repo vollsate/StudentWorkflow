@@ -35,6 +35,7 @@ import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
@@ -129,13 +130,13 @@ public class DataHandler {
      * Any open tasks will be loaded, and every known {@link StudentClass} will
      * be loaded.
      * 
-     * @param ctx
+     * @param app
      * @return The singleton instance.
      */
-    public static final DataHandler Init( Context ctx ) {
+    public static final DataHandler Init( Application app ) {
 	if ( isInitiated ) return instance;
 
-	if ( instance == null ) instance = new DataHandler( new Database( ctx ) );
+	if ( instance == null ) instance = new DataHandler( new Database( app ), app );
 
 	instance.loadStudentClasses();
 	instance.loadTasks();
@@ -148,10 +149,10 @@ public class DataHandler {
      * 
      * @param db
      */
-    private DataHandler( Database db ) {
+    private DataHandler( Database db, Application app ) {
 	this.db = db;
 
-	sManager = new SettingsManager();
+	sManager = new SettingsManager( app );
 	initiateMaps();
 	initiateListeners();
     }

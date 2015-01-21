@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
      * Listeners for StudentClass change and Task change are added
      */
     private void init() {
-	dataHandler = DataHandler.Init( getApplicationContext() );
+	dataHandler = DataHandler.Init( getApplication() );
     }
 
     @Override

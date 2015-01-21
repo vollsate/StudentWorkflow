@@ -20,6 +20,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class StdInfoActivity extends Activity implements ActionBar.TabListener {
@@ -100,11 +102,70 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	return true;
     }
 
+    /**
+     * 
+     * @param v
+     */
+    public void makeCall( View v ) {
+	Phone p = null;
+	Parent parent = (Parent) v.getTag();
+
+	switch ( v.getId() ) {
+	    case R.id.IV_info_home_p1call:
+		p = parent.getPhone( Phone.HOME );
+		break;
+
+	    case R.id.IV_info_mob_p1call:
+		p = parent.getPhone( Phone.MOBIL );
+		break;
+
+	    case R.id.IV_info_work_p1call:
+		p = parent.getPhone( Phone.WORK );
+		break;
+
+	    case R.id.IV_info_home_p2call:
+		p = parent.getPhone( Phone.HOME );
+		break;
+
+	    case R.id.IV_info_mob_p2call:
+		p = parent.getPhone( Phone.MOBIL );
+		break;
+
+	    case R.id.IV_info_work_p2call:
+		p = parent.getPhone( Phone.WORK );
+		break;
+
+	    default:
+		break;
+	}
+
+	if ( p == null ) return;
+
+	Intent intent = BaseActivity.createCallIntent( p );
+	startActivity( intent );
+    }
+    
+    public void sendSMS( View v ) {
+	Parent p = (Parent) v.getTag();
+	
+	SmsManager manager = SmsManager.getDefault();
+	//manager.sendTextMessage( "" + p.getPhoneNumber( Phone.MOBIL ), null, "Test", null, null );
+	manager.sendTextMessage( "+4795109798", null, "Test", null, null );
+    }
+    
+    /**
+     * 
+     * @param v
+     */
+    public void sendMail( View v ) {
+	Parent p = (Parent) v.getTag();
+	
+	Intent i = BaseActivity.createMailIntent( new String[] { p.getMail() }, this );
+	startActivity( i );
+    }
+
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
-	// Handle action bar item clicks here. The action bar will
-	// automatically handle clicks on the Home/Up button, so long
-	// as you specify a parent activity in AndroidManifest.xml.
 	int id = item.getItemId();
 	if ( id == R.id.action_settings ) {
 	    return true;
@@ -249,8 +310,32 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 		editText = (EditText) rootView.findViewById( R.id.ET_info_p1Phone_home );
 		editText.setText( number );
 	    }
+
+	    setTagOnImages( parent, rootView );
 	}
 
+	/**
+	 * 
+	 * @param parent
+	 * @param rootView
+	 */
+	private void setTagOnImages( Parent parent, View rootView ) {
+	    ImageView img = (ImageView) rootView.findViewById( R.id.IV_info_home_p1call );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_mob_p1call );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_work_p1call );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_mob_p1msg );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_p1Mail );
+	    img.setTag( parent );
+
+	}
     }
 
     /**
@@ -280,6 +365,11 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	    return rootView;
 	}
 
+	/**
+	 * 
+	 * @param parent
+	 * @param rootView
+	 */
 	private void createPhoneView( Parent parent, View rootView ) {
 	    EditText editText = null;
 	    Phone phone = parent.getPhone( Phone.MOBIL );
@@ -305,6 +395,30 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 		editText = (EditText) rootView.findViewById( R.id.ET_info_p2Phone_home );
 		editText.setText( number );
 	    }
+
+	    setTagOnImages( parent, rootView );
+	}
+
+	/**
+	 * 
+	 * @param parent
+	 * @param rootView
+	 */
+	private void setTagOnImages( Parent parent, View rootView ) {
+	    ImageView img = (ImageView) rootView.findViewById( R.id.IV_info_home_p2call );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_mob_p2call );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_work_p2call );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_mob_p2msg );
+	    img.setTag( parent );
+
+	    img = (ImageView) rootView.findViewById( R.id.IV_info_p2Mail );
+	    img.setTag( parent );
 	}
     }
 
@@ -322,7 +436,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	    SettingsManager manager = DataHandler.GetInstance().getSettingsManager();
 
 	    TextView tv = (TextView) rootView.findViewById( R.id.TV_info_header );
-	    //tv.setText( bean.getIdent() );
+	    // tv.setText( bean.getIdent() );
 
 	    EditText editText = (EditText) rootView.findViewById( R.id.ET_info_firstName );
 	    editText.setText( bean.getFirstName() );
@@ -346,7 +460,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
 	    String msg = getResources().getString( R.string.stdInfo_google );
 	    msg = msg.replace( "{google}", bean.getIdent() + "@" + manager.getGoogleAccount() );
-	    tv.setPaintFlags(tv.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+	    tv.setPaintFlags( tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
 	    tv.setText( msg );
 
 	    return rootView;

@@ -10,13 +10,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -32,6 +35,30 @@ public class BaseActivity extends Activity {
 
     public BaseActivity() {
 	super();
+    }
+
+    /**
+     * 
+     * @param mails
+     * @return
+     */
+    public static Intent createMailIntent( String[] mails, Context ctx ) {
+	Intent intent = new Intent( Intent.ACTION_SEND );
+	intent.setType( "message/rfc822" );
+	intent.putExtra( Intent.EXTRA_EMAIL, mails );
+	intent.putExtra( Intent.EXTRA_SUBJECT, ctx.getResources().getString( R.string.stdlist_mail_subject ) );
+	intent.putExtra( Intent.EXTRA_TEXT, ctx.getResources().getString( R.string.stdlist_mail_body ) );
+
+	return intent;
+    }
+
+    public static Intent createCallIntent( Phone p ) {
+	String tel = "tel:" + p.getNumber();
+	
+	Intent intent = new Intent( Intent.ACTION_CALL );
+	intent.setData( Uri.parse( tel ) );
+	
+	return intent;
     }
 
     /**
@@ -166,7 +193,7 @@ public class BaseActivity extends Activity {
     /**
      * 
      * 
-     * @param date 
+     * @param date
      * @return The Date instance or null if some error occurs.
      */
     public static Date GetDateFromString( String date ) {

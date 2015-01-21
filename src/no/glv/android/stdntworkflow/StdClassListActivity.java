@@ -2,11 +2,14 @@ package no.glv.android.stdntworkflow;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import no.glv.android.stdntworkflow.SendMultiSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
 import no.glv.android.stdntworkflow.intrfc.Parent;
+import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Activity;
@@ -16,6 +19,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +38,7 @@ import android.widget.Toast;
  *
  */
 public class StdClassListActivity extends Activity implements OnClickListener, OnStudentChangedListener,
-	AdapterView.OnItemClickListener {
+	AdapterView.OnItemClickListener, OnVerifySendSMSListener {
 
     private static final String TAG = StdClassListActivity.class.getSimpleName();
 
@@ -135,9 +139,30 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 		sendMail();
 		return true;
 
+	    case R.id.menu_stdlist_sms:
+		sendSMS();
+		;
+		return true;
+
 	}
 
 	return super.onOptionsItemSelected( item );
+    }
+
+    public void verifySendSMS( List<Phone> pList, String msg ) {
+	SmsManager manager = SmsManager.getDefault();
+
+	for ( Phone p : pList ) {
+	    String num = "+47" + p.getNumber();
+	    manager.sendTextMessage( num, null, msg, null, null );
+	    //manager.sendTextMessage( "+4741613689", null, msg, null, null );
+	}
+	
+	Toast.makeText( this, "Sendt SMS til " + pList.size() + " foresatt(e)", Toast.LENGTH_LONG ).show();
+    }
+
+    public void sendSMS() {
+	SendMultiSMSDialog.StartFragment( stdClass, this, getFragmentManager() );
     }
 
     /**
@@ -157,16 +182,13 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 	}
 
 	String[] mails = new String[list.size()];
-	int i=0;
+	int i = 0;
 	for ( String name : list ) {
 	    mails[i++] = name;
 	}
 
-	Intent intent = new Intent( Intent.ACTION_SEND );
-	intent.setType( "message/rfc822" );
-	intent.putExtra( Intent.EXTRA_EMAIL, mails );
-	intent.putExtra( Intent.EXTRA_SUBJECT, getResources().getString( R.string.stdlist_mail_subject ) );
-	intent.putExtra( Intent.EXTRA_TEXT, getResources().getString( R.string.stdlist_mail_body ) );
+	Intent intent = BaseActivity.createMailIntent( mails, this );
+
 	try {
 	    startActivity( Intent.createChooser( intent, "Send mail..." ) );
 	}

@@ -1,7 +1,10 @@
 package no.glv.android.stdntworkflow;
 
+import java.net.URL;
+
 import no.glv.android.stdntworkflow.LoadableFilesFragment.OnDataLoadedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -44,8 +47,8 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 	int id = item.getItemId();
 
 	switch ( id ) {
-	default:
-	    break;
+	    default:
+		break;
 	}
 
 	if ( id == R.id.action_settings ) {
@@ -56,10 +59,26 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 
     @Override
     public void onClick( View v ) {
-	fragment = new LoadableFilesFragment();
-	fragment.listener = this;
-	FragmentTransaction ft = getFragmentManager().beginTransaction();
-	fragment.show( ft, getClass().getSimpleName() );
+	if ( v.getId() == R.id.BTN_loadFile ) {
+	    fragment = new LoadableFilesFragment();
+	    fragment.listener = this;
+	    FragmentTransaction ft = getFragmentManager().beginTransaction();
+	    fragment.show( ft, getClass().getSimpleName() );
+	    
+	    return;
+	}
+	
+	if ( v.getId() == R.id.BTN_loadXML ) {
+	    try {
+		URL url = new URL( DataHandler.GetInstance().getSettingsManager().getXMLDataURL() );
+
+		LoadXMLData xmlData = new LoadXMLData();
+		xmlData.execute( url );
+	    }
+	    catch (Exception e ) {
+		
+	    }
+	}
     }
 
     @Override
@@ -68,12 +87,11 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 	msg = msg.replace( "{class}", stdClass.getName() );
 
 	Toast.makeText( getApplicationContext(), msg, Toast.LENGTH_LONG ).show();
-	;
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
     public void startStudentListActivity() {
 	Intent intent = new Intent( this, StdClassListActivity.class );
 	BaseActivity.PutStudentClassExtra( stdClass.getName(), intent );
@@ -93,6 +111,9 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 	    View rootView = inflater.inflate( R.layout.fragment_loaddata, container, false );
 
 	    Button btn = (Button) rootView.findViewById( R.id.BTN_loadFile );
+	    btn.setOnClickListener( (OnClickListener) getActivity() );
+
+	    btn = (Button) rootView.findViewById( R.id.BTN_loadXML );
 	    btn.setOnClickListener( (OnClickListener) getActivity() );
 
 	    return rootView;

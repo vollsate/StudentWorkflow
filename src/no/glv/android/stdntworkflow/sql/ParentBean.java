@@ -91,6 +91,18 @@ public class ParentBean implements Parent {
 
 	return null;
     }
+    
+    @Override
+    public long getPhoneNumber( int type ) {
+	if ( phones == null ) return 0;
+	
+	for ( int i = 0; i < phones.size(); i++ ) {
+	    if ( phones.get( i ).getType() == type ) return phones.get( i ).getNumber();
+	}
+
+
+        return 0;
+    }
 
     @Override
     public String getStudentID() {
