@@ -50,31 +50,11 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter  {
 	    rootView.addView( row );
 	}
     }
+    
+    protected abstract View buildRow( final String name, int pos );    
 
     public abstract int getRowLayoutID();
 
-    /**
-     * 
-     * @param name
-     * @return
-     */
-    private View buildRow( final String name, int pos ) {
-	TextView textView = inflateTextView( getRowLayoutID() );
-	textView.setText( name );
-	textView.setTag( String.valueOf( pos ) );
-
-	textView.setOnClickListener( new View.OnClickListener() {
-
-	    @Override
-	    public void onClick( View v ) {
-		Intent intent = createIntent( name, getActivity() );
-		if ( intent != null )
-		    startActivity( intent );
-	    }
-	} );
-
-	return textView;
-    }
 
     /**
      * Get the intent for an onClick event in this Fragment.

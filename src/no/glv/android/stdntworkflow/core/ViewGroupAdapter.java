@@ -22,7 +22,6 @@ public abstract class ViewGroupAdapter extends Fragment {
     private ViewGroup rootView;
     private LayoutInflater inflater;
     protected ViewGroup container;
-    protected Bundle savedInstanceState;
     protected DataHandler dataHandler;
 
     /**
@@ -93,7 +92,6 @@ public abstract class ViewGroupAdapter extends Fragment {
     @Override
     public void onCreate( Bundle savedInstanceState ) {
 	super.onCreate( savedInstanceState );
-	this.savedInstanceState = savedInstanceState;
 	
         Log.i( TAG, "onCreate()" );
 
@@ -130,9 +128,13 @@ public abstract class ViewGroupAdapter extends Fragment {
 	catch ( Exception e ) {
 	    rootView = (ViewGroup) container.findViewById( getViewGruopLayoutID() );
 	}
+	
+	if ( rootView == null ) {
+	    throw new IllegalStateException( "Cannot find rootview for class: " + getClass().getSimpleName() );
+	}
+	
 	this.inflater = inflater;
 	this.container = container;
-	this.savedInstanceState = savedInstanceState;
 
 	doCreateView( rootView );
 	return rootView;
@@ -144,6 +146,10 @@ public abstract class ViewGroupAdapter extends Fragment {
      */
     protected ViewGroup getRootView() {
 	return rootView;
+    }
+    
+    public TextView getTextView(  int id ) {
+	return ( TextView ) rootView.findViewById( id );
     }
 
     /**

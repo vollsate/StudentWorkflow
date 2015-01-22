@@ -9,19 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import no.glv.android.stdntworkflow.intrfc.Task;
 
-public class InstalledClassesInTaskFragment extends InstalledDataFragment {
+/**
+ * 
+ * @author glevoll
+ *
+ */
+public class InstalledClassesInTaskFragment extends InstalledClassesFragment {
 
     public static final String PARAM_TASK = "task";
-
-    @Override
-    public void onCreate( Bundle savedInstanceState ) {
-	super.onCreate( savedInstanceState );
-    }
-
-    @Override
-    public int getViewGruopLayoutID() {
-	return R.layout.fr_installedclasses_new;
-    }
 
     @Override
     public List<String> getNames() {
@@ -31,15 +26,17 @@ public class InstalledClassesInTaskFragment extends InstalledDataFragment {
     }
 
     @Override
-    public int getRowLayoutID() {
-	return R.layout.row_installed_class;
-    }
-
-    @Override
     public Intent createIntent( String name, Context context ) {
 	return StdClassListActivity.CreateActivityIntent( name, getActivity() );
     }
 
+    /**
+     * 
+     * @param task
+     * @param manager
+     * @param replace
+     * @return
+     */
     public static InstalledClassesInTaskFragment NewInstance(Task task, FragmentManager manager, boolean replace) {
 	InstalledClassesInTaskFragment fragment = new InstalledClassesInTaskFragment();
 	Bundle args = new Bundle();
