@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+@SuppressWarnings( "deprecation" )
 public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 
     private static final String TAG = StdInfoActivity.class.getSimpleName();
@@ -149,8 +150,8 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	Parent p = (Parent) v.getTag();
 	
 	SmsManager manager = SmsManager.getDefault();
-	//manager.sendTextMessage( "" + p.getPhoneNumber( Phone.MOBIL ), null, "Test", null, null );
-	manager.sendTextMessage( "+4795109798", null, "Test", null, null );
+	manager.sendTextMessage( "" + p.getPhoneNumber( Phone.MOBIL ), null, "Test", null, null );
+	//manager.sendTextMessage( "+4795109798", null, "Test", null, null );
     }
     
     /**
