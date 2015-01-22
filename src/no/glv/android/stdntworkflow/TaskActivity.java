@@ -208,16 +208,16 @@ public class TaskActivity extends BaseTabActivity {
     }
 
     @Override
-    public void onTabSelected( ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
+    public void onTabSelected( @SuppressWarnings( "deprecation" ) ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
 	super.onTabSelected( tab, fragmentTransaction );
     }
 
     @Override
-    public void onTabUnselected( ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
+    public void onTabUnselected( @SuppressWarnings( "deprecation" ) ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
     }
 
     @Override
-    public void onTabReselected( ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
+    public void onTabReselected( @SuppressWarnings( "deprecation" ) ActionBar.Tab tab, FragmentTransaction fragmentTransaction ) {
     }
 
     @Override
