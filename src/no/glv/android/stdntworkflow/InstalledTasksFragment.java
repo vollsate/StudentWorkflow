@@ -3,7 +3,6 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.content.Intent;
