@@ -15,7 +15,6 @@ import org.xmlpull.v1.XmlPullParser;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.Toast;
 
 public class LoadXMLData extends AsyncTask<URL, Void, Void> {
     
