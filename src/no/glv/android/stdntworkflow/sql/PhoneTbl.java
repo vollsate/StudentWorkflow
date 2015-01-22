@@ -44,7 +44,7 @@ class PhoneTbl implements BaseColumns {
      * 
      * @param db Do not close!
      */
-    static void CreateTableSQL( SQLiteDatabase db ) {
+    static void CreateTable( SQLiteDatabase db ) {
 	String sql = "CREATE TABLE " + TBL_NAME + "("
 		+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 		+ COL_STDID + " TEXT NOT NULL, "
@@ -76,9 +76,6 @@ class PhoneTbl implements BaseColumns {
 	Log.d( TAG, "Executing SQL: " + sql );
 
 	try {
-	    // Cursor cursor = db.query( TBL_NAME, new String[] { COL_STDID,
-	    // COL_PARNETID }, null, new String[] { stdID, parentID }, null,
-	    // null, null, null );
 	    Cursor cursor = db.rawQuery( sql, new String[] { stdID, parentID } );
 	    cursor.moveToFirst();
 	    while ( !cursor.isAfterLast() ) {
@@ -111,7 +108,7 @@ class PhoneTbl implements BaseColumns {
      * @param std
      * @param db Is closed after use
      */
-    public static long InsertPhone( Phone phone, SQLiteDatabase db ) {
+    public static long Insert( Phone phone, SQLiteDatabase db ) {
 	ContentValues phoneValues = PhoneValues( phone );
 
 	long retVal = db.insert( TBL_NAME, null, phoneValues );
@@ -127,7 +124,7 @@ class PhoneTbl implements BaseColumns {
      * 
      * @return 1 if successful, 0 otherwise
      */
-    public static int UpdatePhone( Phone phone, SQLiteDatabase db ) {
+    public static int Update( Phone phone, SQLiteDatabase db ) {
 	String sqlFiler = COL_STDID + " = ?";
 	ContentValues cv = PhoneValues( phone );
 
@@ -142,7 +139,7 @@ class PhoneTbl implements BaseColumns {
      * @param ident
      * @param db
      */
-    public static int DeletePhone( String ident, SQLiteDatabase db ) {
+    public static int Delete( String ident, SQLiteDatabase db ) {
 	String sqlFilter = COL_STDID + " = ?";
 	int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
 	db.close();
