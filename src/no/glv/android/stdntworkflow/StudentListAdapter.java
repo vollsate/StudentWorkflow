@@ -2,13 +2,10 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.SettingsManager;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +27,7 @@ import android.widget.Toast;
 public class StudentListAdapter extends ArrayAdapter<Student> {
 
     /**  */
+    @SuppressWarnings( "unused" )
     private static final String TAG = StudentListAdapter.class.getSimpleName();
 
     private SettingsManager mSettingsManager;
