@@ -1,26 +1,20 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import android.R.color;
-import android.R.plurals;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
 import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.intrfc.Task;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 public class SendMultiSMSDialog extends DialogFragmentBase {
 
