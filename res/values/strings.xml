@@ -115,7 +115,7 @@
     <string name="task_class_added">Lagt til klasse: {class}</string>
     <string name="task_class_title">Legg til flere klasser ..</string>
 
-    <string-array name="subjects">
+    <string-array name="task_subjects">
         <item>Norsk</item>
         <item>Matematik</item>
         <item>Engelsk</item>
@@ -128,7 +128,7 @@
     </string-array>
     
     <!-- First item will have the id=0, .. -->
-    <string-array name="types">
+    <string-array name="task_types">
         <item>Underskrift hjemme</item>
         <item>Innføring</item>
         <item>Ukelekse</item>
