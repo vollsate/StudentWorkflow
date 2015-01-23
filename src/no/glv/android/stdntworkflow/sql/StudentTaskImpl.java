@@ -14,146 +14,147 @@ import no.glv.android.stdntworkflow.intrfc.StudentTask;
  */
 public class StudentTaskImpl implements StudentTask {
 
-    private Date handinDate;
-    private int mode;
+	private Date handinDate;
+	private int mode;
 
-    private int ID;
-    private String mTask;
-    private String mIdent;
-    private Student student;
+	private int ID;
+	private String mTask;
+	private String mIdent;
+	private Student student;
 
-    /**
-     * 
-     * @param mIdent
-     * @param taskName
-     * @param date
-     */
-    public StudentTaskImpl( String student, String task, Date date ) {
-	this( student, task, MODE_PENDING, date );
-    }
-
-    /**
-     * 
-     * @param mIdent
-     * @param taskName
-     * @param mode
-     * @param date
-     */
-    public StudentTaskImpl( String ident, String task, int mode, Date date ) {
-	this.mIdent = ident;
-	this.mTask = task;
-	this.mode = mode;
-	this.handinDate = date;
-    }
-
-    @Override
-    public int getID() {
-	return ID;
-    }
-
-    @Override
-    public void setID( int id ) {
-	this.ID = id;
-    }
-
-    /**
-     * 
-     * @param student
-     * @param task
-     * @param date
-     */
-    public StudentTaskImpl( Student student, String task, Date date ) {
-	this( student.getIdent(), task, date );
-	this.student = student;
-    }
-
-    /**
-     * 
-     * @param student
-     * @param task
-     * @param mode
-     * @param date
-     */
-    public StudentTaskImpl( Student student, String task, int mode, Date date ) {
-	this( student.getIdent(), task, mode, date );
-	this.student = student;
-    }
-
-    public String getIdent() {
-	return mIdent;
-    }
-
-    @Override
-    public String getTaskName() {
-	return mTask;
-    }
-
-    @Override
-    public Date getHandInDate() {
-	return handinDate;
-    }
-
-    @Override
-    public void handIn() {
-	handIn( MODE_HANDIN );
-    }
-
-    @Override
-    public void handIn( int mode ) {
-	this.mode = mode;
-
-	switch ( mode ) {
-	    case MODE_HANDIN:
-		if ( handinDate == null ) handinDate = new Date();
-		break;
-
-	    case MODE_PENDING:
-		handinDate = null;
-		break;
-
-	    default:
-		break;
+	/**
+	 * 
+	 * @param mIdent
+	 * @param taskName
+	 * @param date
+	 */
+	public StudentTaskImpl( String student, String task, Date date ) {
+		this( student, task, MODE_PENDING, date );
 	}
-    }
 
-    @Override
-    public int getMode() {
-	return mode;
-    }
+	/**
+	 * 
+	 * @param mIdent
+	 * @param taskName
+	 * @param mode
+	 * @param date
+	 */
+	public StudentTaskImpl( String ident, String task, int mode, Date date ) {
+		this.mIdent = ident;
+		this.mTask = task;
+		this.mode = mode;
+		this.handinDate = date;
+	}
 
-    @Override
-    public boolean isHandedIn() {
-	return ( handinDate != null );
-    }
+	@Override
+	public int getID() {
+		return ID;
+	}
 
-    @Override
-    public Student getStudent() {
-	return student;
-    }
+	@Override
+	public void setID( int id ) {
+		this.ID = id;
+	}
 
-    @Override
-    public void setStudent( Student std ) {
-	this.student = std;
-    }
+	/**
+	 * 
+	 * @param student
+	 * @param task
+	 * @param date
+	 */
+	public StudentTaskImpl( Student student, String task, Date date ) {
+		this( student.getIdent(), task, date );
+		this.student = student;
+	}
 
-    @Override
-    public void setTaskName( String name ) {
-	this.mTask = name;
-    }
+	/**
+	 * 
+	 * @param student
+	 * @param task
+	 * @param mode
+	 * @param date
+	 */
+	public StudentTaskImpl( Student student, String task, int mode, Date date ) {
+		this( student.getIdent(), task, mode, date );
+		this.student = student;
+	}
 
-    @Override
-    public String toString() {
-	StringBuffer sb = new StringBuffer();
+	public String getIdent() {
+		return mIdent;
+	}
 
-	sb.append( "_ID=" ).append( this.ID ).append( ", " );
-	sb.append( "task=" ).append( this.mTask ).append( ", " );
-	sb.append( "ident=" ).append( this.mIdent ).append( ", " );
-	sb.append( "mode=" ).append( this.mode );
+	@Override
+	public String getTaskName() {
+		return mTask;
+	}
 
-	return sb.toString();
-    }
+	@Override
+	public Date getHandInDate() {
+		return handinDate;
+	}
 
-    public String toSimpleString() {
-	return "_ID=" + ID + ", ident=" + mIdent;
-    }
+	@Override
+	public void handIn() {
+		handIn( MODE_HANDIN );
+	}
+
+	@Override
+	public void handIn( int mode ) {
+		this.mode = mode;
+
+		switch ( mode ) {
+			case MODE_HANDIN:
+				if ( handinDate == null )
+					handinDate = new Date();
+				break;
+
+			case MODE_PENDING:
+				handinDate = null;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public int getMode() {
+		return mode;
+	}
+
+	@Override
+	public boolean isHandedIn() {
+		return ( handinDate != null );
+	}
+
+	@Override
+	public Student getStudent() {
+		return student;
+	}
+
+	@Override
+	public void setStudent( Student std ) {
+		this.student = std;
+	}
+
+	@Override
+	public void setTaskName( String name ) {
+		this.mTask = name;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append( "_ID=" ).append( this.ID ).append( ", " );
+		sb.append( "task=" ).append( this.mTask ).append( ", " );
+		sb.append( "ident=" ).append( this.mIdent ).append( ", " );
+		sb.append( "mode=" ).append( this.mode );
+
+		return sb.toString();
+	}
+
+	public String toSimpleString() {
+		return "_ID=" + ID + ", ident=" + mIdent;
+	}
 }

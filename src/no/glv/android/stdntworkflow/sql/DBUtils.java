@@ -11,52 +11,53 @@ import android.util.Log;
 
 public class DBUtils implements BaseValues {
 
-    private static final String TAG = DBUtils.class.getSimpleName();
-    private static final SimpleDateFormat sdf = new SimpleDateFormat( DATE_PATTERN, Locale.getDefault() );
+	private static final String TAG = DBUtils.class.getSimpleName();
+	private static final SimpleDateFormat sdf = new SimpleDateFormat( DATE_PATTERN, Locale.getDefault() );
 
-    private DBUtils() {
-    }
-
-    /**
-     * 
-     * @param sql
-     * @param db
-     *            Is NOT closed!
-     * @return
-     */
-    public static final boolean ExecuteSQL( String sql, SQLiteDatabase db ) {
-	Log.v( TAG, "Executing SQL: " + sql );
-	try {
-	    db.execSQL( sql );
-	}
-	catch ( RuntimeException e ) {
-	    Log.e( TAG, "Error executing SQL: " + sql, e );
-	    return false;
+	private DBUtils() {
 	}
 
-	return true;
-    }
+	/**
+	 * 
+	 * @param sql
+	 * @param db
+	 *            Is NOT closed!
+	 * @return
+	 */
+	public static final boolean ExecuteSQL( String sql, SQLiteDatabase db ) {
+		Log.v( TAG, "Executing SQL: " + sql );
+		try {
+			db.execSQL( sql );
+		}
+		catch ( RuntimeException e ) {
+			Log.e( TAG, "Error executing SQL: " + sql, e );
+			return false;
+		}
 
-    /**
-     * 
-     * @param date
-     * @return
-     */
-    public static String ConvertToString( Date date ) {
-	return sdf.format( date );
-    }
-
-    public static Date ConvertStringToDate( String date, String pattern ) {
-	SimpleDateFormat simpleDF = sdf;
-	if ( pattern != null ) simpleDF = new SimpleDateFormat( pattern, Locale.getDefault() );
-
-	try {
-	    return simpleDF.parse( date );
+		return true;
 	}
-	catch ( ParseException e ) {
-	    Log.e( TAG, "Error parsing date: " + date, e );
-	    return null;
+
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String ConvertToString( Date date ) {
+		return sdf.format( date );
 	}
-    }
+
+	public static Date ConvertStringToDate( String date, String pattern ) {
+		SimpleDateFormat simpleDF = sdf;
+		if ( pattern != null )
+			simpleDF = new SimpleDateFormat( pattern, Locale.getDefault() );
+
+		try {
+			return simpleDF.parse( date );
+		}
+		catch ( ParseException e ) {
+			Log.e( TAG, "Error parsing date: " + date, e );
+			return null;
+		}
+	}
 
 }
