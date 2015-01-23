@@ -4,52 +4,52 @@ import java.util.List;
 
 public interface Student {
 
-    public static final String EXTRA_IDENT = BaseValues.EXTRA_BASEPARAM + "Ident";
-    public static final String EXTRA_STUDENTNAME = BaseValues.EXTRA_BASEPARAM + "StudentName";
+	public static final String EXTRA_IDENT = BaseValues.EXTRA_BASEPARAM + "Ident";
+	public static final String EXTRA_STUDENTNAME = BaseValues.EXTRA_BASEPARAM + "StudentName";
 
-    public String getFirstName();
+	public String getFirstName();
 
-    public void setFirstName( String fName );
+	public void setFirstName( String fName );
 
-    public String getBirthYear();
+	public String getBirthYear();
 
-    public String getLastName();
+	public String getLastName();
 
-    public void setLastName( String lName );
+	public void setLastName( String lName );
 
-    public String getBirth();
+	public String getBirth();
 
-    public void setBirth( String val );
+	public void setBirth( String val );
 
-    public String getAdress();
+	public String getAdress();
 
-    public void setAdress( String val );
+	public void setAdress( String val );
 
-    public String getPostalCode();
+	public String getPostalCode();
 
-    public void setPostalCode( String val );
+	public void setPostalCode( String val );
 
-    public String getPhone();
+	public String getPhone();
 
-    public void setPhone( String val );
+	public void setPhone( String val );
 
-    public String getGrade();
+	public String getGrade();
 
-    public void setGrade( String val );
+	public void setGrade( String val );
 
-    public String getStudentClass();
+	public String getStudentClass();
 
-    public void setStudentClass( String val );
+	public void setStudentClass( String val );
 
-    /** @return The unique identity used on It's Learning and Google */
-    public String getIdent();
+	/** @return The unique identity used on It's Learning and Google */
+	public String getIdent();
 
-    public void setIdent( String val );
+	public void setIdent( String val );
 
-    public List<Parent> getParents();
+	public List<Parent> getParents();
 
-    public void addParent( Parent parent );
+	public void addParent( Parent parent );
 
-    public void addParents( List<Parent> parents );
+	public void addParents( List<Parent> parents );
 
 }

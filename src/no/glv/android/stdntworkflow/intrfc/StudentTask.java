@@ -3,47 +3,49 @@ package no.glv.android.stdntworkflow.intrfc;
 import java.util.Date;
 
 /**
- * Represents the bridge between the {@link Task} and the {@link Student}. A StudentTask will
- * keep track of weather the student has executed the task, and at what date the task was executed.
+ * Represents the bridge between the {@link Task} and the {@link Student}. A
+ * StudentTask will
+ * keep track of weather the student has executed the task, and at what date the
+ * task was executed.
  * 
  * @author GleVoll
  *
  */
 public interface StudentTask {
-    
-    /** Hand in of a Task */
-    public static final int MODE_HANDIN = 0;
-    /** The task is not yet finished */
-    public static final int MODE_PENDING = 2;
-    /** The task has expired */
-    public static final int MODE_EXPIRED = 4;
-    /** The student handed in the task later than the expiration date */
-    public static final int MODE_LATE = 8;
 
-    public int getID();
-    
-    public void setID( int id );
-    
-    public String getIdent();
+	/** Hand in of a Task */
+	public static final int MODE_HANDIN = 0;
+	/** The task is not yet finished */
+	public static final int MODE_PENDING = 2;
+	/** The task has expired */
+	public static final int MODE_EXPIRED = 4;
+	/** The student handed in the task later than the expiration date */
+	public static final int MODE_LATE = 8;
 
-    public String getTaskName();
+	public int getID();
 
-    public Date getHandInDate();
+	public void setID( int id );
 
-    public boolean isHandedIn();
+	public String getIdent();
 
-    public void handIn();
+	public String getTaskName();
 
-    public void handIn( int mode );
+	public Date getHandInDate();
 
-    public int getMode();
+	public boolean isHandedIn();
 
-    public Student getStudent();
+	public void handIn();
 
-    public void setStudent( Student std );
+	public void handIn( int mode );
 
-    public void setTaskName( String name );
+	public int getMode();
 
-    public String toSimpleString();
+	public Student getStudent();
+
+	public void setStudent( Student std );
+
+	public void setTaskName( String name );
+
+	public String toSimpleString();
 
 }
