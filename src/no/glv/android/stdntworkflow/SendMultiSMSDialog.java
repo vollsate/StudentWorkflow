@@ -18,102 +18,103 @@ import android.widget.EditText;
 
 public class SendMultiSMSDialog extends DialogFragmentBase {
 
-    OnVerifySendSMSListener listener;
-    StudentClass stdClass;
+	OnVerifySendSMSListener listener;
+	StudentClass stdClass;
 
-    public SendMultiSMSDialog() {
-    }
+	public SendMultiSMSDialog() {
+	}
 
-    @Override
-    protected void buildView( View rootView ) {
-	buildButton( rootView );
-    }
+	@Override
+	protected void buildView( View rootView ) {
+		buildButton( rootView );
+	}
 
-    /**
-     * 
-     * @param rootView
-     */
-    private void buildButton( View rootView ) {
-	final Fragment fr = this;
+	/**
+	 * 
+	 * @param rootView
+	 */
+	private void buildButton( View rootView ) {
+		final Fragment fr = this;
 
-	Button btn = (Button) rootView.findViewById( R.id.BTN_stdlist_sendSMS );
-	btn.setOnClickListener( new View.OnClickListener() {
+		Button btn = (Button) rootView.findViewById( R.id.BTN_stdlist_sendSMS );
+		btn.setOnClickListener( new View.OnClickListener() {
 
-	    @Override
-	    public void onClick( View view ) {
-		boolean p1, p2 = false;
-		
-		View v = view.getRootView();
-		
-		CheckBox cb = (CheckBox) v.findViewById( R.id.checkBox1 );
-		p1 = cb.isChecked();
-		cb = (CheckBox) v.findViewById( R.id.checkBox2 );
-		p2 = cb.isChecked();
+			@Override
+			public void onClick( View view ) {
+				boolean p1, p2 = false;
 
-		List<Phone> pList = new LinkedList<Phone>();
+				View v = view.getRootView();
 
-		for ( Student s : stdClass.getStudents() ) {
-		    int i = 0;
-		    if ( s.getParents() == null || s.getParents().size() == i ) continue;
-		    
-		    if ( p1 && s.getParents().size() >= ++i ) {
-			Parent par = s.getParents().get( i-1 );
-			long num = par.getPhoneNumber( Phone.MOBIL );
-			if ( num != 0 ) {
-			    pList.add( par.getPhone( Phone.MOBIL ) );
+				CheckBox cb = (CheckBox) v.findViewById( R.id.checkBox1 );
+				p1 = cb.isChecked();
+				cb = (CheckBox) v.findViewById( R.id.checkBox2 );
+				p2 = cb.isChecked();
+
+				List<Phone> pList = new LinkedList<Phone>();
+
+				for ( Student s : stdClass.getStudents() ) {
+					int i = 0;
+					if ( s.getParents() == null || s.getParents().size() == i )
+						continue;
+
+					if ( p1 && s.getParents().size() >= ++i ) {
+						Parent par = s.getParents().get( i - 1 );
+						long num = par.getPhoneNumber( Phone.MOBIL );
+						if ( num != 0 ) {
+							pList.add( par.getPhone( Phone.MOBIL ) );
+						}
+					}
+
+					if ( p2 && s.getParents().size() >= ++i ) {
+						Parent par = s.getParents().get( i - 1 );
+						long num = par.getPhoneNumber( Phone.MOBIL );
+						if ( num != 0 ) {
+							pList.add( par.getPhone( Phone.MOBIL ) );
+						}
+					}
+				}
+
+				EditText et = (EditText) v.findViewById( R.id.ET_stdList_sms );
+				listener.verifySendSMS( pList, et.getText().toString() );
+
+				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 			}
-		    }
-		    
-		    if ( p2 && s.getParents().size() >= ++i ) {
-			Parent par = s.getParents().get( i-1 );
-			long num = par.getPhoneNumber( Phone.MOBIL );
-			if ( num != 0 ) {
-			    pList.add( par.getPhone( Phone.MOBIL ) );
+		} );
+
+		btn = (Button) rootView.findViewById( R.id.BTN_stdList_cancelSMS );
+		btn.setOnClickListener( new View.OnClickListener() {
+
+			@Override
+			public void onClick( View v ) {
+				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
 			}
-		    }
-		}
-		
-		EditText et = (EditText) v.findViewById( R.id.ET_stdList_sms );
-		listener.verifySendSMS( pList, et.getText().toString() );
-		
-		fr.getFragmentManager().beginTransaction().remove( fr ).commit();
-	    }
-	} );
+		} );
+	}
 
-	btn = (Button) rootView.findViewById( R.id.BTN_stdList_cancelSMS );
-	btn.setOnClickListener( new View.OnClickListener() {
+	@Override
+	protected int getRootViewID() {
+		return R.layout.dialog_sms;
+	}
 
-	    @Override
-	    public void onClick( View v ) {
-		fr.getFragmentManager().beginTransaction().remove( fr ).commit();
-	    }
-	} );
-    }
+	@Override
+	protected String getTitle() {
+		return "Send SMS til foresatt(e)";
+	}
 
-    @Override
-    protected int getRootViewID() {
-	return R.layout.dialog_sms;
-    }
+	public static SendMultiSMSDialog StartFragment( StudentClass stdClass, OnVerifySendSMSListener listener,
+			FragmentManager manager ) {
+		SendMultiSMSDialog fragment = new SendMultiSMSDialog();
+		fragment.listener = listener;
+		fragment.stdClass = stdClass;
 
-    @Override
-    protected String getTitle() {
-	return "Send SMS til foresatt(e)";
-    }
+		FragmentTransaction ft = manager.beginTransaction();
+		fragment.show( ft, fragment.getClass().getSimpleName() );
 
-    public static SendMultiSMSDialog StartFragment( StudentClass stdClass, OnVerifySendSMSListener listener,
-	    FragmentManager manager ) {
-	SendMultiSMSDialog fragment = new SendMultiSMSDialog();
-	fragment.listener = listener;
-	fragment.stdClass = stdClass;
+		return fragment;
+	}
 
-	FragmentTransaction ft = manager.beginTransaction();
-	fragment.show( ft, fragment.getClass().getSimpleName() );
-
-	return fragment;
-    }
-
-    public static interface OnVerifySendSMSListener {
-	public void verifySendSMS( List<Phone> p, String msg );
-    }
+	public static interface OnVerifySendSMSListener {
+		public void verifySendSMS( List<Phone> p, String msg );
+	}
 
 }

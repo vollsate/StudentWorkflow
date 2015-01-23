@@ -24,113 +24,114 @@ import android.widget.TextView;
  */
 public class AddClassToNewTaskAdapter extends ArrayAdapter<String> {
 
-    /**  */
-    private static final String TAG = AddClassToNewTaskAdapter.class.getSimpleName();
+	/**  */
+	private static final String TAG = AddClassToNewTaskAdapter.class.getSimpleName();
 
-    private List<String> mClasses;
+	private List<String> mClasses;
 
-    private Task task;
+	private Task task;
 
-    /**
-     * 
-     * @param context
-     * @param resource
-     */
-    private AddClassToNewTaskAdapter( Context context, int resource ) {
-	super( context, resource );
-    }
-
-    /**
-     * 
-     * @param context
-     * @param resource
-     * @param objects
-     */
-    public AddClassToNewTaskAdapter( Context context, int resource, List<String> objects ) {
-	super( context, resource, objects );
-	mClasses = objects;
-    }
-
-    /**
-     * 
-     * @param task
-     */
-    public void setTask( Task task ) {
-	this.task = task;
-    }
-
-    /**
+	/**
 	 * 
+	 * @param context
+	 * @param resource
 	 */
-    public View getView( int position, View convertView, ViewGroup parent ) {
-	if ( convertView == null ) {
-	    convertView = createView( getContext(), parent, position );
+	private AddClassToNewTaskAdapter( Context context, int resource ) {
+		super( context, resource );
 	}
 
-	ViewHolder holder = (ViewHolder) convertView.getTag();
-	holder.textView.setText( mClasses.get( position ).toString() );
-	holder.ID = position;
+	/**
+	 * 
+	 * @param context
+	 * @param resource
+	 * @param objects
+	 */
+	public AddClassToNewTaskAdapter( Context context, int resource, List<String> objects ) {
+		super( context, resource, objects );
+		mClasses = objects;
+	}
 
-	return convertView;
-    }
+	/**
+	 * 
+	 * @param task
+	 */
+	public void setTask( Task task ) {
+		this.task = task;
+	}
 
-    /**
-     * 
-     * @param context
-     * @param parent
-     * @param position
-     * @return
-     */
-    private View createView( Context context, ViewGroup parent, int position ) {
-	LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-	View myView = inflater.inflate( R.layout.row_newtask_addclasses, parent, false );
-	ViewHolder holder = new ViewHolder();
+	/**
+	 * 
+	 */
+	public View getView( int position, View convertView, ViewGroup parent ) {
+		if ( convertView == null ) {
+			convertView = createView( getContext(), parent, position );
+		}
 
-	TextView textView = (TextView) myView.findViewById( R.id.TV_newTask_className );
-	CheckBox chBox = (CheckBox) myView.findViewById( R.id.CB_newTask_addClass );
+		ViewHolder holder = (ViewHolder) convertView.getTag();
+		holder.textView.setText( mClasses.get( position ).toString() );
+		holder.ID = position;
 
-	// Setting the StudentClassname as a TAG for this view
-	textView.setTag( mClasses.get( position ) );
-	textView.setOnClickListener( new View.OnClickListener() {
+		return convertView;
+	}
 
-	    @Override
-	    public void onClick( View v ) {
-		Log.d( TAG, "" + v.getTag() );
-	    }
-	} );
+	/**
+	 * 
+	 * @param context
+	 * @param parent
+	 * @param position
+	 * @return
+	 */
+	private View createView( Context context, ViewGroup parent, int position ) {
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+		View myView = inflater.inflate( R.layout.row_newtask_addclasses, parent, false );
+		ViewHolder holder = new ViewHolder();
 
-	chBox.setTag( mClasses.get( position ) );
-	chBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
+		TextView textView = (TextView) myView.findViewById( R.id.TV_newTask_className );
+		CheckBox chBox = (CheckBox) myView.findViewById( R.id.CB_newTask_addClass );
 
-	    @Override
-	    public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-		String name = (String) buttonView.getTag();
-		StudentClass stdcClass = DataHandler.GetInstance().getStudentClass( name );
+		// Setting the StudentClassname as a TAG for this view
+		textView.setTag( mClasses.get( position ) );
+		textView.setOnClickListener( new View.OnClickListener() {
 
-		if ( isChecked ) task.addClass( stdcClass );
-		else
-		    task.removeClass( stdcClass );
-	    }
-	} );
+			@Override
+			public void onClick( View v ) {
+				Log.d( TAG, "" + v.getTag() );
+			}
+		} );
 
-	holder.textView = textView;
-	holder.checkBox = chBox;
-	holder.ID = position;
-	myView.setTag( holder );
+		chBox.setTag( mClasses.get( position ) );
+		chBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
 
-	return myView;
-    }
+			@Override
+			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+				String name = (String) buttonView.getTag();
+				StudentClass stdcClass = DataHandler.GetInstance().getStudentClass( name );
 
-    /**
-     * 
-     * @author GleVoll
-     *
-     */
-    static class ViewHolder {
+				if ( isChecked )
+					task.addClass( stdcClass );
+				else
+					task.removeClass( stdcClass );
+			}
+		} );
 
-	TextView textView;
-	CheckBox checkBox;
-	int ID;
+		holder.textView = textView;
+		holder.checkBox = chBox;
+		holder.ID = position;
+		myView.setTag( holder );
 
-    }
+		return myView;
+	}
+
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
+	static class ViewHolder {
+
+		TextView textView;
+		CheckBox checkBox;
+		int ID;
+
+	}
 }

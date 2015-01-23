@@ -34,215 +34,219 @@ import android.widget.Toast;
  */
 public class AddStudentsToTaskFragment extends DialogFragmentBase {
 
-    Task mTask;
-    ListView listView;
+	Task mTask;
+	ListView listView;
 
-    /**
-     * 
-     * @param savedInstanceState
-     * @return
-     */
-    Task getTask( Bundle savedInstanceState) {
-	if ( mTask != null ) return mTask;
-	
-	String name = null;
-	if ( savedInstanceState != null ) {
-	    name = savedInstanceState.getString( Task.EXTRA_TASKNAME ); 
-	}
-	else {
-	    name = getArguments().getString( Task.EXTRA_TASKNAME );
-	}
+	/**
+	 * 
+	 * @param savedInstanceState
+	 * @return
+	 */
+	Task getTask( Bundle savedInstanceState ) {
+		if ( mTask != null )
+			return mTask;
 
-	mTask = DataHandler.GetInstance().getTask( name );
-	return mTask;
-    }
-
-    @Override
-    protected int getRootViewID() {
-	return R.layout.fragment_students_newtask;
-    }
-
-    @Override
-    protected String getTitle() {
-	return getResources().getString( R.string.newTask_addStudents_msg );
-    }
-
-    @Override
-    public void onCreate( Bundle savedInstanceState ) {
-	super.onCreate( savedInstanceState );
-	getTask( savedInstanceState );
-    }
-
-    @Override
-    public void onSaveInstanceState( Bundle outState ) {
-	super.onSaveInstanceState( outState );
-	outState.putString( Task.EXTRA_TASKNAME, mTask.getName() );
-    }
-
-    @Override
-    public void buildView( View rootView ) {
-	buildAdapter( rootView );
-	buildButton( rootView );
-    }
-
-    /**
-     * 
-     * @param rootView
-     */
-    protected void buildButton( View rootView ) {
-	final Fragment fr = this;
-
-	Button btn = (Button) rootView.findViewById( R.id.BTN_newTask_verifyStudents );
-	btn.setOnClickListener( new View.OnClickListener() {
-
-	    @Override
-	    public void onClick( View v ) {
-		getFragmentManager().beginTransaction().remove( fr ).commit();
-
-		List<StudentTask> stdTasks = mTask.getAddedStudents();
-		Iterator<StudentTask> it = stdTasks.iterator();
-		StringBuffer sb = new StringBuffer();
-		String msg = fr.getActivity().getResources().getString( R.string.task_student_added );
-
-		while ( it.hasNext() ) {
-		    Student std = it.next().getStudent();
-		    String stdName = std.getLastName() + ", " + std.getFirstName();
-		    
-		    sb.append( stdName ).append( "\n" );
+		String name = null;
+		if ( savedInstanceState != null ) {
+			name = savedInstanceState.getString( Task.EXTRA_TASKNAME );
 		}
-		msg = msg.replace( "{std}", sb.toString() );
+		else {
+			name = getArguments().getString( Task.EXTRA_TASKNAME );
+		}
 
-		Toast t = Toast.makeText( fr.getActivity(), msg, Toast.LENGTH_LONG );
-		DataHandler.GetInstance().commitStudentsTasks( mTask );
-		t.show();
-	    }
-	} );
-
-	btn = (Button) rootView.findViewById( R.id.BTN_newTask_cancelStudents );
-	btn.setOnClickListener( new View.OnClickListener() {
-
-	    @Override
-	    public void onClick( View v ) {
-		getFragmentManager().beginTransaction().remove( fr ).commit();
-	    }
-	} );
-    }
-
-    /**
-     * 
-     * @param rootView
-     */
-    protected void buildAdapter( View rootView ) {
-	if ( listView != null ) return;
-
-	List<Student> students = createStudentList();
-
-	listView = (ListView) rootView.findViewById( R.id.LV_newTask_addedStudents );
-	AddedStudentsAdapter adapter = new AddedStudentsAdapter( getActivity(), R.id.LV_newTask_addedStudents, students );
-	adapter.setTask( mTask );
-	listView.setAdapter( adapter );
-    }
-
-    /**
-     * 
-     * @return
-     */
-    protected List<Student> createStudentList() {
-	List<String> mClasses = mTask.getClasses();
-	List<Student> students = new ArrayList<Student>();
-
-	Iterator<String> it = mClasses.iterator();
-	while ( it.hasNext() ) {
-	    String className = it.next();
-	    StudentClass stdClass = DataHandler.GetInstance().getStudentClass( className );
-	    
-	    Iterator<Student> itStd = stdClass.getStudents().iterator();
-	    while ( itStd.hasNext() ) {
-		Student std = itStd.next();
-		if ( mTask.hasStudent( std.getIdent() ) ) continue;
-		
-		students.add( std );
-	    }
+		mTask = DataHandler.GetInstance().getTask( name );
+		return mTask;
 	}
 
-	return students;
-    }
-
-    /**
-     * 
-     * @author GleVoll
-     *
-     */
-    public static class AddedStudentsAdapter extends ArrayAdapter<Student> implements OnCheckedChangeListener {
-
-	private Task task;
-
-	public AddedStudentsAdapter( Context context, int resource, List<Student> objects ) {
-	    super( context, resource, objects );
+	@Override
+	protected int getRootViewID() {
+		return R.layout.fragment_students_newtask;
 	}
 
-	void setTask( Task task ) {
-	    this.task = task;
+	@Override
+	protected String getTitle() {
+		return getResources().getString( R.string.newTask_addStudents_msg );
+	}
+
+	@Override
+	public void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+		getTask( savedInstanceState );
+	}
+
+	@Override
+	public void onSaveInstanceState( Bundle outState ) {
+		super.onSaveInstanceState( outState );
+		outState.putString( Task.EXTRA_TASKNAME, mTask.getName() );
+	}
+
+	@Override
+	public void buildView( View rootView ) {
+		buildAdapter( rootView );
+		buildButton( rootView );
 	}
 
 	/**
+	 * 
+	 * @param rootView
+	 */
+	protected void buildButton( View rootView ) {
+		final Fragment fr = this;
+
+		Button btn = (Button) rootView.findViewById( R.id.BTN_newTask_verifyStudents );
+		btn.setOnClickListener( new View.OnClickListener() {
+
+			@Override
+			public void onClick( View v ) {
+				getFragmentManager().beginTransaction().remove( fr ).commit();
+
+				List<StudentTask> stdTasks = mTask.getAddedStudents();
+				Iterator<StudentTask> it = stdTasks.iterator();
+				StringBuffer sb = new StringBuffer();
+				String msg = fr.getActivity().getResources().getString( R.string.task_student_added );
+
+				while ( it.hasNext() ) {
+					Student std = it.next().getStudent();
+					String stdName = std.getLastName() + ", " + std.getFirstName();
+
+					sb.append( stdName ).append( "\n" );
+				}
+				msg = msg.replace( "{std}", sb.toString() );
+
+				Toast t = Toast.makeText( fr.getActivity(), msg, Toast.LENGTH_LONG );
+				DataHandler.GetInstance().commitStudentsTasks( mTask );
+				t.show();
+			}
+		} );
+
+		btn = (Button) rootView.findViewById( R.id.BTN_newTask_cancelStudents );
+		btn.setOnClickListener( new View.OnClickListener() {
+
+			@Override
+			public void onClick( View v ) {
+				getFragmentManager().beginTransaction().remove( fr ).commit();
+			}
+		} );
+	}
+
+	/**
+	 * 
+	 * @param rootView
+	 */
+	protected void buildAdapter( View rootView ) {
+		if ( listView != null )
+			return;
+
+		List<Student> students = createStudentList();
+
+		listView = (ListView) rootView.findViewById( R.id.LV_newTask_addedStudents );
+		AddedStudentsAdapter adapter = new AddedStudentsAdapter( getActivity(), R.id.LV_newTask_addedStudents, students );
+		adapter.setTask( mTask );
+		listView.setAdapter( adapter );
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected List<Student> createStudentList() {
+		List<String> mClasses = mTask.getClasses();
+		List<Student> students = new ArrayList<Student>();
+
+		Iterator<String> it = mClasses.iterator();
+		while ( it.hasNext() ) {
+			String className = it.next();
+			StudentClass stdClass = DataHandler.GetInstance().getStudentClass( className );
+
+			Iterator<Student> itStd = stdClass.getStudents().iterator();
+			while ( itStd.hasNext() ) {
+				Student std = itStd.next();
+				if ( mTask.hasStudent( std.getIdent() ) )
+					continue;
+
+				students.add( std );
+			}
+		}
+
+		return students;
+	}
+
+	/**
+	 * 
+	 * @author GleVoll
+	 *
+	 */
+	public static class AddedStudentsAdapter extends ArrayAdapter<Student> implements OnCheckedChangeListener {
+
+		private Task task;
+
+		public AddedStudentsAdapter( Context context, int resource, List<Student> objects ) {
+			super( context, resource, objects );
+		}
+
+		void setTask( Task task ) {
+			this.task = task;
+		}
+
+		/**
 		 * 
 		 */
-	@Override
-	public View getView( int position, View convertView, ViewGroup parent ) {
-	    Student std = getItem( position );
-	    ViewHolder holder = null;
+		@Override
+		public View getView( int position, View convertView, ViewGroup parent ) {
+			Student std = getItem( position );
+			ViewHolder holder = null;
 
-	    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-	    if ( convertView == null ) {
-		convertView = inflater.inflate( R.layout.row_newtask_students, parent, false );
-		holder = new ViewHolder();
-		holder.studentIdent = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );
-		holder.cBox = (CheckBox) convertView.findViewById( R.id.CB_newTask_addStudent );
+			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+			if ( convertView == null ) {
+				convertView = inflater.inflate( R.layout.row_newtask_students, parent, false );
+				holder = new ViewHolder();
+				holder.studentIdent = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );
+				holder.cBox = (CheckBox) convertView.findViewById( R.id.CB_newTask_addStudent );
 
-		convertView.setTag( holder );
-	    }
+				convertView.setTag( holder );
+			}
 
-	    holder = (ViewHolder) convertView.getTag();
+			holder = (ViewHolder) convertView.getTag();
 
-	    String text = DataHandler.GetInstance().getSettingsManager().getStdInfoWhenNewTask( std );
+			String text = DataHandler.GetInstance().getSettingsManager().getStdInfoWhenNewTask( std );
 
-	    holder.studentIdent.setTag( std );
-	    holder.studentIdent.setText( text );
+			holder.studentIdent.setTag( std );
+			holder.studentIdent.setText( text );
 
-	    holder.cBox.setTag( std );
-	    holder.cBox.setOnCheckedChangeListener( this );
+			holder.cBox.setTag( std );
+			holder.cBox.setOnCheckedChangeListener( this );
 
-	    return convertView;
+			return convertView;
+		}
+
+		@Override
+		public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+			Student std = (Student) buttonView.getTag();
+			if ( !isChecked )
+				task.removeStudent( std.getIdent() );
+			else
+				task.addStudent( std );
+		}
 	}
 
-	@Override
-	public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-	    Student std = (Student) buttonView.getTag();
-	    if ( !isChecked ) task.removeStudent( std.getIdent() );
-	    else
-		task.addStudent( std );
+	static class ViewHolder {
+		TextView studentIdent;
+		CheckBox cBox;
 	}
-    }
 
-    static class ViewHolder {
-	TextView studentIdent;
-	CheckBox cBox;
-    }
+	/**
+	 * 
+	 * @param args
+	 * @param manager
+	 */
+	static void StartFragment( Bundle args, FragmentManager manager ) {
+		AddStudentsToTaskFragment fragment = new AddStudentsToTaskFragment();
 
-    /**
-     * 
-     * @param args
-     * @param manager
-     */
-    static void StartFragment( Bundle args, FragmentManager manager ) {
-	AddStudentsToTaskFragment fragment = new AddStudentsToTaskFragment();
+		fragment.setArguments( args );
 
-	fragment.setArguments( args );
+		FragmentTransaction ft = manager.beginTransaction();
+		fragment.show( ft, AddStudentsToTaskFragment.class.getSimpleName() );
 
-	FragmentTransaction ft = manager.beginTransaction();
-	fragment.show( ft, AddStudentsToTaskFragment.class.getSimpleName() );
-
-    }
+	}
 
 }
