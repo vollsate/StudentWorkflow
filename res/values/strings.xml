@@ -73,17 +73,14 @@
     <string name="std_info_title">Elev</string>
     <string name="std_parent1_title">Foresatt 1</string>
     <string name="std_parent2_title">Foresatt 2</string>
-    
     <string name="action_stdinfo_update">Oppdater</string>
-    
     <string name="stdInfo.header.nameAdr">Navn og adresse</string>
     <string name="stdInfo.header.google">Google konto</string>
     <string name="stdInfo.google"><u>{google}</u></string>
-    
     <string name="stdInfo.mail.desc">Send epost</string>
     <string name="stdInfo.sms.desc">Send SMS</string>
     <string name="stdInfo.call.desc">Ring</string>
-    
+
     <!-- NEW TASK -->
 
     <string name="newTask.added.toast">Ny oppgave [{task}] lagt til!</string>
@@ -117,5 +114,27 @@
     <string name="task_student_added">Lagt til student: {std}</string>
     <string name="task_class_added">Lagt til klasse: {class}</string>
     <string name="task_class_title">Legg til flere klasser ..</string>
+
+    <string-array name="subjects">
+        <item>Norsk</item>
+        <item>Matematik</item>
+        <item>Engelsk</item>
+        <item>Naturfag</item>
+        <item>Samfunnsfag</item>
+        <item>RLE</item>
+        <item>Skole</item>
+        <item>Info</item>
+        <item>Helse</item>
+    </string-array>
+    
+    <!-- First item will have the id=0, .. -->
+    <string-array name="types">
+        <item>Underskrift hjemme</item>
+        <item>Innføring</item>
+        <item>Ukelekse</item>
+        <item>Tegning</item>
+        <item>Tekst</item>
+        <item>Innlevering</item>
+    </string-array>
 
 </resources>
