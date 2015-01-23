@@ -9,8 +9,10 @@ import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -189,6 +191,32 @@ public class Database extends SQLiteOpenHelper {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
+	public List<SubjectType> loadSubjectTypes() {
+		return SubjectTypeTbl.LoadSubjectTypes( getReadableDatabase() );
+	}
+	
+	/**
+	 * 
+	 * @param st
+	 * @return
+	 * @throws SQLException if the {@link SubjectType} cannot be inserted
+	 */
+	public boolean insertSubjectType( SubjectType st ) {
+		long retVal =  SubjectTypeTbl.Insert( st, getWritableDatabase() );
+		
+		if ( retVal == -1 ) throw new SQLException( "Error inserting SubjectType: " + st.toString() );
+		
+		return retVal == 1;
+	}
+	
+	public boolean insertSubjectTypes( List<SubjectType> list ) {
+		int rows = (int) SubjectTypeTbl.Insert( list, getWritableDatabase() );
+		
+		if ( rows < list.size() - 1 ) throw new SQLException( "Error inserting all rows. Data unstable!" );
+		
+		return true;
+	}
+	
 	/**
 	 * 
 	 * @return
