@@ -3,9 +3,9 @@ package no.glv.android.stdntworkflow.sql;
 import no.glv.android.stdntworkflow.intrfc.SubjectType;
 
 public class SubjectTypeBean implements SubjectType {
-	
+
 	int _id;
-	
+
 	private String mName;
 	private String mDesc;
 	private int mType;

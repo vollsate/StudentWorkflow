@@ -110,16 +110,17 @@ class SubjectTypeTbl implements BaseColumns {
 	public static long Insert( SubjectType st, SQLiteDatabase db ) {
 		return Insert( st, db, true );
 	}
-	
+
 	public static long Insert( List<SubjectType> list, SQLiteDatabase db ) {
 		int count = 0;
 		for ( SubjectType st : list ) {
 			count += (int) Insert( st, db, false );
 		}
-		
+
 		db.close();
 		return count;
 	}
+
 	/**
 	 * 
 	 * @param st
@@ -131,11 +132,11 @@ class SubjectTypeTbl implements BaseColumns {
 		ContentValues phoneValues = STValues( st );
 
 		long retVal = db.insert( TBL_NAME, null, phoneValues );
-		if ( close ) db.close();
+		if ( close )
+			db.close();
 
-		return retVal;		
+		return retVal;
 	}
-	
 
 	/**
 	 * 

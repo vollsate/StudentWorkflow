@@ -194,29 +194,32 @@ public class Database extends SQLiteOpenHelper {
 	public List<SubjectType> loadSubjectTypes() {
 		return SubjectTypeTbl.LoadSubjectTypes( getReadableDatabase() );
 	}
-	
+
 	/**
 	 * 
 	 * @param st
 	 * @return
-	 * @throws SQLException if the {@link SubjectType} cannot be inserted
+	 * @throws SQLException
+	 *             if the {@link SubjectType} cannot be inserted
 	 */
 	public boolean insertSubjectType( SubjectType st ) {
-		long retVal =  SubjectTypeTbl.Insert( st, getWritableDatabase() );
-		
-		if ( retVal == -1 ) throw new SQLException( "Error inserting SubjectType: " + st.toString() );
-		
+		long retVal = SubjectTypeTbl.Insert( st, getWritableDatabase() );
+
+		if ( retVal == -1 )
+			throw new SQLException( "Error inserting SubjectType: " + st.toString() );
+
 		return retVal == 1;
 	}
-	
+
 	public boolean insertSubjectTypes( List<SubjectType> list ) {
 		int rows = (int) SubjectTypeTbl.Insert( list, getWritableDatabase() );
-		
-		if ( rows < list.size() - 1 ) throw new SQLException( "Error inserting all rows. Data unstable!" );
-		
+
+		if ( rows < list.size() - 1 )
+			throw new SQLException( "Error inserting all rows. Data unstable!" );
+
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 * @return
