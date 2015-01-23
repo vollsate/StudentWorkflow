@@ -19,12 +19,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import no.glv.android.stdntworkflow.sql.DBUtils;
@@ -34,7 +36,6 @@ import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
-import android.R;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -174,6 +175,7 @@ public class DataHandler {
 
 		db.runCreate();
 		initiateMaps();
+		initSubjectTypes();
 
 		notifyStudentClassChange( null, OnStudentClassChangeListener.MODE_DEL );
 		notifyTaskChange( null, OnTasksChangedListener.MODE_DEL );
@@ -466,8 +468,26 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
-	public void initSubjectTypes() {
-		mApp.getResources().getStringArray( R.id.task_subjects );
+	private void initSubjectTypes() {
+		String[] subjects = mApp.getResources().getStringArray( R.array.task_subjects );
+		String defDesc = mApp.getResources().getString( R.string.task_st_subjects_defaultDesc );
+		LinkedList<SubjectType> list = new LinkedList<SubjectType>();
+		
+		for ( String s : subjects ) {
+			SubjectType st = db.createSubjectType();
+			st.setDescription( defDesc );
+			st.setName( s );
+			st.setType( SubjectType.TYPE_SUBJECT );
+			
+			list.add( st );
+		}
+		
+		try {
+			db.insertSubjectTypes( list );
+		}
+		catch ( Exception e ) {
+			Log.e( TAG, "Error initiating SubjectTypes", e );
+		}
 	}
 	
 	/**

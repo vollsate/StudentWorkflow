@@ -9,10 +9,14 @@ package no.glv.android.stdntworkflow;
 
 public final class R {
     public static final class array {
-        public static final int pref_example_list_titles=0x7f080000;
-        public static final int pref_example_list_values=0x7f080001;
-        public static final int pref_sync_frequency_titles=0x7f080002;
-        public static final int pref_sync_frequency_values=0x7f080003;
+        public static final int pref_example_list_titles=0x7f080002;
+        public static final int pref_example_list_values=0x7f080003;
+        public static final int pref_sync_frequency_titles=0x7f080004;
+        public static final int pref_sync_frequency_values=0x7f080005;
+        public static final int task_subjects=0x7f080000;
+        /**  First item will have the id=0, .. 
+         */
+        public static final int task_types=0x7f080001;
     }
     public static final class attr {
     }
@@ -307,27 +311,27 @@ public final class R {
          */
         public static final int newTask_added_toast=0x7f070042;
         public static final int ok=0x7f070000;
-        public static final int pref_default_display_name=0x7f070063;
-        public static final int pref_description_social_recommendations=0x7f070061;
+        public static final int pref_default_display_name=0x7f070065;
+        public static final int pref_description_social_recommendations=0x7f070063;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f070065;
+        public static final int pref_header_data_sync=0x7f070067;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f07005f;
+        public static final int pref_header_general=0x7f070061;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f070068;
-        public static final int pref_ringtone_silent=0x7f07006b;
-        public static final int pref_title_add_friends_to_messages=0x7f070064;
-        public static final int pref_title_display_name=0x7f070062;
-        public static final int pref_title_new_message_notifications=0x7f070069;
-        public static final int pref_title_ringtone=0x7f07006a;
-        public static final int pref_title_social_recommendations=0x7f070060;
-        public static final int pref_title_sync_frequency=0x7f070066;
-        public static final int pref_title_system_sync_settings=0x7f070067;
-        public static final int pref_title_vibrate=0x7f07006c;
+        public static final int pref_header_notifications=0x7f07006a;
+        public static final int pref_ringtone_silent=0x7f07006d;
+        public static final int pref_title_add_friends_to_messages=0x7f070066;
+        public static final int pref_title_display_name=0x7f070064;
+        public static final int pref_title_new_message_notifications=0x7f07006b;
+        public static final int pref_title_ringtone=0x7f07006c;
+        public static final int pref_title_social_recommendations=0x7f070062;
+        public static final int pref_title_sync_frequency=0x7f070068;
+        public static final int pref_title_system_sync_settings=0x7f070069;
+        public static final int pref_title_vibrate=0x7f07006e;
         public static final int stdInfo_adr=0x7f070035;
         public static final int stdInfo_birth=0x7f070034;
         public static final int stdInfo_call_desc=0x7f070041;
@@ -384,6 +388,8 @@ public final class R {
         public static final int task_name=0x7f07004d;
         public static final int task_pending=0x7f070054;
         public static final int task_pending_count=0x7f070058;
+        public static final int task_st_subjects_defaultDesc=0x7f07005e;
+        public static final int task_st_types_defaultDesc=0x7f07005f;
         public static final int task_std_delete_msg=0x7f070051;
         public static final int task_std_delete_title=0x7f070050;
         public static final int task_student_added=0x7f07005b;
@@ -393,7 +399,7 @@ public final class R {
         public static final int task_tab_section2=0x7f070053;
         public static final int task_title=0x7f07004b;
         public static final int title_activity_new_task=0x7f070018;
-        public static final int title_activity_settings=0x7f07005e;
+        public static final int title_activity_settings=0x7f070060;
         public static final int title_activity_task=0x7f070037;
     }
     public static final class style {

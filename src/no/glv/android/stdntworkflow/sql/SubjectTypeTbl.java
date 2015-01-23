@@ -129,9 +129,11 @@ class SubjectTypeTbl implements BaseColumns {
 	 * @return
 	 */
 	private static long Insert( SubjectType st, SQLiteDatabase db, boolean close ) {
-		ContentValues phoneValues = STValues( st );
+		ContentValues stValues = STValues( st );
 
-		long retVal = db.insert( TBL_NAME, null, phoneValues );
+		long retVal = db.insert( TBL_NAME, null, stValues );
+		( (SubjectTypeBean)st)._id = (int)retVal;
+		
 		if ( close )
 			db.close();
 
@@ -177,7 +179,9 @@ class SubjectTypeTbl implements BaseColumns {
 	private static ContentValues STValues( SubjectType st ) {
 		ContentValues cv = new ContentValues();
 
-		cv.put( COL_ID, st.getID() );
+		int id = st.getID();
+		if ( id > 0 )
+			cv.put( COL_ID, id );
 		cv.put( COL_NAME, st.getName() );
 		cv.put( COL_DESC, st.getDescription() );
 		cv.put( COL_TYPE, st.getType() );

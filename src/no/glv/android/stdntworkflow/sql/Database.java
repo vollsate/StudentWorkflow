@@ -84,6 +84,7 @@ public class Database extends SQLiteOpenHelper {
 		StudentTaskTbl.CreateTable( db );
 		PhoneTbl.CreateTable( db );
 		ParentTbl.CreateTableSQL( db );
+		SubjectTypeTbl.CreateTable( db );
 	}
 
 	@Override
@@ -95,6 +96,7 @@ public class Database extends SQLiteOpenHelper {
 		StudentTaskTbl.DropTable( db );
 		PhoneTbl.DropTable( db );
 		ParentTbl.DropTable( db );
+		SubjectTypeTbl.DropTable( db );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -191,6 +193,10 @@ public class Database extends SQLiteOpenHelper {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
+	public SubjectType createSubjectType() {
+		return new SubjectTypeBean();
+	}
+	
 	public List<SubjectType> loadSubjectTypes() {
 		return SubjectTypeTbl.LoadSubjectTypes( getReadableDatabase() );
 	}
