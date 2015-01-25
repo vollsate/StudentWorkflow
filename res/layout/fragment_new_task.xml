@@ -60,6 +60,35 @@
             android:ems="10" />
 
         <TextView
+            android:id="@+id/TV.newTask.subject"
+            style="@style/TV.std.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Fag / skole"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Spinner
+            android:id="@+id/SP.newTask.subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/task_subjects" />
+
+        <TextView
+            android:id="@+id/TV.newTask.type"
+            style="@style/TV.std.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Spinner
+            android:id="@+id/SP.newTask.type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/task_types" />
+
+        <TextView
             android:id="@+id/TV.newTask.date"
             style="@style/TV.std.bold"
             android:layout_width="match_parent"
