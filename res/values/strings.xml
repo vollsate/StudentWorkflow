@@ -99,7 +99,11 @@
     <string name="task_header">Info om oppgave</string>
     <string name="task_name">Navn</string>
     <string name="task_desca">Beskrivelse</string>
-    <string name="task_date">Dato</string>
+    <string name="task_subject">Fag, skolerelatert</string>
+    <string name="task_type">Type oppgave</string>
+    <string name="task_subjecttype">Oppgave data</string>
+    <string name="task_date">Innleveringsdato</string>
+    <string name="task_classes">Involverte klasser</string>
     <string name="task_std_delete_title">Slette student?</string>
     <string name="task_std_delete_msg">{name}</string>
     <string name="task_tab_section1">Info</string>
@@ -115,30 +119,5 @@
     <string name="task_class_added">Lagt til klasse: {class}</string>
     <string name="task_class_title">Legg til flere klasser ..</string>
     
-    <string name="task_st_subjects_defaultDesc">Skolerelatert og fag</string>
-    <string name="task_st_types_defaultDesc">Type oppgave</string>
-    
-    <string-array name="task_subjects">
-        <item>Norsk</item>
-        <item>Matematikk</item>
-        <item>Engelsk</item>
-        <item>Naturfag</item>
-        <item>Samfunnsfag</item>
-        <item>RLE</item>
-        <item>Skole</item>
-        <item>Info</item>
-        <item>Helse</item>
-    </string-array>
-    
-    <!-- First item will have the id=0, .. -->
-    <string-array name="task_types">
-        <item>Underskrift hjemme</item>
-        <item>Innføring</item>
-        <item>Ukelekse</item>
-        <item>Tegning</item>
-        <item>Tekst</item>
-        <item>Innlevering</item>
-        <item>Skolerelatert</item>
-    </string-array>
 
 </resources>

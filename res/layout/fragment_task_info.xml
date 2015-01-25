@@ -14,10 +14,14 @@
 
         <TextView
             android:id="@+id/TV.task.header"
-            style="@style/TV.header1"
+            style="@style/TV.header2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/def" />
+
+        <View
+            style="@style/divider"
+            android:layout_below="@id/TV.task.header" />
 
         <RelativeLayout
             android:id="@+id/LL.task.name"
@@ -25,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/TV.task.header"
             android:layout_marginTop="15sp"
+            android:layout_marginLeft="10sp"
             android:orientation="horizontal" >
 
             <TextView
@@ -55,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/LL.task.name"
             android:layout_marginTop="10sp"
+            android:layout_marginLeft="10sp"
             android:orientation="vertical" >
 
             <TextView
@@ -76,11 +82,74 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/LL.task.date"
+            android:id="@+id/LL.task.subjectTypes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/LL.task.desc"
-            android:layout_marginTop="10sp"
+            android:layout_marginTop="20sp"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/TV.header2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task_subjecttype" />
+
+            <View
+                style="@style/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginStart="10sp"
+                android:layout_marginTop="15sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TV.std.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/task_subject"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    style="@style/TV.std.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/task_type"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/SP.task.subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/task_types" 
+                    android:layout_weight="1"/>
+
+                <Spinner
+                    android:id="@+id/SP.task.type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/task_types" 
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LL.task.date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/LL.task.subjectTypes"
+            android:layout_marginTop="20sp"
             android:orientation="horizontal" >
 
             <TextView
@@ -191,14 +260,14 @@
                     android:layout_marginStart="5sp"
                     android:layout_weight="1" />
             </LinearLayout>
-			
+
             <TextView
                 style="@style/TV.header2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10sp"
-                android:text="Involverte klasser" />
-            
+                android:text="@string/task_classes" />
+
             <LinearLayout
                 android:id="@+id/FR.installedClasses.container"
                 android:layout_width="match_parent"
