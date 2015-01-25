@@ -11,11 +11,25 @@ import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+/**
+ * A dialog that can either send SMS to one {@link Phone} object or to an entire
+ * {@link StudentClass}. The <tt>Phone.MOBIL</tt>.
+ * 
+ * <p>
+ * The two checkboxes (if mail to an entire class is chosen), will send mail to
+ * either primary parent, secondary parent or both.
+ * 
+ * <p>The listener callback will need to do the
+ * 
+ * @author glevoll
+ *
+ */
 public class SendSMSDialog extends DialogFragmentBase implements View.OnClickListener {
 
 	OnVerifySendSMSListener listener;
@@ -26,23 +40,12 @@ public class SendSMSDialog extends DialogFragmentBase implements View.OnClickLis
 	private CheckBox cbPar1;
 	private CheckBox cbPar2;
 
-	private boolean showParentCB;
-
 	public SendSMSDialog() {
-		this( true, null );
-	}
-
-	public SendSMSDialog( boolean showParentCheckBox ) {
-		this( showParentCheckBox, null );
+		this( null );
 	}
 
 	public SendSMSDialog( Phone phone ) {
-		this( phone == null ? true : false, phone );
-	}
-
-	public SendSMSDialog( boolean showParentCheckBox, Phone phone ) {
-		this.showParentCB = showParentCheckBox;
-		this.p = phone;
+		p = phone;
 	}
 
 	@Override
@@ -62,7 +65,10 @@ public class SendSMSDialog extends DialogFragmentBase implements View.OnClickLis
 			return;
 		}
 
-		listener.verifySendSMS( this.p, etMsg.getText().toString() );
+		SmsManager manager = SmsManager.getDefault();
+		String num = "+47" + p.getNumber();
+		manager.sendTextMessage( num, null, etMsg.getText().toString(), null, null );
+
 		getFragmentManager().beginTransaction().remove( this ).commit();
 
 	}
@@ -100,8 +106,14 @@ public class SendSMSDialog extends DialogFragmentBase implements View.OnClickLis
 		}
 
 		EditText et = (EditText) v.findViewById( R.id.ET_stdList_sms );
-		listener.verifySendSMS( pList, et.getText().toString() );
+		SmsManager manager = SmsManager.getDefault();
+		String msg = et.getText().toString();
+		for ( Phone p : pList ) {
+			String num = "+47" + p.getNumber();
+			manager.sendTextMessage( num, null, msg, null, null );
+		}
 
+		listener.verifySendSMS( pList, et.getText().toString() );
 		getFragmentManager().beginTransaction().remove( this ).commit();
 	}
 
