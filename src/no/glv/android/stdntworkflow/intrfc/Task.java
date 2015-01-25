@@ -134,6 +134,13 @@ public interface Task extends Serializable {
 	public Date getDate();
 
 	/**
+	 * Sets the new expiration date for this task.
+	 * 
+	 * @param date
+	 */
+	public void setDate( Date date );
+
+	/**
 	 * 
 	 * @return The current state of the task
 	 */
@@ -158,6 +165,14 @@ public interface Task extends Serializable {
 	 *            The tasks description. May be null
 	 */
 	public void setDescription( String desc );
+	
+	public int getSubject();
+	
+	public void setSubject( int subject );
+	
+	public int getType();
+	
+	public void setType( int type );
 
 	/**
 	 * @return The number of Student who has handed in this task
@@ -310,13 +325,6 @@ public interface Task extends Serializable {
 	 * @param stdClass
 	 */
 	public void removeClass( StudentClass stdClass );
-
-	/**
-	 * Sets the new expiration date for this task.
-	 * 
-	 * @param date
-	 */
-	public void setDate( Date date );
 
 	/**
 	 * This method will only remove the student from the ones who have not
