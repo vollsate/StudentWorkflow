@@ -65,12 +65,13 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 		holder.identText.setText( student.getIdent() );
 		holder.birthText.setText( student.getBirth() );
 
+/*
 		if ( position % 2 == 0 )
 			convertView.setBackgroundColor( getContext().getResources().getColor(
 					R.color.task_stdlist_dark ) );
 		else
 			convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
-
+*/
 		return convertView;
 	}
 

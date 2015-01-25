@@ -9,4 +9,12 @@
 
     
     <color name="row_stdlist_pressed">#FFC266</color>
+
+
+    <color name="list_item_title">#fff</color>
+    <color name="list_background">#E0F0FF</color>
+    <color name="list_background_pressed">#CCE6FF</color>
+    <color name="list_divider">#272727</color>
+    
+
 </resources>

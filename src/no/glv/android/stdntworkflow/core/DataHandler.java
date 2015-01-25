@@ -83,7 +83,7 @@ public class DataHandler {
 
 	private final Database db;
 	private final SettingsManager sManager;
-	
+
 	private Application mApp;
 
 	/** All the loaded classes from the database */
@@ -472,16 +472,16 @@ public class DataHandler {
 		String[] subjects = mApp.getResources().getStringArray( R.array.task_subjects );
 		String defDesc = mApp.getResources().getString( R.string.task_st_subjects_defaultDesc );
 		LinkedList<SubjectType> list = new LinkedList<SubjectType>();
-		
+
 		for ( String s : subjects ) {
 			SubjectType st = db.createSubjectType();
 			st.setDescription( defDesc );
 			st.setName( s );
 			st.setType( SubjectType.TYPE_SUBJECT );
-			
+
 			list.add( st );
 		}
-		
+
 		try {
 			db.insertSubjectTypes( list );
 		}
@@ -489,7 +489,7 @@ public class DataHandler {
 			Log.e( TAG, "Error initiating SubjectTypes", e );
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return A List of all the Tasks loaded

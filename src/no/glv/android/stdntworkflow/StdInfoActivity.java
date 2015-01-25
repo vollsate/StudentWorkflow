@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 import java.util.Locale;
 
+import no.glv.android.stdntworkflow.SendMultiSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.SettingsManager;
@@ -32,7 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
-public class StdInfoActivity extends Activity implements ActionBar.TabListener {
+public class StdInfoActivity extends Activity implements ActionBar.TabListener, OnVerifySendSMSListener {
 
 	private static final String TAG = StdInfoActivity.class.getSimpleName();
 
@@ -150,9 +151,22 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 	public void sendSMS( View v ) {
 		Parent p = (Parent) v.getTag();
 
+		SendMultiSMSDialog.StartFragment( p.getPhone( Phone.MOBIL ), this, getFragmentManager() );
 		SmsManager manager = SmsManager.getDefault();
-		manager.sendTextMessage( "" + p.getPhoneNumber( Phone.MOBIL ), null, "Test", null, null );
+		//manager.sendTextMessage( "" + p.getPhoneNumber( Phone.MOBIL ), null, "Test", null, null );
 		// manager.sendTextMessage( "+4795109798", null, "Test", null, null );
+	}
+	
+	@Override
+	public void verifySendSMS( List<Phone> p, String msg ) {
+	}
+	
+	@Override
+	public void verifySendSMS( Phone p, String msg ) {
+		SmsManager manager = SmsManager.getDefault();
+
+		String num = "+47" + p.getNumber();
+		manager.sendTextMessage( num, null, msg, null, null );
 	}
 
 	/**
@@ -288,6 +302,11 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener {
 			return rootView;
 		}
 
+		/**
+		 * 
+		 * @param parent
+		 * @param rootView
+		 */
 		private void createPhoneView( Parent parent, View rootView ) {
 			EditText editText = null;
 			Phone phone = parent.getPhone( Phone.MOBIL );

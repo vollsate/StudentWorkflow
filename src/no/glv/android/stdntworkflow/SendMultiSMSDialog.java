@@ -16,17 +16,93 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-public class SendMultiSMSDialog extends DialogFragmentBase {
+public class SendMultiSMSDialog extends DialogFragmentBase implements View.OnClickListener {
 
 	OnVerifySendSMSListener listener;
 	StudentClass stdClass;
+	Phone p;
+
+	private EditText etMsg;
+	private CheckBox cbPar1;
+	private CheckBox cbPar2;
+
+	private boolean showParentCB;
 
 	public SendMultiSMSDialog() {
+		this( true, null );
+	}
+
+	public SendMultiSMSDialog( boolean showParentCheckBox ) {
+		this( showParentCheckBox, null );
+	}
+
+	public SendMultiSMSDialog( Phone phone ) {
+		this( phone == null ? true : false, phone );
+	}
+
+	public SendMultiSMSDialog( boolean showParentCheckBox, Phone phone ) {
+		this.showParentCB = showParentCheckBox;
+		this.p = phone;
 	}
 
 	@Override
 	protected void buildView( View rootView ) {
 		buildButton( rootView );
+	}
+
+	@Override
+	public void onClick( View view ) {
+		View v = view.getRootView();
+		etMsg = (EditText) v.findViewById( R.id.ET_stdList_sms );
+		cbPar1 = (CheckBox) v.findViewById( R.id.checkBox1 );
+		cbPar2 = (CheckBox) v.findViewById( R.id.checkBox2 );
+
+		if ( p == null ) {
+			sentMultiSMS( view );
+			return;
+		}
+
+		listener.verifySendSMS( this.p, etMsg.getText().toString() );
+		getFragmentManager().beginTransaction().remove( this ).commit();
+
+	}
+
+	private void sentMultiSMS( View view ) {
+		boolean p1, p2 = false;
+
+		View v = view.getRootView();
+
+		p1 = cbPar1.isChecked();
+		p2 = cbPar2.isChecked();
+
+		List<Phone> pList = new LinkedList<Phone>();
+
+		for ( Student s : stdClass.getStudents() ) {
+			int i = 0;
+			if ( s.getParents() == null || s.getParents().size() == i )
+				continue;
+
+			if ( p1 && s.getParents().size() >= ++i ) {
+				Parent par = s.getParents().get( i - 1 );
+				long num = par.getPhoneNumber( Phone.MOBIL );
+				if ( num != 0 ) {
+					pList.add( par.getPhone( Phone.MOBIL ) );
+				}
+			}
+
+			if ( p2 && s.getParents().size() >= ++i ) {
+				Parent par = s.getParents().get( i - 1 );
+				long num = par.getPhoneNumber( Phone.MOBIL );
+				if ( num != 0 ) {
+					pList.add( par.getPhone( Phone.MOBIL ) );
+				}
+			}
+		}
+
+		EditText et = (EditText) v.findViewById( R.id.ET_stdList_sms );
+		listener.verifySendSMS( pList, et.getText().toString() );
+
+		getFragmentManager().beginTransaction().remove( this ).commit();
 	}
 
 	/**
@@ -36,50 +112,15 @@ public class SendMultiSMSDialog extends DialogFragmentBase {
 	private void buildButton( View rootView ) {
 		final Fragment fr = this;
 
+		if ( p != null ) {
+			cbPar1 = (CheckBox) rootView.findViewById( R.id.checkBox1 );
+			cbPar2 = (CheckBox) rootView.findViewById( R.id.checkBox2 );
+			cbPar1.setVisibility( View.GONE );
+			cbPar2.setVisibility( View.GONE );
+		}
+
 		Button btn = (Button) rootView.findViewById( R.id.BTN_stdlist_sendSMS );
-		btn.setOnClickListener( new View.OnClickListener() {
-
-			@Override
-			public void onClick( View view ) {
-				boolean p1, p2 = false;
-
-				View v = view.getRootView();
-
-				CheckBox cb = (CheckBox) v.findViewById( R.id.checkBox1 );
-				p1 = cb.isChecked();
-				cb = (CheckBox) v.findViewById( R.id.checkBox2 );
-				p2 = cb.isChecked();
-
-				List<Phone> pList = new LinkedList<Phone>();
-
-				for ( Student s : stdClass.getStudents() ) {
-					int i = 0;
-					if ( s.getParents() == null || s.getParents().size() == i )
-						continue;
-
-					if ( p1 && s.getParents().size() >= ++i ) {
-						Parent par = s.getParents().get( i - 1 );
-						long num = par.getPhoneNumber( Phone.MOBIL );
-						if ( num != 0 ) {
-							pList.add( par.getPhone( Phone.MOBIL ) );
-						}
-					}
-
-					if ( p2 && s.getParents().size() >= ++i ) {
-						Parent par = s.getParents().get( i - 1 );
-						long num = par.getPhoneNumber( Phone.MOBIL );
-						if ( num != 0 ) {
-							pList.add( par.getPhone( Phone.MOBIL ) );
-						}
-					}
-				}
-
-				EditText et = (EditText) v.findViewById( R.id.ET_stdList_sms );
-				listener.verifySendSMS( pList, et.getText().toString() );
-
-				fr.getFragmentManager().beginTransaction().remove( fr ).commit();
-			}
-		} );
+		btn.setOnClickListener( this );
 
 		btn = (Button) rootView.findViewById( R.id.BTN_stdList_cancelSMS );
 		btn.setOnClickListener( new View.OnClickListener() {
@@ -101,9 +142,41 @@ public class SendMultiSMSDialog extends DialogFragmentBase {
 		return "Send SMS til foresatt(e)";
 	}
 
+	/**
+	 * 
+	 * @param stdClass
+	 * @param listener
+	 * @param manager
+	 * @return
+	 */
 	public static SendMultiSMSDialog StartFragment( StudentClass stdClass, OnVerifySendSMSListener listener,
 			FragmentManager manager ) {
-		SendMultiSMSDialog fragment = new SendMultiSMSDialog();
+		return StartFragment( stdClass, null, listener, manager );
+	}
+
+	/**
+	 * 
+	 * @param p
+	 * @param listener
+	 * @param manager
+	 * @return
+	 */
+	public static SendMultiSMSDialog StartFragment( Phone p, OnVerifySendSMSListener listener,
+			FragmentManager manager ) {
+		return StartFragment( null, p, listener, manager );
+	}
+
+	/**
+	 * 
+	 * @param stdClass
+	 * @param p
+	 * @param listener
+	 * @param manager
+	 * @return
+	 */
+	public static SendMultiSMSDialog StartFragment( StudentClass stdClass, Phone p, OnVerifySendSMSListener listener,
+			FragmentManager manager ) {
+		SendMultiSMSDialog fragment = new SendMultiSMSDialog( p );
 		fragment.listener = listener;
 		fragment.stdClass = stdClass;
 
@@ -115,6 +188,8 @@ public class SendMultiSMSDialog extends DialogFragmentBase {
 
 	public static interface OnVerifySendSMSListener {
 		public void verifySendSMS( List<Phone> p, String msg );
+
+		public void verifySendSMS( Phone p, String msg );
 	}
 
 }

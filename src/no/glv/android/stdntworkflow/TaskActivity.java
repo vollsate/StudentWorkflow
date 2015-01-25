@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -256,6 +257,9 @@ public class TaskActivity extends BaseTabActivity {
 			getTextView( R.id.TV_task_header ).setText( getString( R.string.task_header ) );
 
 			getEditText( R.id.ET_task_name ).setText( task.getName() );
+			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getEditText( R.id.ET_task_name ).getWindowToken(), 0);			
+			
 			getEditText( R.id.ET_task_desc ).setText( task.getDesciption() );
 			getEditText( R.id.ET_task_date ).setText( BaseActivity.GetDateAsString( task.getDate() ) );
 

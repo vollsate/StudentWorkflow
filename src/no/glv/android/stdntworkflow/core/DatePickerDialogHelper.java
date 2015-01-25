@@ -10,27 +10,28 @@ import android.widget.DatePicker;
 
 public class DatePickerDialogHelper {
 
-    public DatePickerDialogHelper() {
-    }
+	public DatePickerDialogHelper() {
+	}
 
-    public static void OpenDatePickerDialog( Date date, Context ctx, OnDateSetListener listener, boolean showSpinner,
-	    boolean showCalendar ) {
-	if ( date == null ) date = new Date();
+	public static void OpenDatePickerDialog( Date date, Context ctx, OnDateSetListener listener, boolean showSpinner,
+			boolean showCalendar ) {
+		if ( date == null )
+			date = new Date();
 
-	Calendar cal = Calendar.getInstance();
-	cal.setTime( date );
+		Calendar cal = Calendar.getInstance();
+		cal.setTime( date );
 
-	int day = cal.get( Calendar.DAY_OF_MONTH );
-	int month = cal.get( Calendar.MONTH );
-	int year = cal.get( Calendar.YEAR );
+		int day = cal.get( Calendar.DAY_OF_MONTH );
+		int month = cal.get( Calendar.MONTH );
+		int year = cal.get( Calendar.YEAR );
 
-	DatePickerDialog dpd = new DatePickerDialog( ctx, listener, year, month, day );
+		DatePickerDialog dpd = new DatePickerDialog( ctx, listener, year, month, day );
 
-	DatePicker picker = dpd.getDatePicker();
-	picker.setSpinnersShown( showSpinner );
-	picker.setCalendarViewShown( showCalendar );
+		DatePicker picker = dpd.getDatePicker();
+		picker.setSpinnersShown( showSpinner );
+		picker.setCalendarViewShown( showCalendar );
 
-	dpd.show();
-    }
+		dpd.show();
+	}
 
 }

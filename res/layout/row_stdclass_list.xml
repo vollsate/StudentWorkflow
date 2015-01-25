@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:paddingRight="@dimen/padding_stdlist_small"
     android:paddingLeft="@dimen/padding_stdlist_small"
-    android:orientation="horizontal" 
-    android:background="@drawable/row_stdinfo">
+    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/TV.stdlist.name"
@@ -15,7 +14,6 @@
         android:ellipsize="marquee"
         android:hint="Student name"
         android:paddingTop="@dimen/padding_stdlist_small"
-        android:background="@drawable/row_stdinfo"
         android:singleLine="true" />
     
     <TextView

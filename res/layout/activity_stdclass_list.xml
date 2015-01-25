@@ -6,9 +6,11 @@
 
     <ListView
         android:id="@+id/student_listview"
-        android:dividerHeight="3sp"
-        android:layoutMode="opticalBounds"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:divider="@color/list_divider"
+        android:dividerHeight="1dp"        
+        android:listSelector="@drawable/list_selector"
+        android:background="@color/list_background"         />
     
 </RelativeLayout>

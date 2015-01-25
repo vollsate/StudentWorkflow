@@ -15,39 +15,40 @@ import android.view.ViewGroup;
  */
 public abstract class DialogFragmentBase extends DialogFragment {
 
-    private View rootView;
+	private View rootView;
 
-    @Override
-    public void onCreate( Bundle savedInstanceState ) {
-	super.onCreate( savedInstanceState );
-    }
+	@Override
+	public void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+	}
 
-    protected abstract int getRootViewID();
+	protected abstract int getRootViewID();
 
-    protected abstract String getTitle();
+	protected abstract String getTitle();
 
-    @Override
-    public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-	if ( rootView == null ) rootView = inflater.inflate( getRootViewID(), container, false );
+	@Override
+	public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+		if ( rootView == null )
+			rootView = inflater.inflate( getRootViewID(), container, false );
 
-	buildView( rootView );
+		buildView( rootView );
 
-	getDialog().setTitle( getTitle() );
+		getDialog().setTitle( getTitle() );
 
-	return rootView;
-    }
+		return rootView;
+	}
 
-    protected abstract void buildView( View rootView );
-    
-    protected void finish() {
-	getFragmentManager().beginTransaction().remove( this ).commit();	
-    }
+	protected abstract void buildView( View rootView );
 
-    /**
-     * 
-     * @return
-     */
-    protected DataHandler getDataHander() {
-	return DataHandler.GetInstance();
-    }
+	protected void finish() {
+		getFragmentManager().beginTransaction().remove( this ).commit();
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected DataHandler getDataHander() {
+		return DataHandler.GetInstance();
+	}
 }

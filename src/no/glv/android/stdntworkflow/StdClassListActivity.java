@@ -149,18 +149,30 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 		return super.onOptionsItemSelected( item );
 	}
 
+	/**
+	 * 
+	 * @param pList
+	 * @param msg
+	 */
 	public void verifySendSMS( List<Phone> pList, String msg ) {
-		SmsManager manager = SmsManager.getDefault();
-
 		for ( Phone p : pList ) {
-			String num = "+47" + p.getNumber();
-			manager.sendTextMessage( num, null, msg, null, null );
-			// manager.sendTextMessage( "+4741613689", null, msg, null, null );
+			verifySendSMS( p, msg );
 		}
 
 		Toast.makeText( this, "Sendt SMS til " + pList.size() + " foresatt(e)", Toast.LENGTH_LONG ).show();
 	}
+	
+	@Override
+	public void verifySendSMS( Phone p, String msg ) {
+		SmsManager manager = SmsManager.getDefault();
 
+		String num = "+47" + p.getNumber();
+		manager.sendTextMessage( num, null, msg, null, null );
+	}
+
+	/**
+	 * 
+	 */
 	public void sendSMS() {
 		SendMultiSMSDialog.StartFragment( stdClass, this, getFragmentManager() );
 	}

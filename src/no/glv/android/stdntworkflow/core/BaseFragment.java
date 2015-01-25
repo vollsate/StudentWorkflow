@@ -11,25 +11,25 @@ import android.support.v4.app.Fragment;
  */
 public class BaseFragment extends Fragment {
 
-    private final BaseActivity baseActivity;
+	private final BaseActivity baseActivity;
 
-    /**
+	/**
 	 * 
 	 */
-    public BaseFragment( BaseActivity base ) {
-	super();
+	public BaseFragment( BaseActivity base ) {
+		super();
 
-	this.baseActivity = base;
-    }
+		this.baseActivity = base;
+	}
 
-    public BaseFragment() {
-	super();
+	public BaseFragment() {
+		super();
 
-	baseActivity = null;
-    }
+		baseActivity = null;
+	}
 
-    protected BaseActivity getBaseActivity() {
-	return baseActivity;
-    }
+	protected BaseActivity getBaseActivity() {
+		return baseActivity;
+	}
 
 }
