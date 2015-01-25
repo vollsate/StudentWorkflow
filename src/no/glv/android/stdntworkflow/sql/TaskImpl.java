@@ -23,6 +23,8 @@ public class TaskImpl implements Task {
 	private String mDesc;
 	private Date mExpirationDate;
 	private int mState;
+	private int mSubject;
+	private int mType;
 
 	private boolean mModified;
 	private TreeMap<String, StudentTask> mModifiedStudents;
@@ -142,6 +144,24 @@ public class TaskImpl implements Task {
 	public void setState( int type ) {
 		this.mState = type;
 		mModified = true;
+	}
+	
+	@Override
+	public int getSubject() {
+		return mSubject;
+	}
+	
+	@Override
+	public int getType() {
+		return mType;
+	}
+	
+	public void setType( int type ) {
+		this.mType = type;
+	}
+	
+	public void setSubject( int subject ) {
+		this.mSubject = subject;
 	}
 
 	@Override

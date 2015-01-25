@@ -93,7 +93,7 @@ class SubjectTypeTbl implements BaseColumns {
 	private static SubjectType CreateFromCursor( Cursor cursor ) {
 		SubjectTypeBean st = new SubjectTypeBean();
 
-		st._id = cursor.getInt( COL_TYPE_ID );
+		st._id = cursor.getInt( COL_ID_ID );
 		st.setName( cursor.getString( COL_NAME_ID ) );
 		st.setDescription( cursor.getString( COL_DESC_ID ) );
 		st.setType( cursor.getInt( COL_TYPE_ID ) );

@@ -24,30 +24,32 @@ class TaskTbl {
 	public static final String COL_NAME = "name";
 	public static final String COL_DESC = "desc";
 	public static final String COL_DATE = "date";
-	public static final String COL_STATE = "type";
+	public static final String COL_STATE = "state";
+	public static final String COL_SUBJECT = "sbjct";
+	public static final String COL_TYPE = "type";
 
 	private TaskTbl() {
 	}
 
 	/**
 	 * 
-	 * @param db
-	 *            Is NOT closed after use!
+	 * @param db Is NOT closed after use!
 	 */
 	public static boolean CreateTable( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "("
 				+ COL_NAME + " TEXT PRIMARY KEY UNIQUE, "
 				+ COL_DESC + " TEXT, "
 				+ COL_DATE + " LONG NOT NULL, "
-				+ COL_STATE + " INTEGER)";
+				+ COL_STATE + " INTEGER, "
+				+ COL_SUBJECT + " INTEGER, "
+				+ COL_TYPE + " INTEGER)";
 
 		return DBUtils.ExecuteSQL( sql, db );
 	}
 
 	/**
 	 * 
-	 * @param db
-	 *            Is NOT closed after use!
+	 * @param db Is NOT closed after use!
 	 */
 	public static boolean DropTable( SQLiteDatabase db ) {
 		return DBUtils.ExecuteSQL( "DROP TABLE IF EXISTS " + TBL_NAME, db );
@@ -86,6 +88,8 @@ class TaskTbl {
 		task.setDescription( cursor.getString( 1 ) );
 		task.setDate( new Date( cursor.getLong( 2 ) ) );
 		task.setState( cursor.getInt( 3 ) );
+		task.setSubject( cursor.getInt( 4 ) );
+		task.setType( cursor.getInt( 5 ) );
 
 		return task;
 	}
@@ -119,6 +123,8 @@ class TaskTbl {
 		cv.put( COL_DESC, task.getDesciption() );
 		cv.put( COL_DATE, task.getDate().getTime() );
 		cv.put( COL_STATE, task.getState() );
+		cv.put( COL_SUBJECT, task.getSubject() );
+		cv.put( COL_TYPE, task.getType() );
 
 		return cv;
 	}

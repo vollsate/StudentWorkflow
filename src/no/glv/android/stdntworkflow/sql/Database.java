@@ -217,6 +217,11 @@ public class Database extends SQLiteOpenHelper {
 		return retVal == 1;
 	}
 
+	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
 	public boolean insertSubjectTypes( List<SubjectType> list ) {
 		int rows = (int) SubjectTypeTbl.Insert( list, getWritableDatabase() );
 
