@@ -3,7 +3,7 @@ package no.glv.android.stdntworkflow;
 import java.util.List;
 import java.util.Locale;
 
-import no.glv.android.stdntworkflow.SendMultiSMSDialog.OnVerifySendSMSListener;
+import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.SettingsManager;
@@ -148,19 +148,21 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener, 
 		startActivity( intent );
 	}
 
+	/**
+	 * onClick method defined in the XML layout file. Will start the
+	 * SendSMSDialog fragment.
+	 * 
+	 * @param v
+	 */
 	public void sendSMS( View v ) {
 		Parent p = (Parent) v.getTag();
-
-		SendMultiSMSDialog.StartFragment( p.getPhone( Phone.MOBIL ), this, getFragmentManager() );
-		SmsManager manager = SmsManager.getDefault();
-		//manager.sendTextMessage( "" + p.getPhoneNumber( Phone.MOBIL ), null, "Test", null, null );
-		// manager.sendTextMessage( "+4795109798", null, "Test", null, null );
+		SendSMSDialog.StartFragment( p.getPhone( Phone.MOBIL ), this, getFragmentManager() );
 	}
-	
+
 	@Override
 	public void verifySendSMS( List<Phone> p, String msg ) {
 	}
-	
+
 	@Override
 	public void verifySendSMS( Phone p, String msg ) {
 		SmsManager manager = SmsManager.getDefault();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.SendMultiSMSDialog.OnVerifySendSMSListener;
+import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
@@ -174,7 +174,7 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 	 * 
 	 */
 	public void sendSMS() {
-		SendMultiSMSDialog.StartFragment( stdClass, this, getFragmentManager() );
+		SendSMSDialog.StartFragment( stdClass, this, getFragmentManager() );
 	}
 
 	/**

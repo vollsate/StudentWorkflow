@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-public class SendMultiSMSDialog extends DialogFragmentBase implements View.OnClickListener {
+public class SendSMSDialog extends DialogFragmentBase implements View.OnClickListener {
 
 	OnVerifySendSMSListener listener;
 	StudentClass stdClass;
@@ -28,19 +28,19 @@ public class SendMultiSMSDialog extends DialogFragmentBase implements View.OnCli
 
 	private boolean showParentCB;
 
-	public SendMultiSMSDialog() {
+	public SendSMSDialog() {
 		this( true, null );
 	}
 
-	public SendMultiSMSDialog( boolean showParentCheckBox ) {
+	public SendSMSDialog( boolean showParentCheckBox ) {
 		this( showParentCheckBox, null );
 	}
 
-	public SendMultiSMSDialog( Phone phone ) {
+	public SendSMSDialog( Phone phone ) {
 		this( phone == null ? true : false, phone );
 	}
 
-	public SendMultiSMSDialog( boolean showParentCheckBox, Phone phone ) {
+	public SendSMSDialog( boolean showParentCheckBox, Phone phone ) {
 		this.showParentCB = showParentCheckBox;
 		this.p = phone;
 	}
@@ -149,7 +149,7 @@ public class SendMultiSMSDialog extends DialogFragmentBase implements View.OnCli
 	 * @param manager
 	 * @return
 	 */
-	public static SendMultiSMSDialog StartFragment( StudentClass stdClass, OnVerifySendSMSListener listener,
+	public static SendSMSDialog StartFragment( StudentClass stdClass, OnVerifySendSMSListener listener,
 			FragmentManager manager ) {
 		return StartFragment( stdClass, null, listener, manager );
 	}
@@ -161,7 +161,7 @@ public class SendMultiSMSDialog extends DialogFragmentBase implements View.OnCli
 	 * @param manager
 	 * @return
 	 */
-	public static SendMultiSMSDialog StartFragment( Phone p, OnVerifySendSMSListener listener,
+	public static SendSMSDialog StartFragment( Phone p, OnVerifySendSMSListener listener,
 			FragmentManager manager ) {
 		return StartFragment( null, p, listener, manager );
 	}
@@ -174,9 +174,9 @@ public class SendMultiSMSDialog extends DialogFragmentBase implements View.OnCli
 	 * @param manager
 	 * @return
 	 */
-	public static SendMultiSMSDialog StartFragment( StudentClass stdClass, Phone p, OnVerifySendSMSListener listener,
+	public static SendSMSDialog StartFragment( StudentClass stdClass, Phone p, OnVerifySendSMSListener listener,
 			FragmentManager manager ) {
-		SendMultiSMSDialog fragment = new SendMultiSMSDialog( p );
+		SendSMSDialog fragment = new SendSMSDialog( p );
 		fragment.listener = listener;
 		fragment.stdClass = stdClass;
 
