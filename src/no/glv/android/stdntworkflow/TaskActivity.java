@@ -1,6 +1,7 @@
 package no.glv.android.stdntworkflow;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -13,6 +14,7 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import no.glv.android.stdntworkflow.sql.DBUtils;
@@ -38,6 +40,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -242,6 +245,8 @@ public class TaskActivity extends BaseTabActivity {
 			Task.OnTaskChangeListener {
 
 		private Task task;
+		private ArrayList<String> mSubjectNames;
+		private ArrayList<String> mTypesNames;
 
 		@Override
 		public void onDestroy() {
@@ -273,11 +278,34 @@ public class TaskActivity extends BaseTabActivity {
 
 				}
 			} );
+			
+			Spinner sp = (Spinner) getSinner( R.id.SP_task_subject );
+			SubjectType st = DataHandler.GetInstance().getSubjectType( task.getSubject() );
+			SetupSpinner( sp, getSubjectNames(), st.getName(), getActivity() );
+			sp = (Spinner) getSinner( R.id.SP_task_type );
+			st = DataHandler.GetInstance().getSubjectType( task.getType() );
+			SetupSpinner( sp, getTypesNames(), st.getName(), getActivity() );
 
 			setCounters();
 			getInstalledClassesFR( savedInstanceState );
 
 			return rootView;
+		}
+
+		public ArrayList<String> getTypesNames() {
+			if ( mTypesNames == null ) {
+				mTypesNames = new ArrayList<String>( DataHandler.GetInstance().getTypeNames() );
+			}
+
+			return mTypesNames;
+		}
+
+		private ArrayList<String> getSubjectNames() {
+			if ( mSubjectNames == null ) {
+				mSubjectNames = new ArrayList<String>( DataHandler.GetInstance().getSubjectNames() );
+			}
+
+			return mSubjectNames;
 		}
 
 		/**

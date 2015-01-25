@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -10,7 +11,6 @@ import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 /**
@@ -31,32 +32,89 @@ import android.widget.Toast;
  * @author GleVoll
  *
  */
-public class NewTaskActivity extends Activity implements OnClickListener, OnDateSetListener, OnStudentsVerifiedListener {
+public class NewTaskActivity extends BaseActivity implements OnClickListener, OnDateSetListener, OnStudentsVerifiedListener {
+
+	private static final String ST_SUBJECTS = "st.subjects";
+	private static final String ST_TYPES = "st.types";
 
 	private static final String TAG = NewTaskActivity.class.getSimpleName();
 	private Task task;
+
+	private ArrayList<String> mSubjectNames;
+	private ArrayList<String> mTypesNames;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_new_task );
-		if ( savedInstanceState != null )
+
+		// Get stored data
+		if ( savedInstanceState != null ) {
 			task = (Task) savedInstanceState.getSerializable( Task.EXTRA_TASKNAME );
+			mSubjectNames = savedInstanceState.getStringArrayList( ST_SUBJECTS );
+			mTypesNames = savedInstanceState.getStringArrayList( ST_TYPES );
+		}
 		else
 			task = DataHandler.GetInstance().createTask();
 
+		// Add button listeners
 		Button btn = (Button) findViewById( R.id.BTN_newTask_create );
 		btn.setOnClickListener( this );
 		btn = (Button) findViewById( R.id.BTN_newTask_date );
 		btn.setOnClickListener( this );
 
+		// Set the todays date on the EditText
 		EditText eText = (EditText) findViewById( R.id.ET_newTask_date );
 		eText.setText( BaseActivity.GetDateAsString( Calendar.getInstance().getTime() ) );
 
+		setupSpinners();
+
+		// Load the classes that may be added to the task. Will be installed in
+		// a container.
 		AddClassToTaskFragment fragment = new AddClassToTaskFragment();
 		Bundle args = new Bundle();
 		args.putSerializable( Task.EXTRA_TASKNAME, task );
 		ViewGroupAdapter.beginFragmentTransaction( getFragmentManager(), fragment, args, R.id.LL_newTask_classes );
+	}
+
+	/**
+	 * 
+	 */
+	private void setupSpinners() {
+		String[] subjects = getResources().getStringArray( R.array.task_subjects );
+		String types[] = getResources().getStringArray( R.array.task_types );
+
+		// Set the proper SubjectTypes to the spinners
+		SetupSpinner( getSubjectSpinner(), getSubjectNames(), subjects[0], this );
+		SetupSpinner( getTypeSpinner(), getTypesNames(), types[0], this );
+	}
+
+	public ArrayList<String> getTypesNames() {
+		if ( mTypesNames == null ) {
+			mTypesNames = new ArrayList<String>( DataHandler.GetInstance().getTypeNames() );
+		}
+
+		return mTypesNames;
+	}
+
+	private ArrayList<String> getSubjectNames() {
+		if ( mSubjectNames == null ) {
+			mSubjectNames = new ArrayList<String>( DataHandler.GetInstance().getSubjectNames() );
+		}
+
+		return mSubjectNames;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private Spinner getSubjectSpinner() {
+		return (Spinner) findViewById( R.id.SP_newTask_subject );
+	}
+
+	private Spinner getTypeSpinner() {
+		return (Spinner) findViewById( R.id.SP_newTask_type );
 	}
 
 	@Override
@@ -64,6 +122,8 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 		super.onSaveInstanceState( outState );
 
 		outState.putString( Task.EXTRA_TASKNAME, task.getName() );
+		outState.putStringArrayList( ST_SUBJECTS, mSubjectNames );
+		outState.putStringArrayList( ST_TYPES, mTypesNames );
 	}
 
 	@Override
@@ -119,6 +179,18 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 		task.setDescription( taskDesc );
 		task.setDate( BaseActivity.GetDateFromString( dateStr ) );
 
+		Spinner spSubject = getSubjectSpinner();
+		//int subPos = spSubject.getSelectedItemPosition();
+		String subStr = spSubject.getSelectedItem().toString();
+
+		Spinner spType = getTypeSpinner();
+		//int typePos = spType.getSelectedItemPosition();
+		String typStr = spType.getSelectedItem().toString();
+		
+		task.setSubject( DataHandler.GetInstance().convertSubjectToID( subStr ) );
+		task.setType( DataHandler.GetInstance().convertTypeToID( typStr ) );
+
+
 		// Show FragmentDialog to confirm all the students in the task
 		AddedStudentsToTaskFragment.StartFragment( task, this, getFragmentManager() );
 		return true;
@@ -130,6 +202,12 @@ public class NewTaskActivity extends Activity implements OnClickListener, OnDate
 		eText.setText( BaseActivity.GetDateAsString( year, monthOfYear, dayOfMonth ) );
 	}
 
+	/**
+	 * Called by the {@link AddedStudentsToTaskFragment} fragment when the user
+	 * has chosen whom to include in the task.
+	 * 
+	 * @param task
+	 */
 	@Override
 	public void onStudentsVerified( Task task ) {
 		DataHandler.GetInstance().addTask( task );
