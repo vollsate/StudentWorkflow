@@ -165,10 +165,6 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener, 
 
 	@Override
 	public void verifySendSMS( Phone p, String msg ) {
-		SmsManager manager = SmsManager.getDefault();
-
-		String num = "+47" + p.getNumber();
-		manager.sendTextMessage( num, null, msg, null, null );
 	}
 
 	/**

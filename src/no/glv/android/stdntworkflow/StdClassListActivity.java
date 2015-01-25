@@ -155,19 +155,11 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 	 * @param msg
 	 */
 	public void verifySendSMS( List<Phone> pList, String msg ) {
-		for ( Phone p : pList ) {
-			verifySendSMS( p, msg );
-		}
-
 		Toast.makeText( this, "Sendt SMS til " + pList.size() + " foresatt(e)", Toast.LENGTH_LONG ).show();
 	}
 	
 	@Override
 	public void verifySendSMS( Phone p, String msg ) {
-		SmsManager manager = SmsManager.getDefault();
-
-		String num = "+47" + p.getNumber();
-		manager.sendTextMessage( num, null, msg, null, null );
 	}
 
 	/**
