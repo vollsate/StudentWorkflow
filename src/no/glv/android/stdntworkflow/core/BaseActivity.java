@@ -5,6 +5,7 @@ package no.glv.android.stdntworkflow.core;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +23,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 /**
  * @author GleVoll
@@ -35,6 +38,21 @@ public class BaseActivity extends Activity {
 
 	public BaseActivity() {
 		super();
+	}
+	
+	/**
+	 * 
+	 * @param resource
+	 * @param spinner
+	 * @param data
+	 * @param selected
+	 */
+	public static void SetupSpinner(Spinner spinner, ArrayList<String> data, String selected, Context ctx ) {
+		// Set the proper SubjectTypes to the spinners
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>( ctx, android.R.layout.simple_spinner_dropdown_item,
+				data );
+		spinner.setAdapter( adapter );
+		spinner.setSelection( data.indexOf( selected ) );
 	}
 
 	/**

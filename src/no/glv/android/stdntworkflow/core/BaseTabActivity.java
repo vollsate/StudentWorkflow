@@ -3,7 +3,6 @@ package no.glv.android.stdntworkflow.core;
 import java.util.Locale;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 /**
@@ -25,7 +25,7 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public abstract class BaseTabActivity extends Activity implements ActionBar.TabListener {
+public abstract class BaseTabActivity extends BaseActivity implements ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -242,6 +242,10 @@ public abstract class BaseTabActivity extends Activity implements ActionBar.TabL
 
 		protected Button getButton( int id ) {
 			return (Button) rootView.findViewById( id );
+		}
+		
+		protected Spinner getSinner( int id ) {
+			return (Spinner) rootView.findViewById( id );
 		}
 	}
 

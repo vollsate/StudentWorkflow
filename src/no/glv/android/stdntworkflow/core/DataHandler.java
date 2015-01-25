@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,6 +93,9 @@ public class DataHandler {
 	/** All the loaded tasks from the database */
 	private TreeMap<String, Task> tasks;
 
+	private TreeMap<String, SubjectType> mTaskSubjects;
+	private TreeMap<String, SubjectType> mTaskTypes;
+
 	/** Singleton instance */
 	private static DataHandler instance;
 	private static boolean isInitiated = false;
@@ -105,7 +109,7 @@ public class DataHandler {
 	 * 
 	 * @return
 	 * @throws IllegalStateException
-	 *             if Init has not been called first!
+	 *             if {@link #Init(Application)} has not been called first!
 	 */
 	public static final DataHandler GetInstance() {
 		if ( !isInitiated )
@@ -148,6 +152,7 @@ public class DataHandler {
 
 		instance.loadStudentClasses();
 		instance.loadTasks();
+		instance.loadSubjectTypes();
 
 		isInitiated = true;
 		return instance;
@@ -200,6 +205,9 @@ public class DataHandler {
 	private void initiateMaps() {
 		stdClasses = new TreeMap<String, StudentClass>();
 		tasks = new TreeMap<String, Task>();
+		
+		mTaskSubjects = new TreeMap<String, SubjectType>();
+		mTaskTypes = new TreeMap<String, SubjectType>();
 	}
 
 	/**
@@ -468,8 +476,15 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
+	/**
+	 * Will create the default {@link SubjectType} the system knows. These are
+	 * located in
+	 * an XML file in the <tt>values</tt> folder.
+	 */
 	private void initSubjectTypes() {
+		// Get the default arrays
 		String[] subjects = mApp.getResources().getStringArray( R.array.task_subjects );
+		String[] types = mApp.getResources().getStringArray( R.array.task_types );
 		String defDesc = mApp.getResources().getString( R.string.task_st_subjects_defaultDesc );
 		LinkedList<SubjectType> list = new LinkedList<SubjectType>();
 
@@ -482,12 +497,101 @@ public class DataHandler {
 			list.add( st );
 		}
 
+		for ( String s : types ) {
+			SubjectType st = db.createSubjectType();
+			st.setDescription( defDesc );
+			st.setName( s );
+			st.setType( SubjectType.TYPE_TYPE );
+
+			list.add( st );
+		}
+
 		try {
 			db.insertSubjectTypes( list );
 		}
 		catch ( Exception e ) {
 			Log.e( TAG, "Error initiating SubjectTypes", e );
 		}
+	}
+
+	/**
+	 * Loads all the {@link SubjectType} instances found in the
+	 * database. These types are stored in memory by the application.
+	 */
+	private void loadSubjectTypes() {
+		List<SubjectType> list = db.loadSubjectTypes();
+		for ( SubjectType st : list ) {
+			if ( st.getType() == SubjectType.TYPE_SUBJECT)
+				mTaskSubjects.put( st.getName(), st );
+			else
+				mTaskTypes.put( st.getName(), st );
+		}
+	}
+	
+	/**
+	 * Gets a reference to all installed SubjectType.TYPE_SUBJECT
+	 * @return
+	 */
+	public Collection<SubjectType> getSubjects() {
+		return mTaskSubjects.values();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Collection<String> getSubjectNames() {
+		return mTaskSubjects.keySet();
+	}
+	
+	public Collection<String> getTypeNames() {
+		return mTaskTypes.keySet();
+	}
+	
+	public SubjectType getSubjectType( int id ) {
+		for ( SubjectType st : mTaskSubjects.values() ) {
+			if (st.getID() == id ) return st;
+		}
+		
+		for ( SubjectType st : mTaskTypes.values() ) {
+			if (st.getID() == id ) return st;
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Converts the name of an {@link SubjectType} to the ID it is stored
+	 * with in the Database.
+	 * 
+	 * @param subject Name of the {@link SubjectType} to look for.
+	 * @return -1 if the subject is not found.
+	 */
+	public int convertSubjectToID( String subject ) {
+		return convertSubjectTypeToID( mTaskSubjects, subject );
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public int convertTypeToID( String type ) {		
+		return convertSubjectTypeToID( mTaskTypes, type );
+	}
+	
+	/**
+	 * 
+	 * @param map
+	 * @param name
+	 * @return
+	 */
+	private int convertSubjectTypeToID( Map<String, SubjectType> map, String name) {
+		if ( !map.containsKey( name ) )
+			return -1;
+
+		SubjectType st = map.get( name );
+		return st.getID();
 	}
 
 	/**
