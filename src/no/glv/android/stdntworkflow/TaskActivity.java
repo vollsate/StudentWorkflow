@@ -67,6 +67,7 @@ public class TaskActivity extends BaseTabActivity {
 		super.onCreate( savedInstanceState );
 
 		mTask = getDataHandler().getTask( getTaskName() );
+		setTitle( mTask.getName() );
 	}
 
 	@Override
