@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="nav_drawer_items">
+        <item>Klasser</item>
+        <item>Oppgaver</item>
+        <item>Fag og oppgavetyper</item>
+    </string-array>
+
+    <string-array name="nav_drawer_icons">
+        <item>@drawable/ic_action_group</item>
+        <item>@drawable/ic_action_task</item>
+        <item>@drawable/student</item>
+    </string-array>
+
+</resources>
