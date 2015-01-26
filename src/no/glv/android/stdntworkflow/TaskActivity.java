@@ -196,16 +196,26 @@ public class TaskActivity extends BaseTabActivity {
      * 
      */
 	private void updateTask() {
+		// Get the basic string data
 		String newName = ( (TextView) findViewById( R.id.ET_task_name ) ).getText().toString();
 		String newDesc = ( (TextView) findViewById( R.id.ET_task_desc ) ).getText().toString();
 		String newDate = ( (TextView) findViewById( R.id.ET_task_date ) ).getText().toString();
+		
+		// Get the subject types
+		String subject = ( (Spinner) findViewById( R.id.SP_task_subject ) ).getSelectedItem().toString();
+		String type = ( (Spinner) findViewById( R.id.SP_task_type ) ).getSelectedItem().toString();
+		int iSub = getDataHandler().convertSubjectToID( subject );
+		int iTyp = getDataHandler().convertTypeToID( type );
 
+		// Save the old name, just in case..
 		String oldName = mTask.getName();
 		Date date = BaseActivity.GetDateFromString( newDate );
 
 		mTask.setName( newName );
 		mTask.setDescription( newDesc );
 		mTask.setDate( date );
+		mTask.setSubject( iSub );
+		mTask.setType( iTyp );
 
 		getDataHandler().updateTask( mTask, oldName );
 		classesFragment.adapter.notifyDataSetChanged();
