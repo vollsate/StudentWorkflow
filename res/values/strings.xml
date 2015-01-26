@@ -118,6 +118,12 @@
     <string name="task_student_added">Lagt til student: {std}</string>
     <string name="task_class_added">Lagt til klasse: {class}</string>
     <string name="task_class_title">Legg til flere klasser ..</string>
-    
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
 
 </resources>

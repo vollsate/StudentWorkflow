@@ -25,6 +25,7 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
+@SuppressWarnings("deprecation")
 public abstract class BaseTabActivity extends BaseActivity implements ActionBar.TabListener {
 
 	/**
