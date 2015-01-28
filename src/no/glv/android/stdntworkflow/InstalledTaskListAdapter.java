@@ -75,6 +75,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 
 		StudentClassHolder holder = new StudentClassHolder();
 
+		TextView counter = (TextView) myView.findViewById( R.id.counter );
 		TextView textView = (TextView) myView.findViewById( R.id.TV_main_taskName );
 
 		// Setting the StudentClassname as a TAG for this view
@@ -92,6 +93,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 		} );
 
 		holder.textView = textView;
+		holder.counter = counter;
 		holder.ID = position;
 		myView.setTag( holder );
 
@@ -106,6 +108,7 @@ public class InstalledTaskListAdapter extends ArrayAdapter<String> {
 	static class StudentClassHolder {
 
 		TextView textView;
+		TextView counter;
 		int ID;
 
 	}

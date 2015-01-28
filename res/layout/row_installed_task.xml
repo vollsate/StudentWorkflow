@@ -1,10 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
-
+    
+    
+    <TextView android:id="@+id/counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/counter_bg"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"/>
+    
     <TextView
         android:id="@+id/TV.task.name"
         style="@style/TV.std.L.blue"
+        android:layout_toRightOf="@id/counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5sp"
@@ -22,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/TV.task.name"
         android:layout_alignParentRight="true"
+        android:hint="Task desc"
         android:text="TextView" />
 
     <View

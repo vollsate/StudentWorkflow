@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="48dp" 
-    android:background="@drawable/list_selector">
+    android:background="@drawable/navdrawer_list_selector">
 
     <ImageView
         android:id="@+id/icon"
@@ -22,7 +22,7 @@
         android:layout_toRightOf="@id/icon"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="@color/list_item_title"
+        android:textColor="@color/nav_drawer_title"
         android:gravity="center_vertical"
         android:paddingRight="40dp"/>
     

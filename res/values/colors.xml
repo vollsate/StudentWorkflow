@@ -17,4 +17,12 @@
     <color name="list_divider">#272727</color>
     
 
+    <!-- NAV DRAWER -->
+    <color name="nav_drawer_title">#ffffff</color>
+    <color name="nav_drawer_background">#669999</color>
+    <color name="nav_drawer_background_pressed">#992416</color>
+    <color name="nav_drawer_divider">#272727</color>
+    <color name="counter_text_bg">#626262</color>
+    <color name="counter_text_color">#c5c4c4</color>
+
 </resources>

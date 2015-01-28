@@ -3,13 +3,18 @@ package no.glv.android.stdntworkflow;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 /**
@@ -23,46 +28,39 @@ import android.widget.Toast;
  * @author GleVoll
  *
  */
-public class MainActivity extends Activity {
+public class MainFragment extends Fragment {
 
-	private static final String TAG = MainActivity.class.getSimpleName();
+	private static final String TAG = MainFragment.class.getSimpleName();
 
 	public static final String STATE_APP_INIT = "stdntWF.init";
 
 	DataHandler dataHandler;
 
-	public MainActivity() {
+	public MainFragment() {
 		Log.i( TAG, "Constructor" );
 	}
-
-	/**
-	 * Will initiate the {@link DataHandler} for the rest of the application.
-	 * 
-	 * Listeners for StudentClass change and Task change are added
-	 */
-	private void init() {
-		dataHandler = DataHandler.Init( getApplication() );
+	
+	@Override
+	public void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+		
+		dataHandler = DataHandler.GetInstance();
 	}
 
 	@Override
-	protected void onSaveInstanceState( Bundle outState ) {
-		super.onSaveInstanceState( outState );
-
-		Log.i( TAG, "onSaveInstanceState()" );
-	}
-
-	@Override
-	protected void onCreate( Bundle savedInstanceState ) {
+	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 		Log.i( TAG, "onCreate()" );
 
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_main );
+		//setContentView( R.layout.activity_main );
+		View rootView = inflater.inflate( R.layout.activity_main, container, false );
 
-		setTitle( getResources().getString( R.string.app_name ) );
-		init();
+		getActivity().setTitle( getResources().getString( R.string.app_name ) );
 
 		getInstalledClassesFR( savedInstanceState, false );
 		getInstalledTasksFR( savedInstanceState, false );
+
+		return rootView;
 	}
 
 	/**
@@ -143,10 +141,14 @@ public class MainActivity extends Activity {
 	/**
 	 * 
 	 */
-	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		getMenuInflater().inflate( R.menu.menu_main, menu );
+		//getMenuInflater().inflate( R.menu.menu_main, menu );
 		return true;
+	}
+	
+	@Override
+	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
+		inflater.inflate( R.menu.menu_main, menu );
 	}
 
 	/**
@@ -159,7 +161,7 @@ public class MainActivity extends Activity {
 
 		switch ( id ) {
 			case R.id.menu_settings:
-				intent = new Intent( this, SettingsActivity.class );
+				intent = new Intent( getActivity(), SettingsActivity.class );
 				break;
 
 			case R.id.menu_resetDB:
@@ -167,11 +169,11 @@ public class MainActivity extends Activity {
 				break;
 
 			case R.id.menu_newTask:
-				intent = new Intent( this, NewTaskActivity.class );
+				intent = new Intent( getActivity(), NewTaskActivity.class );
 				break;
 
 			case R.id.menu_loadData:
-				intent = new Intent( this, LoadDataActivity.class );
+				intent = new Intent( getActivity(), LoadDataActivity.class );
 				break;
 
 			case R.id.menu_listDB:
@@ -188,7 +190,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void resetDB() {
-		AlertDialog.Builder builder = new AlertDialog.Builder( this );
+		AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
 		String msg = getResources().getString( R.string.action_resetDB_msg );
 
 		builder.setMessage( msg ).setTitle( R.string.action_resetDB );
@@ -197,7 +199,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick( DialogInterface dialog, int which ) {
 				dataHandler.resetDB();
-				Toast.makeText( MainActivity.this, R.string.action_resetDB_done, Toast.LENGTH_LONG ).show();
+				Toast.makeText( MainFragment.this.getActivity(), R.string.action_resetDB_done, Toast.LENGTH_LONG ).show();
 			}
 		} );
 
