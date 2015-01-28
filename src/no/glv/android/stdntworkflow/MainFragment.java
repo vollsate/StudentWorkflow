@@ -1,7 +1,7 @@
 package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
-import android.app.Activity;
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -18,7 +18,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 /**
- * Main task that shows the first page.
+ * Main fragment that shows the first page. This fragment will list all the
+ * classes installed on the system and any open tasks.
+ * 
+ * <p>
  * 
  * - The user may look at a class or a task - A new task may be loaded - A new
  * class may be installed
@@ -39,11 +42,12 @@ public class MainFragment extends Fragment {
 	public MainFragment() {
 		Log.i( TAG, "Constructor" );
 	}
-	
+
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		
+		setHasOptionsMenu( true );
+
 		dataHandler = DataHandler.GetInstance();
 	}
 
@@ -52,7 +56,7 @@ public class MainFragment extends Fragment {
 		Log.i( TAG, "onCreate()" );
 
 		super.onCreate( savedInstanceState );
-		//setContentView( R.layout.activity_main );
+		// setContentView( R.layout.activity_main );
 		View rootView = inflater.inflate( R.layout.activity_main, container, false );
 
 		getActivity().setTitle( getResources().getString( R.string.app_name ) );
@@ -89,6 +93,7 @@ public class MainFragment extends Fragment {
 		InstalledTasksFragment tasksFragment = new InstalledTasksFragment();
 		Bundle args = new Bundle();
 		args.putInt( InstalledTasksFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
+		args.putInt( InstalledTasksFragment.PARAM_TASK_STATE, Task.TASK_STATE_OPEN );
 		tasksFragment.setArguments( args );
 
 		FragmentTransaction tr = getFragmentManager().beginTransaction();
@@ -142,10 +147,10 @@ public class MainFragment extends Fragment {
 	 * 
 	 */
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		//getMenuInflater().inflate( R.menu.menu_main, menu );
+		// getMenuInflater().inflate( R.menu.menu_main, menu );
 		return true;
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
 		inflater.inflate( R.menu.menu_main, menu );
@@ -199,7 +204,8 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick( DialogInterface dialog, int which ) {
 				dataHandler.resetDB();
-				Toast.makeText( MainFragment.this.getActivity(), R.string.action_resetDB_done, Toast.LENGTH_LONG ).show();
+				Toast.makeText( MainFragment.this.getActivity(), R.string.action_resetDB_done, Toast.LENGTH_LONG )
+						.show();
 			}
 		} );
 
