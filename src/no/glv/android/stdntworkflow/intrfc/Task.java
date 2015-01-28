@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import android.os.Parcelable;
 import no.glv.android.stdntworkflow.core.DataHandler;
 
 /**
@@ -78,11 +77,11 @@ public interface Task extends Serializable {
 	public static final int HANDIN_CANCEL = 512;
 
 	/** The task is open for handing in. This is the default state */
-	public static final int TASK_STATE_OPEN = 0;
+	public static final int TASK_STATE_OPEN = 1;
 	/**  */
-	public static final int TASK_STATE_CLOSED = 1;
+	public static final int TASK_STATE_CLOSED = 2;
 	/**  */
-	public static final int TASK_STATE_EXPIRED = 2;
+	public static final int TASK_STATE_EXPIRED = 4;
 
 	/**  */
 	public static final String EXTRA_TASKNAME = BaseValues.EXTRA_BASEPARAM + "task";
@@ -165,13 +164,13 @@ public interface Task extends Serializable {
 	 *            The tasks description. May be null
 	 */
 	public void setDescription( String desc );
-	
+
 	public int getSubject();
-	
+
 	public void setSubject( int subject );
-	
+
 	public int getType();
-	
+
 	public void setType( int type );
 
 	/**
