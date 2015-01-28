@@ -2,7 +2,7 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
+import no.glv.android.stdntworkflow.core.DataHandler.OnChangeListener;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import android.content.Context;
@@ -72,9 +72,10 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 	public void onDataChange( int mode ) {
 		ViewGroup rootView = getRootView();
 		switch ( mode ) {
-			case OnStudentClassChangeListener.MODE_ADD:
-			case OnStudentClassChangeListener.MODE_UPD:
-			case OnStudentClassChangeListener.MODE_DEL:
+			case OnChangeListener.MODE_ADD:
+			case OnChangeListener.MODE_UPD:
+			case OnChangeListener.MODE_DEL:
+			case OnChangeListener.MODE_CLS:
 				rootView.removeAllViewsInLayout();
 				notifyDataSetChanged();
 				break;
