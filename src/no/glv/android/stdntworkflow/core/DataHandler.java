@@ -108,8 +108,8 @@ public class DataHandler {
 	/**
 	 * 
 	 * @return
-	 * @throws IllegalStateException
-	 *             if {@link #Init(Application)} has not been called first!
+	 * @throws IllegalStateException if {@link #Init(Application)} has not been
+	 *             called first!
 	 */
 	public static final DataHandler GetInstance() {
 		if ( !isInitiated )
@@ -205,7 +205,7 @@ public class DataHandler {
 	private void initiateMaps() {
 		stdClasses = new TreeMap<String, StudentClass>();
 		tasks = new TreeMap<String, Task>();
-		
+
 		mTaskSubjects = new TreeMap<String, SubjectType>();
 		mTaskTypes = new TreeMap<String, SubjectType>();
 	}
@@ -249,8 +249,7 @@ public class DataHandler {
 	 * 
 	 * The complete list will be sorted by the default listing: ident ascending.
 	 * 
-	 * @param task
-	 *            The task the StudentTask instance is connected to.
+	 * @param task The task the StudentTask instance is connected to.
 	 * @param stdTasks
 	 */
 	private void setUpStudentTask( Task task, List<StudentTask> stdTasks ) {
@@ -309,8 +308,7 @@ public class DataHandler {
 	 * Populates the {@link Student} instance with the parents and the phone
 	 * data
 	 * 
-	 * @param student
-	 *            The student to populate
+	 * @param student The student to populate
 	 */
 	private void populateStudent( Student student ) {
 		student.addParents( db.loadParents( student.getIdent() ) );
@@ -478,8 +476,7 @@ public class DataHandler {
 
 	/**
 	 * Will create the default {@link SubjectType} the system knows. These are
-	 * located in
-	 * an XML file in the <tt>values</tt> folder.
+	 * located in an XML file in the <tt>values</tt> folder.
 	 */
 	private void initSubjectTypes() {
 		// Get the default arrays
@@ -515,27 +512,28 @@ public class DataHandler {
 	}
 
 	/**
-	 * Loads all the {@link SubjectType} instances found in the
-	 * database. These types are stored in memory by the application.
+	 * Loads all the {@link SubjectType} instances found in the database. These
+	 * types are stored in memory by the application.
 	 */
 	private void loadSubjectTypes() {
 		List<SubjectType> list = db.loadSubjectTypes();
 		for ( SubjectType st : list ) {
-			if ( st.getType() == SubjectType.TYPE_SUBJECT)
+			if ( st.getType() == SubjectType.TYPE_SUBJECT )
 				mTaskSubjects.put( st.getName(), st );
 			else
 				mTaskTypes.put( st.getName(), st );
 		}
 	}
-	
+
 	/**
 	 * Gets a reference to all installed SubjectType.TYPE_SUBJECT
+	 * 
 	 * @return
 	 */
 	public Collection<SubjectType> getSubjects() {
 		return mTaskSubjects.values();
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -543,26 +541,28 @@ public class DataHandler {
 	public Collection<String> getSubjectNames() {
 		return mTaskSubjects.keySet();
 	}
-	
+
 	public Collection<String> getTypeNames() {
 		return mTaskTypes.keySet();
 	}
-	
+
 	public SubjectType getSubjectType( int id ) {
 		for ( SubjectType st : mTaskSubjects.values() ) {
-			if (st.getID() == id ) return st;
+			if ( st.getID() == id )
+				return st;
 		}
-		
+
 		for ( SubjectType st : mTaskTypes.values() ) {
-			if (st.getID() == id ) return st;
+			if ( st.getID() == id )
+				return st;
 		}
-		
+
 		return null;
 	}
 
 	/**
-	 * Converts the name of an {@link SubjectType} to the ID it is stored
-	 * with in the Database.
+	 * Converts the name of an {@link SubjectType} to the ID it is stored with
+	 * in the Database.
 	 * 
 	 * @param subject Name of the {@link SubjectType} to look for.
 	 * @return -1 if the subject is not found.
@@ -570,23 +570,23 @@ public class DataHandler {
 	public int convertSubjectToID( String subject ) {
 		return convertSubjectTypeToID( mTaskSubjects, subject );
 	}
-	
+
 	/**
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public int convertTypeToID( String type ) {		
+	public int convertTypeToID( String type ) {
 		return convertSubjectTypeToID( mTaskTypes, type );
 	}
-	
+
 	/**
 	 * 
 	 * @param map
 	 * @param name
 	 * @return
 	 */
-	private int convertSubjectTypeToID( Map<String, SubjectType> map, String name) {
+	private int convertSubjectTypeToID( Map<String, SubjectType> map, String name ) {
 		if ( !map.containsKey( name ) )
 			return -1;
 
@@ -603,6 +603,34 @@ public class DataHandler {
 	}
 
 	/**
+	 * Finds any tasks that matches the flag. The flag must be one of the states
+	 * a {@link Task} may be in: <tt>TASK_STATE_OPEN</tt>,
+	 * <tt>TASK_STATE_CLOSED</tt> or <tt>TASK_STATE_EXPIRED</tt> or any
+	 * combination of the them.
+	 * 
+	 * @return A List of every task in the system where the tasks state matches
+	 *         the flag
+	 */
+	public List<String> getTaskNames( int flag ) {
+		List<String> tasks = new LinkedList<String>();
+
+		for ( Task t : this.tasks.values() ) {
+			int state = t.getState();
+			if ( ( state & flag ) == Task.TASK_STATE_OPEN ) {
+				tasks.add( t.getName() );
+			}
+			if ( ( state & flag ) == Task.TASK_STATE_CLOSED ) {
+				tasks.add( t.getName() );
+			}
+			if ( ( state & flag ) == Task.TASK_STATE_EXPIRED ) {
+				tasks.add( t.getName() );
+			}
+		}
+
+		return tasks;
+	}
+
+	/**
 	 * 
 	 * @return
 	 */
@@ -612,8 +640,7 @@ public class DataHandler {
 
 	/**
 	 * 
-	 * @param name
-	 *            Name of {@link Task} to find.
+	 * @param name Name of {@link Task} to find.
 	 * @return The actual task, or NULL if not found
 	 */
 	public Task getTask( String name ) {
@@ -727,10 +754,21 @@ public class DataHandler {
 	 * @return
 	 */
 	public boolean closeTask( String name ) {
-		Task task = getTask( name );
+		return closeTask( getTask( name ) );
+	}
+
+	/**
+	 * 
+	 * @param task
+	 * @return
+	 */
+	public boolean closeTask( Task task ) {
 		task.setState( Task.TASK_STATE_CLOSED );
 
-		return db.updateTask( task, task.getName() );
+		boolean succes = db.updateTask( task, task.getName() );
+		notifyTaskChange( task, OnChangeListener.MODE_CLS );
+
+		return succes;
 	}
 
 	/**
@@ -849,8 +887,7 @@ public class DataHandler {
 	 * is involved in a specific, and open Task, the StudentClass cannot be
 	 * deleted.
 	 * 
-	 * @param stdClass
-	 *            The {@link StudentClass} to check.
+	 * @param stdClass The {@link StudentClass} to check.
 	 * @return true if deletable
 	 */
 	public boolean isStudentClassDeletable( StudentClass stdClass ) {
@@ -1013,8 +1050,7 @@ public class DataHandler {
 	 * Fullt navn
 	 * 
 	 * @return A ready formatted StudentClass instance
-	 * @throws IOException
-	 *             if any I/O error occurs
+	 * @throws IOException if any I/O error occurs
 	 */
 	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 		FileInputStream fis;
@@ -1071,8 +1107,7 @@ public class DataHandler {
 
 	/**
 	 * 
-	 * @param stdString
-	 *            A new Student implementation from a semicolon separated
+	 * @param stdString A new Student implementation from a semicolon separated
 	 *            String.
 	 * @return
 	 */
@@ -1278,8 +1313,7 @@ public class DataHandler {
 	 * Loads every locally stored StudentClass. Every classfile MUST have the
 	 * suffix STDCLASS_FILE_SUFFIX
 	 * 
-	 * @param ctx
-	 *            The Context used to access the local filesystem
+	 * @param ctx The Context used to access the local filesystem
 	 */
 	public static void LoadLocalStudentClasses( Context ctx ) {
 		if ( islocalStudentClassesLoaded )
@@ -1477,7 +1511,9 @@ public class DataHandler {
 	public static interface OnChangeListener {
 		public static final int MODE_ADD = 1;
 		public static final int MODE_DEL = 2;
-		public static final int MODE_UPD = 3;
+		public static final int MODE_UPD = 4;
+
+		public static final int MODE_CLS = 8;
 	}
 
 	/**
