@@ -133,7 +133,7 @@ public class TaskActivity extends BaseTabActivity {
 				return true;
 
 			case R.id.task_action_close:
-				getDataHandler().closeTask( mTask.getName() );
+				getDataHandler().closeTask( mTask );
 				return true;
 
 			default:
