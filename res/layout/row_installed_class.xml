@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LL.classList.rowData"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/LL.classList.rowData"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/main_textview"
@@ -25,13 +25,28 @@
 
         <TextView
             android:id="@+id/TV.classList.desc"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/TV.classList.name"
+            android:layout_alignParentRight="true"
             android:layout_gravity="center|clip_horizontal|end"
             android:layout_marginLeft="5dp"
             android:gravity="end"
-            android:hint="12 elever" />
-    </LinearLayout>
+            android:text="@string/students" />
+
+        <TextView
+            android:id="@+id/TV.classList.counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/TV.classList.desc"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@id/TV.classList.desc"
+            android:background="@drawable/counter_bg"
+            android:gravity="center_horizontal"
+            android:hint="-12"
+            android:textColor="@color/counter_text_color_handin" />
+    </RelativeLayout>
 
     <View
         style="@style/divider"
