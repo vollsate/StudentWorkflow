@@ -1,14 +1,14 @@
 package no.glv.android.stdntworkflow;
 
+import no.glv.android.stdntworkflow.InstalledClassesFragment.ClassViewConfig;
+import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,15 +33,9 @@ import android.widget.Toast;
  */
 public class MainFragment extends Fragment {
 
-	private static final String TAG = MainFragment.class.getSimpleName();
-
-	public static final String STATE_APP_INIT = "stdntWF.init";
+	// private static final String TAG = MainFragment.class.getSimpleName();
 
 	DataHandler dataHandler;
-
-	public MainFragment() {
-		Log.i( TAG, "Constructor" );
-	}
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
@@ -53,16 +47,13 @@ public class MainFragment extends Fragment {
 
 	@Override
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		Log.i( TAG, "onCreate()" );
-
 		super.onCreate( savedInstanceState );
-		// setContentView( R.layout.activity_main );
-		View rootView = inflater.inflate( R.layout.activity_main, container, false );
+		View rootView = inflater.inflate( R.layout.fr_main, container, false );
 
 		getActivity().setTitle( getResources().getString( R.string.app_name ) );
 
-		getInstalledClassesFR( savedInstanceState, false );
-		getInstalledTasksFR( savedInstanceState, false );
+		startInstalledClassesFR( savedInstanceState );
+		startInstalledTasksFR( savedInstanceState );
 
 		return rootView;
 	}
@@ -72,39 +63,14 @@ public class MainFragment extends Fragment {
 	 * @param inState
 	 * @return
 	 */
-	private InstalledTasksFragment getInstalledTasksFR( Bundle inState, boolean forceReplace ) {
-		if ( forceReplace ) {
-			return startTaskFramgent( forceReplace );
-		}
+	private void startInstalledTasksFR( Bundle inState ) {
+		TaskViewConfig config = new TaskViewConfig();
+		config.showCounterPending = true;
+		config.showCounterHandin = true;
+		config.showDescription = true;
+		config.tastState = Task.TASK_STATE_OPEN;
 
-		if ( inState == null ) {
-			return startTaskFramgent( false );
-		}
-
-		return (InstalledTasksFragment) getFragmentManager().findFragmentById( R.id.FR_installedTasks_container );
-	}
-
-	/**
-	 * 
-	 * @param replace
-	 * @return
-	 */
-	private InstalledTasksFragment startTaskFramgent( boolean replace ) {
-		InstalledTasksFragment tasksFragment = new InstalledTasksFragment();
-		Bundle args = new Bundle();
-		args.putInt( InstalledTasksFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
-		args.putInt( InstalledTasksFragment.PARAM_TASK_STATE, Task.TASK_STATE_OPEN );
-		tasksFragment.setArguments( args );
-
-		FragmentTransaction tr = getFragmentManager().beginTransaction();
-
-		if ( replace ) {
-			tr.replace( R.id.FR_installedTasks_container, tasksFragment ).commit();
-		}
-		else
-			tr.add( R.id.FR_installedTasks_container, tasksFragment ).commit();
-
-		return tasksFragment;
+		InstalledTasksFragment.StartFragment( getFragmentManager(), config );
 	}
 
 	/**
@@ -112,43 +78,11 @@ public class MainFragment extends Fragment {
 	 * @param inState
 	 * @return
 	 */
-	private InstalledClassesFragment getInstalledClassesFR( Bundle inState, boolean forceReplace ) {
-		if ( forceReplace )
-			startClassesFragment( forceReplace );
-
-		if ( inState == null ) {
-			startClassesFragment( false );
-		}
-
-		return (InstalledClassesFragment) getFragmentManager().findFragmentById( R.id.FR_installedClasses_container );
-	}
-
-	/**
-	 * 
-	 * @param replace
-	 * @return
-	 */
-	private InstalledClassesFragment startClassesFragment( boolean replace ) {
-		InstalledClassesFragment classesFragment = new InstalledClassesFragment();
-		Bundle args = new Bundle();
-		args.putInt( InstalledClassesFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
-		classesFragment.setArguments( args );
-
-		FragmentTransaction tr = getFragmentManager().beginTransaction();
-		if ( replace )
-			tr.replace( R.id.FR_installedClasses_container, classesFragment ).commit();
-		else
-			tr.add( R.id.FR_installedClasses_container, classesFragment ).commit();
-
-		return classesFragment;
-	}
-
-	/**
-	 * 
-	 */
-	public boolean onCreateOptionsMenu( Menu menu ) {
-		// getMenuInflater().inflate( R.menu.menu_main, menu );
-		return true;
+	private void startInstalledClassesFR( Bundle inState ) {
+		ClassViewConfig config = new ClassViewConfig();
+		config.showStudentCount = true;
+		
+		InstalledClassesFragment.StartFragment( getFragmentManager(), config );
 	}
 
 	@Override
@@ -191,15 +125,22 @@ public class MainFragment extends Fragment {
 
 		if ( intent != null )
 			startActivity( intent );
+
 		return true;
 	}
 
+	/**
+	 * Resets the database. Will start up an dialog to confirm such a reset.
+	 * 
+	 * <p>
+	 * This action is not reversible!
+	 */
 	private void resetDB() {
 		AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
 		String msg = getResources().getString( R.string.action_resetDB_msg );
 
 		builder.setMessage( msg ).setTitle( R.string.action_resetDB );
-		builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton( R.string.ok, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick( DialogInterface dialog, int which ) {
@@ -209,7 +150,7 @@ public class MainFragment extends Fragment {
 			}
 		} );
 
-		builder.setNegativeButton( "Avbryt", null );
+		builder.setNegativeButton( R.string.cancel, null );
 
 		AlertDialog dialog = builder.create();
 		dialog.show();

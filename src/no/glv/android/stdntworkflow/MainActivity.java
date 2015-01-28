@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+@SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
@@ -36,22 +37,11 @@ public class MainActivity extends Activity {
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
 
-	private DataHandler dataHandler;
-
-	/**
-	 * Will initiate the {@link DataHandler} for the rest of the application.
-	 * 
-	 * Listeners for StudentClass change and Task change are added
-	 */
-	private void init() {
-		dataHandler = DataHandler.Init( getApplication() );
-	}
-
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_navdrawer );
-		init();
+		DataHandler.Init( getApplication() );
 
 		mTitle = mDrawerTitle = getTitle();
 
@@ -77,12 +67,12 @@ public class MainActivity extends Activity {
 		// Communities, Will add a counter here
 
 		navDrawerItems.add( new NavDrawerItem( navMenuTitles[3], navMenuIcons.getResourceId( 3, -1 ) ) );
-/*
-		// Pages
-		navDrawerItems.add( new NavDrawerItem( navMenuTitles[4], navMenuIcons.getResourceId( 4, -1 ) ) );
-		// What's hot, We will add a counter here
-		navDrawerItems.add( new NavDrawerItem( navMenuTitles[5], navMenuIcons.getResourceId( 5, -1 ), true, "50+" ) );
-*/
+		/*
+		 * // Pages navDrawerItems.add( new NavDrawerItem( navMenuTitles[4],
+		 * navMenuIcons.getResourceId( 4, -1 ) ) ); // What's hot, We will add a
+		 * counter here navDrawerItems.add( new NavDrawerItem( navMenuTitles[5],
+		 * navMenuIcons.getResourceId( 5, -1 ), true, "50+" ) );
+		 */
 		// Recycle the typed array
 		navMenuIcons.recycle();
 
@@ -127,20 +117,13 @@ public class MainActivity extends Activity {
 	/**
 	 * Slide menu item click listener
 	 * */
-	private class SlideMenuClickListener implements
-			ListView.OnItemClickListener {
+	private class SlideMenuClickListener implements ListView.OnItemClickListener {
+		
 		@Override
-		public void onItemClick( AdapterView<?> parent, View view, int position,
-				long id ) {
+		public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
 			// display view for selected nav drawer item
 			displayView( position );
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu( Menu menu ) {
-		//getMenuInflater().inflate( R.menu.menu_main, menu );
-		return true;
 	}
 
 	@Override
@@ -149,16 +132,11 @@ public class MainActivity extends Activity {
 		if ( mDrawerToggle.onOptionsItemSelected( item ) ) {
 			return true;
 		}
-		// Handle action bar actions click
-		switch ( item.getItemId() ) {
-			case R.id.action_settings:
-				return true;
-			default:
-				return super.onOptionsItemSelected( item );
-		}
+
+		return super.onOptionsItemSelected( item );
 	}
 
-	/* *
+	/**
 	 * Called when invalidateOptionsMenu() is triggered
 	 */
 	@Override
@@ -170,7 +148,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Diplaying fragment view for selected nav drawer list item
+	 * Displaying fragment view for selected nav drawer list item
 	 * */
 	private void displayView( int position ) {
 		// update the main content by replacing fragments
