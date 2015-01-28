@@ -1262,54 +1262,6 @@ public class DataHandler {
 	}
 
 	/**
-	 * 
-	 * @param std
-	 * @return
-	 */
-	private static String StudentToDataString( Student std ) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append( std.getGrade() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( ( (StudentBean) std ).birhtToString() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getLastName() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
-		/*
-		 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Mail() );
-		 */
-		return sb.toString();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private static String WriteDataHeader() {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append( "Klasse" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Født" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Fullt navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Adresse" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Postnr" ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( "Foresatt 1 navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 1 mobil" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 1 e-post" ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( "Foresatt 2 navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 2 mobil" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 2 e-post" ).append( STUDENT_PROPERTY_SEP );
-
-		return sb.toString();
-	}
-
-	/**
 	 * Loads every locally stored StudentClass. Every classfile MUST have the
 	 * suffix STDCLASS_FILE_SUFFIX
 	 * 
@@ -1366,36 +1318,6 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
-	/**
-	 * 
-	 * @param activity
-	 */
-	public static void LoadStudentInTasks( Activity activity ) {
-		if ( studentInTasks == null )
-			studentInTasks = new HashMap<String, StudentTaskImpl>();
-
-		FileInputStream fis;
-		BufferedReader buff;
-
-		try {
-			fis = activity.openFileInput( STUDENT_IN_TASK_FILENAME );
-			buff = new BufferedReader( new InputStreamReader( fis ) );
-
-			String readLine = null;
-			while ( ( readLine = buff.readLine() ) != null ) {
-				StudentTaskImpl std = CreateStudentInTasksFromString( readLine );
-				studentInTasks.put( std.getIdent(), std );
-			}
-
-			fis.close();
-		}
-		catch ( FileNotFoundException e ) {
-			Log.e( TAG, "Cannot load " + STUDENT_IN_TASK_FILENAME, e );
-		}
-		catch ( IOException ioe ) {
-			Log.e( TAG, "Failure reading data from " + STUDENT_IN_TASK_FILENAME, ioe );
-		}
-	}
 
 	/**
 	 * 
@@ -1446,24 +1368,6 @@ public class DataHandler {
 		 * ) );
 		 */
 		return sb.toString();
-	}
-
-	/**
-	 * 
-	 * @param data
-	 * @return
-	 */
-	private static StudentTaskImpl CreateStudentInTasksFromString( String data ) {
-		String[] params = data.split( STUDENT_IN_TASK_SEP );
-		String ident = params[0].trim();
-
-		params = params[1].split( STUDENT_IN_TASK_DELIM );
-		List<String> tasks = new ArrayList<String>( params.length );
-		for ( int i = 0; i < params.length; i++ ) {
-			tasks.add( params[i] );
-		}
-
-		return null; // new StudentTaskImpl( ident, tasks );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
