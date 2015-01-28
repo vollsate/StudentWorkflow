@@ -20,6 +20,9 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 
 	public static final String EXTRA_SHOWCOUNT = BaseValues.EXTRA_BASEPARAM + "classesCount";
 
+	/** The configuration data for the fragment */
+	public static final String PARAM_CONFIG = BaseValues.EXTRA_BASEPARAM + "config";
+
 	protected int showClassesCount;
 
 	@Override
