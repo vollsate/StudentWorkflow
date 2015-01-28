@@ -78,28 +78,13 @@ public interface Task extends Serializable {
 
 	/** The task is open for handing in. This is the default state */
 	public static final int TASK_STATE_OPEN = 1;
-	/**  */
+	/** The task is closed for hand in */
 	public static final int TASK_STATE_CLOSED = 2;
-	/**  */
+	/** The task has expired, but still accepts hand ins */
 	public static final int TASK_STATE_EXPIRED = 4;
 
-	/**  */
+	/** The name of the extra parameter when stored on instance save */
 	public static final String EXTRA_TASKNAME = BaseValues.EXTRA_BASEPARAM + "task";
-
-	/**  */
-	public static final String PROP_NAME = "NAME";
-	/**  */
-	public static final String PROP_DESC = "DESC";
-	/**  */
-	public static final String PROP_CLASS = "CLASSES";
-	/**  */
-	public static final String PROP_STDNT = "STUDENT";
-	/**  */
-	public static final String PROP_STDNT_PEND = "STUDENT_PEND";
-	/**  */
-	public static final String PROP_TYPE = "TYPE";
-	/**  */
-	public static final String PROP_DATE = "DATE";
 
 	/**
 	 * 
@@ -147,8 +132,7 @@ public interface Task extends Serializable {
 
 	/**
 	 * 
-	 * @param newState
-	 *            The new state of the task
+	 * @param newState The new state of the task
 	 */
 	public void setState( int newState );
 
@@ -160,11 +144,15 @@ public interface Task extends Serializable {
 
 	/**
 	 * 
-	 * @param desc
-	 *            The tasks description. May be null
+	 * @param desc The tasks description. May be null
 	 */
 	public void setDescription( String desc );
 
+	/**
+	 * Get the subject this class is related to
+	 * 
+	 * @return
+	 */
 	public int getSubject();
 
 	public void setSubject( int subject );
@@ -184,8 +172,7 @@ public interface Task extends Serializable {
 	 * <tt>HANDIN_DATE</tt>. If the hand in is overdue, the flag
 	 * <tt>HANDIN_LATE</tt> is set on the student.
 	 * 
-	 * @param ident
-	 *            The unique identifier of a {@link Student}
+	 * @param ident The unique identifier of a {@link Student}
 	 * @return <code>true</code> if handed in successfully.
 	 */
 	public boolean handIn( String ident );
@@ -193,10 +180,8 @@ public interface Task extends Serializable {
 	/**
 	 * Hand in a students task with a specific mode.
 	 * 
-	 * @param ident
-	 *            The student ID.
-	 * @param mode
-	 *            The mode.
+	 * @param ident The student ID.
+	 * @param mode The mode.
 	 * @return <code>true</code> if handed in successfully.
 	 */
 	public boolean handIn( String ident, int mode );
@@ -334,8 +319,7 @@ public interface Task extends Serializable {
 	 * student will be moved to the tasks history as an removed student. Commit
 	 * the change to the database before calling <tt>markAsCommitted</tt>
 	 * 
-	 * @param ident
-	 *            The identity of the Student
+	 * @param ident The identity of the Student
 	 * @return true if the Student was removed
 	 */
 	public boolean removeStudent( String ident );
@@ -348,16 +332,14 @@ public interface Task extends Serializable {
 	 * The student will not be registered in the database. This must be done
 	 * through the {@link DataHandler}.
 	 * 
-	 * @param ident
-	 *            The ID of the student.
+	 * @param ident The ID of the student.
 	 * @return <code>true</code> if successfully added.
 	 */
 	public boolean addStudent( Student ident );
 
 	/**
 	 * 
-	 * @param className
-	 *            Name of class to check for.
+	 * @param className Name of class to check for.
 	 * @return <code>true</code> if Task has this class registered.
 	 */
 	public boolean hasClass( String className );
@@ -367,8 +349,7 @@ public interface Task extends Serializable {
 	 * task. The task will check every student, and not differentiate between
 	 * different classes.
 	 * 
-	 * @param ident
-	 *            The ID of the student.
+	 * @param ident The ID of the student.
 	 * @return <code>true</code> if student is registered in task.
 	 */
 	public boolean hasStudent( String ident );
@@ -431,6 +412,19 @@ public interface Task extends Serializable {
 	public List<StudentTask> getRemovedStudents();
 
 	/**
+	 * A callback interface used when a the following updates happen to the
+	 * task:
+	 * 
+	 * <blockquote>
+	 * <ul>
+	 * <li>Date is changed
+	 * <li>Name is changed
+	 * <li>Description has changed
+	 * <li>A student is added, deleted, updated or hands in
+	 * <li>A class is added, deleted or updated
+	 * </ul>
+	 * </blockquote>
+	 * 
 	 * @author glevoll
 	 */
 	public static interface OnTaskChangeListener {
@@ -442,6 +436,7 @@ public interface Task extends Serializable {
 		public static final int MODE_STD_ADD = 16;
 		public static final int MODE_STD_DEL = 32;
 		public static final int MODE_STD_UPD = 64;
+		public static final int MODE_STD_HANDIN = 128;
 
 		public static final int MODE_CLS_ADD = 128;
 		public static final int MODE_CLS_DEL = 264;

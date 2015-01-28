@@ -91,15 +91,15 @@ public class TaskImpl implements Task {
 	public void notifyChange() {
 		// Iterator<StudentTask> it = null;
 
-		if ( removedStudents != null ) {
+		if ( removedStudents.size() > 0 ) {
 			notifyChange( OnTaskChangeListener.MODE_STD_DEL );
 		}
 
-		if ( addedStudents != null ) {
+		if ( addedStudents.size() > 0 ) {
 			notifyChange( OnTaskChangeListener.MODE_STD_ADD );
 		}
 
-		if ( mModifiedStudents != null ) {
+		if ( mModifiedStudents.size() > 0 ) {
 			notifyChange( OnTaskChangeListener.MODE_STD_UPD );
 		}
 	}
@@ -209,7 +209,7 @@ public class TaskImpl implements Task {
 		mModifiedStudents.put( stdTask.getIdent(), stdTask );
 		mModified = true;
 
-		notifyChange();
+		notifyChange( OnTaskChangeListener.MODE_STD_HANDIN );
 		return true;
 	}
 

@@ -612,7 +612,7 @@ public class DataHandler {
 	 *         the flag
 	 */
 	public List<String> getTaskNames( int flag ) {
-		List<String> tasks = new LinkedList<String>();
+		List<String> tasks = new ArrayList<String>();
 
 		for ( Task t : this.tasks.values() ) {
 			int state = t.getState();
@@ -929,7 +929,7 @@ public class DataHandler {
 	 * 
 	 * @return
 	 */
-	public List<String> getStudentClassNames() {
+	public ArrayList<String> getStudentClassNames() {
 		return new ArrayList<String>( stdClasses.keySet() );
 	}
 
