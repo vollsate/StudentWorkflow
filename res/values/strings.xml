@@ -15,7 +15,8 @@
     <string name="action_loadData">Installer ny klasse</string>
     <string name="action_newTask">Lag ny oppgave</string>
     <string name="action_list">Elevliste</string>
-
+    <string name="students"> elever</string>
+    
     <!-- LOAD DATA -->
 
     <string name="loadDataInfo.title">Installere ny klasse</string>
