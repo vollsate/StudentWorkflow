@@ -70,9 +70,7 @@ public class DataHandler {
 	public static final int MODE_RESETDB = Integer.MAX_VALUE;
 
 	private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
-	private static final String STUDENT_IN_TASK_SEP = "=";
 	private static final String STUDENT_PROPERTY_SEP = ";";
-	private static final String STUDENT_IN_TASK_DELIM = ",";
 
 	private static String STDCLASS_FILE_SUFFIX = ".csv";
 
