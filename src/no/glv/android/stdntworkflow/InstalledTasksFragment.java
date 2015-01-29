@@ -69,13 +69,15 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	private ArrayList<String> taskNames;
 
 	/** A list of the counters */
-	private List<TextView> counters;
+	private List<TextView> mPendingCounters;
+	private List<TextView> mHandinCounters;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 
-		counters = new LinkedList<TextView>();
+		mPendingCounters = new LinkedList<TextView>();
+		mHandinCounters = new LinkedList<TextView>();
 
 		if ( savedInstanceState != null ) {
 			config = (TaskViewConfig) savedInstanceState.getSerializable( PARAM_CONFIG );
@@ -129,7 +131,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 			t.removeOnTaskChangeListener( this );
 		}
 
-		counters.clear();
+		mPendingCounters.clear();
 		super.onDestroy();
 	}
 
@@ -195,7 +197,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 				}
 			} );
 			
-			counters.add( tvCountPending );
+			mPendingCounters.add( tvCountPending );
 		}
 
 		// Set the Student hand in counter, if needed
@@ -206,7 +208,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		else {
 			tvCountHandin.setText( "" + task.getStudentsHandedInCount() );
 			tvCountHandin.setTag( task );
-			counters.add( tvCountHandin );
+			mHandinCounters.add( tvCountHandin );
 		}
 
 		// Set the name and add a click listener
@@ -230,9 +232,14 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	}
 
 	private void updateCounter() {
-		for ( TextView tvCounter : counters ) {
+		for ( TextView tvCounter : mPendingCounters ) {
 			Task task = (Task) tvCounter.getTag();
-			tvCounter.setText( "-" + task.getStudentsPendingCount() );
+			tvCounter.setText( "" + task.getStudentsPendingCount() );
+		}
+
+		for ( TextView tvCounter : mHandinCounters) {
+			Task task = (Task) tvCounter.getTag();
+			tvCounter.setText( "" + task.getStudentsHandedInCount() );
 		}
 	}
 
