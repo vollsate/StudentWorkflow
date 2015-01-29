@@ -30,7 +30,6 @@ public class TaskImpl implements Task {
 	private TreeMap<String, StudentTask> mModifiedStudents;
 
 	private int mStdCount;
-	private int mStdClassCount;
 
 	/** The map containing the students who has finished the task */
 	private TreeMap<String, StudentTask> studentsMap;
@@ -235,7 +234,6 @@ public class TaskImpl implements Task {
 		mClasses.add( stdClass );
 		addedClasses.add( stdClass );
 
-		mStdClassCount++;
 		mModified = true;
 	}
 
