@@ -9,6 +9,7 @@ import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import android.app.FragmentManager;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This class will show any installed tasks in the system. You may specify
@@ -174,6 +176,25 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		else {
 			tvCountPending.setText( "" + task.getStudentsPendingCount() );
 			tvCountPending.setTag( task );
+			tvCountPending.setOnClickListener( new View.OnClickListener() {
+				
+				@Override
+				public void onClick( View v ) {
+					Task t = (Task) v.getTag();
+					int pivot = t.getStudentsPendingCount();
+					int i = 0;
+					
+					StringBuffer sb = new StringBuffer();
+					for ( StudentTask st : t.getStudentsPending() )  {
+						sb.append( st.getStudent().getFirstName() ).append( " " ).append( st.getStudent().getLastName() );
+						if ( i++ < pivot - 1 ) sb.append( "\n" );
+					}
+					
+					String msg = sb.toString();
+					Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();
+				}
+			} );
+			
 			counters.add( tvCountPending );
 		}
 
