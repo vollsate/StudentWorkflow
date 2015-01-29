@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
 import no.glv.android.stdntworkflow.core.BaseTabActivity;
 import no.glv.android.stdntworkflow.core.DataComparator;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
@@ -70,7 +72,7 @@ public class TaskViewActivity extends BaseTabActivity {
 	 */
 	@Override
 	public BaseTabFragment[] getFragments() {
-		return new BaseTabFragment[] { new OpenTasksFragment(), new ClosedTasksFragment() };
+		return new BaseTabFragment[] { new OpenTasksFragment(), new ClosedTasksFragment(), new AllTasksFragment() };
 	}
 
 	/*
@@ -80,9 +82,27 @@ public class TaskViewActivity extends BaseTabActivity {
 	 */
 	@Override
 	public String[] getTabTitles() {
-		return new String[] { getString( R.string.taskview_tab_open_title ), getString( R.string.taskview_tab_close_title ) };
+		return new String[] { getString( R.string.taskview_tab_open_title ),
+				getString( R.string.taskview_tab_close_title ), "Alle" };
 	}
-	
+
+	public void openTask( View v ) {
+		ImageView iv = (ImageView) v;
+		Task t = (Task) iv.getTag();
+
+		if ( t.getState() == Task.TASK_STATE_CLOSED ) {
+			t.setState( Task.TASK_STATE_OPEN );
+			iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_on ) );
+		}
+		else if ( t.getState() == Task.TASK_STATE_OPEN ) {
+			t.setState( Task.TASK_STATE_CLOSED );
+			iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_off ) );
+		}
+
+		DataHandler.GetInstance().updateTask( t, null );
+
+	}
+
 	/**
 	 * 
 	 * @param state
@@ -96,15 +116,16 @@ public class TaskViewActivity extends BaseTabActivity {
 		config.sortBy = DataComparator.SORT_TASKNAME_ASC;
 		config.taskState = state;
 		config.showCount = Integer.MAX_VALUE;
-		
+		config.showOnOffButton = true;
+
 		return config;
 	}
 
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
-	// 
-	// 
-	// 
+	//
+	//
+	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
@@ -116,10 +137,11 @@ public class TaskViewActivity extends BaseTabActivity {
 	public static class OpenTasksFragment extends BaseTabFragment {
 		@Override
 		protected View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			InstalledTasksFragment.StartFragment( getFragmentManager(), GetConfig( Task.TASK_STATE_OPEN ), R.id.FR_openTasks_container );
-			
-			//View v = container.findViewById( R.id.FR_openTasks_container );
-			
+			InstalledTasksFragment.StartFragment( getFragmentManager(), GetConfig( Task.TASK_STATE_OPEN ),
+					R.id.FR_openTasks_container );
+
+			// View v = container.findViewById( R.id.FR_openTasks_container );
+
 			return null;
 		}
 
@@ -145,13 +167,44 @@ public class TaskViewActivity extends BaseTabActivity {
 	public static class ClosedTasksFragment extends BaseTabFragment {
 		@Override
 		protected View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			InstalledTasksFragment.StartFragment( getFragmentManager(), GetConfig( Task.TASK_STATE_CLOSED ), R.id.FR_closedTasks_container);
+			TaskViewConfig config = GetConfig( Task.TASK_STATE_CLOSED );
+			config.showOnOffButton = true;
+
+			InstalledTasksFragment.StartFragment( getFragmentManager(), config, R.id.FR_closedTasks_container );
 			return null;
 		}
 
 		@Override
 		protected int getLayoutID() {
 			return R.layout.fr_tasks_closed;
+		}
+	}
+
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+
+	/**
+	 * 
+	 * @author glevoll
+	 *
+	 */
+	public static class AllTasksFragment extends BaseTabFragment {
+		@Override
+		protected View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+			TaskViewConfig config = GetConfig( Task.TASK_STATE_OPEN | Task.TASK_STATE_CLOSED );
+
+			InstalledTasksFragment.StartFragment( getFragmentManager(), config, R.id.FR_allTasks_container );
+			return null;
+		}
+
+		@Override
+		protected int getLayoutID() {
+			return R.layout.fr_tasks_all;
 		}
 	}
 }

@@ -10,10 +10,21 @@
         android:background="@drawable/main_textview"
         android:orientation="horizontal" >
 
+        <ImageView
+            android:id="@+id/IV.task.openOrClosed"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="fdfd"
+            android:layout_margin="10dp"
+            android:onClick="openTask"
+            android:src="@drawable/ic_task_off" />
+
         <TextView
             android:id="@+id/TV.task.counterPending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/counter_bg"
             android:gravity="center_horizontal"
             android:hint="-12"
@@ -24,6 +35,7 @@
             android:id="@+id/TV.task.counterHandin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:background="@drawable/counter_bg"
             android:gravity="center_horizontal"
@@ -35,6 +47,7 @@
             style="@style/TV.std.L.blue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="5sp"
             android:layout_marginLeft="5sp"
             android:layout_marginRight="5sp"

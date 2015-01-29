@@ -730,6 +730,9 @@ public class DataHandler {
 	 */
 	public boolean updateTask( Task task, String oldName ) {
 		Log.d( TAG, "Updating task: " + oldName );
+		if ( oldName == null )
+			oldName = task.getName();
+
 		if ( !db.updateTask( task, oldName ) )
 			return false;
 

@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -171,6 +172,18 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 					startActivity( intent );
 			}
 		} );
+		
+		ImageView iv = (ImageView) vg.findViewById( R.id.IV_task_openOrClosed );
+		if ( config.showOnOffButton ) {
+			iv.setTag( task );
+			if ( task.getState() == Task.TASK_STATE_OPEN ) 
+				iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_on ) );
+			else if ( task.getState() == Task.TASK_STATE_CLOSED )
+				iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_off ) );
+		}
+		else {
+			iv.setVisibility( View.GONE );
+		}
 
 		// Set the Student pending counter, if needed
 		TextView tvCountPending = (TextView) vg.findViewById( R.id.TV_task_counterPending );
@@ -316,6 +329,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 		public boolean showCounterPending;
 		public boolean showCounterHandin;
+		public boolean showOnOffButton;
 
 		public boolean showDescription;
 
