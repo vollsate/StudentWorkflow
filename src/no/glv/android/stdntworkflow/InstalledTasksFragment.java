@@ -61,6 +61,8 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 	/**  */
 	public static final String INST_STATE_TASK_NAMES = BaseValues.EXTRA_BASEPARAM + "taskNames";
+	
+	public static final int CONTAINER_ID = R.id.FR_installedTasks_container;
 
 	/** Contains the configuration data for the fragment */
 	private TaskViewConfig config;
@@ -104,7 +106,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	 * instance.
 	 */
 	private void sortTaskNames() {
-		List<Task> tasks = dataHandler.getTasks( config.tastState );
+		List<Task> tasks = dataHandler.getTasks( config.taskState );
 		Collections.sort( tasks, new DataComparator.TaskComparator( config.sortBy ) );
 		taskNames = new ArrayList<String>();
 		for ( Task t : tasks )
@@ -267,12 +269,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		}
 	}
 
-	/**
-	 * 
-	 * @param manager
-	 * @param config
-	 */
-	public static void StartFragment( FragmentManager manager, TaskViewConfig config ) {
+	public static void StartFragment( FragmentManager manager, TaskViewConfig config, int containerID ) {
 		InstalledTasksFragment tasksFragment = new InstalledTasksFragment();
 		Bundle args = new Bundle();
 
@@ -286,7 +283,16 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		tasksFragment.setArguments( args );
 
 		FragmentTransaction tr = manager.beginTransaction();
-		tr.replace( R.id.FR_installedTasks_container, tasksFragment ).commit();
+		tr.replace( containerID, tasksFragment ).commit();		
+	}
+
+	/**
+	 * 
+	 * @param manager
+	 * @param config
+	 */
+	public static void StartFragment( FragmentManager manager, TaskViewConfig config ) {
+		StartFragment( manager, config, CONTAINER_ID );
 	}
 
 	// ------------------------------------------------------------------------
@@ -313,7 +319,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 		public boolean showDescription;
 
-		public int tastState;
+		public int taskState;
 
 	}
 }

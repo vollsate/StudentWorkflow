@@ -6,6 +6,7 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -151,6 +152,7 @@ public class MainActivity extends Activity {
 	private void displayView( int position ) {
 		// update the main content by replacing fragments
 		Fragment fragment = null;
+		Intent intent = null;
 		switch ( position ) {
 			case 0:
 				fragment = new MainFragment();
@@ -159,7 +161,7 @@ public class MainActivity extends Activity {
 				fragment = null;
 				break;
 			case 2:
-				fragment = null;
+				intent = new Intent( this, TaskViewActivity.class );
 				break;
 			case 3:
 				fragment = null;
@@ -174,21 +176,26 @@ public class MainActivity extends Activity {
 			default:
 				break;
 		}
+		
+		boolean updateDrawer = false;
 
 		if ( fragment != null ) {
+			updateDrawer = true;
 			FragmentManager fragmentManager = getFragmentManager();
 			fragmentManager.beginTransaction()
 					.replace( R.id.frame_container, fragment ).commit();
-
+		}
+		else if ( intent != null ) {
+			updateDrawer = true;
+			startActivity( intent );
+		}
+		
+		if ( updateDrawer ) {
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked( position, true );
 			mDrawerList.setSelection( position );
 			setTitle( navMenuTitles[position] );
 			mDrawerLayout.closeDrawer( mDrawerList );
-		}
-		else {
-			// error in creating fragment
-			Log.e( "MainActivity", "Error in creating fragment" );
 		}
 	}
 

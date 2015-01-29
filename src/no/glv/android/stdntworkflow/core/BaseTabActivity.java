@@ -9,7 +9,6 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -183,18 +182,15 @@ public abstract class BaseTabActivity extends BaseActivity implements ActionBar.
 		protected View rootView;
 		BaseTabActivity baseTabActivity;
 
-		public BaseTabFragment() {
-			super();
-
-			Log.d( getClass().getSimpleName(), "Instantiating: " + getClass().toString() );
-		}
-
 		/**
 		 * 
 		 */
 		public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			rootView = inflater.inflate( getRootViewID(), container, false );
-			return doCreateView( inflater, container, savedInstanceState );
+			rootView = inflater.inflate( getLayoutID(), container, false );
+			View view = doCreateView( inflater, container, savedInstanceState );
+	
+			if ( view == null ) view = rootView;
+			return view;
 		}
 
 		protected BaseTabActivity getBaseTabActivity() {
@@ -213,7 +209,7 @@ public abstract class BaseTabActivity extends BaseActivity implements ActionBar.
 		 * 
 		 * @return
 		 */
-		protected abstract int getRootViewID();
+		protected abstract int getLayoutID();
 
 		/**
 		 * 

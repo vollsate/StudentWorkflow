@@ -367,7 +367,7 @@ public class TaskActivity extends BaseTabActivity {
 		}
 
 		@Override
-		protected int getRootViewID() {
+		protected int getLayoutID() {
 			return R.layout.fragment_task_info;
 		}
 	}
@@ -419,7 +419,7 @@ public class TaskActivity extends BaseTabActivity {
 		}
 
 		@Override
-		protected int getRootViewID() {
+		protected int getLayoutID() {
 			return R.layout.fragment_task_students;
 		}
 

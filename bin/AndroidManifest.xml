@@ -31,24 +31,24 @@
         <activity
             android:name=".StdClassListActivity"
             android:label="@string/activity.stdlist.title"
-            android:parentActivityName=".MainFragment" >
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".LoadDataActivity"
             android:label="@string/activity.loadData.title"
-            android:parentActivityName=".MainFragment" >
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".NewTaskActivity"
             android:label="@string/title_activity_new_task"
-            android:parentActivityName=".MainFragment" >
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity android:name=".StdInfoActivity" >
         </activity>
         <activity
             android:name=".TaskActivity"
             android:label="@string/title_activity_task"
-            android:parentActivityName=".MainFragment" >
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -58,6 +58,10 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" >
         </activity>
-    </application>
+        <activity
+            android:name=".TaskViewActivity"
+            android:label="@string/title_activity_home" >
+        </activity>
+        </application>
 
 </manifest>
