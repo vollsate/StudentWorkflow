@@ -1,10 +1,11 @@
 package no.glv.android.stdntworkflow;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
@@ -80,7 +81,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		}
 		else {
 			config = (TaskViewConfig) getArguments().getSerializable( PARAM_CONFIG );
-			taskNames = (ArrayList<String>) dataHandler.getTaskNames( config.tastState );
+			sortTaskNames();
 		}
 
 		// Add a listener to every task, so we get informed when students hand
@@ -92,6 +93,23 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 		// Add a listener so we get informed when a Task is deleted or updated
 		dataHandler.addOnTaskChangeListener( this );
+	}
+
+	/**
+	 * Sorts the taskNames according to the preference in the {@link DataConfig}
+	 * instance.
+	 */
+	private void sortTaskNames() {
+		List<Task> tasks = dataHandler.getTasks( config.tastState );
+		Collections.sort( tasks, new DataComparator.TaskComparator( config.sortBy ) );
+		taskNames = new ArrayList<String>();
+		for ( Task t : tasks )
+			taskNames.add( t.getName() );
+	}
+
+	@Override
+	protected DataConfig getConfig() {
+		return config;
 	}
 
 	@Override
@@ -120,6 +138,10 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 	@Override
 	public List<String> getNames() {
+		if ( isModified() ) {
+			sortTaskNames();
+		}
+
 		return taskNames;
 	}
 
@@ -132,7 +154,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	protected View buildRow( final String name, int pos ) {
 		ViewGroup vg = (ViewGroup) inflateView( getRowLayoutID() );
 		Task task = dataHandler.getTask( name );
-		
+
 		LinearLayout ll = (LinearLayout) vg.findViewById( R.id.LL_task_rowData );
 		ll.setOnClickListener( new View.OnClickListener() {
 
@@ -169,17 +191,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		// Set the name and add a click listener
 		TextView tvName = (TextView) vg.findViewById( R.id.TV_task_name );
 		tvName.setText( name );
-		/*
-		tvName.setOnClickListener( new View.OnClickListener() {
 
-			@Override
-			public void onClick( View v ) {
-				Intent intent = createIntent( name, getActivity() );
-				if ( intent != null )
-					startActivity( intent );
-			}
-		} );
-		*/
 		TextView tvDesc = (TextView) vg.findViewById( R.id.TV_task_desc );
 		if ( !config.showDescription ) {
 			tvDesc.setVisibility( View.GONE );
@@ -215,10 +227,10 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 	@Override
 	public void onTaskChange( Task newTask, int mode ) {
-
 		switch ( mode ) {
 			case OnTaskChangeListener.MODE_STD_HANDIN:
 				updateCounter();
+				// notifyDataSetChanged();
 				break;
 
 			default:
@@ -230,47 +242,49 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	/**
 	 * 
 	 * @param manager
-	 * @param replace
 	 * @param config
 	 */
 	public static void StartFragment( FragmentManager manager, TaskViewConfig config ) {
 		InstalledTasksFragment tasksFragment = new InstalledTasksFragment();
 		Bundle args = new Bundle();
-		args.putInt( InstalledTasksFragment.EXTRA_SHOWCOUNT, DataHandler.GetInstance().getSettingsManager()
-				.getShowCount() );
-		args.putSerializable( InstalledTasksFragment.PARAM_CONFIG, config );
 
+		int showCount = config.showCount;
+		if ( showCount < 0 ) {
+			showCount = DataHandler.GetInstance().getSettingsManager()
+					.getShowCount();
+		}
+
+		args.putSerializable( InstalledTasksFragment.PARAM_CONFIG, config );
 		tasksFragment.setArguments( args );
 
 		FragmentTransaction tr = manager.beginTransaction();
-
 		tr.replace( R.id.FR_installedTasks_container, tasksFragment ).commit();
 	}
 
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
-	// 
+	//
 	// Configuration class
-	// 
+	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
 	/**
-	 * The configuration class for 
+	 * The configuration class for
 	 * 
 	 * @author glevoll
 	 *
 	 */
-	public static class TaskViewConfig implements Serializable {
+	public static class TaskViewConfig extends DataConfig {
 
 		/** InstalledTasksFragment.java */
 		private static final long serialVersionUID = 1L;
+
 		public boolean showCounterPending;
 		public boolean showCounterHandin;
 
 		public boolean showDescription;
 
-		public int showCount;
 		public int tastState;
 
 	}

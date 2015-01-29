@@ -1,13 +1,13 @@
 package no.glv.android.stdntworkflow;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -21,17 +21,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
+ * This will list any installed class in the system. It may be installed as a
+ * fragment in any container with the ID: <tt>fr.installedClasses</tt>
+ * 
+ * <p>
+ * The fragment task a {@link DataConfig} parameter to be used to control the
+ * layout and view of the class. The following parameters may be used:
+ * <blockquote>
+ * <ul>
+ * <li>showCount - The number of classes to show.
+ * <li>sortBy - The {@link DataComparator} sortBy int ID.
+ * <li>showDesc - A boolean telling weather or not to display the number of
+ * students in the class </ul></blockquote>
+ * 
  * 
  * @author GleVoll
  *
  */
 public class InstalledClassesFragment extends InstalledDataFragment implements OnStudentClassChangeListener {
-	
+
 	/**  */
 	public static final String INST_STATE_CLASS_NAMES = BaseValues.EXTRA_BASEPARAM + "names";
 
 	private ArrayList<String> classNames;
-	
+
 	private ClassViewConfig config;
 
 	@Override
@@ -39,7 +52,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 		dataHandler.addOnStudentClassChangeListener( this );
 
 		super.onCreate( savedInstanceState );
-		
+
 		if ( savedInstanceState != null ) {
 			classNames = savedInstanceState.getStringArrayList( INST_STATE_CLASS_NAMES );
 			config = (ClassViewConfig) savedInstanceState.getSerializable( PARAM_CONFIG );
@@ -49,7 +62,12 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 			config = (ClassViewConfig) getArguments().getSerializable( PARAM_CONFIG );
 		}
 	}
-	
+
+	@Override
+	protected DataConfig getConfig() {
+		return config;
+	}
+
 	@Override
 	public void onSaveInstanceState( Bundle outState ) {
 		super.onSaveInstanceState( outState );
@@ -69,7 +87,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 
 	@Override
 	public int getViewGruopLayoutID() {
-		return R.layout.fr_installedclasses_new;
+		return R.layout.fr_installedclasses;
 	}
 
 	@Override
@@ -90,7 +108,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	protected View buildRow( final String name, int pos ) {
 		ViewGroup vg = (ViewGroup) inflateView( getRowLayoutID() );
 		StudentClass stdClass = dataHandler.getStudentClass( name );
-		
+
 		LinearLayout ll = (LinearLayout) vg.findViewById( R.id.LL_classList_rowData );
 		ll.setOnClickListener( new View.OnClickListener() {
 
@@ -106,6 +124,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 		textView.setText( name );
 		textView.setTag( String.valueOf( pos ) );
 
+		TextView tvStds = (TextView) vg.findViewById( R.id.TV_classList_desc );
 		TextView tvStdCount = (TextView) vg.findViewById( R.id.TV_classList_counter );
 		if ( config.showStudentCount ) {
 			tvStdCount.setText( String.valueOf( stdClass.getSize() ) );
@@ -113,6 +132,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 		}
 		else {
 			tvStdCount.setVisibility( View.GONE );
+			tvStds.setVisibility( View.GONE );
 		}
 
 		return vg;
@@ -139,15 +159,23 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	 * @param replace
 	 */
 	public static void StartFragment( FragmentManager manager, ClassViewConfig config ) {
-		InstalledClassesFragment classesFragment = new InstalledClassesFragment();
 		Bundle args = new Bundle();
-		args.putInt( InstalledClassesFragment.EXTRA_SHOWCOUNT, DataHandler.GetInstance().getSettingsManager()
-				.getShowCount() );
 		args.putSerializable( PARAM_CONFIG, config );
-		classesFragment.setArguments( args );
 
+		InstalledClassesFragment fragment = new InstalledClassesFragment();
+		fragment.setArguments( args );
 		FragmentTransaction tr = manager.beginTransaction();
-		tr.replace( R.id.FR_installedClasses_container, classesFragment ).commit();
+		tr.replace( R.id.FR_installedClasses_container, fragment ).commit();
+		StartFragment( manager, config, args, new InstalledClassesFragment() );
+	}
+
+	/**
+	 * 
+	 * @param manager
+	 * @param config
+	 * @param args
+	 */
+	public static void StartFragment( FragmentManager manager, ClassViewConfig config, Bundle args, Fragment fragment ) {
 	}
 
 	// ------------------------------------------------------------------------
@@ -165,13 +193,11 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	 *
 	 */
 
-	public static class ClassViewConfig implements Serializable {
+	public static class ClassViewConfig extends DataConfig {
 
 		/** InstalledTasksFragment.java */
 		private static final long serialVersionUID = 1L;
 
 		public boolean showStudentCount;
-
-		public int showCount;
 	}
 }

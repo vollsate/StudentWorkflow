@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import java.io.Serializable;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler.OnChangeListener;
@@ -18,34 +19,26 @@ import android.view.ViewGroup;
  */
 public abstract class InstalledDataFragment extends ViewGroupAdapter {
 
-	public static final String EXTRA_SHOWCOUNT = BaseValues.EXTRA_BASEPARAM + "classesCount";
-
-	/** The configuration data for the fragment */
 	public static final String PARAM_CONFIG = BaseValues.EXTRA_BASEPARAM + "config";
-
-	protected int showClassesCount;
-
-	@Override
-	public final void doCreate( Bundle savedInstanceState ) {
-		showClassesCount = getArguments().getInt( EXTRA_SHOWCOUNT, 1 );
-	}
-
+	
 	public abstract int getViewGruopLayoutID();
 
 	public abstract List<String> getNames();
 
+	protected abstract DataConfig getConfig();
+		
 	/**
+	 * Will create the view that shows the individual rows. This method will
+	 * limit the number of rows to show. In order to ignore this limit, an extra
+	 * parameter must be set to <tt>Integer.MAX_VALUE</tt>.
 	 * 
-	 * @param inflater
-	 * @param container
-	 * @param savedInstanceState
-	 * @return
+	 * @param rootView The root {@link ViewGroup} to add the individual rows to.
 	 */
-	protected void doCreateView( ViewGroup rootView ) {
+	protected void doCreateView( ViewGroup rootView ) {		
 		final List<String> list = getNames();
 
 		for ( int i = 0; i < list.size(); i++ ) {
-			if ( i >= showClassesCount )
+			if ( getConfig().showCount > 0 && i >= getConfig().showCount )
 				break;
 			String name = list.get( i );
 
@@ -86,5 +79,14 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 			default:
 				break;
 		}
+	}
+	
+	public static class DataConfig implements Serializable {
+		
+		/** InstalledDataFragment.java */
+		private static final long serialVersionUID = 1L;
+		
+		public int showCount = -1;
+		public int sortBy = -1;
 	}
 }

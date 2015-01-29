@@ -37,7 +37,6 @@ import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
@@ -636,6 +635,30 @@ public class DataHandler {
 	 */
 	public List<Task> getTasks() {
 		return new ArrayList<Task>( tasks.values() );
+	}
+
+	/**
+	 * 
+	 * @param flag
+	 * @return
+	 */
+	public List<Task> getTasks(int flag) {
+		List<Task> ts = new LinkedList<Task>();
+		
+		for ( Task t : tasks.values() ) {
+			int state = t.getState();
+			boolean add = false;
+			if ( ( flag & state ) == Task.TASK_STATE_OPEN )
+				add = true;
+			if ( ( flag & state ) == Task.TASK_STATE_CLOSED )
+				add = true;
+			if ( ( flag & state ) == Task.TASK_STATE_EXPIRED )
+				add = true;
+			
+			if ( add ) ts.add( t );
+		}
+		
+		return ts;
 	}
 
 	/**

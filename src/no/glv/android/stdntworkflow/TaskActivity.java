@@ -325,13 +325,8 @@ public class TaskActivity extends BaseTabActivity {
 		 * @param forceReplace
 		 * @return
 		 */
-		private InstalledClassesInTaskFragment getInstalledClassesFR( Bundle inState ) {
-			if ( inState == null ) {
-				return InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager(), false );
-			}
-
-			return (InstalledClassesInTaskFragment) getFragmentManager().findFragmentById(
-					R.id.FR_installedClasses_container );
+		private void getInstalledClassesFR( Bundle inState ) {
+			InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager() );
 		}
 
 		/**

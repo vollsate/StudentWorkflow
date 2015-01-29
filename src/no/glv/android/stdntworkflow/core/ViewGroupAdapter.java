@@ -23,6 +23,8 @@ public abstract class ViewGroupAdapter extends Fragment {
 	private LayoutInflater inflater;
 	protected ViewGroup container;
 	protected DataHandler dataHandler;
+	
+	private boolean mModified;
 
 	/**
 	 * 
@@ -115,7 +117,17 @@ public abstract class ViewGroupAdapter extends Fragment {
 	 * 
 	 */
 	public final void notifyDataSetChanged() {
+		mModified = true;
 		doCreateView( rootView );
+		mModified = false;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected boolean isModified() {
+		return mModified;
 	}
 
 	@Override

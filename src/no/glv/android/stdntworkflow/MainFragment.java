@@ -2,6 +2,7 @@ package no.glv.android.stdntworkflow;
 
 import no.glv.android.stdntworkflow.InstalledClassesFragment.ClassViewConfig;
 import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
+import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.AlertDialog;
@@ -69,6 +70,8 @@ public class MainFragment extends Fragment {
 		config.showCounterHandin = true;
 		config.showDescription = true;
 		config.tastState = Task.TASK_STATE_OPEN;
+		config.sortBy = DataComparator.SORT_TASKDATE_ASC;
+		config.showCount = Integer.MAX_VALUE;
 
 		InstalledTasksFragment.StartFragment( getFragmentManager(), config );
 	}

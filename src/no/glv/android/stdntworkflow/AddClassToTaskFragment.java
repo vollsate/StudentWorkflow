@@ -19,7 +19,7 @@ public class AddClassToTaskFragment extends ViewGroupAdapter {
 
 	@Override
 	public int getViewGruopLayoutID() {
-		return R.layout.fr_installedclasses_new;
+		return R.layout.fr_installedclasses;
 	}
 
 	Task getTask( Bundle args ) {

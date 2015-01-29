@@ -56,24 +56,20 @@ public class MainActivity extends Activity {
 		mDrawerList = (ListView) findViewById( R.id.list_slidermenu );
 
 		navDrawerItems = new ArrayList<NavDrawerItem>();
+		int index = 0;
 
 		// adding nav drawer items to array
 		// Home
-		navDrawerItems.add( new NavDrawerItem( navMenuTitles[0], navMenuIcons.getResourceId( 0, -1 ) ) );
-		// Find People
-		navDrawerItems.add( new NavDrawerItem( navMenuTitles[1], navMenuIcons.getResourceId( 1, -1 ) ) );
-		// Photos
-		navDrawerItems.add( new NavDrawerItem( navMenuTitles[2], navMenuIcons.getResourceId( 2, -1 ) ) );
-		// Communities, Will add a counter here
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Classes
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Tasks
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Subject and types
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Settings
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
 
-		navDrawerItems.add( new NavDrawerItem( navMenuTitles[3], navMenuIcons.getResourceId( 3, -1 ) ) );
-		/*
-		 * // Pages navDrawerItems.add( new NavDrawerItem( navMenuTitles[4],
-		 * navMenuIcons.getResourceId( 4, -1 ) ) ); // What's hot, We will add a
-		 * counter here navDrawerItems.add( new NavDrawerItem( navMenuTitles[5],
-		 * navMenuIcons.getResourceId( 5, -1 ), true, "50+" ) );
-		 */
-		// Recycle the typed array
 		navMenuIcons.recycle();
 
 		mDrawerList.setOnItemClickListener( new SlideMenuClickListener() );
@@ -143,7 +139,9 @@ public class MainActivity extends Activity {
 	public boolean onPrepareOptionsMenu( Menu menu ) {
 		// if nav drawer is opened, hide the action items
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen( mDrawerList );
-		menu.findItem( R.id.menu_overflow ).setVisible( !drawerOpen );
+		MenuItem item = menu.findItem( R.id.menu_overflow );
+		if ( item != null ) item.setVisible( !drawerOpen );
+		
 		return super.onPrepareOptionsMenu( menu );
 	}
 
@@ -167,7 +165,7 @@ public class MainActivity extends Activity {
 				fragment = null;
 				break;
 			case 4:
-				fragment = null;
+				fragment = new PrefFragment();
 				break;
 			case 5:
 				fragment = null;

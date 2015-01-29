@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="cat_main_googleAccount_value">harestuaskole.org</string>
+    <string name="cat_main_googleAccount_title">Google konto</string>
+    <string name="cat_classlist_sortBy_title">Sortering av navn</string>
+
+    <string-array name="cat_sortBy_classlist_titles">
+        <item>Ident</item>
+        <item>Etternavn</item>
+        <item>Fornavn</item>
+    </string-array>
+    <string-array name="cat_sortBy_classlist_values">
+        <item>id</item>
+        <item>last</item>
+        <item>first</item>
+    </string-array>
+
+    <string name="cat_task_sortBy_title">Sortering av oppgaver</string>
+
+    <string-array name="cat_sortBy_task_titles">
+        <item>Dato</item>
+        <item>Navn</item>
+    </string-array>
+    <string-array name="cat_sortBy_task_values">
+        <item>date</item>
+        <item>name</item>
+    </string-array>
+
+</resources>

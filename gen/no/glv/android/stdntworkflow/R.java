@@ -9,16 +9,20 @@ package no.glv.android.stdntworkflow;
 
 public final class R {
     public static final class array {
+        public static final int cat_sortBy_classlist_titles=0x7f070006;
+        public static final int cat_sortBy_classlist_values=0x7f070007;
+        public static final int cat_sortBy_task_titles=0x7f070008;
+        public static final int cat_sortBy_task_values=0x7f070009;
         public static final int nav_drawer_icons=0x7f070001;
         public static final int nav_drawer_items=0x7f070000;
         public static final int pref_example_list_titles=0x7f070002;
         public static final int pref_example_list_values=0x7f070003;
         public static final int pref_sync_frequency_titles=0x7f070004;
         public static final int pref_sync_frequency_values=0x7f070005;
-        public static final int task_subjects=0x7f070006;
+        public static final int task_subjects=0x7f07000a;
         /**  First item will have the id=0, .. 
          */
-        public static final int task_types=0x7f070007;
+        public static final int task_types=0x7f07000b;
     }
     public static final class attr {
     }
@@ -150,7 +154,7 @@ public final class R {
         public static final int IV_info_work_p1call=0x7f0b004b;
         public static final int IV_info_work_p2call=0x7f0b005c;
         public static final int LL_classList_rowData=0x7f0b007d;
-        public static final int LL_installedClasses=0x7f0b0023;
+        public static final int LL_installedClasses=0x7f0b0022;
         public static final int LL_installedTasks=0x7f0b0024;
         public static final int LL_newTask_classes=0x7f0b0017;
         public static final int LL_task_date=0x7f0b0070;
@@ -160,7 +164,7 @@ public final class R {
         public static final int LL_task_stdCount=0x7f0b0074;
         public static final int LL_task_subjectTypes=0x7f0b006d;
         public static final int LV_classes=0x7f0b0007;
-        public static final int LV_installedClasses=0x7f0b0022;
+        public static final int LV_installedClasses=0x7f0b0023;
         public static final int LV_loadData_filesList=0x7f0b002c;
         public static final int LV_newTask_addedStudents=0x7f0b0063;
         public static final int LV_task_students=0x7f0b0079;
@@ -283,7 +287,7 @@ public final class R {
         public static final int activity_task=0x7f030009;
         public static final int dialog_sms=0x7f03000a;
         public static final int fr_installedclasses=0x7f03000b;
-        public static final int fr_installedclasses_new=0x7f03000c;
+        public static final int fr_installedclasses_old=0x7f03000c;
         public static final int fr_installedtasks=0x7f03000d;
         public static final int fr_main=0x7f03000e;
         public static final int fragment_home=0x7f03000f;
@@ -350,6 +354,10 @@ public final class R {
          */
         public static final int app_name=0x7f080002;
         public static final int cancel=0x7f080001;
+        public static final int cat_classlist_sortBy_title=0x7f08007b;
+        public static final int cat_main_googleAccount_title=0x7f08007a;
+        public static final int cat_main_googleAccount_value=0x7f080079;
+        public static final int cat_task_sortBy_title=0x7f08007c;
         public static final int def=0x7f080003;
         public static final int hello_world=0x7f080037;
         public static final int info_desc=0x7f08001d;
@@ -445,8 +453,8 @@ public final class R {
         public static final int task_name=0x7f08004e;
         public static final int task_pending=0x7f080059;
         public static final int task_pending_count=0x7f08005d;
-        public static final int task_st_subjects_defaultDesc=0x7f080079;
-        public static final int task_st_types_defaultDesc=0x7f08007a;
+        public static final int task_st_subjects_defaultDesc=0x7f08007d;
+        public static final int task_st_types_defaultDesc=0x7f08007e;
         public static final int task_std_delete_msg=0x7f080056;
         public static final int task_std_delete_title=0x7f080055;
         public static final int task_student_added=0x7f080060;
@@ -505,6 +513,7 @@ public final class R {
         public static final int pref_data_sync=0x7f040000;
         public static final int pref_general=0x7f040001;
         public static final int pref_headers=0x7f040002;
-        public static final int pref_notification=0x7f040003;
+        public static final int pref_main=0x7f040003;
+        public static final int pref_notification=0x7f040004;
     }
 }

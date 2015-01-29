@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <EditTextPreference 
+        android:key="cat_main_googleAccount"
+        android:title="@string/cat_main_googleAccount_title"
+        android:defaultValue="@string/cat_main_googleAccount_value"
+        android:positiveButtonText="@string/ok"
+        android:negativeButtonText="@string/cancel" />
+
+    <PreferenceCategory
+        android:key="cat_sortBy"
+        android:title="@string/cat_classlist_sortBy_title" >
+
+        <!-- Sorting the student class list -->
+        
+        <ListPreference
+            android:title="@string/cat_classlist_sortBy_title"
+            android:defaultValue="ident"
+            android:entries="@array/cat_sortBy_classlist_titles"
+            android:entryValues="@array/cat_sortBy_classlist_values"
+            android:key="cat_sortBy_classlist"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null" />
+
+        <!-- Sorting the tasks -->
+
+        <ListPreference
+            android:title="@string/cat_task_sortBy_title"
+            android:entries="@array/cat_sortBy_task_titles"
+            android:entryValues="@array/cat_sortBy_task_values"
+            android:key="cat_sortBy_task"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
