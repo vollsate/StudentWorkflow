@@ -6,13 +6,13 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,6 +84,7 @@ public class MainActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled( true );
 		getActionBar().setHomeButtonEnabled( true );
 
+
 		mDrawerToggle = new ActionBarDrawerToggle( this, mDrawerLayout,
 				R.drawable.ic_drawer, // nav menu toggle icon
 				R.string.app_name, // nav drawer open - description for
@@ -115,7 +116,7 @@ public class MainActivity extends Activity {
 	 * Slide menu item click listener
 	 * */
 	private class SlideMenuClickListener implements ListView.OnItemClickListener {
-		
+
 		@Override
 		public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
 			// display view for selected nav drawer item
@@ -141,8 +142,9 @@ public class MainActivity extends Activity {
 		// if nav drawer is opened, hide the action items
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen( mDrawerList );
 		MenuItem item = menu.findItem( R.id.menu_overflow );
-		if ( item != null ) item.setVisible( !drawerOpen );
-		
+		if ( item != null )
+			item.setVisible( !drawerOpen );
+
 		return super.onPrepareOptionsMenu( menu );
 	}
 
@@ -176,20 +178,22 @@ public class MainActivity extends Activity {
 			default:
 				break;
 		}
-		
+
 		boolean updateDrawer = false;
 
 		if ( fragment != null ) {
 			updateDrawer = true;
 			FragmentManager fragmentManager = getFragmentManager();
-			fragmentManager.beginTransaction()
-					.replace( R.id.frame_container, fragment ).commit();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			ft.replace( R.id.frame_container, fragment );
+			ft.addToBackStack( null );
+			ft.commit();
 		}
 		else if ( intent != null ) {
 			updateDrawer = true;
 			startActivity( intent );
 		}
-		
+
 		if ( updateDrawer ) {
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked( position, true );
