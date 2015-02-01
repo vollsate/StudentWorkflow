@@ -186,7 +186,9 @@ public class MainActivity extends Activity {
 			FragmentManager fragmentManager = getFragmentManager();
 			FragmentTransaction ft = fragmentManager.beginTransaction();
 			ft.replace( R.id.frame_container, fragment );
-			ft.addToBackStack( null );
+			if ( position > 0 ) {
+				ft.addToBackStack( null );
+			}
 			ft.commit();
 		}
 		else if ( intent != null ) {
