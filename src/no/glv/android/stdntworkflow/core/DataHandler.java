@@ -845,6 +845,16 @@ public class DataHandler {
 			commitTask( task );
 		}
 	}
+	
+	/**
+	 * Called when some changes are made to the tasks.
+	 */
+	public void notifyTaskSettingsChange() {
+		Iterator<Task> it = tasks.values().iterator();
+		while ( it.hasNext() ) {
+			it.next().notifyChange( OnTaskChangeListener.MODE_TASK_SORT );
+		}
+	}
 
 	/**
 	 * 
