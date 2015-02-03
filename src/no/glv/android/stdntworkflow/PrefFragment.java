@@ -1,5 +1,6 @@
 package no.glv.android.stdntworkflow;
 
+import no.glv.android.stdntworkflow.core.DataHandler;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -44,6 +45,11 @@ public class PrefFragment extends PreferenceFragment implements OnSharedPreferen
 	 */
 	public void onSharedPreferenceChanged( SharedPreferences sharedPreferences,
 			String key ) {
+		
+		if ( key.contains( "task" ) ) {
+			DataHandler.GetInstance().notifyTaskSettingsChange();
+		}
+		
 		updatePrefSummary( findPreference( key ) );
 	}
 
@@ -58,9 +64,8 @@ public class PrefFragment extends PreferenceFragment implements OnSharedPreferen
 				initSummary( pGrp.getPreference( i ) );
 			}
 		}
-		else {
-			updatePrefSummary( p );
-		}
+
+		updatePrefSummary( p );
 	}
 
 	/**
