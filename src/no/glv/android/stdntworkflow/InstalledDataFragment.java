@@ -65,14 +65,12 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 	 * @param mode
 	 */
 	public void onDataChange( int mode ) {
-		ViewGroup rootView = getRootView();
 		switch ( mode ) {
 			case OnChangeListener.MODE_ADD:
 			case OnChangeListener.MODE_UPD:
 			case OnChangeListener.MODE_DEL:
 			case OnChangeListener.MODE_CLS:
-				rootView.removeAllViewsInLayout();
-				notifyDataSetChanged();
+				invalidateView();
 				break;
 
 			default:
