@@ -441,6 +441,8 @@ public interface Task extends Serializable {
 		public static final int MODE_CLS_ADD = 128;
 		public static final int MODE_CLS_DEL = 264;
 		public static final int MODE_CLS_UPD = 512;
+		
+		public static final int MODE_TASK_SORT = 1024;
 
 		/**
 		 * A callback method to inform that a task has changed in's state
