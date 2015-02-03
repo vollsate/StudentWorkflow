@@ -122,6 +122,11 @@ public abstract class ViewGroupAdapter extends Fragment {
 		mModified = false;
 	}
 	
+	public final void invalidateView() {
+		rootView.removeAllViews();
+		notifyDataSetChanged();
+	}
+	
 	/**
 	 * 
 	 * @return
