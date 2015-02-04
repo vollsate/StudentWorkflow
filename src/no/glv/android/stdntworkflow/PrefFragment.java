@@ -1,5 +1,7 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.TreeMap;
+
 import no.glv.android.stdntworkflow.core.DataHandler;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -13,6 +15,12 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 
 public class PrefFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+	
+	private TreeMap<Preference, CharSequence> prefSummary;
+	
+	public PrefFragment() {
+		prefSummary = new TreeMap<Preference, CharSequence>();
+	}
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
@@ -73,9 +81,17 @@ public class PrefFragment extends PreferenceFragment implements OnSharedPreferen
 	 * @param p
 	 */
 	private void updatePrefSummary( Preference p ) {
+		CharSequence summary = prefSummary.get( p );
+
+		if ( ! prefSummary.containsKey( p ) ) {
+			prefSummary.put( p, p.getSummary() );
+			summary = p.getSummary();
+		}
+		
 		if ( p instanceof ListPreference ) {
 			ListPreference listPref = (ListPreference) p;
-			p.setSummary( listPref.getEntry() );
+			String str = "[" + listPref.getEntry() + "]\n\n" + summary;
+			p.setSummary( str );
 		}
 		if ( p instanceof EditTextPreference ) {
 			EditTextPreference editTextPref = (EditTextPreference) p;
@@ -83,7 +99,8 @@ public class PrefFragment extends PreferenceFragment implements OnSharedPreferen
 				p.setSummary( "******" );
 			}
 			else {
-				p.setSummary( editTextPref.getText() );
+				String str = "[" + editTextPref.getText() + "]\n\n" + summary;
+				p.setSummary( str );
 			}
 		}
 		if ( p instanceof MultiSelectListPreference ) {
