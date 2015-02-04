@@ -15,8 +15,8 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
-            android:contentDescription="fdfd"
             android:layout_margin="10dp"
+            android:contentDescription="fdfd"
             android:onClick="openTask"
             android:src="@drawable/ic_task_off" />
 
@@ -42,21 +42,43 @@
             android:hint="-12"
             android:textColor="@color/counter_text_color_handin" />
 
-        <TextView
-            android:id="@+id/TV.task.name"
-            style="@style/TV.std.L.blue"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="5sp"
-            android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp"
-            android:layout_marginStart="5sp"
-            android:ellipsize="marquee"
-            android:hint="Task name"
-            android:paddingBottom="5sp"
-            android:paddingTop="5sp"
-            android:singleLine="true" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TV.task.name"
+                style="@style/TV.std.L.blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="5sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:layout_marginStart="5sp"
+                android:ellipsize="marquee"
+                android:hint="Task name"
+                android:paddingBottom="5sp"
+                android:paddingTop="5sp"
+                android:singleLine="true" />
+            
+            <TextView
+                android:id="@+id/TV.task.date"
+                style="@style/TV.std.S"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:layout_marginStart="5sp"
+                android:ellipsize="marquee"
+                android:hint="Task date"
+                android:paddingBottom="5sp"
+                android:paddingTop="5sp"
+                android:singleLine="true" />
+            </LinearLayout>
 
         <TextView
             android:id="@+id/TV.task.desc"
