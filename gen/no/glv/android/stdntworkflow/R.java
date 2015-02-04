@@ -366,10 +366,18 @@ public final class R {
          */
         public static final int app_name=0x7f080002;
         public static final int cancel=0x7f080001;
-        public static final int cat_classlist_sortBy_title=0x7f08007b;
-        public static final int cat_main_googleAccount_title=0x7f08007a;
+        public static final int cat_classlist_sortBy_title=0x7f08007c;
+        public static final int cat_classlist_sortBy_title_desc=0x7f08007d;
+        public static final int cat_mainView_showExpiredDate_desc=0x7f080082;
+        public static final int cat_main_googleAccount_title=0x7f08007b;
+        public static final int cat_main_googleAccount_title_desc=0x7f08007a;
         public static final int cat_main_googleAccount_value=0x7f080079;
-        public static final int cat_task_sortBy_title=0x7f08007c;
+        /**  CAT MAIN VIEW 
+         */
+        public static final int cat_mainview_header=0x7f080080;
+        public static final int cat_mainview_showexpireddate=0x7f080081;
+        public static final int cat_task_sortBy_title=0x7f08007e;
+        public static final int cat_task_sortBy_title_desc=0x7f08007f;
         public static final int def=0x7f080003;
         public static final int hello_world=0x7f080037;
         public static final int info_desc=0x7f08001d;
@@ -465,8 +473,8 @@ public final class R {
         public static final int task_name=0x7f08004e;
         public static final int task_pending=0x7f080059;
         public static final int task_pending_count=0x7f08005d;
-        public static final int task_st_subjects_defaultDesc=0x7f080081;
-        public static final int task_st_types_defaultDesc=0x7f080082;
+        public static final int task_st_subjects_defaultDesc=0x7f080087;
+        public static final int task_st_types_defaultDesc=0x7f080088;
         public static final int task_std_delete_msg=0x7f080056;
         public static final int task_std_delete_title=0x7f080055;
         public static final int task_student_added=0x7f080060;
@@ -478,10 +486,10 @@ public final class R {
         public static final int task_tab_section2=0x7f080058;
         public static final int task_title=0x7f08004c;
         public static final int task_type=0x7f080051;
-        public static final int taskview_tab_close_title=0x7f08007f;
-        public static final int taskview_tab_expire_title=0x7f080080;
-        public static final int taskview_tab_open_title=0x7f08007e;
-        public static final int taskview_title=0x7f08007d;
+        public static final int taskview_tab_close_title=0x7f080085;
+        public static final int taskview_tab_expire_title=0x7f080086;
+        public static final int taskview_tab_open_title=0x7f080084;
+        public static final int taskview_title=0x7f080083;
         public static final int title_activity_home=0x7f080063;
         public static final int title_activity_new_task=0x7f080019;
         public static final int title_activity_settings=0x7f08006a;
