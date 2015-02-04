@@ -249,8 +249,18 @@ public class TaskActivity extends BaseTabActivity {
 		mTask.markAsCommitted();
 	}
 
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// 
+	// TaskInfoFragment
+	// 
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * Shows the task info view.
+	 * 
+	 * Depends on 
 	 */
 	public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener,
 			Task.OnTaskChangeListener {
@@ -298,7 +308,7 @@ public class TaskActivity extends BaseTabActivity {
 			SetupSpinner( sp, getTypesNames(), st.getName(), getActivity() );
 
 			setCounters();
-			getInstalledClassesFR( savedInstanceState );
+			InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager() );
 
 			return rootView;
 		}
@@ -319,19 +329,10 @@ public class TaskActivity extends BaseTabActivity {
 			return mSubjectNames;
 		}
 
-		/**
-		 * 
-		 * @param inState
-		 * @param forceReplace
-		 * @return
-		 */
-		private void getInstalledClassesFR( Bundle inState ) {
-			InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager() );
-		}
 
 		/**
-	 * 
-	 */
+		 * 
+		 */
 		private void setCounters() {
 			getTextView( R.id.TV_task_studentCount ).setText( String.valueOf( task.getStudentCount() ) );
 			getTextView( R.id.TV_task_pendingCount ).setText( String.valueOf( task.getStudentsPendingCount() ) );
@@ -371,6 +372,14 @@ public class TaskActivity extends BaseTabActivity {
 			return R.layout.fragment_task_info;
 		}
 	}
+	
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// 
+	// TaskClassesFragment
+	// 
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
 
 	/**
 	 * A placeholder fragment containing a simple view.
