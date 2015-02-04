@@ -3,9 +3,12 @@ package no.glv.android.stdntworkflow.core;
 import java.util.Collections;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class SettingsManager {
@@ -28,11 +31,23 @@ public class SettingsManager {
 	private int newTaskUse = NEWTASK_USEIDENT;
 
 	private Application app;
+	
+	private SharedPreferences preferences;
 
+	/**
+	 * 
+	 * @param app
+	 */
 	public SettingsManager( Application app ) {
 		this.app = app;
+		
+		preferences = PreferenceManager.getDefaultSharedPreferences( app );
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Application getApplication() {
 		return app;
 	}
@@ -69,6 +84,10 @@ public class SettingsManager {
 			default:
 				return std.getIdent();
 		}
+	}
+	
+	public boolean showExpiredDate() {
+		return preferences.getBoolean( "cat_mainView_showExpiredDate", true ); 
 	}
 
 	/**
