@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
+ * A specific fragment that shows any classes connected to a task.
  * 
  * @author glevoll
  *
@@ -42,7 +43,7 @@ public class InstalledClassesInTaskFragment extends InstalledClassesFragment {
 		Bundle args = new Bundle();
 		args.putString( InstalledClassesInTaskFragment.PARAM_TASK, task.getName() );
 
-		StartFragment( manager, config, args, new InstalledClassesInTaskFragment() );
+		StartFragment( manager, config, args, new InstalledClassesInTaskFragment(), R.id.FR_installedClasses_container );
 	}
 
 }
