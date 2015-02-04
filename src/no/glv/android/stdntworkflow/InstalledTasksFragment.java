@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
@@ -16,6 +17,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,7 +64,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 	/**  */
 	public static final String INST_STATE_TASK_NAMES = BaseValues.EXTRA_BASEPARAM + "taskNames";
-	
+
 	public static final int CONTAINER_ID = R.id.FR_installedTasks_container;
 
 	/** Contains the configuration data for the fragment */
@@ -172,11 +174,13 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 					startActivity( intent );
 			}
 		} );
-		
+
+		// Weather or not to show the ON/OFF button.
+		// this to allow for opening/closing a task.
 		ImageView iv = (ImageView) vg.findViewById( R.id.IV_task_openOrClosed );
 		if ( config.showOnOffButton ) {
 			iv.setTag( task );
-			if ( task.getState() == Task.TASK_STATE_OPEN ) 
+			if ( task.getState() == Task.TASK_STATE_OPEN )
 				iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_on ) );
 			else if ( task.getState() == Task.TASK_STATE_CLOSED )
 				iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_off ) );
@@ -194,24 +198,26 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 			tvCountPending.setText( "" + task.getStudentsPendingCount() );
 			tvCountPending.setTag( task );
 			tvCountPending.setOnClickListener( new View.OnClickListener() {
-				
+
 				@Override
 				public void onClick( View v ) {
 					Task t = (Task) v.getTag();
 					int pivot = t.getStudentsPendingCount();
 					int i = 0;
-					
+
 					StringBuffer sb = new StringBuffer();
-					for ( StudentTask st : t.getStudentsPending() )  {
-						sb.append( st.getStudent().getFirstName() ).append( " " ).append( st.getStudent().getLastName() );
-						if ( i++ < pivot - 1 ) sb.append( "\n" );
+					for ( StudentTask st : t.getStudentsPending() ) {
+						sb.append( st.getStudent().getFirstName() ).append( " " )
+								.append( st.getStudent().getLastName() );
+						if ( i++ < pivot - 1 )
+							sb.append( "\n" );
 					}
-					
+
 					String msg = sb.toString();
 					Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();
 				}
 			} );
-			
+
 			mPendingCounters.add( tvCountPending );
 		}
 
@@ -230,6 +236,21 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		TextView tvName = (TextView) vg.findViewById( R.id.TV_task_name );
 		tvName.setText( name );
 
+		// Weather or not to show the expired date.
+		TextView tvDate = (TextView) vg.findViewById( R.id.TV_task_date );
+		if ( config.showExpiredDate ) {
+			String dateStr = BaseActivity.GetDateAsString( task.getDate() );
+			tvDate.setText( dateStr );
+			
+			if ( task.isExpired() ) {
+				tvDate.setTextColor( Color.RED );
+			}
+		}
+		else {
+			tvDate.setVisibility( View.GONE );
+		}
+
+		// Weather or not to show the tasks description
 		TextView tvDesc = (TextView) vg.findViewById( R.id.TV_task_desc );
 		if ( !config.showDescription ) {
 			tvDesc.setVisibility( View.GONE );
@@ -252,7 +273,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 			tvCounter.setText( "" + task.getStudentsPendingCount() );
 		}
 
-		for ( TextView tvCounter : mHandinCounters) {
+		for ( TextView tvCounter : mHandinCounters ) {
 			Task task = (Task) tvCounter.getTag();
 			tvCounter.setText( "" + task.getStudentsHandedInCount() );
 		}
@@ -300,7 +321,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		tasksFragment.setArguments( args );
 
 		FragmentTransaction tr = manager.beginTransaction();
-		tr.replace( containerID, tasksFragment ).commit();		
+		tr.replace( containerID, tasksFragment ).commit();
 	}
 
 	/**
@@ -334,6 +355,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		public boolean showCounterPending;
 		public boolean showCounterHandin;
 		public boolean showOnOffButton;
+		public boolean showExpiredDate;
 
 		public boolean showDescription;
 
