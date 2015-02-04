@@ -3,6 +3,7 @@
     <EditTextPreference 
         android:key="cat_main_googleAccount"
         android:title="@string/cat_main_googleAccount_title"
+        android:summary="@string/cat_main_googleAccount_title_desc"
         android:defaultValue="@string/cat_main_googleAccount_value"
         android:positiveButtonText="@string/ok"
         android:negativeButtonText="@string/cancel" />
@@ -15,6 +16,7 @@
         
         <ListPreference
             android:title="@string/cat_classlist_sortBy_title"
+            android:summary="@string/cat_classlist_sortBy_title_desc"
             android:defaultValue="ident"
             android:entries="@array/cat_sortBy_classlist_titles"
             android:entryValues="@array/cat_sortBy_classlist_values"
@@ -26,11 +28,24 @@
 
         <ListPreference
             android:title="@string/cat_task_sortBy_title"
+            android:summary="@string/cat_task_sortBy_title_desc"
             android:entries="@array/cat_sortBy_task_titles"
             android:entryValues="@array/cat_sortBy_task_values"
             android:key="cat_sortBy_task"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:key="cat_mainView"
+        android:title="@string/cat_mainview_header">
+        
+        <CheckBoxPreference
+            android:key="cat_mainView_showExpiredDate"
+            android:title="@string/cat_mainview_showexpireddate"
+            android:summary="@string/cat_mainView_showExpiredDate_desc"
+            android:defaultValue="true" />
+        
     </PreferenceCategory>
 
 </PreferenceScreen>
