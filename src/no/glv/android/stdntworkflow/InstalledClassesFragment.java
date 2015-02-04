@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataComparator;
+import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
@@ -50,17 +51,16 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		dataHandler.addOnStudentClassChangeListener( this );
-
 		super.onCreate( savedInstanceState );
 
 		if ( savedInstanceState != null ) {
 			classNames = savedInstanceState.getStringArrayList( INST_STATE_CLASS_NAMES );
-			config = (ClassViewConfig) savedInstanceState.getSerializable( PARAM_CONFIG );
 		}
 		else {
 			classNames = dataHandler.getStudentClassNames();
-			config = (ClassViewConfig) getArguments().getSerializable( PARAM_CONFIG );
 		}
+
+		config = (ClassViewConfig) getArguments().getSerializable( PARAM_CONFIG );
 	}
 
 	@Override
@@ -72,7 +72,6 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	public void onSaveInstanceState( Bundle outState ) {
 		super.onSaveInstanceState( outState );
 		outState.putStringArrayList( INST_STATE_CLASS_NAMES, classNames );
-		outState.putSerializable( PARAM_CONFIG, config );
 	}
 
 	@Override
@@ -156,17 +155,12 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	/**
 	 * 
 	 * @param manager
-	 * @param replace
+	 * @param config
 	 */
 	public static void StartFragment( FragmentManager manager, ClassViewConfig config ) {
 		Bundle args = new Bundle();
-		args.putSerializable( PARAM_CONFIG, config );
 
-		InstalledClassesFragment fragment = new InstalledClassesFragment();
-		fragment.setArguments( args );
-		FragmentTransaction tr = manager.beginTransaction();
-		tr.replace( R.id.FR_installedClasses_container, fragment ).commit();
-		StartFragment( manager, config, args, new InstalledClassesFragment() );
+		StartFragment( manager, config, args, new InstalledClassesFragment(), R.id.FR_installedClasses_container );
 	}
 
 	/**
@@ -174,8 +168,21 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	 * @param manager
 	 * @param config
 	 * @param args
+	 * @param fragment
+	 * @param containerID
 	 */
-	public static void StartFragment( FragmentManager manager, ClassViewConfig config, Bundle args, Fragment fragment ) {
+	public static void StartFragment( FragmentManager manager, ClassViewConfig config, Bundle args, Fragment fragment, int containerID ) {
+		int showCount = config.showCount;
+		if ( showCount < 0 ) {
+			showCount = DataHandler.GetInstance().getSettingsManager()
+					.getShowCount();
+		}
+
+		args.putSerializable( PARAM_CONFIG, config );
+		fragment.setArguments( args );
+
+		FragmentTransaction tr = manager.beginTransaction();
+		tr.replace( containerID, fragment ).commit();		
 	}
 
 	// ------------------------------------------------------------------------
