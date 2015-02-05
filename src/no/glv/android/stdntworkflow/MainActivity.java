@@ -21,6 +21,13 @@ import android.widget.ListView;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
+	
+	public static final int FRAG_MAIN = 0; 
+	public static final int FRAG_CLASS = 1;
+	public static final int FRAG_TASK = 2;
+	public static final int FRAG_SUBJTYPE = 3;
+	public static final int FRAG_PREF = 4;
+	
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -156,19 +163,19 @@ public class MainActivity extends Activity {
 		Fragment fragment = null;
 		Intent intent = null;
 		switch ( position ) {
-			case 0:
+			case FRAG_MAIN:
 				fragment = new MainFragment();
 				break;
-			case 1:
-				fragment = null;
+			case FRAG_CLASS:
+				fragment = new LoadDataFragment();
 				break;
-			case 2:
+			case FRAG_TASK:
 				intent = new Intent( this, TaskViewActivity.class );
 				break;
-			case 3:
+			case FRAG_SUBJTYPE:
 				fragment = null;
 				break;
-			case 4:
+			case FRAG_PREF:
 				fragment = new PrefFragment();
 				break;
 			case 5:

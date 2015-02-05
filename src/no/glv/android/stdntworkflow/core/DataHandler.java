@@ -39,7 +39,9 @@ import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -69,6 +71,8 @@ public class DataHandler {
 
 	public static final int MODE_RESETDB = Integer.MAX_VALUE;
 
+	private static final String PREF_SUBJECTTYPE = BaseValues.EXTRA_BASEPARAM + "subjectType";
+	
 	private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
 	private static final String STUDENT_PROPERTY_SEP = ";";
 
@@ -166,6 +170,13 @@ public class DataHandler {
 		sManager = new SettingsManager( app );
 		initiateMaps();
 		initiateListeners();
+		
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences( app );
+		boolean loadSubTypes = pref.getBoolean( PREF_SUBJECTTYPE, false );
+		if ( ! loadSubTypes ) {
+			initSubjectTypes();
+			pref.edit().putBoolean( PREF_SUBJECTTYPE, true );
+		}
 	}
 
 	/**

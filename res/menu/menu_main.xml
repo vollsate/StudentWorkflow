@@ -29,12 +29,6 @@
                 android:title="@string/action_listDB"
                 android:showAsAction="never"/>
             <item
-                android:id="@+id/menu.loadData"
-                android:icon="@drawable/ic_action_add_stdclass"
-                android:orderInCategory="10"
-                android:title="@string/action_loadData"
-                android:showAsAction="never"/>
-            <item
                 android:id="@+id/menu.newTask"
                 android:icon="@drawable/ic_action_task"
                 android:orderInCategory="11"

@@ -34,7 +34,7 @@
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
-            android:name=".LoadDataActivity"
+            android:name=".LoadDataFragment"
             android:label="@string/activity.loadData.title"
             android:parentActivityName=".MainActivity" >
         </activity>

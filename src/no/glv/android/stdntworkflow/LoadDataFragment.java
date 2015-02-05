@@ -1,19 +1,16 @@
 package no.glv.android.stdntworkflow;
 
-import java.net.URL;
-import java.util.List;
-
+import no.glv.android.stdntworkflow.InstalledClassesFragment.ClassViewConfig;
 import no.glv.android.stdntworkflow.LoadableFilesFragment.OnDataLoadedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.ExcelReader;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,41 +18,45 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class LoadDataActivity extends Activity implements OnClickListener, OnDataLoadedListener {
+public class LoadDataFragment extends Fragment implements OnClickListener, OnDataLoadedListener {
 
 	private StudentClass stdClass;
 
 	private LoadableFilesFragment fragment;
 
 	@Override
-	protected void onCreate( Bundle savedInstanceState ) {
+	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
+	}
 
-		setContentView( R.layout.activity_load_data );
-		if ( savedInstanceState == null ) {
-			getFragmentManager().beginTransaction().add( R.id.container, new PlaceholderFragment() ).commit();
-		}
+	/**
+	 * 
+	 */
+	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+		View rootView = inflater.inflate( R.layout.fragment_loaddata, container, false );
+		
+		// Start the Installed classes fragment
+		ClassViewConfig config = new ClassViewConfig();
+		config.showStudentCount = true;		
+		InstalledClassesFragment.StartFragment( getFragmentManager(), config );
+
+		Button btn = (Button) rootView.findViewById( R.id.BTN_loadFile );
+		btn.setOnClickListener( this );
+
+		btn = (Button) rootView.findViewById( R.id.BTN_loadExcel );
+		btn.setOnClickListener( this );
+
+		return rootView;
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu( Menu menu ) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate( R.menu.menu_load_data, menu );
-		return true;
+	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater ) {
+		inflater.inflate( R.menu.menu_load_data, menu );
 	}
 
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
-		int id = item.getItemId();
-
-		switch ( id ) {
-			default:
-				break;
-		}
-
-		if ( id == R.id.action_settings ) {
-			return true;
-		}
+		//int id = item.getItemId();
 		return super.onOptionsItemSelected( item );
 	}
 
@@ -70,20 +71,8 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 			return;
 		}
 
-		if ( v.getId() == R.id.BTN_loadXML ) {
-			try {
-				URL url = new URL( DataHandler.GetInstance().getSettingsManager().getXMLDataURL() );
-
-				LoadXMLData xmlData = new LoadXMLData();
-				xmlData.execute( url );
-			}
-			catch ( Exception e ) {
-
-			}
-		}
-
 		// Load data from Excel workbook
-		if ( v.getId() == R.id.BTN_loadExcel ) {
+		else if ( v.getId() == R.id.BTN_loadExcel ) {
 			try {
 				fragment = new LoadableExcelClassesFragment();
 				fragment.listener = this;
@@ -91,7 +80,7 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 				fragment.show( ft, getClass().getSimpleName() );
 			}
 			catch ( Exception e ) {
-				Toast.makeText( getApplication(), e.toString(), Toast.LENGTH_LONG ).show();
+				Toast.makeText( getActivity(), e.toString(), Toast.LENGTH_LONG ).show();
 			}
 		}
 	}
@@ -101,14 +90,14 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 		String msg = getResources().getString( R.string.loadData_added_toast );
 		msg = msg.replace( "{class}", stdClass.getName() );
 
-		Toast.makeText( getApplicationContext(), msg, Toast.LENGTH_LONG ).show();
+		Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();
 	}
 
 	/**
      * 
      */
 	public void startStudentListActivity() {
-		Intent intent = new Intent( this, StdClassListActivity.class );
+		Intent intent = new Intent( getActivity(), StdClassListActivity.class );
 		BaseActivity.PutStudentClassExtra( stdClass.getName(), intent );
 		startActivity( intent );
 	}
@@ -123,9 +112,6 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 			View rootView = inflater.inflate( R.layout.fragment_loaddata, container, false );
 
 			Button btn = (Button) rootView.findViewById( R.id.BTN_loadFile );
-			btn.setOnClickListener( (OnClickListener) getActivity() );
-
-			btn = (Button) rootView.findViewById( R.id.BTN_loadXML );
 			btn.setOnClickListener( (OnClickListener) getActivity() );
 
 			btn = (Button) rootView.findViewById( R.id.BTN_loadExcel );

@@ -48,7 +48,6 @@ public class MainFragment extends Fragment {
 
 	@Override
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		super.onCreate( savedInstanceState );
 		View rootView = inflater.inflate( R.layout.fr_main, container, false );
 
 		getActivity().setTitle( getResources().getString( R.string.app_name ) );
@@ -113,10 +112,6 @@ public class MainFragment extends Fragment {
 
 			case R.id.menu_newTask:
 				intent = new Intent( getActivity(), NewTaskActivity.class );
-				break;
-
-			case R.id.menu_loadData:
-				intent = new Intent( getActivity(), LoadDataActivity.class );
 				break;
 
 			case R.id.menu_listDB:
