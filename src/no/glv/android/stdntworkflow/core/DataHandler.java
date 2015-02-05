@@ -1277,16 +1277,21 @@ public class DataHandler {
 	 * @param bean
 	 * @return A new Ident
 	 */
-	private static String CreateStudentIdent( Student bean ) {
+	static String CreateStudentIdent( Student bean ) {
 		String ident = null;
 
-		String fName = bean.getFirstName().substring( 0, 3 );
-		String lName = bean.getLastName().substring( 0, 4 );
-
+		String fn = bean.getFirstName();
+		if ( fn.length() >= 3 ) 
+			fn = fn.substring( 0, 3 );
+		
+		String ln = bean.getLastName();
+		if ( ln.length() >= 4 )
+			ln = ln.substring( 0, 4 );
+		
 		String year = bean.getBirth();
 		year = year.substring( year.length() - 2, year.length() );
 
-		ident = year + fName + lName;
+		ident = year + fn + ln;
 		ident = ident.replace( 'æ', 'e' );
 		ident = ident.replace( 'ø', 'o' );
 		ident = ident.replace( 'å', 'a' );

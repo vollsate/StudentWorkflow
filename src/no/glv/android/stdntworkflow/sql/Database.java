@@ -153,6 +153,8 @@ public class Database extends SQLiteOpenHelper {
 	public void insertParent( Parent parent ) {
 		ParentTbl.InsertParent( parent, getWritableDatabase() );
 
+		if( parent.getPhoneNumbers() == null ) return;
+		
 		Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
 		while ( pIt.hasNext() ) {
 			Phone p = pIt.next();
@@ -405,6 +407,8 @@ public class Database extends SQLiteOpenHelper {
 	 * @param stdClass
 	 */
 	public void insertStudentClass( StudentClass stdClass ) {
+		StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
+
 		List<Student> list = stdClass.getStudents();
 		Iterator<Student> it = list.iterator();
 
@@ -413,8 +417,6 @@ public class Database extends SQLiteOpenHelper {
 			std.setStudentClass( stdClass.getName() );
 			insertStudent( std );
 		}
-
-		StudentClassTbl.InsertStudentClass( stdClass, getWritableDatabase() );
 	}
 
 	/**

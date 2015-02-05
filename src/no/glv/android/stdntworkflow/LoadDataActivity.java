@@ -1,10 +1,12 @@
 package no.glv.android.stdntworkflow;
 
 import java.net.URL;
+import java.util.List;
 
 import no.glv.android.stdntworkflow.LoadableFilesFragment.OnDataLoadedListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.ExcelReader;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -79,6 +81,19 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 
 			}
 		}
+
+		// Load data from Excel workbook
+		if ( v.getId() == R.id.BTN_loadExcel ) {
+			try {
+				fragment = new LoadableExcelClassesFragment();
+				fragment.listener = this;
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				fragment.show( ft, getClass().getSimpleName() );
+			}
+			catch ( Exception e ) {
+				Toast.makeText( getApplication(), e.toString(), Toast.LENGTH_LONG ).show();
+			}
+		}
 	}
 
 	@Override
@@ -103,9 +118,6 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 	 */
 	public static class PlaceholderFragment extends android.app.Fragment {
 
-		public PlaceholderFragment() {
-		}
-
 		@Override
 		public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			View rootView = inflater.inflate( R.layout.fragment_loaddata, container, false );
@@ -114,6 +126,9 @@ public class LoadDataActivity extends Activity implements OnClickListener, OnDat
 			btn.setOnClickListener( (OnClickListener) getActivity() );
 
 			btn = (Button) rootView.findViewById( R.id.BTN_loadXML );
+			btn.setOnClickListener( (OnClickListener) getActivity() );
+
+			btn = (Button) rootView.findViewById( R.id.BTN_loadExcel );
 			btn.setOnClickListener( (OnClickListener) getActivity() );
 
 			return rootView;

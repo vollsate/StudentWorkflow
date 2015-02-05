@@ -40,7 +40,7 @@
         android:key="cat_mainView"
         android:title="@string/cat_mainview_header">
         
-        <CheckBoxPreference
+        <CheckBoxPreference             
             android:key="cat_mainView_showExpiredDate"
             android:title="@string/cat_mainview_showexpireddate"
             android:summary="@string/cat_mainView_showExpiredDate_desc"

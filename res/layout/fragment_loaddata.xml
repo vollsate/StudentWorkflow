@@ -31,6 +31,7 @@
         android:id="@+id/BTN.loadFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Last inn fra fil" />
 
     <Button
@@ -38,6 +39,15 @@
         android:id="@+id/BTN.loadXML"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Last inn fra XML" />
+
+    <Button
+        style="@style/BTN"
+        android:id="@+id/BTN.loadExcel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Last inn fra Excel" />
 
 </LinearLayout>
