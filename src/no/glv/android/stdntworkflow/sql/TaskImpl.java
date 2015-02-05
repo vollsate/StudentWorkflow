@@ -30,7 +30,6 @@ public class TaskImpl implements Task {
 	private TreeMap<String, StudentTask> mModifiedStudents;
 
 	private int mStdCount;
-	private int mStdClassCount;
 
 	/** The map containing the students who has finished the task */
 	private TreeMap<String, StudentTask> studentsMap;
@@ -91,15 +90,15 @@ public class TaskImpl implements Task {
 	public void notifyChange() {
 		// Iterator<StudentTask> it = null;
 
-		if ( removedStudents != null ) {
+		if ( removedStudents.size() > 0 ) {
 			notifyChange( OnTaskChangeListener.MODE_STD_DEL );
 		}
 
-		if ( addedStudents != null ) {
+		if ( addedStudents.size() > 0 ) {
 			notifyChange( OnTaskChangeListener.MODE_STD_ADD );
 		}
 
-		if ( mModifiedStudents != null ) {
+		if ( mModifiedStudents.size() > 0 ) {
 			notifyChange( OnTaskChangeListener.MODE_STD_UPD );
 		}
 	}
@@ -209,7 +208,7 @@ public class TaskImpl implements Task {
 		mModifiedStudents.put( stdTask.getIdent(), stdTask );
 		mModified = true;
 
-		notifyChange();
+		notifyChange( OnTaskChangeListener.MODE_STD_HANDIN );
 		return true;
 	}
 
@@ -235,7 +234,6 @@ public class TaskImpl implements Task {
 		mClasses.add( stdClass );
 		addedClasses.add( stdClass );
 
-		mStdClassCount++;
 		mModified = true;
 	}
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="cat_main_googleAccount_value">harestuaskole.org</string>
+    <string name="cat_main_googleAccount_title_desc">Dette er etternavet til Google Docs brukeren. Det er svært lite sannsynlig at denne noen gang trengs å byttes.</string>
+    <string name="cat_main_googleAccount_title">Google konto</string>
+    <string name="cat_classlist_sortBy_title">Sortering av navn</string>
+    <string name="cat_classlist_sortBy_title_desc">Her kan du definere hvordan applikasjonen skal sortere elevene. Dette er kun standard sortering. Det er mulig å velge annen sortering underveis i selve programmet.</string>
+    
+    <string-array name="cat_sortBy_classlist_titles">
+        <item>Ident</item>
+        <item>Etternavn</item>
+        <item>Fornavn</item>
+    </string-array>
+    <string-array name="cat_sortBy_classlist_values">
+        <item>id</item>
+        <item>last</item>
+        <item>first</item>
+    </string-array>
+
+    <string name="cat_task_sortBy_title">Sortering av oppgaver</string>
+    <string name="cat_task_sortBy_title_desc">Her velger du hvoran applikajsonen skal sortere oppgavene. Velger du å sortere etter dato, vil oppgavene bli listet opp, i stigende rekkefølge, når tidsfirsten på oppgavene går ut på dato.</string>
+    
+    <string-array name="cat_sortBy_task_titles">
+        <item>Dato</item>
+        <item>Navn</item>
+    </string-array>
+    <string-array name="cat_sortBy_task_values">
+        <item>date</item>
+        <item>name</item>
+    </string-array>
+
+    <!-- CAT MAIN VIEW -->
+    <string name="cat_mainview_header">Hovedsiden</string>
+    <string name="cat_mainview_showexpireddate">Vis frist (dato)</string>
+    <string name="cat_mainView_showExpiredDate_desc">Hvis du vil se tidsfristen på oppgaven på hovedsiden, krysser du av denne. Hvis fristen han gått ut på dato, vil den bli vist som rød.</string>
+
+</resources>

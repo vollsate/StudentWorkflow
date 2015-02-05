@@ -3,9 +3,17 @@ package no.glv.android.stdntworkflow.core;
 import java.util.Comparator;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
 
+/**
+ * A utility class that will sort {@link Task}, {@link StudentTask} and
+ * {@link StudentClass} in various ways.
+ * 
+ * @author glevoll
+ *
+ */
 public class DataComparator {
 
 	public static final int SORT_FIRSTNAME_ASC = 0;
@@ -16,6 +24,9 @@ public class DataComparator {
 
 	public static final int SORT_TASKDATE_ASC = 100;
 	public static final int SORT_TASKDATE_DSC = 101;
+
+	public static final int SORT_TASKNAME_ASC = 102;
+	public static final int SORT_TASKNAME_DSC = 103;
 
 	private DataComparator() {
 	}
@@ -117,6 +128,12 @@ public class DataComparator {
 
 				case SORT_TASKDATE_DSC:
 					return rhs.getDate().compareTo( lhs.getDate() );
+
+				case SORT_TASKNAME_ASC:
+					return lhs.getName().compareTo( rhs.getName() );
+
+				case SORT_TASKNAME_DSC:
+					return rhs.getName().compareTo( lhs.getName() );
 
 			}
 

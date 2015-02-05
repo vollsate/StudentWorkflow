@@ -146,9 +146,6 @@ class TaskTbl {
 
 		ContentValues cv = TaksValues( task );
 		String whereClause = COL_NAME + "=?";
-		if ( oldName == null )
-			oldName = task.getName();
-
 		retVal = db.update( TBL_NAME, cv, whereClause, new String[] { oldName } );
 
 		db.close();

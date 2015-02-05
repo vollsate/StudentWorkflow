@@ -57,34 +57,50 @@
             android:layout_height="40sp"
             android:ems="10" />
 
-        <TextView
-            android:id="@+id/TV.newTask.subject"
-            style="@style/TV.std.bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Fag / skole"
-            android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <Spinner
-            android:id="@+id/SP.newTask.subject"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/task_subjects" />
+            android:layout_marginLeft="10sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="15sp"
+            android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/TV.newTask.type"
-            style="@style/TV.std.bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            <TextView
+                style="@style/TV.std.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/task_subject"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Spinner
-            android:id="@+id/SP.newTask.type"
+            <TextView
+                style="@style/TV.std.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/task_type"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/task_types" />
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/SP.newTask.subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:entries="@array/task_types" />
+
+            <Spinner
+                android:id="@+id/SP.newTask.type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:entries="@array/task_types" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/TV.newTask.date"
@@ -94,11 +110,10 @@
             android:layout_marginTop="10sp"
             android:text="Innleveringsdato" />
 
-        
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/BTN.newTask.date"
@@ -112,16 +127,16 @@
                 android:id="@+id/ET.newTask.date"
                 style="@style/ET.task"
                 android:layout_height="40sp"
-                android:hint="yyyy.MM.dd"
-                android:ems="10" />
+                android:ems="10"
+                android:hint="yyyy.MM.dd" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/LL.newTask.classes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10sp"/>
+            android:layout_marginTop="10sp"
+            android:orientation="vertical" />
 
         <Button
             android:id="@+id/BTN.newTask.create"

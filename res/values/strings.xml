@@ -7,6 +7,12 @@
     <!-- MAIN -->
     <string name="app_name">Student WM</string>
     <string name="def">To be altered</string>
+    <string name="TV.header.text">Student work flow</string>
+    <string name="TV.maininfo.text">        Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 
+        Gå inn på settings eller historikk for å se på oppgaver som er avsluttet, eller for å se på statistikk</string>
+    <string name="TV.installedClasses.text">Registrerte klasser</string>
+    <string name="TV.installedTasks.text">Åpne oppgaver</string>
+    
     <string name="action_settings">Settings</string>
     <string name="action_resetDB">Slett databasen</string>
     <string name="action.resetDB.msg">Dette vil slette hele Databasen!</string>
@@ -15,7 +21,8 @@
     <string name="action_loadData">Installer ny klasse</string>
     <string name="action_newTask">Lag ny oppgave</string>
     <string name="action_list">Elevliste</string>
-
+    <string name="students"> elever</string>
+    
     <!-- LOAD DATA -->
 
     <string name="loadDataInfo.title">Installere ny klasse</string>
@@ -25,11 +32,6 @@
     <string name="action_writeToLocal">Lagre</string>
     <string name="BTN.loadNewClass.text">Installer ny klasse</string>
     <string name="BTN.loadNewTask.text">Lag en ny oppgave</string>
-    <string name="TV.installedClasses.text">Registrerte klasser</string>
-    <string name="TV.installedTasks.text">Registrerte oppgaver</string>
-    <string name="TV.header.text">Student work flow</string>
-    <string name="TV.maininfo.text">        Her kan du se på hvillke klasser du har installert, og hvilke oppgaver du har startet. 
-        Gå inn på settings eller historikk for å se på oppgaver som er avsluttet, eller for å se på statistikk</string>
     <string name="TV.task.info.text">        Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en 
         korrekt innleveringsdato.</string>
     <string name="title_activity_new_task">Lag en ny oppgave</string>

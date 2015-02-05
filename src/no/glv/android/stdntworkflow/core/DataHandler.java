@@ -37,7 +37,6 @@ import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
@@ -71,9 +70,7 @@ public class DataHandler {
 	public static final int MODE_RESETDB = Integer.MAX_VALUE;
 
 	private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
-	private static final String STUDENT_IN_TASK_SEP = "=";
 	private static final String STUDENT_PROPERTY_SEP = ";";
-	private static final String STUDENT_IN_TASK_DELIM = ",";
 
 	private static String STDCLASS_FILE_SUFFIX = ".csv";
 
@@ -108,8 +105,8 @@ public class DataHandler {
 	/**
 	 * 
 	 * @return
-	 * @throws IllegalStateException
-	 *             if {@link #Init(Application)} has not been called first!
+	 * @throws IllegalStateException if {@link #Init(Application)} has not been
+	 *             called first!
 	 */
 	public static final DataHandler GetInstance() {
 		if ( !isInitiated )
@@ -205,7 +202,7 @@ public class DataHandler {
 	private void initiateMaps() {
 		stdClasses = new TreeMap<String, StudentClass>();
 		tasks = new TreeMap<String, Task>();
-		
+
 		mTaskSubjects = new TreeMap<String, SubjectType>();
 		mTaskTypes = new TreeMap<String, SubjectType>();
 	}
@@ -249,8 +246,7 @@ public class DataHandler {
 	 * 
 	 * The complete list will be sorted by the default listing: ident ascending.
 	 * 
-	 * @param task
-	 *            The task the StudentTask instance is connected to.
+	 * @param task The task the StudentTask instance is connected to.
 	 * @param stdTasks
 	 */
 	private void setUpStudentTask( Task task, List<StudentTask> stdTasks ) {
@@ -309,8 +305,7 @@ public class DataHandler {
 	 * Populates the {@link Student} instance with the parents and the phone
 	 * data
 	 * 
-	 * @param student
-	 *            The student to populate
+	 * @param student The student to populate
 	 */
 	private void populateStudent( Student student ) {
 		student.addParents( db.loadParents( student.getIdent() ) );
@@ -478,8 +473,7 @@ public class DataHandler {
 
 	/**
 	 * Will create the default {@link SubjectType} the system knows. These are
-	 * located in
-	 * an XML file in the <tt>values</tt> folder.
+	 * located in an XML file in the <tt>values</tt> folder.
 	 */
 	private void initSubjectTypes() {
 		// Get the default arrays
@@ -515,27 +509,28 @@ public class DataHandler {
 	}
 
 	/**
-	 * Loads all the {@link SubjectType} instances found in the
-	 * database. These types are stored in memory by the application.
+	 * Loads all the {@link SubjectType} instances found in the database. These
+	 * types are stored in memory by the application.
 	 */
 	private void loadSubjectTypes() {
 		List<SubjectType> list = db.loadSubjectTypes();
 		for ( SubjectType st : list ) {
-			if ( st.getType() == SubjectType.TYPE_SUBJECT)
+			if ( st.getType() == SubjectType.TYPE_SUBJECT )
 				mTaskSubjects.put( st.getName(), st );
 			else
 				mTaskTypes.put( st.getName(), st );
 		}
 	}
-	
+
 	/**
 	 * Gets a reference to all installed SubjectType.TYPE_SUBJECT
+	 * 
 	 * @return
 	 */
 	public Collection<SubjectType> getSubjects() {
 		return mTaskSubjects.values();
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -543,26 +538,28 @@ public class DataHandler {
 	public Collection<String> getSubjectNames() {
 		return mTaskSubjects.keySet();
 	}
-	
+
 	public Collection<String> getTypeNames() {
 		return mTaskTypes.keySet();
 	}
-	
+
 	public SubjectType getSubjectType( int id ) {
 		for ( SubjectType st : mTaskSubjects.values() ) {
-			if (st.getID() == id ) return st;
+			if ( st.getID() == id )
+				return st;
 		}
-		
+
 		for ( SubjectType st : mTaskTypes.values() ) {
-			if (st.getID() == id ) return st;
+			if ( st.getID() == id )
+				return st;
 		}
-		
+
 		return null;
 	}
 
 	/**
-	 * Converts the name of an {@link SubjectType} to the ID it is stored
-	 * with in the Database.
+	 * Converts the name of an {@link SubjectType} to the ID it is stored with
+	 * in the Database.
 	 * 
 	 * @param subject Name of the {@link SubjectType} to look for.
 	 * @return -1 if the subject is not found.
@@ -570,23 +567,23 @@ public class DataHandler {
 	public int convertSubjectToID( String subject ) {
 		return convertSubjectTypeToID( mTaskSubjects, subject );
 	}
-	
+
 	/**
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public int convertTypeToID( String type ) {		
+	public int convertTypeToID( String type ) {
 		return convertSubjectTypeToID( mTaskTypes, type );
 	}
-	
+
 	/**
 	 * 
 	 * @param map
 	 * @param name
 	 * @return
 	 */
-	private int convertSubjectTypeToID( Map<String, SubjectType> map, String name) {
+	private int convertSubjectTypeToID( Map<String, SubjectType> map, String name ) {
 		if ( !map.containsKey( name ) )
 			return -1;
 
@@ -603,6 +600,34 @@ public class DataHandler {
 	}
 
 	/**
+	 * Finds any tasks that matches the flag. The flag must be one of the states
+	 * a {@link Task} may be in: <tt>TASK_STATE_OPEN</tt>,
+	 * <tt>TASK_STATE_CLOSED</tt> or <tt>TASK_STATE_EXPIRED</tt> or any
+	 * combination of the them.
+	 * 
+	 * @return A List of every task in the system where the tasks state matches
+	 *         the flag
+	 */
+	public List<String> getTaskNames( int flag ) {
+		List<String> tasks = new ArrayList<String>();
+
+		for ( Task t : this.tasks.values() ) {
+			int state = t.getState();
+			if ( ( state & flag ) == Task.TASK_STATE_OPEN ) {
+				tasks.add( t.getName() );
+			}
+			if ( ( state & flag ) == Task.TASK_STATE_CLOSED ) {
+				tasks.add( t.getName() );
+			}
+			if ( ( state & flag ) == Task.TASK_STATE_EXPIRED ) {
+				tasks.add( t.getName() );
+			}
+		}
+
+		return tasks;
+	}
+
+	/**
 	 * 
 	 * @return
 	 */
@@ -612,8 +637,31 @@ public class DataHandler {
 
 	/**
 	 * 
-	 * @param name
-	 *            Name of {@link Task} to find.
+	 * @param flag
+	 * @return
+	 */
+	public List<Task> getTasks(int flag) {
+		List<Task> ts = new LinkedList<Task>();
+		
+		for ( Task t : tasks.values() ) {
+			int state = t.getState();
+			boolean add = false;
+			if ( ( flag & state ) == Task.TASK_STATE_OPEN )
+				add = true;
+			if ( ( flag & state ) == Task.TASK_STATE_CLOSED )
+				add = true;
+			if ( ( flag & state ) == Task.TASK_STATE_EXPIRED )
+				add = true;
+			
+			if ( add ) ts.add( t );
+		}
+		
+		return ts;
+	}
+
+	/**
+	 * 
+	 * @param name Name of {@link Task} to find.
 	 * @return The actual task, or NULL if not found
 	 */
 	public Task getTask( String name ) {
@@ -682,6 +730,9 @@ public class DataHandler {
 	 */
 	public boolean updateTask( Task task, String oldName ) {
 		Log.d( TAG, "Updating task: " + oldName );
+		if ( oldName == null )
+			oldName = task.getName();
+
 		if ( !db.updateTask( task, oldName ) )
 			return false;
 
@@ -727,10 +778,21 @@ public class DataHandler {
 	 * @return
 	 */
 	public boolean closeTask( String name ) {
-		Task task = getTask( name );
+		return closeTask( getTask( name ) );
+	}
+
+	/**
+	 * 
+	 * @param task
+	 * @return
+	 */
+	public boolean closeTask( Task task ) {
 		task.setState( Task.TASK_STATE_CLOSED );
 
-		return db.updateTask( task, task.getName() );
+		boolean succes = db.updateTask( task, task.getName() );
+		notifyTaskChange( task, OnChangeListener.MODE_CLS );
+
+		return succes;
 	}
 
 	/**
@@ -781,6 +843,16 @@ public class DataHandler {
 		while ( it.hasNext() ) {
 			Task task = it.next();
 			commitTask( task );
+		}
+	}
+	
+	/**
+	 * Called when some changes are made to the tasks.
+	 */
+	public void notifyTaskSettingsChange() {
+		Iterator<Task> it = tasks.values().iterator();
+		while ( it.hasNext() ) {
+			it.next().notifyChange( OnTaskChangeListener.MODE_TASK_SORT );
 		}
 	}
 
@@ -849,8 +921,7 @@ public class DataHandler {
 	 * is involved in a specific, and open Task, the StudentClass cannot be
 	 * deleted.
 	 * 
-	 * @param stdClass
-	 *            The {@link StudentClass} to check.
+	 * @param stdClass The {@link StudentClass} to check.
 	 * @return true if deletable
 	 */
 	public boolean isStudentClassDeletable( StudentClass stdClass ) {
@@ -892,7 +963,7 @@ public class DataHandler {
 	 * 
 	 * @return
 	 */
-	public List<String> getStudentClassNames() {
+	public ArrayList<String> getStudentClassNames() {
 		return new ArrayList<String>( stdClasses.keySet() );
 	}
 
@@ -1013,8 +1084,7 @@ public class DataHandler {
 	 * Fullt navn
 	 * 
 	 * @return A ready formatted StudentClass instance
-	 * @throws IOException
-	 *             if any I/O error occurs
+	 * @throws IOException if any I/O error occurs
 	 */
 	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 		FileInputStream fis;
@@ -1071,8 +1141,7 @@ public class DataHandler {
 
 	/**
 	 * 
-	 * @param stdString
-	 *            A new Student implementation from a semicolon separated
+	 * @param stdString A new Student implementation from a semicolon separated
 	 *            String.
 	 * @return
 	 */
@@ -1208,16 +1277,21 @@ public class DataHandler {
 	 * @param bean
 	 * @return A new Ident
 	 */
-	private static String CreateStudentIdent( Student bean ) {
+	static String CreateStudentIdent( Student bean ) {
 		String ident = null;
 
-		String fName = bean.getFirstName().substring( 0, 3 );
-		String lName = bean.getLastName().substring( 0, 4 );
-
+		String fn = bean.getFirstName();
+		if ( fn.length() >= 3 ) 
+			fn = fn.substring( 0, 3 );
+		
+		String ln = bean.getLastName();
+		if ( ln.length() >= 4 )
+			ln = ln.substring( 0, 4 );
+		
 		String year = bean.getBirth();
 		year = year.substring( year.length() - 2, year.length() );
 
-		ident = year + fName + lName;
+		ident = year + fn + ln;
 		ident = ident.replace( 'æ', 'e' );
 		ident = ident.replace( 'ø', 'o' );
 		ident = ident.replace( 'å', 'a' );
@@ -1227,59 +1301,10 @@ public class DataHandler {
 	}
 
 	/**
-	 * 
-	 * @param std
-	 * @return
-	 */
-	private static String StudentToDataString( Student std ) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append( std.getGrade() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( ( (StudentBean) std ).birhtToString() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getLastName() ).append( ", " ).append( std.getFirstName() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getAdress() ).append( STUDENT_PROPERTY_SEP );
-		sb.append( std.getPostalCode() ).append( STUDENT_PROPERTY_SEP );
-		/*
-		 * sb.append( std.getParent1Name() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent1Phone() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent1Mail() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Name() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Phone() ).append( STUDENT_PROPERTY_SEP );
-		 * sb.append( std.getParent2Mail() );
-		 */
-		return sb.toString();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private static String WriteDataHeader() {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append( "Klasse" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Født" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Fullt navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Adresse" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Postnr" ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( "Foresatt 1 navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 1 mobil" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 1 e-post" ).append( STUDENT_PROPERTY_SEP );
-
-		sb.append( "Foresatt 2 navn" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 2 mobil" ).append( STUDENT_PROPERTY_SEP );
-		sb.append( "Foresatt 2 e-post" ).append( STUDENT_PROPERTY_SEP );
-
-		return sb.toString();
-	}
-
-	/**
 	 * Loads every locally stored StudentClass. Every classfile MUST have the
 	 * suffix STDCLASS_FILE_SUFFIX
 	 * 
-	 * @param ctx
-	 *            The Context used to access the local filesystem
+	 * @param ctx The Context used to access the local filesystem
 	 */
 	public static void LoadLocalStudentClasses( Context ctx ) {
 		if ( islocalStudentClassesLoaded )
@@ -1332,36 +1357,6 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
-	/**
-	 * 
-	 * @param activity
-	 */
-	public static void LoadStudentInTasks( Activity activity ) {
-		if ( studentInTasks == null )
-			studentInTasks = new HashMap<String, StudentTaskImpl>();
-
-		FileInputStream fis;
-		BufferedReader buff;
-
-		try {
-			fis = activity.openFileInput( STUDENT_IN_TASK_FILENAME );
-			buff = new BufferedReader( new InputStreamReader( fis ) );
-
-			String readLine = null;
-			while ( ( readLine = buff.readLine() ) != null ) {
-				StudentTaskImpl std = CreateStudentInTasksFromString( readLine );
-				studentInTasks.put( std.getIdent(), std );
-			}
-
-			fis.close();
-		}
-		catch ( FileNotFoundException e ) {
-			Log.e( TAG, "Cannot load " + STUDENT_IN_TASK_FILENAME, e );
-		}
-		catch ( IOException ioe ) {
-			Log.e( TAG, "Failure reading data from " + STUDENT_IN_TASK_FILENAME, ioe );
-		}
-	}
 
 	/**
 	 * 
@@ -1414,24 +1409,6 @@ public class DataHandler {
 		return sb.toString();
 	}
 
-	/**
-	 * 
-	 * @param data
-	 * @return
-	 */
-	private static StudentTaskImpl CreateStudentInTasksFromString( String data ) {
-		String[] params = data.split( STUDENT_IN_TASK_SEP );
-		String ident = params[0].trim();
-
-		params = params[1].split( STUDENT_IN_TASK_DELIM );
-		List<String> tasks = new ArrayList<String>( params.length );
-		for ( int i = 0; i < params.length; i++ ) {
-			tasks.add( params[i] );
-		}
-
-		return null; // new StudentTaskImpl( ident, tasks );
-	}
-
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
@@ -1477,7 +1454,9 @@ public class DataHandler {
 	public static interface OnChangeListener {
 		public static final int MODE_ADD = 1;
 		public static final int MODE_DEL = 2;
-		public static final int MODE_UPD = 3;
+		public static final int MODE_UPD = 4;
+
+		public static final int MODE_CLS = 8;
 	}
 
 	/**

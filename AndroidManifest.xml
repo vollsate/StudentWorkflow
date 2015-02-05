@@ -58,6 +58,10 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" >
         </activity>
-    </application>
+        <activity
+            android:name=".TaskViewActivity"
+            android:label="@string/title_activity_home" >
+        </activity>
+        </application>
 
 </manifest>

@@ -2,14 +2,14 @@ package no.glv.android.stdntworkflow;
 
 import java.util.List;
 
+import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
+ * A specific fragment that shows any classes connected to a task.
  * 
  * @author glevoll
  *
@@ -37,22 +37,13 @@ public class InstalledClassesInTaskFragment extends InstalledClassesFragment {
 	 * @param replace
 	 * @return
 	 */
-	public static InstalledClassesInTaskFragment NewInstance( Task task, FragmentManager manager, boolean replace ) {
-		InstalledClassesInTaskFragment fragment = new InstalledClassesInTaskFragment();
+	public static void NewInstance( Task task, FragmentManager manager ) {
+		ClassViewConfig config = new ClassViewConfig();
+		config.showStudentCount = false;
 		Bundle args = new Bundle();
 		args.putString( InstalledClassesInTaskFragment.PARAM_TASK, task.getName() );
-		fragment.setArguments( args );
 
-		FragmentTransaction tr = manager.beginTransaction();
-
-		if ( replace ) {
-			tr.replace( R.id.FR_installedClasses_container, fragment ).commit();
-		}
-		else
-			tr.add( R.id.FR_installedClasses_container, fragment ).commit();
-
-		return fragment;
-
+		StartFragment( manager, config, args, new InstalledClassesInTaskFragment(), R.id.FR_installedClasses_container );
 	}
 
 }

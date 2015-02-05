@@ -1,10 +1,8 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LV.installedClasses"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LL.installedClasses"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignLeft="@+id/TV.header"
-    android:layout_alignStart="@+id/TV.header"
-    android:layout_below="@+id/TV.installedClasses"
     android:layout_marginTop="10dp" >
 
-</ListView>
+</LinearLayout>

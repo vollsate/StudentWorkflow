@@ -1,13 +1,13 @@
 package no.glv.android.stdntworkflow;
 
+import java.io.Serializable;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
+import no.glv.android.stdntworkflow.core.DataHandler.OnChangeListener;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,31 +18,26 @@ import android.view.ViewGroup;
  */
 public abstract class InstalledDataFragment extends ViewGroupAdapter {
 
-	public static final String EXTRA_SHOWCOUNT = BaseValues.EXTRA_BASEPARAM + "classesCount";
-
-	protected int showClassesCount;
-
-	@Override
-	public final void doCreate( Bundle savedInstanceState ) {
-		showClassesCount = getArguments().getInt( EXTRA_SHOWCOUNT, 1 );
-	}
-
+	public static final String PARAM_CONFIG = BaseValues.EXTRA_BASEPARAM + "config";
+	
 	public abstract int getViewGruopLayoutID();
 
 	public abstract List<String> getNames();
 
+	protected abstract DataConfig getConfig();
+		
 	/**
+	 * Will create the view that shows the individual rows. This method will
+	 * limit the number of rows to show. In order to ignore this limit, an extra
+	 * parameter must be set to <tt>Integer.MAX_VALUE</tt>.
 	 * 
-	 * @param inflater
-	 * @param container
-	 * @param savedInstanceState
-	 * @return
+	 * @param rootView The root {@link ViewGroup} to add the individual rows to.
 	 */
-	protected void doCreateView( ViewGroup rootView ) {
+	protected void doCreateView( ViewGroup rootView ) {		
 		final List<String> list = getNames();
 
 		for ( int i = 0; i < list.size(); i++ ) {
-			if ( i >= showClassesCount )
+			if ( getConfig().showCount > 0 && i >= getConfig().showCount )
 				break;
 			String name = list.get( i );
 
@@ -70,17 +65,25 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 	 * @param mode
 	 */
 	public void onDataChange( int mode ) {
-		ViewGroup rootView = getRootView();
 		switch ( mode ) {
-			case OnStudentClassChangeListener.MODE_ADD:
-			case OnStudentClassChangeListener.MODE_UPD:
-			case OnStudentClassChangeListener.MODE_DEL:
-				rootView.removeAllViewsInLayout();
-				notifyDataSetChanged();
+			case OnChangeListener.MODE_ADD:
+			case OnChangeListener.MODE_UPD:
+			case OnChangeListener.MODE_DEL:
+			case OnChangeListener.MODE_CLS:
+				invalidateView();
 				break;
 
 			default:
 				break;
 		}
+	}
+	
+	public static class DataConfig implements Serializable {
+		
+		/** InstalledDataFragment.java */
+		private static final long serialVersionUID = 1L;
+		
+		public int showCount = -1;
+		public int sortBy = -1;
 	}
 }

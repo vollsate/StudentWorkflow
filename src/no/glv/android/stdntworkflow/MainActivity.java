@@ -1,211 +1,233 @@
 package no.glv.android.stdntworkflow;
 
+import java.util.ArrayList;
+
 import no.glv.android.stdntworkflow.core.DataHandler;
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
-/**
- * Main task that shows the first page.
- * 
- * - The user may look at a class or a task - A new task may be loaded - A new
- * class may be installed
- * 
- * Uses fragments to show the installed classes and installed tasks.
- * 
- * @author GleVoll
- *
- */
+@SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
 
-	private static final String TAG = MainActivity.class.getSimpleName();
+	// nav drawer title
+	private CharSequence mDrawerTitle;
 
-	public static final String STATE_APP_INIT = "stdntWF.init";
+	// used to store app title
+	private CharSequence mTitle;
 
-	DataHandler dataHandler;
+	// slide menu items
+	private String[] navMenuTitles;
+	private TypedArray navMenuIcons;
 
-	public MainActivity() {
-		Log.i( TAG, "Constructor" );
-	}
-
-	/**
-	 * Will initiate the {@link DataHandler} for the rest of the application.
-	 * 
-	 * Listeners for StudentClass change and Task change are added
-	 */
-	private void init() {
-		dataHandler = DataHandler.Init( getApplication() );
-	}
-
-	@Override
-	protected void onSaveInstanceState( Bundle outState ) {
-		super.onSaveInstanceState( outState );
-
-		Log.i( TAG, "onSaveInstanceState()" );
-	}
+	private ArrayList<NavDrawerItem> navDrawerItems;
+	private NavDrawerListAdapter adapter;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
-		Log.i( TAG, "onCreate()" );
-
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_main );
+		setContentView( R.layout.activity_navdrawer );
+		DataHandler.Init( getApplication() );
 
-		setTitle( getResources().getString( R.string.app_name ) );
-		init();
+		mTitle = mDrawerTitle = getTitle();
 
-		getInstalledClassesFR( savedInstanceState, false );
-		getInstalledTasksFR( savedInstanceState, false );
-	}
+		// load slide menu items
+		navMenuTitles = getResources().getStringArray( R.array.nav_drawer_items );
 
-	/**
-	 * 
-	 * @param inState
-	 * @return
-	 */
-	private InstalledTasksFragment getInstalledTasksFR( Bundle inState, boolean forceReplace ) {
-		if ( forceReplace ) {
-			return startTaskFramgent( forceReplace );
+		// nav drawer icons from resources
+		navMenuIcons = getResources()
+				.obtainTypedArray( R.array.nav_drawer_icons );
+
+		mDrawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
+		mDrawerList = (ListView) findViewById( R.id.list_slidermenu );
+
+		navDrawerItems = new ArrayList<NavDrawerItem>();
+		int index = 0;
+
+		// adding nav drawer items to array
+		// Home
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Classes
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Tasks
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Subject and types
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+		// Settings
+		navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+
+		navMenuIcons.recycle();
+
+		mDrawerList.setOnItemClickListener( new SlideMenuClickListener() );
+
+		// setting the nav drawer list adapter
+		adapter = new NavDrawerListAdapter( getApplicationContext(),
+				navDrawerItems );
+		mDrawerList.setAdapter( adapter );
+
+		// enabling action bar app icon and behaving it as toggle button
+		getActionBar().setDisplayHomeAsUpEnabled( true );
+		getActionBar().setHomeButtonEnabled( true );
+
+
+		mDrawerToggle = new ActionBarDrawerToggle( this, mDrawerLayout,
+				R.drawable.ic_drawer, // nav menu toggle icon
+				R.string.app_name, // nav drawer open - description for
+									// accessibility
+				R.string.app_name // nav drawer close - description for
+									// accessibility
+		) {
+			public void onDrawerClosed( View view ) {
+				getActionBar().setTitle( mTitle );
+				// calling onPrepareOptionsMenu() to show action bar icons
+				invalidateOptionsMenu();
+			}
+
+			public void onDrawerOpened( View drawerView ) {
+				getActionBar().setTitle( mDrawerTitle );
+				// calling onPrepareOptionsMenu() to hide action bar icons
+				invalidateOptionsMenu();
+			}
+		};
+		mDrawerLayout.setDrawerListener( mDrawerToggle );
+
+		if ( savedInstanceState == null ) {
+			// on first time display view for first nav item
+			displayView( 0 );
 		}
+	}
 
-		if ( inState == null ) {
-			return startTaskFramgent( false );
+	/**
+	 * Slide menu item click listener
+	 * */
+	private class SlideMenuClickListener implements ListView.OnItemClickListener {
+
+		@Override
+		public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
+			// display view for selected nav drawer item
+			displayView( position );
 		}
-
-		return (InstalledTasksFragment) getFragmentManager().findFragmentById( R.id.FR_installedTasks_container );
 	}
 
-	/**
-	 * 
-	 * @param replace
-	 * @return
-	 */
-	private InstalledTasksFragment startTaskFramgent( boolean replace ) {
-		InstalledTasksFragment tasksFragment = new InstalledTasksFragment();
-		Bundle args = new Bundle();
-		args.putInt( InstalledTasksFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
-		tasksFragment.setArguments( args );
-
-		FragmentTransaction tr = getFragmentManager().beginTransaction();
-
-		if ( replace ) {
-			tr.replace( R.id.FR_installedTasks_container, tasksFragment ).commit();
-		}
-		else
-			tr.add( R.id.FR_installedTasks_container, tasksFragment ).commit();
-
-		return tasksFragment;
-	}
-
-	/**
-	 * 
-	 * @param inState
-	 * @return
-	 */
-	private InstalledClassesFragment getInstalledClassesFR( Bundle inState, boolean forceReplace ) {
-		if ( forceReplace )
-			startClassesFragment( forceReplace );
-
-		if ( inState == null ) {
-			startClassesFragment( false );
-		}
-
-		return (InstalledClassesFragment) getFragmentManager().findFragmentById( R.id.FR_installedClasses_container );
-	}
-
-	/**
-	 * 
-	 * @param replace
-	 * @return
-	 */
-	private InstalledClassesFragment startClassesFragment( boolean replace ) {
-		InstalledClassesFragment classesFragment = new InstalledClassesFragment();
-		Bundle args = new Bundle();
-		args.putInt( InstalledClassesFragment.EXTRA_SHOWCOUNT, dataHandler.getSettingsManager().getShowCount() );
-		classesFragment.setArguments( args );
-
-		FragmentTransaction tr = getFragmentManager().beginTransaction();
-		if ( replace )
-			tr.replace( R.id.FR_installedClasses_container, classesFragment ).commit();
-		else
-			tr.add( R.id.FR_installedClasses_container, classesFragment ).commit();
-
-		return classesFragment;
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public boolean onCreateOptionsMenu( Menu menu ) {
-		getMenuInflater().inflate( R.menu.menu_main, menu );
-		return true;
-	}
-
-	/**
-	 * 
-	 */
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
-		int id = item.getItemId();
+		// toggle nav drawer on selecting action bar app icon/title
+		if ( mDrawerToggle.onOptionsItemSelected( item ) ) {
+			return true;
+		}
+
+		return super.onOptionsItemSelected( item );
+	}
+
+	/**
+	 * Called when invalidateOptionsMenu() is triggered
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu( Menu menu ) {
+		// if nav drawer is opened, hide the action items
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen( mDrawerList );
+		MenuItem item = menu.findItem( R.id.menu_overflow );
+		if ( item != null )
+			item.setVisible( !drawerOpen );
+
+		return super.onPrepareOptionsMenu( menu );
+	}
+
+	/**
+	 * Displaying fragment view for selected nav drawer list item
+	 * */
+	private void displayView( int position ) {
+		// update the main content by replacing fragments
+		Fragment fragment = null;
 		Intent intent = null;
-
-		switch ( id ) {
-			case R.id.menu_settings:
-				intent = new Intent( this, SettingsActivity.class );
+		switch ( position ) {
+			case 0:
+				fragment = new MainFragment();
 				break;
-
-			case R.id.menu_resetDB:
-				resetDB();
+			case 1:
+				fragment = null;
 				break;
-
-			case R.id.menu_newTask:
-				intent = new Intent( this, NewTaskActivity.class );
+			case 2:
+				intent = new Intent( this, TaskViewActivity.class );
 				break;
-
-			case R.id.menu_loadData:
-				intent = new Intent( this, LoadDataActivity.class );
+			case 3:
+				fragment = null;
 				break;
-
-			case R.id.menu_listDB:
-				dataHandler.listDB();
+			case 4:
+				fragment = new PrefFragment();
+				break;
+			case 5:
+				fragment = null;
 				break;
 
 			default:
-				return super.onOptionsItemSelected( item );
+				break;
 		}
 
-		if ( intent != null )
+		boolean updateDrawer = false;
+
+		if ( fragment != null ) {
+			updateDrawer = true;
+			FragmentManager fragmentManager = getFragmentManager();
+			FragmentTransaction ft = fragmentManager.beginTransaction();
+			ft.replace( R.id.frame_container, fragment );
+			if ( position > 0 ) {
+				ft.addToBackStack( null );
+			}
+			ft.commit();
+		}
+		else if ( intent != null ) {
+			updateDrawer = true;
 			startActivity( intent );
-		return true;
+		}
+
+		if ( updateDrawer ) {
+			// update selected item and title, then close the drawer
+			mDrawerList.setItemChecked( position, true );
+			mDrawerList.setSelection( position );
+			setTitle( navMenuTitles[position] );
+			mDrawerLayout.closeDrawer( mDrawerList );
+		}
 	}
 
-	private void resetDB() {
-		AlertDialog.Builder builder = new AlertDialog.Builder( this );
-		String msg = getResources().getString( R.string.action_resetDB_msg );
+	@Override
+	public void setTitle( CharSequence title ) {
+		mTitle = title;
+		getActionBar().setTitle( mTitle );
+	}
 
-		builder.setMessage( msg ).setTitle( R.string.action_resetDB );
-		builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
+	/**
+	 * When using the ActionBarDrawerToggle, you must call it during
+	 * onPostCreate() and onConfigurationChanged()...
+	 */
 
-			@Override
-			public void onClick( DialogInterface dialog, int which ) {
-				dataHandler.resetDB();
-				Toast.makeText( MainActivity.this, R.string.action_resetDB_done, Toast.LENGTH_LONG ).show();
-			}
-		} );
+	@Override
+	protected void onPostCreate( Bundle savedInstanceState ) {
+		super.onPostCreate( savedInstanceState );
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
+	}
 
-		builder.setNegativeButton( "Avbryt", null );
-
-		AlertDialog dialog = builder.create();
-		dialog.show();
-
+	@Override
+	public void onConfigurationChanged( Configuration newConfig ) {
+		super.onConfigurationChanged( newConfig );
+		// Pass any configuration change to the drawer toggls
+		mDrawerToggle.onConfigurationChanged( newConfig );
 	}
 
 }

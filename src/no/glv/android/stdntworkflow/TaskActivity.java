@@ -133,7 +133,7 @@ public class TaskActivity extends BaseTabActivity {
 				return true;
 
 			case R.id.task_action_close:
-				getDataHandler().closeTask( mTask.getName() );
+				getDataHandler().closeTask( mTask );
 				return true;
 
 			default:
@@ -249,8 +249,18 @@ public class TaskActivity extends BaseTabActivity {
 		mTask.markAsCommitted();
 	}
 
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// 
+	// TaskInfoFragment
+	// 
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * Shows the task info view.
+	 * 
+	 * Depends on 
 	 */
 	public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener,
 			Task.OnTaskChangeListener {
@@ -298,7 +308,7 @@ public class TaskActivity extends BaseTabActivity {
 			SetupSpinner( sp, getTypesNames(), st.getName(), getActivity() );
 
 			setCounters();
-			getInstalledClassesFR( savedInstanceState );
+			InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager() );
 
 			return rootView;
 		}
@@ -319,24 +329,10 @@ public class TaskActivity extends BaseTabActivity {
 			return mSubjectNames;
 		}
 
+
 		/**
 		 * 
-		 * @param inState
-		 * @param forceReplace
-		 * @return
 		 */
-		private InstalledClassesInTaskFragment getInstalledClassesFR( Bundle inState ) {
-			if ( inState == null ) {
-				return InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager(), false );
-			}
-
-			return (InstalledClassesInTaskFragment) getFragmentManager().findFragmentById(
-					R.id.FR_installedClasses_container );
-		}
-
-		/**
-	 * 
-	 */
 		private void setCounters() {
 			getTextView( R.id.TV_task_studentCount ).setText( String.valueOf( task.getStudentCount() ) );
 			getTextView( R.id.TV_task_pendingCount ).setText( String.valueOf( task.getStudentsPendingCount() ) );
@@ -372,10 +368,18 @@ public class TaskActivity extends BaseTabActivity {
 		}
 
 		@Override
-		protected int getRootViewID() {
+		protected int getLayoutID() {
 			return R.layout.fragment_task_info;
 		}
 	}
+	
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// 
+	// TaskClassesFragment
+	// 
+	// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -424,7 +428,7 @@ public class TaskActivity extends BaseTabActivity {
 		}
 
 		@Override
-		protected int getRootViewID() {
+		protected int getLayoutID() {
 			return R.layout.fragment_task_students;
 		}
 
