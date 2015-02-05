@@ -1,6 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataComparator;
@@ -33,7 +32,9 @@ import android.widget.TextView;
  * <li>showCount - The number of classes to show.
  * <li>sortBy - The {@link DataComparator} sortBy int ID.
  * <li>showDesc - A boolean telling weather or not to display the number of
- * students in the class </ul></blockquote>
+ * students in the class
+ * </ul>
+ * </blockquote>
  * 
  * 
  * @author GleVoll
@@ -44,21 +45,12 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	/**  */
 	public static final String INST_STATE_CLASS_NAMES = BaseValues.EXTRA_BASEPARAM + "names";
 
-	private ArrayList<String> classNames;
-
 	private ClassViewConfig config;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		dataHandler.addOnStudentClassChangeListener( this );
 		super.onCreate( savedInstanceState );
-
-		if ( savedInstanceState != null ) {
-			classNames = savedInstanceState.getStringArrayList( INST_STATE_CLASS_NAMES );
-		}
-		else {
-			classNames = dataHandler.getStudentClassNames();
-		}
 
 		config = (ClassViewConfig) getArguments().getSerializable( PARAM_CONFIG );
 	}
@@ -71,7 +63,6 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	@Override
 	public void onSaveInstanceState( Bundle outState ) {
 		super.onSaveInstanceState( outState );
-		outState.putStringArrayList( INST_STATE_CLASS_NAMES, classNames );
 	}
 
 	@Override
@@ -91,7 +82,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 
 	@Override
 	public List<String> getNames() {
-		return classNames;
+		return dataHandler.getStudentClassNames();
 	}
 
 	@Override
@@ -171,7 +162,8 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 	 * @param fragment
 	 * @param containerID
 	 */
-	public static void StartFragment( FragmentManager manager, ClassViewConfig config, Bundle args, Fragment fragment, int containerID ) {
+	public static void StartFragment( FragmentManager manager, ClassViewConfig config, Bundle args, Fragment fragment,
+			int containerID ) {
 		int showCount = config.showCount;
 		if ( showCount < 0 ) {
 			showCount = DataHandler.GetInstance().getSettingsManager()
@@ -182,7 +174,7 @@ public class InstalledClassesFragment extends InstalledDataFragment implements O
 		fragment.setArguments( args );
 
 		FragmentTransaction tr = manager.beginTransaction();
-		tr.replace( containerID, fragment ).commit();		
+		tr.replace( containerID, fragment ).commit();
 	}
 
 	// ------------------------------------------------------------------------
