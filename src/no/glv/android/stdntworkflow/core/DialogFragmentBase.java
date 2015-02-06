@@ -25,6 +25,10 @@ public abstract class DialogFragmentBase extends DialogFragment {
 	protected abstract int getRootViewID();
 
 	protected abstract String getTitle();
+	
+	protected View getRootView() {
+		return rootView;
+	}
 
 	@Override
 	public final View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {

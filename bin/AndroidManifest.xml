@@ -34,11 +34,6 @@
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
-            android:name=".LoadDataFragment"
-            android:label="@string/activity.loadData.title"
-            android:parentActivityName=".MainActivity" >
-        </activity>
-        <activity
             android:name=".NewTaskActivity"
             android:label="@string/title_activity_new_task"
             android:parentActivityName=".MainActivity" >
@@ -50,18 +45,6 @@
             android:label="@string/title_activity_task"
             android:parentActivityName=".MainActivity" >
         </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
-        <activity
-            android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
-        </activity>
-        <activity
-            android:name=".TaskViewActivity"
-            android:label="@string/title_activity_home" >
-        </activity>
-        </application>
+    </application>
 
 </manifest>

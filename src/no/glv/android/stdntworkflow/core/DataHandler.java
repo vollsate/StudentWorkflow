@@ -189,6 +189,7 @@ public class DataHandler {
 		db.runCreate();
 		initiateMaps();
 		initSubjectTypes();
+		loadSubjectTypes();
 
 		notifyStudentClassChange( null, OnStudentClassChangeListener.MODE_DEL );
 		notifyTaskChange( null, OnTasksChangedListener.MODE_DEL );
@@ -994,8 +995,6 @@ public class DataHandler {
 	public void addStudentClass( StudentClass stdClass ) {
 		db.insertStudentClass( stdClass );
 		stdClasses.put( stdClass.getName(), stdClass );
-
-		notifyStudentClassAdd( stdClass );
 	}
 
 	/**
@@ -1045,7 +1044,7 @@ public class DataHandler {
 	 * 
 	 * @param stdClass
 	 */
-	private void notifyStudentClassAdd( StudentClass stdClass ) {
+	public void notifyStudentClassAdd( StudentClass stdClass ) {
 		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
 	}
 

@@ -21,31 +21,54 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 /**
  * 
  * @author glevoll
  *
  */
-public class ExcelReader {
+public class ExcelReader extends AsyncTask<Void, Integer, List<String>> {
 
 	public static final String EXCEL_FILENAME = "harestuaskole.xls";
 
 	Context context;
 	private HSSFWorkbook workbook ;
 	private String fileName;
+	private OnExcelWorkbookLoadedListener listener;
+	
+	private List<String> availClasses;
 
 	/**
 	 * 
 	 * @param ctx
 	 */
-	public ExcelReader( Context ctx, String fName ) throws IOException {
+	public ExcelReader( Context ctx, String fName, OnExcelWorkbookLoadedListener l ) {
 		context = ctx;
+		listener = l;
 				
 		if ( fName == null ) this.fileName = EXCEL_FILENAME;
 		else this.fileName = fName;
-		
-		workbook = getWorkbook();
+	}
+	
+	/**
+	 * 
+	 */
+	public List<String> doInBackground(Void... voids) {
+		try {
+			workbook = getWorkbook();
+			return getAvailableClasses();
+		}
+		catch ( IOException e ) {
+			// TODO: handle exception
+		}
+
+		return null;
+	}
+	
+	@Override
+	protected void onPostExecute( List<String> result ) {
+		listener.onWorkbookLoaded( result );
 	}
 	
 	/**
@@ -68,15 +91,16 @@ public class ExcelReader {
 	 * @return
 	 */
 	public List<String> getAvailableClasses() {
+		if ( availClasses != null ) return availClasses;
+
 		int i = workbook.getNumberOfSheets();
-		
 		List<String> list = new ArrayList<String>(i);
-		
 		for ( int j = 0; j < i; j++ ) {
 			list.add( workbook.getSheetName( j ) );
 		}
 		
-		return list;
+		availClasses = list;
+		return availClasses;
 	}
 
 	/**
@@ -232,5 +256,10 @@ public class ExcelReader {
 		public HSSFCell nextCell() {
 			return row.getCell( index++ );
 		}
+	}
+	
+	public static interface OnExcelWorkbookLoadedListener {
+		
+		public void onWorkbookLoaded( List<String> fileNames);
 	}
 }

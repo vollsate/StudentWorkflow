@@ -7,6 +7,8 @@ import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,12 +19,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoadableFilesFragment extends DialogFragmentBase {
 
 	public static final String EXTRA_TASKNAME = BaseValues.EXTRA_BASEPARAM + "TaskName";
-
 	OnDataLoadedListener listener;
 
 	@Override
@@ -45,7 +47,7 @@ public class LoadableFilesFragment extends DialogFragmentBase {
 		buildAdapter( rootView );
 		buildButton( rootView );
 	}
-
+	
 	/**
 	 * 
 	 * @param rootView
@@ -133,6 +135,15 @@ public class LoadableFilesFragment extends DialogFragmentBase {
 
 			fragment.finish();
 		}
+	}
+	
+	public static void StartFragment( OnDataLoadedListener listener, FragmentManager manager ) {
+		LoadableFilesFragment fragment = new LoadableFilesFragment();
+		
+		fragment.listener = listener;
+		FragmentTransaction ft = manager.beginTransaction();
+		fragment.show( ft, fragment.getClass().getSimpleName() );
+		
 	}
 
 	static interface OnDataLoadedListener {

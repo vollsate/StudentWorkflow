@@ -18,11 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class LoadDataFragment extends Fragment implements OnClickListener, OnDataLoadedListener {
+/**
+ * 
+ * @author glevoll
+ *
+ */
+public class NewStudentClassFragment extends Fragment implements OnClickListener, OnDataLoadedListener {
 
 	private StudentClass stdClass;
-
-	private LoadableFilesFragment fragment;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
@@ -63,18 +66,14 @@ public class LoadDataFragment extends Fragment implements OnClickListener, OnDat
 	@Override
 	public void onClick( View v ) {
 		if ( v.getId() == R.id.BTN_loadFile ) {
-			fragment = new LoadableFilesFragment();
-			fragment.listener = this;
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			fragment.show( ft, getClass().getSimpleName() );
-
+			LoadableFilesFragment.StartFragment( this, getFragmentManager() );
 			return;
 		}
 
 		// Load data from Excel workbook
 		else if ( v.getId() == R.id.BTN_loadExcel ) {
 			try {
-				fragment = new LoadableExcelClassesFragment();
+				LoadableFilesFragment fragment = new LoadableExcelClassesFragment();
 				fragment.listener = this;
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
 				fragment.show( ft, getClass().getSimpleName() );

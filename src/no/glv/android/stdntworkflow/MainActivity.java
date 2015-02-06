@@ -167,7 +167,7 @@ public class MainActivity extends Activity {
 				fragment = new MainFragment();
 				break;
 			case FRAG_CLASS:
-				fragment = new LoadDataFragment();
+				fragment = new NewStudentClassFragment();
 				break;
 			case FRAG_TASK:
 				intent = new Intent( this, TaskViewActivity.class );
