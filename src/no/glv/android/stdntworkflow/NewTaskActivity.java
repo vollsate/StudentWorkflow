@@ -121,7 +121,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 	protected void onSaveInstanceState( Bundle outState ) {
 		super.onSaveInstanceState( outState );
 
-		outState.putString( Task.EXTRA_TASKNAME, task.getName() );
+		outState.putSerializable( Task.EXTRA_TASKNAME, task );
 		outState.putStringArrayList( ST_SUBJECTS, mSubjectNames );
 		outState.putStringArrayList( ST_TYPES, mTypesNames );
 	}
