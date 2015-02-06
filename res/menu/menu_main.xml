@@ -11,12 +11,6 @@
         android:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/menu.settings"
-                android:icon="@drawable/ic_action_settings"
-                android:orderInCategory="90"
-                android:title="@string/action_settings"
-                android:showAsAction="never"/>
-            <item
                 android:id="@+id/menu.resetDB"
                 android:icon="@drawable/ic_action_reset"
                 android:orderInCategory="100"
