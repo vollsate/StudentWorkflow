@@ -102,10 +102,6 @@ public class MainFragment extends Fragment {
 		Intent intent = null;
 
 		switch ( id ) {
-			case R.id.menu_settings:
-				intent = new Intent( getActivity(), SettingsActivity.class );
-				break;
-
 			case R.id.menu_resetDB:
 				resetDB();
 				break;
