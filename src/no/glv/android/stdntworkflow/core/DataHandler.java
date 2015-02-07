@@ -20,6 +20,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.http.cookie.SM;
+
 import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Parent;
@@ -72,7 +74,7 @@ public class DataHandler {
 	public static final int MODE_RESETDB = Integer.MAX_VALUE;
 
 	private static final String PREF_SUBJECTTYPE = BaseValues.EXTRA_BASEPARAM + "subjectType";
-	
+
 	private static final String STUDENT_IN_TASK_FILENAME = "stdntsk.glv";
 	private static final String STUDENT_PROPERTY_SEP = ";";
 
@@ -160,8 +162,17 @@ public class DataHandler {
 	}
 
 	/**
+	 * This constructor is private in order to keep from being instantiated by
+	 * other ways then through the {@link DataHandler#Init(Application)} method
+	 * call.
+	 * 
+	 * <p>
+	 * The <tt>db</tt> parameter is the {@link Database} instance to use to
+	 * access the SQLite data. The {@link SettingsManager} will be initiated and
+	 * the preferences used by this app will be loaded.
 	 * 
 	 * @param db
+	 * @param app
 	 */
 	private DataHandler( Database db, Application app ) {
 		this.db = db;
@@ -170,12 +181,13 @@ public class DataHandler {
 		sManager = new SettingsManager( app );
 		initiateMaps();
 		initiateListeners();
-		
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences( app );
-		boolean loadSubTypes = pref.getBoolean( PREF_SUBJECTTYPE, false );
-		if ( ! loadSubTypes ) {
+
+		// Check to see if the SubjectTypes are installed, and if
+		// not - install them
+		boolean loadSubTypes = sManager.getBoolPref( PREF_SUBJECTTYPE, false );
+		if ( !loadSubTypes ) {
 			initSubjectTypes();
-			pref.edit().putBoolean( PREF_SUBJECTTYPE, true );
+			sManager.setBoolPref( PREF_SUBJECTTYPE, true );
 		}
 	}
 
@@ -652,9 +664,9 @@ public class DataHandler {
 	 * @param flag
 	 * @return
 	 */
-	public List<Task> getTasks(int flag) {
+	public List<Task> getTasks( int flag ) {
 		List<Task> ts = new LinkedList<Task>();
-		
+
 		for ( Task t : tasks.values() ) {
 			int state = t.getState();
 			boolean add = false;
@@ -664,10 +676,11 @@ public class DataHandler {
 				add = true;
 			if ( ( flag & state ) == Task.TASK_STATE_EXPIRED )
 				add = true;
-			
-			if ( add ) ts.add( t );
+
+			if ( add )
+				ts.add( t );
 		}
-		
+
 		return ts;
 	}
 
@@ -857,14 +870,16 @@ public class DataHandler {
 			commitTask( task );
 		}
 	}
-	
+
 	/**
 	 * Called when some changes are made to the tasks.
 	 */
 	public void notifyTaskSettingsChange() {
-		Iterator<Task> it = tasks.values().iterator();
+		
+		
+		Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() ) {
-			it.next().notifyChange( OnTaskChangeListener.MODE_TASK_SORT );
+			it.next().onTaskChange( OnTaskChangeListener.MODE_TASK_SORT );
 		}
 	}
 
@@ -878,7 +893,7 @@ public class DataHandler {
 
 		Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() )
-			it.next().onTaskChange( newTask, mode );
+			it.next().onTaskChange( mode );
 	}
 
 	/**
@@ -1291,13 +1306,13 @@ public class DataHandler {
 		String ident = null;
 
 		String fn = bean.getFirstName();
-		if ( fn.length() >= 3 ) 
+		if ( fn.length() >= 3 )
 			fn = fn.substring( 0, 3 );
-		
+
 		String ln = bean.getLastName();
 		if ( ln.length() >= 4 )
 			ln = ln.substring( 0, 4 );
-		
+
 		String year = bean.getBirth();
 		year = year.substring( year.length() - 2, year.length() );
 
@@ -1366,7 +1381,6 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
-
 
 	/**
 	 * 
@@ -1476,7 +1490,7 @@ public class DataHandler {
 	 */
 	public static interface OnTasksChangedListener extends OnChangeListener {
 
-		public void onTaskChange( Task newTask, int mode );
+		public void onTaskChange( int mode );
 	}
 
 	/**

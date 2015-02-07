@@ -1,9 +1,10 @@
 package no.glv.android.stdntworkflow.core;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Application;
@@ -11,6 +12,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+/**
+ * 
+ * @author glevoll
+ *
+ */
 public class SettingsManager {
 
 	private static final String TAG = SettingsManager.class.getSimpleName();
@@ -31,7 +37,7 @@ public class SettingsManager {
 	private int newTaskUse = NEWTASK_USEIDENT;
 
 	private Application app;
-	
+
 	private SharedPreferences preferences;
 
 	/**
@@ -40,8 +46,65 @@ public class SettingsManager {
 	 */
 	public SettingsManager( Application app ) {
 		this.app = app;
-		
 		preferences = PreferenceManager.getDefaultSharedPreferences( app );
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @param def
+	 * @return
+	 */
+	public boolean getBoolPref( String key, boolean def ) {
+		return preferences.getBoolean( key, def );
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setBoolPref( String key, boolean value ) {
+		preferences.edit().putBoolean( key, value ).apply();
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @param def
+	 * @return
+	 */
+	public int getIntPref( String key, int def ) {
+		return preferences.getInt( key, def );
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setIntPref( String key, int value) {
+		preferences.edit().putInt( key, value ).apply();
+	}
+
+	
+	/**
+	 * 
+	 * @param key
+	 * @param def
+	 * @return
+	 */
+	public String getStringPref( String key, String def ) {
+		return preferences.getString( key, def );
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setStringPref( String key, String value) {
+		preferences.edit().putString( key, value ).apply();
 	}
 
 	/**
@@ -85,9 +148,9 @@ public class SettingsManager {
 				return std.getIdent();
 		}
 	}
-	
+
 	public boolean showExpiredDate() {
-		return preferences.getBoolean( "cat_mainView_showExpiredDate", true ); 
+		return preferences.getBoolean( "cat_mainView_showExpiredDate", true );
 	}
 
 	/**
@@ -124,6 +187,20 @@ public class SettingsManager {
 	 */
 	public int getStudentClassSortType() {
 		return DataComparator.SORT_IDENT_ASC;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getTaskSortBy() {
+		int sortBy = DataComparator.SORT_TASKDATE_ASC;
+		
+		String val = preferences.getString( "cat_sortBy_task", "date" );
+		if ( "date".equals( val ) ) sortBy = DataComparator.SORT_TASKDATE_ASC;
+		if ( "name".equals( val ) ) sortBy = DataComparator.SORT_TASKNAME_ASC;
+		
+		return sortBy;
 	}
 
 	/**

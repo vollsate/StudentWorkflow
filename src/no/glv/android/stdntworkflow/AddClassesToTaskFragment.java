@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
+ * Used mainly by TaskActivity to add classes to the {@link Task} if needed.
  * 
  * @author GleVoll
  *

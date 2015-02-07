@@ -70,7 +70,7 @@ public class MainFragment extends Fragment {
 		config.showDescription = true;
 		config.showExpiredDate = dataHandler.getSettingsManager().showExpiredDate();
 		config.taskState = Task.TASK_STATE_OPEN;
-		config.sortBy = DataComparator.SORT_TASKDATE_ASC;
+		config.sortBy = dataHandler.getSettingsManager().getTaskSortBy();
 		config.showCount = Integer.MAX_VALUE;
 
 		InstalledTasksFragment.StartFragment( getFragmentManager(), config );

@@ -62,6 +62,11 @@ public class Database extends SQLiteOpenHelper {
 		if ( instance == null )
 			instance = this;
 	}
+	
+	public void deleteSubjectTypes() {
+		SubjectTypeTbl.DropTable( getWritableDatabase() );
+		SubjectTypeTbl.CreateTable( getWritableDatabase() );
+	}
 
 	/**
      * 

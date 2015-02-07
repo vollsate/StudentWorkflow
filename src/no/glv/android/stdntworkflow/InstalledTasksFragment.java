@@ -297,6 +297,15 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 				// notifyDataSetChanged();
 				break;
 
+			default:
+				onDataChange( mode );
+				break;
+		}
+	}
+	
+	@Override
+	public void onTaskChange( int mode ) {
+		switch ( mode ) {
 			case OnTaskChangeListener.MODE_TASK_SORT:
 				invalidateView();
 				break;
