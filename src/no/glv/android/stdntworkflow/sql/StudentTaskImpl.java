@@ -121,6 +121,26 @@ public class StudentTaskImpl implements StudentTask {
 	public int getMode() {
 		return mode;
 	}
+	
+	@Override
+	public String getModeAsString() {
+		switch ( mode ) {
+			case MODE_EXPIRED:
+				return "utgått";
+
+			case MODE_HANDIN:
+				return "levert";
+
+			case MODE_LATE:
+				return "for sen levering";
+
+			case MODE_PENDING:
+				return "venter ..";
+
+			default:
+				return "";
+		}
+	}
 
 	@Override
 	public boolean isHandedIn() {

@@ -1,14 +1,16 @@
 package no.glv.android.stdntworkflow;
 
+import java.io.File;
+
 import no.glv.android.stdntworkflow.InstalledClassesFragment.ClassViewConfig;
 import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
-import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -111,7 +113,10 @@ public class MainFragment extends Fragment {
 				break;
 
 			case R.id.menu_listDB:
-				dataHandler.listDB();
+				File file = dataHandler.listDB();
+				intent = new Intent(Intent.ACTION_VIEW);
+				intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+				
 				break;
 
 			default:

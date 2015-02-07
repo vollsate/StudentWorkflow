@@ -129,6 +129,12 @@ public interface Task extends Serializable {
 	 * @return The current state of the task
 	 */
 	public int getState();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getStateAsString();
 
 	/**
 	 * 

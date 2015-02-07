@@ -183,6 +183,12 @@ public class DataHandler {
 			initSubjectTypes();
 			sManager.setBoolPref( PREF_SUBJECTTYPE, true );
 		}
+		
+		cleanupDB();
+	}
+	
+	public void cleanupDB() {
+		db.cleanupDB();
 	}
 
 	/**
@@ -239,13 +245,10 @@ public class DataHandler {
 	 * </ul>
 	 * </blockquote>
 	 */
-	private void loadTasks() {
-		if ( stdClasses.size() == 0 )
-			return;
-
+	private List<Task> loadTasks() {
 		List<Task> list = db.loadTasks();
-		Iterator<Task> it = list.iterator();
 
+		Iterator<Task> it = list.iterator();
 		while ( it.hasNext() ) {
 			Task task = it.next();
 			List<StudentTask> stdTasks = db.loadStudentsInTask( task );
@@ -256,6 +259,8 @@ public class DataHandler {
 			task.markAsCommitted();
 			tasks.put( task.getName(), task );
 		}
+
+		return list;
 	}
 
 	/**
@@ -286,8 +291,9 @@ public class DataHandler {
 	 * Loads all the {@link StudentClass} found in the DB. All the instances is
 	 * filled with the corresponding {@link Student} instance.
 	 */
-	private void loadStudentClasses() {
+	private List<StudentClass> loadStudentClasses() {
 		List<StudentClass> list = db.loadStudentClasses();
+
 		Iterator<StudentClass> it = list.iterator();
 		while ( it.hasNext() ) {
 			StudentClass stdClass = it.next();
@@ -295,6 +301,7 @@ public class DataHandler {
 			stdClasses.put( stdClass.getName(), stdClass );
 		}
 
+		return list;
 	}
 
 	/**
@@ -357,8 +364,37 @@ public class DataHandler {
 	 * 
 	 * TODO: Should export the entire DB to an Excel workbook
 	 */
-	public void listDB() {
+	public File listDB() {
+		try {
+			ExcelWriter writer = new ExcelWriter();
+
+			// Add all the classes
+			writer.addStudentClasses( loadStudentClasses() );
+
+			// Add all tasks
+			List<Task> tasks = loadTasks();
+			writer.addTasks( tasks );
+
+			// Add all students in task
+			List<StudentTask> sts = new LinkedList<StudentTask>();
+			for ( Task t : tasks ) {
+				List<StudentTask> list = db.loadStudentsInTask( t );
+				setUpStudentTask( t, list );
+
+				sts.addAll( list );
+			}
+			writer.addStudentTasks( db.loadAllStudentTask() );
+
+			return writer.writeToFile( "stdwrkflw.xls" );
+
+			// String webkitMimeType =
+			// MimeTypeMap.getSingleton().getMimeTypeFromExtension("xls");
+		}
+		catch ( Exception e ) {
+		}
+
 		Log.v( TAG, db.loadAllStudentTask().toString() );
+		return null;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -960,7 +996,7 @@ public class DataHandler {
 		String name = listener.getClass().getName();
 		taskChangeListeners.put( name, listener );
 	}
-	
+
 	/**
 	 * 
 	 * @param listener

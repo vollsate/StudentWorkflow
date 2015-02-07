@@ -3,6 +3,7 @@ package no.glv.android.stdntworkflow.sql;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
@@ -55,6 +56,32 @@ class StudentTaskTbl {
 		Log.v( TAG, "Executing SQL: " + sql );
 		db.execSQL( sql );
 	}
+	
+	public static List<String> FindAllTaskNames( SQLiteDatabase db) {
+		List<String> list = new LinkedList<String>();
+		String sql = "SELECT distinct " + COL_TASK + " FROM " + TBL_NAME;
+		
+		Cursor cursor = db.rawQuery( sql, null );
+		cursor.moveToFirst();
+		
+		while ( ! cursor.isAfterLast() ) {
+			list.add( cursor.getString( 0 ) );
+			cursor.moveToNext();
+		}
+		
+		cursor.close();
+		db.close();
+		return list;
+	}
+	
+	public static int RemoveStudentsInTask( String name, SQLiteDatabase db ) {
+		String sql = COL_TASK + "=?";
+		
+		int row = db.delete( TBL_NAME, sql, new String[] { name } );
+		
+		db.close();
+		return row;
+	}
 
 	/**
 	 * 
@@ -99,7 +126,7 @@ class StudentTaskTbl {
 		db.close();
 		return list;
 	}
-
+	
 	/**
 	 * 
 	 * @param ident

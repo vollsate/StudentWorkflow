@@ -45,6 +45,11 @@
             android:label="@string/title_activity_task"
             android:parentActivityName=".MainActivity" >
         </activity>
-    </application>
+        <activity
+            android:name=".TaskViewActivity"
+            android:label="@string/title_activity_task"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        </application>
 
 </manifest>

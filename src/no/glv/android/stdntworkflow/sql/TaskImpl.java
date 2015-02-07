@@ -146,6 +146,23 @@ public class TaskImpl implements Task {
 	}
 	
 	@Override
+	public String getStateAsString() {
+		switch ( mState ) {
+			case TASK_STATE_CLOSED:
+				return "closed";
+
+			case TASK_STATE_OPEN:
+				return "open";
+
+			case TASK_STATE_EXPIRED:
+				return "expired";
+
+			default:
+				return "";
+		}
+	}
+	
+	@Override
 	public int getSubject() {
 		return mSubject;
 	}

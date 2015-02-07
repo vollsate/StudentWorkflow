@@ -49,10 +49,8 @@ public class Database extends SQLiteOpenHelper {
 
 	/**
 	 * 
-	 * @param context
-	 *            The context used to create the database.
-	 * @throws IllegalStateException
-	 *             is database already instantiated
+	 * @param context The context used to create the database.
+	 * @throws IllegalStateException is database already instantiated
 	 */
 	public Database( Context context ) {
 		super( context, DB_NAME, null, DB_VERSION, null );
@@ -62,8 +60,11 @@ public class Database extends SQLiteOpenHelper {
 		if ( instance == null )
 			instance = this;
 	}
-	
-	public void deleteSubjectTypes() {
+
+	/**
+	 * 
+	 */
+	void deleteSubjectTypes() {
 		SubjectTypeTbl.DropTable( getWritableDatabase() );
 		SubjectTypeTbl.CreateTable( getWritableDatabase() );
 	}
@@ -102,6 +103,21 @@ public class Database extends SQLiteOpenHelper {
 		PhoneTbl.DropTable( db );
 		ParentTbl.DropTable( db );
 		SubjectTypeTbl.DropTable( db );
+	}
+
+	public void cleanupDB() {
+		List<Task> tasks = TaskTbl.loadAllTasks( getReadableDatabase() );
+		List<String> names = StudentTaskTbl.FindAllTaskNames( getReadableDatabase() );
+
+		for ( Task t : tasks ) {
+			if ( names.contains( t.getName() ) ) {
+				names.remove( t.getName() );
+			}
+		}
+		
+		for ( String name : names ) {
+			StudentTaskTbl.RemoveStudentsInTask( name, getWritableDatabase() );
+		}
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -158,8 +174,9 @@ public class Database extends SQLiteOpenHelper {
 	public void insertParent( Parent parent ) {
 		ParentTbl.InsertParent( parent, getWritableDatabase() );
 
-		if( parent.getPhoneNumbers() == null ) return;
-		
+		if ( parent.getPhoneNumbers() == null )
+			return;
+
 		Iterator<Phone> pIt = parent.getPhoneNumbers().iterator();
 		while ( pIt.hasNext() ) {
 			Phone p = pIt.next();
@@ -203,7 +220,7 @@ public class Database extends SQLiteOpenHelper {
 	public SubjectType createSubjectType() {
 		return new SubjectTypeBean();
 	}
-	
+
 	public List<SubjectType> loadSubjectTypes() {
 		return SubjectTypeTbl.LoadSubjectTypes( getReadableDatabase() );
 	}
@@ -212,8 +229,7 @@ public class Database extends SQLiteOpenHelper {
 	 * 
 	 * @param st
 	 * @return
-	 * @throws SQLException
-	 *             if the {@link SubjectType} cannot be inserted
+	 * @throws SQLException if the {@link SubjectType} cannot be inserted
 	 */
 	public boolean insertSubjectType( SubjectType st ) {
 		long retVal = SubjectTypeTbl.Insert( st, getWritableDatabase() );

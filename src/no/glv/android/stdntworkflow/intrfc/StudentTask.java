@@ -39,6 +39,8 @@ public interface StudentTask {
 	public void handIn( int mode );
 
 	public int getMode();
+	
+	public String getModeAsString();
 
 	public Student getStudent();
 
