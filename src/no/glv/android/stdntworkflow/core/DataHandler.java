@@ -20,8 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.http.cookie.SM;
-
 import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Parent;
@@ -41,9 +39,7 @@ import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -360,6 +356,8 @@ public class DataHandler {
 
 	/**
 	 * Lists the entire Database to the logCat.
+	 * 
+	 * TODO: Should export the entire DB to an Excel workbook
 	 */
 	public void listDB() {
 		Log.v( TAG, db.loadAllStudentTask().toString() );
@@ -385,9 +383,15 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 
 	/**
+	 * Finds and returns the {@link Student} instance with the specified ID. If
+	 * the student is not found, NULL will be returned.
 	 * 
-	 * @param ident
-	 * @return
+	 * <p>
+	 * This function will iterate through every class installed to look for the
+	 * requested Student.
+	 * 
+	 * @param ident The Student ID. See {@link Student} for more info.
+	 * @return The requested {@link Student} or NULL.
 	 */
 	public Student getStudentById( String ident ) {
 		Student std = null;
@@ -403,12 +407,20 @@ public class DataHandler {
 	}
 
 	/**
+	 * Find a {@link Student} instances with the specified ID in a certain
+	 * class. If the student is not found in the class, NULL will be returned.
 	 * 
-	 * @param stdClassName
-	 * @param ident
-	 * @return
+	 * <p>
+	 * If any of the parameters is null, null will be returned.
+	 * 
+	 * @param stdClassName The class to look for a student in.
+	 * @param ident The unique ID of the student.
+	 * @return The {@link Student} instance, or NULL.
 	 */
 	public Student getStudentById( String stdClassName, String ident ) {
+		if ( stdClassName == null || ident == null )
+			return null;
+
 		Student std = null;
 
 		StudentClass stdClass = stdClasses.get( stdClassName );
@@ -418,9 +430,16 @@ public class DataHandler {
 	}
 
 	/**
+	 * Updates a student. The <tt>oldIdent</tt> parameter MUST be the original
+	 * ID of the student, otherwise this function will fail. This only applies
+	 * if the student ID itself is modified. If not, this parameter may be null.
 	 * 
-	 * @param std
-	 * @param oldIdent
+	 * <p>
+	 * Remember to call {@link DataHandler#notifyStudentUpdate(Student)} to
+	 * inform any listeners about the change.
+	 * 
+	 * @param std The {@link Student} instance to update.
+	 * @param oldIdent The original ID of the student.
 	 * 
 	 * @return true if successful
 	 */
@@ -428,7 +447,7 @@ public class DataHandler {
 		int retVal = 0;
 		try {
 			retVal = db.updateStudent( std, oldIdent );
-			notifyStudentUpdate( std );
+			// notifyStudentUpdate( std );
 		}
 		catch ( Exception e ) {
 			Log.e( TAG, "Failed to update student: " + std.getIdent(), e );
@@ -452,7 +471,7 @@ public class DataHandler {
 	 * 
 	 * @param std
 	 */
-	private void notifyStudentUpdate( Student std ) {
+	public void notifyStudentUpdate( Student std ) {
 		notifyStudentChagnge( std, OnStudentChangedListener.MODE_UPD );
 	}
 
@@ -460,7 +479,7 @@ public class DataHandler {
 	 * 
 	 * @param std
 	 */
-	private void notifyStudentDelete( Student std ) {
+	public void notifyStudentDelete( Student std ) {
 		notifyStudentChagnge( std, OnStudentChangedListener.MODE_DEL );
 	}
 
@@ -468,28 +487,39 @@ public class DataHandler {
 	 * 
 	 * @param std
 	 */
-	private void notifyStudenAdd( Student std ) {
+	public void notifyStudenAdd( Student std ) {
 		notifyStudentChagnge( std, OnStudentChangedListener.MODE_ADD );
+	}
+
+	/**
+	 * TODO: Should use only the class instance instead of class name
+	 * 
+	 * @param listener
+	 */
+	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
+		// Remove before we put
+		removeOnStudentChangeListener( listener );
+
+		String name = listener.getClass().getName();
+		stdChangeListeners.put( name, listener );
 	}
 
 	/**
 	 * 
 	 * @param listener
 	 */
-	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
+	public void removeOnStudentChangeListener( OnStudentChangedListener listener ) {
 		String name = listener.getClass().getName();
 
 		if ( stdChangeListeners.containsKey( name ) )
 			stdChangeListeners.remove( name );
-
-		stdChangeListeners.put( name, listener );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 	//
-	// TASK
+	// SUBJECT TYPE
 	//
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
@@ -563,10 +593,24 @@ public class DataHandler {
 		return mTaskSubjects.keySet();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Collection<String> getTypeNames() {
 		return mTaskTypes.keySet();
 	}
 
+	/**
+	 * Get the {@link SubjectType} instance with the specified ID. If the ID is
+	 * not found, an {@link IllegalStateException} is thrown.
+	 * 
+	 * @param id
+	 * 
+	 * @return
+	 * 
+	 * @throws IllegalStateException if the {@link SubjectType} is not found.
+	 */
 	public SubjectType getSubjectType( int id ) {
 		for ( SubjectType st : mTaskSubjects.values() ) {
 			if ( st.getID() == id )
@@ -578,30 +622,32 @@ public class DataHandler {
 				return st;
 		}
 
-		return null;
+		throw new IllegalStateException( "Error loading SubjectType with ID: " + id );
 	}
 
 	/**
 	 * Converts the name of an {@link SubjectType} to the ID it is stored with
 	 * in the Database.
 	 * 
-	 * @param subject Name of the {@link SubjectType} to look for.
+	 * @param name Name of the {@link SubjectType} to look for.
 	 * @return -1 if the subject is not found.
 	 */
-	public int convertSubjectToID( String subject ) {
-		return convertSubjectTypeToID( mTaskSubjects, subject );
+	public int convertSubjectToID( String name ) {
+		return convertSubjectTypeToID( mTaskSubjects, name );
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param name
 	 * @return
 	 */
-	public int convertTypeToID( String type ) {
-		return convertSubjectTypeToID( mTaskTypes, type );
+	public int convertTypeToID( String name ) {
+		return convertSubjectTypeToID( mTaskTypes, name );
 	}
 
 	/**
+	 * Get the ID of a specified {@link SubjectType} name. The ID is used in the
+	 * database
 	 * 
 	 * @param map
 	 * @param name
@@ -615,9 +661,20 @@ public class DataHandler {
 		return st.getID();
 	}
 
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	//
+	// TASK
+	//
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------
+
 	/**
+	 * TODO: Simply use the {@link Collection}?
 	 * 
-	 * @return A List of all the Tasks loaded
+	 * @return A List of names of all the Tasks loaded
 	 */
 	public List<String> getTaskNames() {
 		return new ArrayList<String>( tasks.keySet() );
@@ -653,7 +710,7 @@ public class DataHandler {
 
 	/**
 	 * 
-	 * @return
+	 * @return Any {@link Task} loaded by the system.
 	 */
 	public List<Task> getTasks() {
 		return new ArrayList<Task>( tasks.values() );
@@ -698,6 +755,10 @@ public class DataHandler {
 	 * {@link StudentTask} objects linking the {@link Student} to the
 	 * {@link Task}.
 	 * 
+	 * <p>
+	 * Remember to call the {@link DataHandler#updateTask(Task, String)} after
+	 * calling this!
+	 * 
 	 * @param task
 	 */
 	public DataHandler addTask( Task task ) {
@@ -717,7 +778,6 @@ public class DataHandler {
 			task.addStudentTasks( stds );
 
 			tasks.put( task.getName(), task );
-			notifyTaskAdd( task );
 		}
 
 		return this;
@@ -725,41 +785,16 @@ public class DataHandler {
 
 	/**
 	 * 
-	 * @param stdTask
-	 */
-	public void handIn( StudentTask stdTask ) {
-		Task task = tasks.get( stdTask.getTaskName() );
-		if ( task.handIn( stdTask.getIdent() ) )
-			db.updateStudentTask( stdTask );
-	}
-
-	public void handIn( StudentTask stdTask, int mode ) {
-		switch ( mode ) {
-			case StudentTask.MODE_HANDIN:
-				handIn( stdTask );
-				break;
-
-			case StudentTask.MODE_PENDING:
-				stdTask.handIn( mode );
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	/**
-	 * 
 	 * @param task
 	 * @param oldName
 	 */
-	public boolean updateTask( Task task, String oldName ) {
+	public DataHandler updateTask( Task task, String oldName ) {
 		Log.d( TAG, "Updating task: " + oldName );
 		if ( oldName == null )
 			oldName = task.getName();
 
 		if ( !db.updateTask( task, oldName ) )
-			return false;
+			throw new IllegalStateException( "Failed to update Task: " + oldName );
 
 		if ( !task.getName().equals( oldName ) ) {
 			List<StudentTask> stdTasks = task.getStudentsInTask();
@@ -774,8 +809,7 @@ public class DataHandler {
 		tasks.remove( oldName );
 		tasks.put( task.getName(), task );
 
-		notifyTaskUpdate( task );
-		return true;
+		return this;
 	}
 
 	/**
@@ -875,8 +909,7 @@ public class DataHandler {
 	 * Called when some changes are made to the tasks.
 	 */
 	public void notifyTaskSettingsChange() {
-		
-		
+
 		Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() ) {
 			it.next().onTaskChange( OnTaskChangeListener.MODE_TASK_SORT );
@@ -900,7 +933,7 @@ public class DataHandler {
 	 * 
 	 * @param newTask
 	 */
-	private void notifyTaskAdd( Task newTask ) {
+	public void notifyTaskAdd( Task newTask ) {
 		notifyTaskChange( newTask, OnTasksChangedListener.MODE_ADD );
 	}
 
@@ -908,7 +941,7 @@ public class DataHandler {
 	 * 
 	 * @param newTask
 	 */
-	private void notifyTaskDelete( Task oldTask ) {
+	public void notifyTaskDelete( Task oldTask ) {
 		notifyTaskChange( oldTask, OnTasksChangedListener.MODE_DEL );
 	}
 
@@ -916,7 +949,7 @@ public class DataHandler {
 	 * 
 	 * @param task
 	 */
-	private void notifyTaskUpdate( Task task ) {
+	public void notifyTaskUpdate( Task task ) {
 		notifyTaskChange( task, OnTasksChangedListener.MODE_UPD );
 	}
 

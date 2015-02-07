@@ -35,9 +35,13 @@ import android.widget.Spinner;
 public class BaseActivity extends Activity {
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
+	
+	protected DataHandler dataHandler;
 
 	public BaseActivity() {
 		super();
+		
+		dataHandler = DataHandler.GetInstance();
 	}
 	
 	/**

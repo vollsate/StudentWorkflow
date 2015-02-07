@@ -218,7 +218,7 @@ public class TaskActivity extends BaseTabActivity {
 		mTask.setSubject( iSub );
 		mTask.setType( iTyp );
 
-		getDataHandler().updateTask( mTask, oldName );
+		getDataHandler().updateTask( mTask, oldName ).notifyTaskUpdate( mTask );
 		classesFragment.adapter.notifyDataSetChanged();
 	}
 
