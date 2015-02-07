@@ -101,7 +101,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		}
 
 		// Add a listener so we get informed when a Task is deleted or updated
-		dataHandler.addOnTaskChangeListener( this );
+		dataHandler.registerOnTaskChangeListener( this );
 	}
 
 	/**

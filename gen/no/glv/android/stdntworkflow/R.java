@@ -256,10 +256,10 @@ public final class R {
         public static final int info=0x7f0b0097;
         public static final int list_slidermenu=0x7f0b000b;
         public static final int menu_deleteClass=0x7f0b009c;
-        public static final int menu_listDB=0x7f0b009f;
-        public static final int menu_newTask=0x7f0b00a0;
-        public static final int menu_overflow=0x7f0b009d;
-        public static final int menu_resetDB=0x7f0b009e;
+        public static final int menu_listDB=0x7f0b00a0;
+        public static final int menu_newTask=0x7f0b009d;
+        public static final int menu_overflow=0x7f0b009e;
+        public static final int menu_resetDB=0x7f0b009f;
         public static final int menu_stdList_sort=0x7f0b00a2;
         public static final int menu_stdList_sort_firstNameAsc=0x7f0b00a4;
         public static final int menu_stdList_sort_lastNameAsc=0x7f0b00a3;

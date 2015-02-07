@@ -205,7 +205,7 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
      * 
      */
 	private void deleteClass() {
-		boolean canDel = dataHandler.isStudentClassDeletable( stdClass );
+		boolean canDel = dataHandler.isStudentClassRemovable( stdClass );
 		AlertDialog.Builder builder = new Builder( this );
 		String msg = null, title = null;
 
@@ -241,9 +241,9 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 
 				@Override
 				public void onClick( DialogInterface dialog, int which ) {
-					String msg = getResources().getString( R.string.stdlist_del_msg ).replace( "{class}",
+					String msg = getResources().getString( R.string.stdlist_del_done_msg ).replace( "{class}",
 							stdClass.getName() );
-					DataHandler.GetInstance().deleteStudentClass( stdClass.getName() );
+					DataHandler.GetInstance().deleteStudentClass( stdClass.getName() ).notifyStudentClassDel( stdClass );
 					Toast.makeText( StdClassListActivity.this, msg, Toast.LENGTH_LONG ).show();
 					finish();
 				}

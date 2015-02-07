@@ -4,30 +4,31 @@
     tools:context="no.glv.android.stdntworkflow.MainActivity" >
 
     <item
+        android:id="@+id/menu.newTask"
+        android:icon="@drawable/ic_action_task"
+        android:orderInCategory="11"
+        android:showAsAction="always"
+        android:title="@string/action_newTask"/>
+    
+    <item
         android:id="@+id/menu.overflow"
-        android:orderInCategory="90"
         android:icon="@drawable/ic_action_overflow"
-        android:title="@string/action_settings"
-        android:showAsAction="ifRoom">
+        android:orderInCategory="90"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings">
         <menu>
             <item
                 android:id="@+id/menu.resetDB"
                 android:icon="@drawable/ic_action_reset"
                 android:orderInCategory="100"
-                android:title="@string/action_resetDB"
-                android:showAsAction="never"/>
+                android:showAsAction="never"
+                android:title="@string/action_resetDB"/>
             <item
                 android:id="@+id/menu.listDB"
                 android:icon="@drawable/ic_action_storage"
                 android:orderInCategory="100"
-                android:title="@string/action_listDB"
-                android:showAsAction="never"/>
-            <item
-                android:id="@+id/menu.newTask"
-                android:icon="@drawable/ic_action_task"
-                android:orderInCategory="11"
-                android:title="@string/action_newTask"
-                android:showAsAction="ifRoom"/>
+                android:showAsAction="never"
+                android:title="@string/action_listDB"/>
         </menu>
     </item>
 

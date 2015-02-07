@@ -11,6 +11,7 @@ import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.BaseTabActivity;
 import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
 import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
@@ -219,7 +220,6 @@ public class TaskActivity extends BaseTabActivity {
 		mTask.setType( iTyp );
 
 		getDataHandler().updateTask( mTask, oldName ).notifyTaskUpdate( mTask );
-		classesFragment.adapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -388,7 +388,7 @@ public class TaskActivity extends BaseTabActivity {
 
 		StudentListAdapter adapter;
 		Task mTask;
-
+		
 		@Override
 		public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			ListView listView = getListView( R.id.LV_task_students );
@@ -445,7 +445,7 @@ public class TaskActivity extends BaseTabActivity {
 	 *
 	 */
 	static class StudentListAdapter extends ArrayAdapter<StudentTask> implements Serializable,
-			Task.OnTaskChangeListener {
+			Task.OnTaskChangeListener, OnTasksChangedListener {
 
 		/** TaskActivity.java */
 		private static final long serialVersionUID = 1L;
@@ -454,7 +454,16 @@ public class TaskActivity extends BaseTabActivity {
 
 		public StudentListAdapter( Context ctx, List<StudentTask> stdList ) {
 			super( ctx, R.layout.row_task_stdlist, stdList );
+			DataHandler.GetInstance().registerOnTaskChangeListener( this );
 		}
+		
+		@Override
+		protected void finalize() throws Throwable {
+			DataHandler.GetInstance().unregisterOnTaskChangeListener( this );
+			super.finalize();
+		}
+		
+		
 
 		/**
 		 * 
@@ -466,6 +475,11 @@ public class TaskActivity extends BaseTabActivity {
 
 		@Override
 		public void onTaskChange( Task task, int mode ) {
+			update();
+		}
+		
+		@Override
+		public void onTaskChange( int mode ) {
 			update();
 		}
 

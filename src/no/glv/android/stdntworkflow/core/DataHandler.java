@@ -79,8 +79,6 @@ public class DataHandler {
 	/** A map of all the tasks the students are involved in */
 	private static HashMap<String, StudentTaskImpl> studentInTasks;
 
-	private static boolean islocalStudentClassesLoaded = false;
-
 	private final Database db;
 	private final SettingsManager sManager;
 
@@ -909,7 +907,6 @@ public class DataHandler {
 	 * Called when some changes are made to the tasks.
 	 */
 	public void notifyTaskSettingsChange() {
-
 		Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() ) {
 			it.next().onTaskChange( OnTaskChangeListener.MODE_TASK_SORT );
@@ -957,13 +954,22 @@ public class DataHandler {
 	 * 
 	 * @param listener
 	 */
-	public void addOnTaskChangeListener( OnTasksChangedListener listener ) {
+	public void registerOnTaskChangeListener( OnTasksChangedListener listener ) {
+		unregisterOnTaskChangeListener( listener );
+
+		String name = listener.getClass().getName();
+		taskChangeListeners.put( name, listener );
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public void unregisterOnTaskChangeListener( OnTasksChangedListener listener ) {
 		String name = listener.getClass().getName();
 
 		if ( taskChangeListeners.containsKey( name ) )
 			taskChangeListeners.remove( name );
-
-		taskChangeListeners.put( name, listener );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -982,9 +988,9 @@ public class DataHandler {
 	 * deleted.
 	 * 
 	 * @param stdClass The {@link StudentClass} to check.
-	 * @return true if deletable
+	 * @return true if removable
 	 */
-	public boolean isStudentClassDeletable( StudentClass stdClass ) {
+	public boolean isStudentClassRemovable( StudentClass stdClass ) {
 		boolean deletable = true;
 
 		Iterator<Task> it = tasks.values().iterator();
@@ -1050,20 +1056,21 @@ public class DataHandler {
 	 * @param name
 	 * @return
 	 */
-	public boolean deleteStudentClass( String name ) {
-		if ( !stdClasses.containsKey( name ) )
-			return false;
-
-		if ( stdClassHasTasks( name ) )
-			return false;
+	public DataHandler deleteStudentClass( String name ) {
+		if ( !stdClasses.containsKey( name ) || stdClassHasTasks( name ) )
+			return this;
 
 		StudentClass stdcClass = stdClasses.remove( name );
 		db.deleteStdClass( stdcClass );
 
-		notifyStudentClassDel( stdcClass );
-		return true;
+		return this;
 	}
 
+	/**
+	 * 
+	 * @param stdClassName
+	 * @return
+	 */
 	public boolean stdClassHasTasks( String stdClassName ) {
 		Iterator<Task> it = tasks.values().iterator();
 		while ( it.hasNext() ) {
@@ -1096,11 +1103,19 @@ public class DataHandler {
 		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
 	}
 
-	private void notifyStudentClassDel( StudentClass stdClass ) {
+	/**
+	 * 
+	 * @param stdClass
+	 */
+	public void notifyStudentClassDel( StudentClass stdClass ) {
 		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_DEL );
 	}
 
-	private void notifyStudentClassUpdate( StudentClass stdClass ) {
+	/**
+	 * 
+	 * @param stdClass
+	 */
+	public void notifyStudentClassUpdate( StudentClass stdClass ) {
 		notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_UPD );
 	}
 
@@ -1356,53 +1371,6 @@ public class DataHandler {
 
 		Log.d( TAG, "Creating ident: " + ident );
 		return ident.toLowerCase( Locale.getDefault() );
-	}
-
-	/**
-	 * Loads every locally stored StudentClass. Every classfile MUST have the
-	 * suffix STDCLASS_FILE_SUFFIX
-	 * 
-	 * @param ctx The Context used to access the local filesystem
-	 */
-	public static void LoadLocalStudentClasses( Context ctx ) {
-		if ( islocalStudentClassesLoaded )
-			return;
-
-		File[] files = ctx.getFilesDir().listFiles();
-		String stdClassName, classFile = null;
-
-		try {
-			for ( int i = 0; i < files.length; i++ ) {
-				classFile = files[i].getName();
-				if ( classFile.endsWith( STDCLASS_FILE_SUFFIX ) ) {
-					stdClassName = classFile.substring( 0, classFile.length() - STDCLASS_FILE_SUFFIX.length() );
-
-					StudentClass stdClass = new StudentClassImpl( stdClassName );
-					List<Student> list = Database.GetInstance( ctx ).loadStudentsFromClass( stdClassName );
-
-					if ( !list.isEmpty() ) {
-						stdClass.addAll( list );
-					}
-					else {
-						FileInputStream fis = ctx.openFileInput( classFile );
-						BufferedReader reader = new BufferedReader( new InputStreamReader( fis ) );
-
-						String readLine;
-						while ( ( readLine = reader.readLine() ) != null ) {
-							Student student = CreateStudentFromString( readLine, stdClassName, BaseValues.DATE_PATTERN );
-							stdClass.add( student );
-						}
-					}
-
-					GetInstance().addStudentClass( stdClass );
-				}
-			}
-		}
-		catch ( Exception e ) {
-			Log.e( TAG, "Cannot load localStudentClass: " + classFile, e );
-		}
-
-		islocalStudentClassesLoaded = true;
 	}
 
 	// --------------------------------------------------------------------------------------------------------
