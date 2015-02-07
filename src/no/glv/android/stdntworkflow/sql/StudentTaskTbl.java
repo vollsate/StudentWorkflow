@@ -64,29 +64,29 @@ class StudentTaskTbl {
 		Log.v( TAG, "Executing SQL: " + sql );
 		db.execSQL( sql );
 	}
-	
+
 	/**
 	 * 
 	 * @param db
 	 * @return
 	 */
-	public static List<String> FindAllTaskNames( SQLiteDatabase db) {
+	public static List<String> FindAllTaskNames( SQLiteDatabase db ) {
 		List<String> list = new LinkedList<String>();
 		String sql = "SELECT distinct " + COL_TASK + " FROM " + TBL_NAME;
-		
+
 		Cursor cursor = db.rawQuery( sql, null );
 		cursor.moveToFirst();
-		
-		while ( ! cursor.isAfterLast() ) {
+
+		while ( !cursor.isAfterLast() ) {
 			list.add( cursor.getString( 0 ) );
 			cursor.moveToNext();
 		}
-		
+
 		cursor.close();
 		db.close();
 		return list;
 	}
-	
+
 	/**
 	 * 
 	 * @param name
@@ -95,9 +95,9 @@ class StudentTaskTbl {
 	 */
 	public static int RemoveStudentsInTask( int taskID, SQLiteDatabase db ) {
 		String sql = COL_TASK + "=?";
-		
+
 		int row = db.delete( TBL_NAME, sql, new String[] { String.valueOf( taskID ) } );
-		
+
 		db.close();
 		return row;
 	}
@@ -145,7 +145,7 @@ class StudentTaskTbl {
 		db.close();
 		return list;
 	}
-	
+
 	/**
 	 * 
 	 * @param ident
@@ -182,7 +182,6 @@ class StudentTaskTbl {
 
 		StudentTaskImpl impl = new StudentTaskImpl( ident, task, mode, date );
 		impl.setID( id );
-		impl.setTaskID( id );
 
 		return impl;
 	}
@@ -202,8 +201,7 @@ class StudentTaskTbl {
 	/**
 	 * 
 	 * @param task
-	 * @param db
-	 *            Does NOT close the connection
+	 * @param db Does NOT close the connection
 	 * @return
 	 */
 	private static int InsertOneST( StudentTask task, SQLiteDatabase db ) {
@@ -240,9 +238,9 @@ class StudentTaskTbl {
 	public static long Update( StudentTask stdTask, SQLiteDatabase db ) {
 		long retVal = 0;
 
-		String whereClause = COL_IDENT + "=? AND " + COL_TASK + "=?";
-		retVal = db.update( TBL_NAME, StudentTaskValues( stdTask ), whereClause, new String[] { stdTask.getIdent(),
-				stdTask.getTaskName() } );
+		String whereClause = COL_ID + "=?";
+		retVal = db.update( TBL_NAME, StudentTaskValues( stdTask ), whereClause,
+				new String[] { String.valueOf( stdTask.getID() ) } );
 
 		return retVal;
 	}
@@ -274,7 +272,7 @@ class StudentTaskTbl {
 
 		cv.put( COL_TASK, task.getTaskID() );
 		cv.put( COL_IDENT, task.getIdent() );
-		
+
 		Date date = task.getHandInDate();
 		long dateL = 0;
 		if ( date != null )

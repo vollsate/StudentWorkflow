@@ -274,11 +274,10 @@ public class DataHandler {
 	 * @param stdTasks
 	 */
 	private void setUpStudentTask( Task task, List<StudentTask> stdTasks ) {
-		Iterator<StudentTask> it = stdTasks.iterator();
-		while ( it.hasNext() ) {
-			StudentTask stdTask = it.next();
+		for ( StudentTask stdTask : stdTasks ) {
 			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
-
+			stdTask.setTaskName( task.getName() );
+			
 			String stdClass = stdTask.getStudent().getStudentClass();
 			task.addClassName( stdClass );
 		}
@@ -381,17 +380,15 @@ public class DataHandler {
 			for ( Task t : tasks ) {
 				List<StudentTask> list = db.loadStudentsInTask( t );
 				setUpStudentTask( t, list );
-
+				
 				sts.addAll( list );
 			}
 			writer.addStudentTasks( db.loadAllStudentTask() );
 
 			return writer.writeToFile( "stdwrkflw.xls" );
-
-			// String webkitMimeType =
-			// MimeTypeMap.getSingleton().getMimeTypeFromExtension("xls");
 		}
 		catch ( Exception e ) {
+			Log.e( TAG, "Error writin to Excel file", e );
 		}
 
 		Log.v( TAG, db.loadAllStudentTask().toString() );
