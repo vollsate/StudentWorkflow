@@ -19,14 +19,28 @@ import android.database.sqlite.SQLiteDatabase;
 class TaskTbl {
 
 	/** Name of the TABLE in the SQLite database */
-	public static final String TBL_NAME = "tasks";
+	public static final String TBL_NAME = "ntasks";
+
+	public static final String COL_ID = "_ID";
+	public static final int COL_ID_ID = 0;
 
 	public static final String COL_NAME = "name";
+	public static final int COL_NAME_ID = 1;
+
 	public static final String COL_DESC = "desc";
+	public static final int COL_DESC_ID = 2;
+
 	public static final String COL_DATE = "date";
+	public static final int COL_DATE_ID = 3;
+
 	public static final String COL_STATE = "state";
+	public static final int COL_STATE_ID = 4;
+
 	public static final String COL_SUBJECT = "sbjct";
+	public static final int COL_SUBJECT_ID = 5;
+
 	public static final String COL_TYPE = "type";
+	public static final int COL_TYPE_ID = 6;
 
 	private TaskTbl() {
 	}
@@ -37,7 +51,8 @@ class TaskTbl {
 	 */
 	public static boolean CreateTable( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "("
-				+ COL_NAME + " TEXT PRIMARY KEY UNIQUE, "
+				+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ COL_NAME + " TEXT, "
 				+ COL_DESC + " TEXT, "
 				+ COL_DATE + " LONG NOT NULL, "
 				+ COL_STATE + " INTEGER, "
@@ -75,6 +90,28 @@ class TaskTbl {
 		db.close();
 		return list;
 	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @param db
+	 * @return
+	 */
+	static Task Load( String name, SQLiteDatabase db ) {
+		String sql = "SELECT * FROM " + TBL_NAME + " WHERE " + COL_NAME + "=?";
+		Task t = null;
+		
+		Cursor c = db.rawQuery( sql, new String[] { name } );
+		c.moveToFirst();
+		while ( ! c.isAfterLast() ) {
+			t = CreateFromCursor( c );
+			c.moveToNext();
+		}
+		
+		c.close();
+		db.close();
+		return t;
+	}
 
 	/**
 	 * 
@@ -82,14 +119,14 @@ class TaskTbl {
 	 * @return
 	 */
 	private static Task CreateFromCursor( Cursor cursor ) {
-		Task task = new TaskImpl();
+		TaskImpl task = new TaskImpl( cursor.getInt( COL_ID_ID ) );
 
-		task.setName( cursor.getString( 0 ) );
-		task.setDescription( cursor.getString( 1 ) );
-		task.setDate( new Date( cursor.getLong( 2 ) ) );
-		task.setState( cursor.getInt( 3 ) );
-		task.setSubject( cursor.getInt( 4 ) );
-		task.setType( cursor.getInt( 5 ) );
+		task.setName( cursor.getString( COL_NAME_ID ) );
+		task.setDescription( cursor.getString( COL_DESC_ID ) );
+		task.setDate( new Date( cursor.getLong( COL_DATE_ID ) ) );
+		task.setState( cursor.getInt( COL_STATE_ID ) );
+		task.setSubject( cursor.getInt( COL_SUBJECT_ID ) );
+		task.setType( cursor.getInt( COL_TYPE_ID ) );
 
 		return task;
 	}
@@ -97,15 +134,14 @@ class TaskTbl {
 	/**
 	 * 
 	 * @param task
-	 * @param db
-	 *            Is closed after use
+	 * @param db Is closed after use
 	 * @return
 	 */
-	public static long InsertTask( Task task, SQLiteDatabase db ) {
-		long retVal = -1;
+	public static int InsertTask( Task task, SQLiteDatabase db ) {
+		int retVal = -1;
 
 		ContentValues cv = TaksValues( task );
-		retVal = db.insertOrThrow( TBL_NAME, null, cv );
+		retVal = (int) db.insertOrThrow( TBL_NAME, null, cv );
 
 		db.close();
 		return retVal;
@@ -132,21 +168,18 @@ class TaskTbl {
 	/**
 	 * Updates a specific task
 	 * 
-	 * @param task
-	 *            The {@link Task} to update, with all the new values
-	 * @param oldName
-	 *            The name of the old task. If null, the current name is
+	 * @param task The {@link Task} to update, with all the new values
+	 * @param oldName The name of the old task. If null, the current name is
 	 *            used.
-	 * @param db
-	 *            Is closed after use
+	 * @param db Is closed after use
 	 * @return 0 if no update, otherwise 1
 	 */
-	public static int updateTask( Task task, String oldName, SQLiteDatabase db ) {
+	public static int updateTask( Task task, SQLiteDatabase db ) {
 		int retVal = 0;
 
 		ContentValues cv = TaksValues( task );
-		String whereClause = COL_NAME + "=?";
-		retVal = db.update( TBL_NAME, cv, whereClause, new String[] { oldName } );
+		String whereClause = COL_ID + "=?";
+		retVal = db.update( TBL_NAME, cv, whereClause, new String[] { String.valueOf( task.getID() ) } );
 
 		db.close();
 
@@ -156,8 +189,7 @@ class TaskTbl {
 	/**
 	 * 
 	 * @param taskName
-	 * @param db
-	 *            Is closed after use
+	 * @param db Is closed after use
 	 * 
 	 * @return 1 if task deleted, 0 otherwise
 	 */

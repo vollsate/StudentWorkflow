@@ -88,12 +88,6 @@ public interface Task extends Serializable {
 
 	/**
 	 * 
-	 * @param id
-	 */
-	public void setID( int id );
-
-	/**
-	 * 
 	 * @return
 	 */
 	public int getID();

@@ -47,6 +47,11 @@ public interface StudentTask {
 	public void setStudent( Student std );
 
 	public void setTaskName( String name );
+	
+	public int getTaskID();
+	
+	
+	public void setTaskID( int id );
 
 	public String toSimpleString();
 

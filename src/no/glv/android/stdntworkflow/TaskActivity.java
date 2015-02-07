@@ -209,9 +209,8 @@ public class TaskActivity extends BaseTabActivity {
 		int iSub = getDataHandler().convertSubjectToID( subject );
 		int iTyp = getDataHandler().convertTypeToID( type );
 
-		// Save the old name, just in case..
-		String oldName = mTask.getName();
 		Date date = BaseActivity.GetDateFromString( newDate );
+		String oldName = mTask.getName();
 
 		mTask.setName( newName );
 		mTask.setDescription( newDesc );

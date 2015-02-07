@@ -1,9 +1,7 @@
 package no.glv.android.stdntworkflow.core;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;

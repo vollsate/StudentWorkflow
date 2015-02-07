@@ -2,6 +2,7 @@ package no.glv.android.stdntworkflow.sql;
 
 import java.util.Date;
 
+import android.R.id;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 
@@ -21,6 +22,8 @@ public class StudentTaskImpl implements StudentTask {
 	private String mTask;
 	private String mIdent;
 	private Student student;
+	
+	private int taskID;
 
 	/**
 	 * 
@@ -40,10 +43,26 @@ public class StudentTaskImpl implements StudentTask {
 	 * @param date
 	 */
 	public StudentTaskImpl( String ident, String task, int mode, Date date ) {
-		this.mIdent = ident;
+		this( ident, -1, mode, date );
 		this.mTask = task;
+	}
+	
+	
+	public StudentTaskImpl( String ident, int task, int mode, Date date ) {
+		this.mIdent = ident;
+		this.taskID = task;
 		this.mode = mode;
 		this.handinDate = date;
+	}
+	
+	@Override
+	public int getTaskID() {
+		return taskID;
+	}
+	
+	@Override
+	public void setTaskID( int id ) {
+		this.taskID = id;	
 	}
 
 	@Override

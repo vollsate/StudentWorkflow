@@ -18,7 +18,7 @@ public class TaskImpl implements Task {
 
 	/** TaskImpl.java */
 	private static final long serialVersionUID = -4612900329709063169L;
-	private int ID;
+	private int _id;
 	private String mName;
 	private String mDesc;
 	private Date mExpirationDate;
@@ -52,7 +52,16 @@ public class TaskImpl implements Task {
 	/**
 	 * Package protected constructor.
 	 */
-	TaskImpl() {
+	TaskImpl() { 
+		this( -1 );
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 */
+	TaskImpl(int id) {
+		this._id = id;
 		mClasses = new ArrayList<String>();
 		studentsMap = new TreeMap<String, StudentTask>();
 		studentsMapPending = new TreeMap<String, StudentTask>();
@@ -115,12 +124,11 @@ public class TaskImpl implements Task {
 
 	@Override
 	public int getID() {
-		return ID;
+		return _id;
 	}
 
-	@Override
-	public void setID( int id ) {
-		this.ID = id;
+	void setID( int id ) {
+		this._id = id;
 		mModified = true;
 	}
 

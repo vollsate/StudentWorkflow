@@ -114,10 +114,8 @@ public class Database extends SQLiteOpenHelper {
 				names.remove( t.getName() );
 			}
 		}
+
 		
-		for ( String name : names ) {
-			StudentTaskTbl.RemoveStudentsInTask( name, getWritableDatabase() );
-		}
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -270,7 +268,9 @@ public class Database extends SQLiteOpenHelper {
 		Log.d( TAG, "Inserting new task: " + task.getName() );
 		boolean retVal = true;
 		try {
-			TaskTbl.InsertTask( task, getWritableDatabase() );
+			int id = TaskTbl.InsertTask( task, getWritableDatabase() );
+			( (TaskImpl) task ).setID( id );
+
 			StudentTaskTbl.InsertAll( task, getWritableDatabase() );
 		}
 		catch ( Exception e ) {
@@ -309,14 +309,14 @@ public class Database extends SQLiteOpenHelper {
 	 * @param oldName
 	 * @return
 	 */
-	public boolean updateTask( Task task, String oldName ) {
+	public boolean updateTask( Task task ) {
 		int rows = 0;
 
 		try {
-			rows = TaskTbl.updateTask( task, oldName, getWritableDatabase() );
+			rows = TaskTbl.updateTask( task, getWritableDatabase() );
 		}
 		catch ( RuntimeException e ) {
-			Log.e( TAG, "Cannot update task: " + oldName, e );
+			Log.e( TAG, "Cannot update task: " + task.getName(), e );
 			e.printStackTrace();
 		}
 

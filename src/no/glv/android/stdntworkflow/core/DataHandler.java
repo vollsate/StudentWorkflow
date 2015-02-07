@@ -189,6 +189,7 @@ public class DataHandler {
 	
 	public void cleanupDB() {
 		db.cleanupDB();
+		
 	}
 
 	/**
@@ -823,26 +824,14 @@ public class DataHandler {
 	 * @param oldName
 	 */
 	public DataHandler updateTask( Task task, String oldName ) {
-		Log.d( TAG, "Updating task: " + oldName );
-		if ( oldName == null )
-			oldName = task.getName();
+		if ( oldName == null ) oldName = task.getName();
+		Log.d( TAG, "Updating task: " + task.getName() );
 
-		if ( !db.updateTask( task, oldName ) )
-			throw new IllegalStateException( "Failed to update Task: " + oldName );
-
-		if ( !task.getName().equals( oldName ) ) {
-			List<StudentTask> stdTasks = task.getStudentsInTask();
-			Iterator<StudentTask> it = stdTasks.iterator();
-			while ( it.hasNext() ) {
-				it.next().setTaskName( task.getName() );
-			}
-
-			db.updateStudentTasks( stdTasks );
-		}
+		if ( !db.updateTask( task ) )
+			throw new IllegalStateException( "Failed to update Task: " + task.getName() );
 
 		tasks.remove( oldName );
 		tasks.put( task.getName(), task );
-
 		return this;
 	}
 
@@ -882,7 +871,7 @@ public class DataHandler {
 	public boolean closeTask( Task task ) {
 		task.setState( Task.TASK_STATE_CLOSED );
 
-		boolean succes = db.updateTask( task, task.getName() );
+		boolean succes = db.updateTask( task );
 		notifyTaskChange( task, OnChangeListener.MODE_CLS );
 
 		return succes;
