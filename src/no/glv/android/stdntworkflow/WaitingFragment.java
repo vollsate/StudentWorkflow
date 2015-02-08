@@ -16,8 +16,8 @@ public class WaitingFragment extends DialogFragmentBase {
 	}
 
 	@Override
-	protected String getTitle() {
-		return null;
+	protected int getTitle() {
+		return 0;
 	}
 
 	@Override

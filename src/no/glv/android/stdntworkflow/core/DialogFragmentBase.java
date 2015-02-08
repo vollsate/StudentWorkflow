@@ -24,7 +24,7 @@ public abstract class DialogFragmentBase extends DialogFragment {
 
 	protected abstract int getRootViewID();
 
-	protected abstract String getTitle();
+	protected abstract int getTitle();
 	
 	protected View getRootView() {
 		return rootView;

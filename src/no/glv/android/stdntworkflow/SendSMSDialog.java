@@ -150,8 +150,8 @@ public class SendSMSDialog extends DialogFragmentBase implements View.OnClickLis
 	}
 
 	@Override
-	protected String getTitle() {
-		return "Send SMS til foresatt(e)";
+	protected int getTitle() {
+		return R.string.stdInfo_sms_send;
 	}
 
 	/**

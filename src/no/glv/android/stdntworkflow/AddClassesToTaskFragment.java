@@ -36,8 +36,8 @@ public class AddClassesToTaskFragment extends AddStudentsToTaskFragment implemen
 	ListView listView;
 
 	@Override
-	protected String getTitle() {
-		return getResources().getString( R.string.task_class_title );
+	protected int getTitle() {
+		return R.string.task_class_title;
 	}
 
 	/**

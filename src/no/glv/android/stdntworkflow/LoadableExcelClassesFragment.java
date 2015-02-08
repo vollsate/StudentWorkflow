@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +30,6 @@ public class LoadableExcelClassesFragment extends LoadableFilesFragment implemen
 	OnDataLoadedListener listener;
 	ExcelReader reader;
 
-	ProgressBar mProgressBar;
-	Button mButton;
-	ListView mListView;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
@@ -41,8 +37,8 @@ public class LoadableExcelClassesFragment extends LoadableFilesFragment implemen
 	}
 
 	@Override
-	protected String getTitle() {
-		return "Load a class ..";
+	protected int getTitle() {
+		return R.string.loadData_excel_title;
 	}
 
 	@Override
@@ -60,6 +56,9 @@ public class LoadableExcelClassesFragment extends LoadableFilesFragment implemen
 
 	void startStoreStudentClass( String fileName ) {
 		showProgressBar();
+		
+		String msg = getResources().getString( R.string.loadData_installing_msg ).replace( "{class}", fileName );
+		getDialog().setTitle( msg );
 
 		LoadAndStoreASyncTask las = new LoadAndStoreASyncTask( reader, this );
 		las.execute( new String[] { fileName } );
@@ -74,60 +73,6 @@ public class LoadableExcelClassesFragment extends LoadableFilesFragment implemen
 		buildAdapter( getRootView() );
 
 		hideProgressBar();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private ProgressBar getProgressBar() {
-		if ( mProgressBar == null ) {
-			mProgressBar = (ProgressBar) getRootView().findViewById( R.id.PB_newclass_indeterminate );
-		}
-
-		return mProgressBar;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private Button getButton() {
-		if ( mButton == null )
-			mButton = (Button) getRootView().findViewById( R.id.BTN_loadData_cancel );
-
-		return mButton;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	private ListView getListView() {
-		if ( mListView == null )
-			mListView = (ListView) getRootView().findViewById( R.id.LV_loadData_filesList );
-
-		return mListView;
-	}
-
-	/**
-	 * 
-	 */
-	protected void showProgressBar() {
-		getProgressBar().setVisibility( View.VISIBLE );
-
-		getButton().setVisibility( View.GONE );
-		getListView().setVisibility( View.GONE );
-	}
-
-	/**
-	 * 
-	 */
-	protected void hideProgressBar() {
-		getProgressBar().setVisibility( View.INVISIBLE );
-
-		getButton().setVisibility( View.VISIBLE );
-		getListView().setVisibility( View.VISIBLE );
 	}
 
 	@Override

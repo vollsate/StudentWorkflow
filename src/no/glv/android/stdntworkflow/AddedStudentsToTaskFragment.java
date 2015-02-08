@@ -67,8 +67,8 @@ public class AddedStudentsToTaskFragment extends DialogFragmentBase {
 	}
 
 	@Override
-	protected String getTitle() {
-		return getResources().getString( R.string.newTask_addStudents_msg );
+	protected int getTitle() {
+		return R.string.newTask_addStudents_msg;
 	}
 
 	/**

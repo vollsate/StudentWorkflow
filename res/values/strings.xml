@@ -25,6 +25,9 @@
     
     <!-- LOAD DATA -->
 
+    <string name="loadData.installing.msg">Installerer klasse {class}</string>
+    <string name="loadData.excel.title">Velg klasse ..</string>
+    <string name="loadData.csv.title">Velg klasse ..</string>
     <string name="loadDataInfo.title">Installere ny klasse</string>
     <string name="loadDataInfo.menu.install">Installere ny klasse</string>
     <string name="loadDataInfo">Her skal du finne et Excel regneark med data om din klasse. Sørg for at dataene følger korrekt oppset. Se hjelp for mer informasjon</string>
@@ -81,6 +84,7 @@
     <string name="stdInfo.google"><u>{google}</u></string>
     <string name="stdInfo.mail.desc">Send epost</string>
     <string name="stdInfo.sms.desc">Send SMS</string>
+    <string name="stdInfo.sms.send">Send SMS til foresatt(e)</string>
     <string name="stdInfo.call.desc">Ring</string>
 
     <!-- NEW TASK -->

@@ -78,9 +78,10 @@ public class ExcelWriter {
 	public void addStudentClasses( List<StudentClass> stdClasses ) {
 		HSSFSheet sheet = workbook.createSheet( "Installerte klasser" );
 
-		int rowNum = 0, colNum = 0;
+		int rowNum = 0, colNum;
 
 		for ( StudentClass stdClass : stdClasses ) {
+			colNum = 0;
 			HSSFRow row = sheet.createRow( rowNum++ );
 			
 			HSSFCell cell = row.createCell( colNum );
