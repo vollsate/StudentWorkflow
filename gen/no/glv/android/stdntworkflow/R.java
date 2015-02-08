@@ -27,19 +27,23 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int counter_text_bg=0x7f05000d;
-        public static final int counter_text_color_handin=0x7f05000f;
-        public static final int counter_text_color_pending=0x7f05000e;
+        /**  BUTTON 
+         */
+        public static final int button_bg=0x7f050009;
+        public static final int button_bg_pressed=0x7f05000a;
+        public static final int counter_text_bg=0x7f05000f;
+        public static final int counter_text_color_handin=0x7f050011;
+        public static final int counter_text_color_pending=0x7f050010;
         public static final int list_background=0x7f050006;
         public static final int list_background_pressed=0x7f050007;
         public static final int list_divider=0x7f050008;
         public static final int list_item_title=0x7f050005;
-        public static final int nav_drawer_background=0x7f05000a;
-        public static final int nav_drawer_background_pressed=0x7f05000b;
-        public static final int nav_drawer_divider=0x7f05000c;
+        public static final int nav_drawer_background=0x7f05000c;
+        public static final int nav_drawer_background_pressed=0x7f05000d;
+        public static final int nav_drawer_divider=0x7f05000e;
         /**  NAV DRAWER 
          */
-        public static final int nav_drawer_title=0x7f050009;
+        public static final int nav_drawer_title=0x7f05000b;
         public static final int row_stdlist_pressed=0x7f050004;
         public static final int task_stdlist_dark=0x7f050001;
         public static final int task_stdlist_light=0x7f050000;
@@ -63,47 +67,50 @@ public final class R {
         public static final int task_marginLeft=0x7f060005;
     }
     public static final class drawable {
-        public static final int calendar=0x7f020000;
-        public static final int counter_bg=0x7f020001;
-        public static final int delete=0x7f020002;
-        public static final int drawer_shadow=0x7f020003;
-        public static final int ic_action_add_stdclass=0x7f020004;
-        public static final int ic_action_add_student=0x7f020005;
-        public static final int ic_action_alert=0x7f020006;
-        public static final int ic_action_call=0x7f020007;
-        public static final int ic_action_discard=0x7f020008;
-        public static final int ic_action_download=0x7f020009;
-        public static final int ic_action_edit=0x7f02000a;
-        public static final int ic_action_email=0x7f02000b;
-        public static final int ic_action_error=0x7f02000c;
-        public static final int ic_action_group=0x7f02000d;
-        public static final int ic_action_mail=0x7f02000e;
-        public static final int ic_action_mail_color=0x7f02000f;
-        public static final int ic_action_overflow=0x7f020010;
-        public static final int ic_action_person=0x7f020011;
-        public static final int ic_action_reset=0x7f020012;
-        public static final int ic_action_settings=0x7f020013;
-        public static final int ic_action_sms=0x7f020014;
-        public static final int ic_action_sort_by_size=0x7f020015;
-        public static final int ic_action_storage=0x7f020016;
-        public static final int ic_action_task=0x7f020017;
-        public static final int ic_drawer=0x7f020018;
-        public static final int ic_launcher=0x7f020019;
-        public static final int ic_task_off=0x7f02001a;
-        public static final int ic_task_on=0x7f02001b;
-        public static final int info=0x7f02001c;
-        public static final int list_item_bg_normal=0x7f02001d;
-        public static final int list_item_bg_pressed=0x7f02001e;
-        public static final int list_selector=0x7f02001f;
-        public static final int main_textview=0x7f020020;
-        public static final int nav_drawer_bg_normal=0x7f020021;
-        public static final int nav_drawer_bg_pressed=0x7f020022;
-        public static final int navdrawer_list_selector=0x7f020023;
-        public static final int ok=0x7f020024;
-        public static final int row_stdinfo=0x7f020025;
-        public static final int student=0x7f020026;
-        public static final int task_on_off=0x7f020027;
-        public static final int textview_bg_line=0x7f020028;
+        public static final int button_normal=0x7f020000;
+        public static final int button_pressed=0x7f020001;
+        public static final int button_selector=0x7f020002;
+        public static final int calendar=0x7f020003;
+        public static final int counter_bg=0x7f020004;
+        public static final int delete=0x7f020005;
+        public static final int drawer_shadow=0x7f020006;
+        public static final int ic_action_add_stdclass=0x7f020007;
+        public static final int ic_action_add_student=0x7f020008;
+        public static final int ic_action_alert=0x7f020009;
+        public static final int ic_action_call=0x7f02000a;
+        public static final int ic_action_discard=0x7f02000b;
+        public static final int ic_action_download=0x7f02000c;
+        public static final int ic_action_edit=0x7f02000d;
+        public static final int ic_action_email=0x7f02000e;
+        public static final int ic_action_error=0x7f02000f;
+        public static final int ic_action_group=0x7f020010;
+        public static final int ic_action_mail=0x7f020011;
+        public static final int ic_action_mail_color=0x7f020012;
+        public static final int ic_action_overflow=0x7f020013;
+        public static final int ic_action_person=0x7f020014;
+        public static final int ic_action_reset=0x7f020015;
+        public static final int ic_action_settings=0x7f020016;
+        public static final int ic_action_sms=0x7f020017;
+        public static final int ic_action_sort_by_size=0x7f020018;
+        public static final int ic_action_storage=0x7f020019;
+        public static final int ic_action_task=0x7f02001a;
+        public static final int ic_drawer=0x7f02001b;
+        public static final int ic_launcher=0x7f02001c;
+        public static final int ic_task_off=0x7f02001d;
+        public static final int ic_task_on=0x7f02001e;
+        public static final int info=0x7f02001f;
+        public static final int list_item_bg_normal=0x7f020020;
+        public static final int list_item_bg_pressed=0x7f020021;
+        public static final int list_selector=0x7f020022;
+        public static final int main_textview=0x7f020023;
+        public static final int nav_drawer_bg_normal=0x7f020024;
+        public static final int nav_drawer_bg_pressed=0x7f020025;
+        public static final int navdrawer_list_selector=0x7f020026;
+        public static final int ok=0x7f020027;
+        public static final int row_stdinfo=0x7f020028;
+        public static final int student=0x7f020029;
+        public static final int task_on_off=0x7f02002a;
+        public static final int textview_bg_line=0x7f02002b;
     }
     public static final class id {
         public static final int BTN_info_update=0x7f0b0065;
@@ -501,41 +508,42 @@ public final class R {
         public static final int title_section3=0x7f08006a;
     }
     public static final class style {
+        public static final int BTN=0x7f090011;
+        public static final int BTN_addStdTask=0x7f090012;
+        /**  the theme applied to the application or activity 
+         */
+        public static final int CustomActionBarTheme=0x7f090016;
+        public static final int ET=0x7f09000d;
+        public static final int ET_L=0x7f09000e;
+        public static final int ET_stdInfo=0x7f090010;
+        public static final int ET_task=0x7f09000f;
+        /**  ActionBar styles 
+         */
+        public static final int MyActionBar=0x7f090017;
+        public static final int ProgressBar_indeterminate=0x7f090015;
+        public static final int TV_header1=0x7f090002;
+        public static final int TV_header2=0x7f090003;
+        public static final int TV_standard=0x7f090001;
+        public static final int TV_std=0x7f090004;
+        public static final int TV_std_L=0x7f09000b;
+        public static final int TV_std_L_blue=0x7f09000c;
+        public static final int TV_std_M=0x7f090009;
+        public static final int TV_std_M_bold=0x7f09000a;
+        public static final int TV_std_S=0x7f090008;
+        public static final int TV_std_bold=0x7f090006;
+        public static final int TV_std_bold_blue=0x7f090007;
+        public static final int TV_std_link=0x7f090005;
+        public static final int actionBar=0x7f090013;
+        public static final int divider=0x7f090014;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
+
+
     
          */
-        public static final int AppBaseTheme=0x7f090000;
-        public static final int BTN=0x7f090012;
-        public static final int BTN_addStdTask=0x7f090013;
-        /**  the theme applied to the application or activity 
-         */
-        public static final int CustomActionBarTheme=0x7f090017;
-        public static final int ET=0x7f09000e;
-        public static final int ET_L=0x7f09000f;
-        public static final int ET_stdInfo=0x7f090011;
-        public static final int ET_task=0x7f090010;
-        /**  ActionBar styles 
-         */
-        public static final int MyActionBar=0x7f090018;
-        public static final int ProgressBar_indeterminate=0x7f090016;
-        public static final int TV_header1=0x7f090003;
-        public static final int TV_header2=0x7f090004;
-        public static final int TV_standard=0x7f090002;
-        public static final int TV_std=0x7f090005;
-        public static final int TV_std_L=0x7f09000c;
-        public static final int TV_std_L_blue=0x7f09000d;
-        public static final int TV_std_M=0x7f09000a;
-        public static final int TV_std_M_bold=0x7f09000b;
-        public static final int TV_std_S=0x7f090009;
-        public static final int TV_std_bold=0x7f090007;
-        public static final int TV_std_bold_blue=0x7f090008;
-        public static final int TV_std_link=0x7f090006;
-        public static final int actionBar=0x7f090014;
-        public static final int divider=0x7f090015;
-        public static final int newAppBaseTheme=0x7f090001;
+        public static final int newAppBaseTheme=0x7f090000;
     }
     public static final class xml {
         public static final int pref_main=0x7f040000;

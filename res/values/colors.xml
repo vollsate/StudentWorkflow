@@ -16,13 +16,18 @@
     <color name="list_background_pressed">#CCE6FF</color>
     <color name="list_divider">#272727</color>
     
+    <!-- BUTTON -->
+    <color name="button_bg">#33b5e5</color>
+    <color name="button_bg_pressed">#0800FF</color>
+    
 
     <!-- NAV DRAWER -->
     <color name="nav_drawer_title">#ffffff</color>
     <color name="nav_drawer_background">#669999</color>
-    <color name="nav_drawer_background_pressed">#992416</color>
+    <color name="nav_drawer_background_pressed">#EC583A</color>
     <color name="nav_drawer_divider">#272727</color>
     <color name="counter_text_bg">#C4C4C4</color>
+    
     <color name="counter_text_color_pending">#FF0000</color>
     <color name="counter_text_color_handin">#0008FF</color>
     
