@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity {
 				intent = new Intent( this, TaskViewActivity.class );
 				break;
 			case FRAG_SUBJTYPE:
-				fragment = null;
+				fragment = new SubjectTypesFragment();
 				break;
 			case FRAG_PREF:
 				fragment = new PrefFragment();

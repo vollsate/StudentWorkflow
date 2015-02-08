@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_below="@id/TV.info.p2Header"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="15sp"
         android:layout_marginLeft="30sp"
         android:layout_marginStart="30sp"
         android:text="@string/stdinfo_name" />
@@ -41,7 +41,8 @@
         android:layout_marginStart="15sp"
         android:layout_toEndOf="@id/TV.info.p2Name"
         android:layout_toRightOf="@id/TV.info.p2Name"
-        android:hint="Navn"
+        android:hint="@string/stdinfo_name"
+        android:background="@drawable/custom_edittext"
         android:singleLine="false" >
 
         <requestFocus />
@@ -55,7 +56,7 @@
         android:layout_below="@id/TV.info.p2Name"
         android:layout_alignLeft="@id/TV.info.p2Name"
         android:layout_alignStart="@id/TV.info.p2Name"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="15sp"
         android:text="@string/stdinfo_mail" />
 
     <ImageView
@@ -79,7 +80,8 @@
         android:layout_marginLeft="0dp"
         android:layout_toEndOf="@id/TV.info.p2Mail"
         android:layout_toRightOf="@id/TV.info.p2Mail"
-        android:hint="Epost"
+        android:hint="@string/stdinfo_mail"
+        android:background="@drawable/custom_edittext"
         android:singleLine="false" >
 
     </EditText>
@@ -105,7 +107,7 @@
         android:layout_alignLeft="@id/IV.info.p2Mail"
         android:layout_alignStart="@id/IV.info.p2Mail"
         android:layout_below="@id/TV.info.p2Header2"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:contentDescription="@string/stdInfo.sms.desc"
         android:onClick="sendSMS"
         android:src="@drawable/ic_action_email" />
@@ -141,7 +143,8 @@
         android:layout_marginStart="10sp"
         android:layout_toEndOf="@id/TV.info.p2Phone.mob"
         android:layout_toRightOf="@id/TV.info.p2Phone.mob"
-        android:hint="mobil" >
+        android:background="@drawable/custom_edittext"
+        android:hint="@string/stdinfo_phone_mobile" >
 
     </EditText>
 
@@ -164,7 +167,7 @@
         android:layout_below="@id/TV.info.p2Phone.mob"
         android:layout_alignLeft="@id/TV.info.p2Phone.mob"
         android:layout_alignStart="@id/TV.info.p2Phone.mob"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="15sp"
         android:text="@string/stdinfo_phone_home" />
 
     <EditText
@@ -177,7 +180,8 @@
         android:layout_marginStart="0dp"
         android:layout_toEndOf="@id/TV.info.p2Phone.home"
         android:layout_toRightOf="@id/TV.info.p2Phone.home"
-        android:hint="hjemme" >
+        android:background="@drawable/custom_edittext"
+        android:hint="@string/stdinfo_phone_home" >
 
     </EditText>
 
@@ -200,7 +204,7 @@
         android:layout_below="@id/TV.info.p2Phone.home"
         android:layout_alignLeft="@id/TV.info.p2Phone.mob"
         android:layout_alignStart="@id/TV.info.p2Phone.mob"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="15sp"
         android:text="@string/stdinfo_phone_work" />
 
     <EditText
@@ -213,6 +217,7 @@
         android:layout_marginStart="0dp"
         android:layout_toRightOf="@id/TV.info.p2Phone.work"
         android:layout_toEndOf="@id/TV.info.p2Phone.work"
-        android:hint="arbeid" />
+        android:background="@drawable/custom_edittext"
+        android:hint="@string/stdinfo_phone_work" />
 
 </RelativeLayout>
