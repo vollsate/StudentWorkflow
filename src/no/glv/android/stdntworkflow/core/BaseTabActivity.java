@@ -59,14 +59,6 @@ public abstract class BaseTabActivity extends BaseActivity implements ActionBar.
 	 */
 	public abstract String[] getTabTitles();
 
-	/**
-	 * 
-	 * @return
-	 */
-	protected DataHandler getDataHandler() {
-		return DataHandler.GetInstance();
-	}
-
 	protected String getTabTitle() {
 		return getTitle().toString();
 	}
@@ -177,7 +169,7 @@ public abstract class BaseTabActivity extends BaseActivity implements ActionBar.
 	 * @author GleVoll
 	 *
 	 */
-	public abstract static class BaseTabFragment extends Fragment {
+	public abstract static class BaseTabFragment extends BaseFragment {
 
 		protected View rootView;
 		BaseTabActivity baseTabActivity;
@@ -193,6 +185,10 @@ public abstract class BaseTabActivity extends BaseActivity implements ActionBar.
 			return view;
 		}
 
+		/**
+		 * 
+		 * @return
+		 */
 		protected BaseTabActivity getBaseTabActivity() {
 			return (BaseTabActivity) getActivity();
 		}

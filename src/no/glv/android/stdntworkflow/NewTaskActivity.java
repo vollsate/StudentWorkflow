@@ -8,6 +8,7 @@ import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifi
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
+import no.glv.android.stdntworkflow.core.Utils;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.Task;
@@ -74,7 +75,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 		AddClassToTaskFragment fragment = new AddClassToTaskFragment();
 		Bundle args = new Bundle();
 		args.putSerializable( Task.EXTRA_TASKNAME, task );
-		ViewGroupAdapter.beginFragmentTransaction( getFragmentManager(), fragment, args, R.id.LL_newTask_classes );
+		ViewGroupAdapter.BeginFragmentTransaction( getFragmentManager(), fragment, args, R.id.LL_newTask_classes );
 	}
 
 	/**
@@ -85,8 +86,8 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 		String types[] = getResources().getStringArray( R.array.task_types );
 
 		// Set the proper SubjectTypes to the spinners
-		SetupSpinner( getSubjectSpinner(), getSubjectNames(), subjects[0], this );
-		SetupSpinner( getTypeSpinner(), getTypesNames(), types[0], this );
+		Utils.SetupSpinner( getSubjectSpinner(), getSubjectNames(), subjects[0], this );
+		Utils.SetupSpinner( getTypeSpinner(), getTypesNames(), types[0], this );
 	}
 
 	public ArrayList<String> getTypesNames() {
@@ -177,7 +178,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 
 		task.setName( taskName );
 		task.setDescription( taskDesc );
-		task.setDate( BaseActivity.GetDateFromString( dateStr ) );
+		task.setDate( getDateFromString( dateStr ) );
 
 		Spinner spSubject = getSubjectSpinner();
 		//int subPos = spSubject.getSelectedItemPosition();
@@ -199,7 +200,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 	@Override
 	public void onDateSet( DatePicker picker, int year, int monthOfYear, int dayOfMonth ) {
 		EditText eText = (EditText) findViewById( R.id.ET_newTask_date );
-		eText.setText( BaseActivity.GetDateAsString( year, monthOfYear, dayOfMonth ) );
+		eText.setText( Utils.GetDateAsString( year, monthOfYear, dayOfMonth ) );
 	}
 
 	/**
@@ -210,7 +211,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 	 */
 	@Override
 	public void onStudentsVerified( Task task ) {
-		dataHandler.addTask( task ).notifyTaskAdd( task );
+		getDataHandler().addTask( task ).notifyTaskAdd( task );
 		task.markAsCommitted();
 
 		String msg = getResources().getString( R.string.newTask_added_toast );

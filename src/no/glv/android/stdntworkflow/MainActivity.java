@@ -2,8 +2,8 @@ package no.glv.android.stdntworkflow;
 
 import java.util.ArrayList;
 
+import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -20,7 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 @SuppressWarnings("deprecation")
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 	
 	public static final int FRAG_MAIN = 0; 
 	public static final int FRAG_CLASS = 1;

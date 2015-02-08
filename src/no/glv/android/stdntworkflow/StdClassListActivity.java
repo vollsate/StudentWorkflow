@@ -7,6 +7,7 @@ import java.util.List;
 import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.Utils;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
@@ -149,7 +150,7 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 	public void verifySendSMS( List<Phone> pList, String msg ) {
 		Toast.makeText( this, "Sendt SMS til " + pList.size() + " foresatt(e)", Toast.LENGTH_LONG ).show();
 	}
-	
+
 	@Override
 	public void verifySendSMS( Phone p, String msg ) {
 	}
@@ -184,7 +185,7 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 			mails[i++] = name;
 		}
 
-		Intent intent = BaseActivity.createMailIntent( mails, this );
+		Intent intent = Utils.CreateMailIntent( mails, this );
 
 		try {
 			startActivity( Intent.createChooser( intent, "Send mail..." ) );

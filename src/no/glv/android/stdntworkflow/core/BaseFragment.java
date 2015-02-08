@@ -3,33 +3,31 @@
  */
 package no.glv.android.stdntworkflow.core;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+
 
 /**
  * @author GleVoll
  *
  */
 public class BaseFragment extends Fragment {
-
-	private final BaseActivity baseActivity;
+	
+	protected DataHandler dataHandler;
 
 	/**
 	 * 
 	 */
-	public BaseFragment( BaseActivity base ) {
+	public BaseFragment(  ) {
 		super();
-
-		this.baseActivity = base;
+		dataHandler = DataHandler.GetInstance();
 	}
 
-	public BaseFragment() {
-		super();
-
-		baseActivity = null;
-	}
-
+	/**
+	 * 
+	 * @return
+	 */
 	protected BaseActivity getBaseActivity() {
-		return baseActivity;
+		return (BaseActivity) getActivity();
 	}
 
 }

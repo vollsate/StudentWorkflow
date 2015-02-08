@@ -7,11 +7,11 @@ import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.SettingsManager;
+import no.glv.android.stdntworkflow.core.Utils;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
-public class StdInfoActivity extends Activity implements ActionBar.TabListener, OnVerifySendSMSListener {
+public class StdInfoActivity extends BaseActivity implements ActionBar.TabListener, OnVerifySendSMSListener {
 
 	private static final String TAG = StdInfoActivity.class.getSimpleName();
 
@@ -62,7 +62,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener, 
 		Log.d( TAG, "Actionbar: " + actionBar );
 		actionBar.setNavigationMode( ActionBar.NAVIGATION_MODE_TABS );
 
-		bean = BaseActivity.GetStudentByIdentExtra( getIntent() );
+		bean = getStudentByIdentExtra();
 		Log.d( TAG, "Student: " + bean );
 		setTitle( bean.getFirstName() + " " + bean.getLastName() );
 
@@ -143,7 +143,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener, 
 		if ( p == null )
 			return;
 
-		Intent intent = BaseActivity.createCallIntent( p );
+		Intent intent = Utils.CreateCallIntent( p );
 		startActivity( intent );
 	}
 
@@ -173,7 +173,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener, 
 	public void sendMail( View v ) {
 		Parent p = (Parent) v.getTag();
 
-		Intent i = BaseActivity.createMailIntent( new String[] { p.getMail() }, this );
+		Intent i = Utils.CreateMailIntent( new String[] { p.getMail() }, this );
 		startActivity( i );
 	}
 
@@ -494,7 +494,7 @@ public class StdInfoActivity extends Activity implements ActionBar.TabListener, 
 	 */
 	public static void StartActivity( Context ctx, Student std ) {
 		Intent intent = new Intent( ctx, StdInfoActivity.class );
-		BaseActivity.putIdentExtra( std, intent );
+		PutIdentExtra( std, intent );
 
 		ctx.startActivity( intent );
 

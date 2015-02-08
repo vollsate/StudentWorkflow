@@ -3,30 +3,17 @@
  */
 package no.glv.android.stdntworkflow.core;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
-import no.glv.android.stdntworkflow.R;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.Spinner;
 
 /**
  * @author GleVoll
@@ -34,73 +21,22 @@ import android.widget.Spinner;
  */
 public class BaseActivity extends Activity {
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
-	
-	protected DataHandler dataHandler;
+	private DataHandler dataHandler;
 
 	public BaseActivity() {
 		super();
-		
-		dataHandler = DataHandler.GetInstance();
 	}
 	
-	/**
-	 * 
-	 * @param resource
-	 * @param spinner
-	 * @param data
-	 * @param selected
-	 */
-	public static void SetupSpinner(Spinner spinner, ArrayList<String> data, String selected, Context ctx ) {
-		// Set the proper SubjectTypes to the spinners
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>( ctx, android.R.layout.simple_spinner_dropdown_item,
-				data );
-		spinner.setAdapter( adapter );
-		spinner.setSelection( data.indexOf( selected ) );
+	public BaseActivity getBaseActivity() {
+		return (BaseActivity) this;
 	}
-
-	/**
-	 * 
-	 * @param mails
-	 * @return
-	 */
-	public static Intent createMailIntent( String[] mails, Context ctx ) {
-		Intent intent = new Intent( Intent.ACTION_SEND );
-		intent.setType( "message/rfc822" );
-		intent.putExtra( Intent.EXTRA_EMAIL, mails );
-		intent.putExtra( Intent.EXTRA_SUBJECT, ctx.getResources().getString( R.string.stdlist_mail_subject ) );
-		intent.putExtra( Intent.EXTRA_TEXT, ctx.getResources().getString( R.string.stdlist_mail_body ) );
-
-		return intent;
-	}
-
-	public static Intent createCallIntent( Phone p ) {
-		String tel = "tel:" + p.getNumber();
-
-		Intent intent = new Intent( Intent.ACTION_CALL );
-		intent.setData( Uri.parse( tel ) );
-
-		return intent;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Student getStudentByFirstName() {
-		Bundle bundle = getIntent().getExtras();
-
-		String sName = bundle.getString( Student.EXTRA_STUDENTNAME );
-		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
-
-		StudentClass stdClass = DataHandler.GetInstance().getStudentClass( sClass );
-		Student bean = stdClass.getStudentByFirstName( sName );
-
-		return bean;
-	}
-
-	public static List<String> GetTasks( Context ctx ) {
-		return DataHandler.GetInstance().getTaskNames();
+	
+	public DataHandler getDataHandler() {
+		if ( dataHandler == null ) {
+			dataHandler = DataHandler.GetInstance();
+		}
+		
+		return dataHandler;
 	}
 
 	/**
@@ -115,11 +51,14 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
+	 * Gets a Student instance from the intent as EXTRA parameters. Use the
+	 * {@link BaseActivity} <tt>put</tt> methods to put the EXTRA parametres in
+	 * the intent.
 	 * 
 	 * @return
 	 */
-	public static Student GetStudentByIdentExtra( Intent intent ) {
-		Bundle bundle = intent.getExtras();
+	public Student getStudentByIdentExtra() {
+		Bundle bundle = getIntent().getExtras();
 
 		String sName = bundle.getString( Student.EXTRA_IDENT );
 		String sClass = bundle.getString( StudentClass.EXTRA_STUDENTCLASS );
@@ -128,10 +67,6 @@ public class BaseActivity extends Activity {
 		Student bean = stdClass.getStudentByIdent( sName );
 
 		return bean;
-	}
-
-	public Student getStudentByIdentExtra() {
-		return GetStudentByIdentExtra( getIntent() );
 	}
 
 	/**
@@ -144,20 +79,30 @@ public class BaseActivity extends Activity {
 
 	}
 
-	public static void putStudentNameExtra( Student std, Intent intent ) {
-		intent.putExtra( Student.EXTRA_STUDENTNAME, std.getFirstName() );
+	/**
+	 * 
+	 * @param std
+	 * @param intent
+	 */
+	public static void PutStudentIdentExtra( Student std, Intent intent ) {
+		PutStudentIdentExtra( std.getIdent(), intent );
 
 	}
 
-	public static void putStudentIdentExtra( Student std, Intent intent ) {
-		putStudentIdentExtra( std.getIdent(), intent );
-
-	}
-
-	public static void putStudentIdentExtra( String std, Intent intent ) {
+	/**
+	 * 
+	 * @param std
+	 * @param intent
+	 */
+	public static void PutStudentIdentExtra( String std, Intent intent ) {
 		intent.putExtra( Student.EXTRA_IDENT, std );
 	}
 
+	/**
+	 * 
+	 * @param taskName
+	 * @param intent
+	 */
 	public static void PutTaskNameExtra( String taskName, Intent intent ) {
 		if ( intent == null )
 			return;
@@ -165,6 +110,11 @@ public class BaseActivity extends Activity {
 		intent.putExtra( Task.EXTRA_TASKNAME, taskName );
 	}
 
+	/**
+	 * 
+	 * @param intent
+	 * @return
+	 */
 	public static String GetTaskNameExtra( Intent intent ) {
 		if ( intent == null )
 			return null;
@@ -178,9 +128,9 @@ public class BaseActivity extends Activity {
 	 * @param stdClass
 	 * @param intent
 	 */
-	public static void putIdentExtra( Student std, Intent intent ) {
+	public static void PutIdentExtra( Student std, Intent intent ) {
 		PutStudentClassExtra( std.getStudentClass(), intent );
-		putStudentIdentExtra( std, intent );
+		PutStudentIdentExtra( std, intent );
 	}
 
 	/**
@@ -197,43 +147,34 @@ public class BaseActivity extends Activity {
 	 * @return
 	 */
 	public static String GetDateAsString( Date date ) {
-		return sdf.format( date );
+		return Utils.GetDateAsString( date );
 	}
-
-	/**
-	 * 
-	 * @param year
-	 * @param month
-	 * @param day
-	 * @return
-	 */
-	public static String GetDateAsString( int year, int month, int day ) {
-		Calendar cal = Calendar.getInstance();
-		cal.set( year, month, day );
-
-		return sdf.format( cal.getTime() );
-	}
-
 	/**
 	 * 
 	 * 
 	 * @param date
 	 * @return The Date instance or null if some error occurs.
 	 */
-	public static Date GetDateFromString( String date ) {
-		try {
-			return sdf.parse( date );
-		}
-		catch ( ParseException e ) {
-			// TODO: handle exception
-			return null;
-		}
+	public Date getDateFromString( String date ) {
+		return Utils.GetDateFromString( date );
 	}
 
+	/**
+	 * 
+	 * @param rootView
+	 * @param id
+	 * @return
+	 */
 	public static CheckBox GetCheckBox( View rootView, int id ) {
 		return (CheckBox) rootView.findViewById( id );
 	}
 
+	/**
+	 * 
+	 * @param rootView
+	 * @param id
+	 * @return
+	 */
 	public static ImageView GetImageView( View rootView, int id ) {
 		return (ImageView) rootView.findViewById( id );
 	}

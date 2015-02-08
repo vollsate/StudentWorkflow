@@ -12,6 +12,7 @@ import no.glv.android.stdntworkflow.core.BaseTabActivity;
 import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
+import no.glv.android.stdntworkflow.core.Utils;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.SubjectType;
@@ -103,7 +104,7 @@ public class TaskActivity extends BaseTabActivity {
 	}
 
 	String getTaskName() {
-		return BaseActivity.GetTaskNameExtra( getIntent() );
+		return GetTaskNameExtra( getIntent() );
 	}
 
 	@Override
@@ -212,7 +213,7 @@ public class TaskActivity extends BaseTabActivity {
 		int iSub = getDataHandler().convertSubjectToID( subject );
 		int iTyp = getDataHandler().convertTypeToID( type );
 
-		Date date = BaseActivity.GetDateFromString( newDate );
+		Date date = getDateFromString( newDate );
 		String oldName = mTask.getName();
 
 		mTask.setName( newName );
@@ -304,10 +305,10 @@ public class TaskActivity extends BaseTabActivity {
 
 			Spinner sp = (Spinner) getSinner( R.id.SP_task_subject );
 			SubjectType st = DataHandler.GetInstance().getSubjectType( task.getSubject() );
-			SetupSpinner( sp, getSubjectNames(), st.getName(), getActivity() );
+			Utils.SetupSpinner( sp, getSubjectNames(), st.getName(), getActivity() );
 			sp = (Spinner) getSinner( R.id.SP_task_type );
 			st = DataHandler.GetInstance().getSubjectType( task.getType() );
-			SetupSpinner( sp, getTypesNames(), st.getName(), getActivity() );
+			Utils.SetupSpinner( sp, getTypesNames(), st.getName(), getActivity() );
 
 			setCounters();
 			InstalledClassesInTaskFragment.NewInstance( task, getFragmentManager() );
