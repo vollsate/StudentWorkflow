@@ -2,7 +2,6 @@ package no.glv.android.stdntworkflow.sql;
 
 import java.util.Date;
 
-import android.R.id;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 

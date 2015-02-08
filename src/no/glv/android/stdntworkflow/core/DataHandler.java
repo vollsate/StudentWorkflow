@@ -814,6 +814,16 @@ public class DataHandler {
 
 		return this;
 	}
+	
+	public void handInTask( Task t, StudentTask st, boolean handin ) {
+		if ( handin )
+			t.handIn( st.getIdent() );
+		else
+			t.handIn( st.getIdent(), Task.HANDIN_CANCEL );
+		
+		updateTask( t, null );
+		notifyTaskChange( t, OnTasksChangedListener.MODE_UPD );
+	}
 
 	/**
 	 * 
@@ -821,14 +831,16 @@ public class DataHandler {
 	 * @param oldName
 	 */
 	public DataHandler updateTask( Task task, String oldName ) {
-		if ( oldName == null ) oldName = task.getName();
 		Log.d( TAG, "Updating task: " + task.getName() );
 
 		if ( !db.updateTask( task ) )
 			throw new IllegalStateException( "Failed to update Task: " + task.getName() );
-
-		tasks.remove( oldName );
-		tasks.put( task.getName(), task );
+		
+		if ( oldName != null ) {
+			tasks.remove( oldName );
+			tasks.put( task.getName(), task );
+		}
+		
 		return this;
 	}
 
@@ -837,13 +849,11 @@ public class DataHandler {
 	 * @param name
 	 * @return
 	 */
-	public boolean deleteTask( String name ) {
-		Task task = getTask( name );
-
-		if ( db.deleteTask( name ) ) {
+	public boolean deleteTask( Task task ) {
+		if ( db.deleteTask( task ) ) {
 			db.deleteStudentTasks( task.getStudentsInTask() );
 
-			tasks.remove( name );
+			tasks.remove( task.getName() );
 			notifyTaskDelete( task );
 			return true;
 		}
@@ -889,27 +899,21 @@ public class DataHandler {
 	 */
 	public void commitStudentsTasks( Task task ) {
 		List<StudentTask> list = task.getUpdatedStudents();
-		int change = 0;
-
 		if ( list != null && !list.isEmpty() ) {
 			db.updateStudentTasks( list );
-			change = OnTaskChangeListener.MODE_STD_UPD;
 		}
 
 		list = task.getRemovedStudents();
 		if ( list != null && !list.isEmpty() ) {
 			db.deleteStudentTasks( list );
-			change = OnTaskChangeListener.MODE_STD_DEL;
 		}
 
 		list = task.getAddedStudents();
 		if ( list != null && !list.isEmpty() ) {
 			db.insertStudentTasks( list );
-			change = OnTaskChangeListener.MODE_STD_ADD;
 		}
 
-		if ( change > 0 )
-			task.notifyChange( change );
+		task.notifyChange();
 		task.markAsCommitted();
 	}
 

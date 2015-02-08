@@ -211,6 +211,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 	@Override
 	public void onStudentsVerified( Task task ) {
 		dataHandler.addTask( task ).notifyTaskAdd( task );
+		task.markAsCommitted();
 
 		String msg = getResources().getString( R.string.newTask_added_toast );
 		msg = msg.replace( "{task}", task.getName() );

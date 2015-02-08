@@ -381,14 +381,14 @@ public class Database extends SQLiteOpenHelper {
 	 * @param taskName
 	 * @return
 	 */
-	public boolean deleteTask( String taskName ) {
+	public boolean deleteTask( Task task ) {
 		int rows = 0;
 
 		try {
-			rows = TaskTbl.DeleteTask( taskName, getWritableDatabase() );
+			rows = TaskTbl.DeleteTask( task, getWritableDatabase() );
 		}
 		catch ( RuntimeException e ) {
-			Log.e( TAG, "Cannot update task: " + taskName, e );
+			Log.e( TAG, "Cannot update task: " + task.getName(), e );
 			e.printStackTrace();
 		}
 

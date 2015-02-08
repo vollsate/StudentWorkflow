@@ -293,6 +293,8 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	public void onTaskChange( Task newTask, int mode ) {
 		switch ( mode ) {
 			case OnTaskChangeListener.MODE_STD_HANDIN:
+			case OnTaskChangeListener.MODE_STD_ADD:
+			case OnTaskChangeListener.MODE_STD_DEL:
 				updateCounter();
 				// notifyDataSetChanged();
 				break;

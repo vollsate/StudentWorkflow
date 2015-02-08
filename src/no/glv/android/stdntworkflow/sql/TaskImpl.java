@@ -230,9 +230,6 @@ public class TaskImpl implements Task {
 				return false;
 		}
 
-		mModifiedStudents.put( stdTask.getIdent(), stdTask );
-		mModified = true;
-
 		notifyChange( OnTaskChangeListener.MODE_STD_HANDIN );
 		return true;
 	}

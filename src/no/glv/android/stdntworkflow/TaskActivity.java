@@ -11,7 +11,6 @@ import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.BaseTabActivity;
 import no.glv.android.stdntworkflow.core.DataComparator;
 import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
 import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
@@ -182,7 +181,7 @@ public class TaskActivity extends BaseTabActivity {
 			@Override
 			public void onClick( DialogInterface dialog, int which ) {
 				// Delete and finish
-				if ( getDataHandler().deleteTask( mTask.getName() ) ) {
+				if ( getDataHandler().deleteTask( mTask ) ) {
 					finish();
 				}
 			}
@@ -202,7 +201,7 @@ public class TaskActivity extends BaseTabActivity {
 		String newName = ( (TextView) findViewById( R.id.ET_task_name ) ).getText().toString();
 		String newDesc = ( (TextView) findViewById( R.id.ET_task_desc ) ).getText().toString();
 		String newDate = ( (TextView) findViewById( R.id.ET_task_date ) ).getText().toString();
-		
+
 		// Get the subject types
 		String subject = ( (Spinner) findViewById( R.id.SP_task_subject ) ).getSelectedItem().toString();
 		String type = ( (Spinner) findViewById( R.id.SP_task_type ) ).getSelectedItem().toString();
@@ -250,16 +249,16 @@ public class TaskActivity extends BaseTabActivity {
 
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
-	// 
+	//
 	// TaskInfoFragment
-	// 
+	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
 	/**
 	 * Shows the task info view.
 	 * 
-	 * Depends on 
+	 * Depends on
 	 */
 	public static class TaskInfoFragment extends BaseTabFragment implements OnDateSetListener,
 			Task.OnTaskChangeListener {
@@ -282,9 +281,9 @@ public class TaskActivity extends BaseTabActivity {
 			getTextView( R.id.TV_task_header ).setText( getString( R.string.task_header ) );
 
 			getEditText( R.id.ET_task_name ).setText( task.getName() );
-			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(getEditText( R.id.ET_task_name ).getWindowToken(), 0);			
-			
+			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService( Context.INPUT_METHOD_SERVICE );
+			imm.hideSoftInputFromWindow( getEditText( R.id.ET_task_name ).getWindowToken(), 0 );
+
 			getEditText( R.id.ET_task_desc ).setText( task.getDesciption() );
 			getEditText( R.id.ET_task_date ).setText( BaseActivity.GetDateAsString( task.getDate() ) );
 
@@ -298,7 +297,7 @@ public class TaskActivity extends BaseTabActivity {
 
 				}
 			} );
-			
+
 			Spinner sp = (Spinner) getSinner( R.id.SP_task_subject );
 			SubjectType st = DataHandler.GetInstance().getSubjectType( task.getSubject() );
 			SetupSpinner( sp, getSubjectNames(), st.getName(), getActivity() );
@@ -327,7 +326,6 @@ public class TaskActivity extends BaseTabActivity {
 
 			return mSubjectNames;
 		}
-
 
 		/**
 		 * 
@@ -371,12 +369,12 @@ public class TaskActivity extends BaseTabActivity {
 			return R.layout.fragment_task_info;
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
-	// 
+	//
 	// TaskClassesFragment
-	// 
+	//
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 
@@ -387,7 +385,7 @@ public class TaskActivity extends BaseTabActivity {
 
 		StudentListAdapter adapter;
 		Task mTask;
-		
+
 		@Override
 		public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
 			ListView listView = getListView( R.id.LV_task_students );
@@ -444,7 +442,7 @@ public class TaskActivity extends BaseTabActivity {
 	 *
 	 */
 	static class StudentListAdapter extends ArrayAdapter<StudentTask> implements Serializable,
-			Task.OnTaskChangeListener, OnTasksChangedListener {
+			Task.OnTaskChangeListener {
 
 		/** TaskActivity.java */
 		private static final long serialVersionUID = 1L;
@@ -453,16 +451,13 @@ public class TaskActivity extends BaseTabActivity {
 
 		public StudentListAdapter( Context ctx, List<StudentTask> stdList ) {
 			super( ctx, R.layout.row_task_stdlist, stdList );
-			DataHandler.GetInstance().registerOnTaskChangeListener( this );
 		}
-		
+
 		@Override
 		protected void finalize() throws Throwable {
-			DataHandler.GetInstance().unregisterOnTaskChangeListener( this );
+			mTask.removeOnTaskChangeListener( this );
 			super.finalize();
 		}
-		
-		
 
 		/**
 		 * 
@@ -470,15 +465,11 @@ public class TaskActivity extends BaseTabActivity {
 		 */
 		public void setTask( Task task ) {
 			this.mTask = task;
+			mTask.addOnTaskChangeListener( this );
 		}
 
 		@Override
 		public void onTaskChange( Task task, int mode ) {
-			update();
-		}
-		
-		@Override
-		public void onTaskChange( int mode ) {
 			update();
 		}
 
@@ -623,13 +614,7 @@ public class TaskActivity extends BaseTabActivity {
 					if ( stdTask.isHandedIn() == isChecked )
 						return;
 
-					Task task = mTask;
-					if ( isChecked )
-						task.handIn( stdTask.getIdent() );
-					else
-						task.handIn( stdTask.getIdent(), Task.HANDIN_CANCEL );
-
-					update();
+					DataHandler.GetInstance().handInTask( mTask, stdTask, isChecked );
 				}
 			} );
 

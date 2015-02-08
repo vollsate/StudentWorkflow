@@ -193,9 +193,9 @@ class TaskTbl {
 	 * 
 	 * @return 1 if task deleted, 0 otherwise
 	 */
-	public static int DeleteTask( String taskName, SQLiteDatabase db ) {
-		String whereClause = COL_NAME + "=?";
-		int retVal = db.delete( TBL_NAME, whereClause, new String[] { taskName } );
+	public static int DeleteTask( Task task, SQLiteDatabase db ) {
+		String whereClause = COL_ID + "=?";
+		int retVal = db.delete( TBL_NAME, whereClause, new String[] { String.valueOf( task.getID() ) } );
 
 		db.close();
 		return retVal;

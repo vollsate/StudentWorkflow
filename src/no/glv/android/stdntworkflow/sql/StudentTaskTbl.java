@@ -15,7 +15,7 @@ import android.util.Log;
 
 class StudentTaskTbl {
 
-	private static final String TAG = StudentTaskTbl_new.class.getSimpleName();
+	private static final String TAG = StudentTaskTbl.class.getSimpleName();
 
 	public static final String TBL_NAME = "nstdntsk";
 
