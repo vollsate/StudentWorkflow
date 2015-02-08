@@ -10,7 +10,6 @@ import no.glv.android.stdntworkflow.intrfc.Student;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -91,15 +90,13 @@ public class AddStudentsToTaskFragment extends DialogFragmentBase {
 	 * @param rootView
 	 */
 	protected void buildButton( View rootView ) {
-		final Fragment fr = this;
+		final AddStudentsToTaskFragment fr = this;
 
 		Button btn = (Button) rootView.findViewById( R.id.BTN_newTask_verifyStudents );
 		btn.setOnClickListener( new View.OnClickListener() {
 
 			@Override
 			public void onClick( View v ) {
-				getFragmentManager().beginTransaction().remove( fr ).commit();
-
 				List<StudentTask> stdTasks = mTask.getAddedStudents();
 				Iterator<StudentTask> it = stdTasks.iterator();
 				StringBuffer sb = new StringBuffer();
@@ -116,6 +113,8 @@ public class AddStudentsToTaskFragment extends DialogFragmentBase {
 				Toast t = Toast.makeText( fr.getActivity(), msg, Toast.LENGTH_LONG );
 				DataHandler.GetInstance().commitStudentsTasks( mTask );
 				t.show();
+				
+				fr.finish();
 			}
 		} );
 
@@ -202,6 +201,7 @@ public class AddStudentsToTaskFragment extends DialogFragmentBase {
 				holder = new ViewHolder();
 				holder.studentIdent = (TextView) convertView.findViewById( R.id.TV_newTask_studentIdent );
 				holder.cBox = (CheckBox) convertView.findViewById( R.id.CB_newTask_addStudent );
+				holder.cBox.setOnCheckedChangeListener( this );
 
 				convertView.setTag( holder );
 			}
@@ -214,7 +214,6 @@ public class AddStudentsToTaskFragment extends DialogFragmentBase {
 			holder.studentIdent.setText( text );
 
 			holder.cBox.setTag( std );
-			holder.cBox.setOnCheckedChangeListener( this );
 
 			return convertView;
 		}

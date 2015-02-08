@@ -145,7 +145,7 @@ public class TaskActivity extends BaseTabActivity {
 
 	/**
 	 * Adds a class to the {@link Task}. The fragment started will only show the
-	 * available
+	 * available classes, the ones the system has installed.
 	 */
 	private void addClass() {
 		Bundle args = new Bundle();
@@ -155,7 +155,11 @@ public class TaskActivity extends BaseTabActivity {
 	}
 
 	/**
+     * Adds a student to the Task.
      * 
+     * <p>
+     * Uses the {@link AddStudentsToTaskFragment} to add any students
+     * that the task has either deleted, or not added.
      */
 	private void addStudent() {
 		Bundle args = new Bundle();
@@ -557,13 +561,9 @@ public class TaskActivity extends BaseTabActivity {
 			holder.imgInfoView.setOnClickListener( new View.OnClickListener() {
 
 				@Override
-				public void onClick( View v ) {
-					Intent intent = new Intent( getContext(), StdInfoActivity.class );
-
+				public void onClick( View v ) {					
 					StudentTask stdTask = (StudentTask) v.getTag();
-					BaseActivity.putIdentExtra( stdTask.getStudent(), intent );
-
-					getContext().startActivity( intent );
+					StdInfoActivity.StartActivity( getContext(), stdTask.getStudent() );
 				}
 			} );
 

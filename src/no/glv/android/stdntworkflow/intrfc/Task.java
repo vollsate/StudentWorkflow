@@ -429,20 +429,20 @@ public interface Task extends Serializable {
 	 */
 	public static interface OnTaskChangeListener {
 
-		public static final int MODE_DATE_CHANGE = 2;
-		public static final int MODE_NAME_CHANGE = 4;
-		public static final int MODE_DESC_CHANGE = 8;
+		public static final int MODE_DATE_CHANGE = 101;
+		public static final int MODE_NAME_CHANGE = 102;
+		public static final int MODE_DESC_CHANGE = 103;
 
-		public static final int MODE_STD_ADD = 16;
-		public static final int MODE_STD_DEL = 32;
-		public static final int MODE_STD_UPD = 64;
-		public static final int MODE_STD_HANDIN = 128;
+		public static final int MODE_STD_ADD = 104;
+		public static final int MODE_STD_DEL = 105;
+		public static final int MODE_STD_UPD = 106;
+		public static final int MODE_STD_HANDIN = 107;
 
-		public static final int MODE_CLS_ADD = 128;
-		public static final int MODE_CLS_DEL = 264;
-		public static final int MODE_CLS_UPD = 512;
+		public static final int MODE_CLS_ADD = 108;
+		public static final int MODE_CLS_DEL = 109;
+		public static final int MODE_CLS_UPD = 110;
 		
-		public static final int MODE_TASK_SORT = 1024;
+		public static final int MODE_TASK_SORT = 111;
 
 		/**
 		 * A callback method to inform that a task has changed in's state

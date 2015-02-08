@@ -191,7 +191,8 @@ public class ExcelReader extends AsyncTask<Void, Integer, List<String>> {
 		// No parent will be loaded!
 		if ( cell == null ) return null;
 		
-		Parent p = new ParentBean( ident, type );
+		Parent p = new ParentBean( null, type );
+		p.setStudentID( ident );
 		p.setLastName( cell.getStringCellValue() );
 		p.setFirstName( row.nextCell().getStringCellValue() );
 		

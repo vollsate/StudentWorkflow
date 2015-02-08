@@ -281,7 +281,6 @@ public class TaskImpl implements Task {
 		while ( it.hasNext() ) {
 			removeStudent( it.next().getIdent() );
 		}
-
 	}
 
 	@Override
@@ -294,6 +293,7 @@ public class TaskImpl implements Task {
 		removedStudents.add( studentsMapPending.remove( ident ) );
 
 		mStdCount--;
+		mModified = true;
 		return true;
 	}
 
@@ -358,7 +358,7 @@ public class TaskImpl implements Task {
 			addedStudents = new LinkedList<StudentTask>();
 		addedStudents.add( stdTask );
 
-		notifyChange();
+//		notifyChange();
 
 		mModified = true;
 		mStdCount++;

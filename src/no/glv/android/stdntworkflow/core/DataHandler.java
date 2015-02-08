@@ -100,7 +100,6 @@ public class DataHandler {
 	// Listeners
 	private HashMap<String, OnTasksChangedListener> taskChangeListeners;
 	private HashMap<String, OnStudentClassChangeListener> stdClassChangeListeners;
-	private HashMap<String, OnStudentChangedListener> stdChangeListeners;
 
 	/**
 	 * 
@@ -183,13 +182,13 @@ public class DataHandler {
 			initSubjectTypes();
 			sManager.setBoolPref( PREF_SUBJECTTYPE, true );
 		}
-		
+
 		cleanupDB();
 	}
-	
+
 	public void cleanupDB() {
 		db.cleanupDB();
-		
+
 	}
 
 	/**
@@ -213,7 +212,6 @@ public class DataHandler {
 	 */
 	private void initiateListeners() {
 		stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
-		stdChangeListeners = new HashMap<String, DataHandler.OnStudentChangedListener>( 2 );
 		taskChangeListeners = new HashMap<String, DataHandler.OnTasksChangedListener>( 2 );
 	}
 
@@ -277,7 +275,7 @@ public class DataHandler {
 		for ( StudentTask stdTask : stdTasks ) {
 			stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
 			stdTask.setTaskName( task.getName() );
-			
+
 			String stdClass = stdTask.getStudent().getStudentClass();
 			task.addClassName( stdClass );
 		}
@@ -380,7 +378,7 @@ public class DataHandler {
 			for ( Task t : tasks ) {
 				List<StudentTask> list = db.loadStudentsInTask( t );
 				setUpStudentTask( t, list );
-				
+
 				sts.addAll( list );
 			}
 			writer.addStudentTasks( db.loadAllStudentTask() );
@@ -486,65 +484,6 @@ public class DataHandler {
 		}
 
 		return retVal > 0;
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	private void notifyStudentChagnge( Student std, int mode ) {
-		Iterator<OnStudentChangedListener> it = stdChangeListeners.values().iterator();
-		while ( it.hasNext() ) {
-			it.next().onStudentChange( std, mode );
-		}
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	public void notifyStudentUpdate( Student std ) {
-		notifyStudentChagnge( std, OnStudentChangedListener.MODE_UPD );
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	public void notifyStudentDelete( Student std ) {
-		notifyStudentChagnge( std, OnStudentChangedListener.MODE_DEL );
-	}
-
-	/**
-	 * 
-	 * @param std
-	 */
-	public void notifyStudenAdd( Student std ) {
-		notifyStudentChagnge( std, OnStudentChangedListener.MODE_ADD );
-	}
-
-	/**
-	 * TODO: Should use only the class instance instead of class name
-	 * 
-	 * @param listener
-	 */
-	public void addOnStudentChangeListener( OnStudentChangedListener listener ) {
-		// Remove before we put
-		removeOnStudentChangeListener( listener );
-
-		String name = listener.getClass().getName();
-		stdChangeListeners.put( name, listener );
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void removeOnStudentChangeListener( OnStudentChangedListener listener ) {
-		String name = listener.getClass().getName();
-
-		if ( stdChangeListeners.containsKey( name ) )
-			stdChangeListeners.remove( name );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -814,13 +753,13 @@ public class DataHandler {
 
 		return this;
 	}
-	
+
 	public void handInTask( Task t, StudentTask st, boolean handin ) {
 		if ( handin )
 			t.handIn( st.getIdent() );
 		else
 			t.handIn( st.getIdent(), Task.HANDIN_CANCEL );
-		
+
 		updateTask( t, null );
 		notifyTaskChange( t, OnTasksChangedListener.MODE_UPD );
 	}
@@ -835,12 +774,12 @@ public class DataHandler {
 
 		if ( !db.updateTask( task ) )
 			throw new IllegalStateException( "Failed to update Task: " + task.getName() );
-		
+
 		if ( oldName != null ) {
 			tasks.remove( oldName );
 			tasks.put( task.getName(), task );
 		}
-		
+
 		return this;
 	}
 
@@ -1502,6 +1441,18 @@ public class DataHandler {
 	// --------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------------------------
 
+	/**
+	 * Listener that defines change to the DataHandler data set. The interfaces
+	 * will only be called when there is a change to the state of the
+	 * DataHandler, and not when there's a change to any intern state of an
+	 * instance.
+	 * 
+	 * <p>
+	 * The interfaces will be called when a new object is added or removed.
+	 * 
+	 * @author glevoll
+	 *
+	 */
 	public static interface OnChangeListener {
 		public static final int MODE_ADD = 1;
 		public static final int MODE_DEL = 2;
@@ -1518,16 +1469,6 @@ public class DataHandler {
 	public static interface OnTasksChangedListener extends OnChangeListener {
 
 		public void onTaskChange( int mode );
-	}
-
-	/**
-	 * 
-	 * @author GleVoll
-	 *
-	 */
-	public static interface OnStudentChangedListener extends OnChangeListener {
-
-		public void onStudentChange( Student std, int mode );
 	}
 
 	/**

@@ -7,7 +7,6 @@ import java.util.List;
 import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DataHandler.OnStudentChangedListener;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
 import no.glv.android.stdntworkflow.intrfc.Student;
@@ -31,12 +30,12 @@ import android.widget.Toast;
 /**
  * This activity will show all the students in a certain class.
  * 
- * The activity should be able to: - Update the name of the class
+ * TODO: The activity should be able to: - Update the name of the class
  * 
  * @author GleVoll
  *
  */
-public class StdClassListActivity extends Activity implements OnClickListener, OnStudentChangedListener,
+public class StdClassListActivity extends Activity implements OnClickListener,
 		AdapterView.OnItemClickListener, OnVerifySendSMSListener {
 
 	private static final String TAG = StdClassListActivity.class.getSimpleName();
@@ -55,7 +54,6 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 	 */
 	public StdClassListActivity() {
 		dataHandler = DataHandler.GetInstance();
-		dataHandler.addOnStudentChangeListener( this );
 	}
 
 	@Override
@@ -94,11 +92,6 @@ public class StdClassListActivity extends Activity implements OnClickListener, O
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		update();
-	}
-
-	@Override
-	public void onStudentChange( Student std, int mode ) {
 		update();
 	}
 
