@@ -1,13 +1,10 @@
 package no.glv.android.stdntworkflow.core;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,12 +27,7 @@ import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
-import no.glv.android.stdntworkflow.sql.DBUtils;
 import no.glv.android.stdntworkflow.sql.Database;
-import no.glv.android.stdntworkflow.sql.ParentBean;
-import no.glv.android.stdntworkflow.sql.PhoneBean;
-import no.glv.android.stdntworkflow.sql.StudentBean;
-import no.glv.android.stdntworkflow.sql.StudentClassImpl;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
 import android.app.Application;
 import android.content.Context;
