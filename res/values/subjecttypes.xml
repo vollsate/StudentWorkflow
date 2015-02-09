@@ -5,9 +5,9 @@
     <string name="task_st_types_defaultDesc">Type oppgave</string>
 
     <string-array name="subjectTypes_titles">
+        <item>Tema</item>
         <item>Fag/ skole</item>
-        <item>Type</item>
-    </string-array>
+        </string-array>
     
     <string-array name="subjectTypes_values">
         <item>0</item>

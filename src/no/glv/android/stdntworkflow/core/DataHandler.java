@@ -29,6 +29,7 @@ import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import no.glv.android.stdntworkflow.sql.Database;
 import no.glv.android.stdntworkflow.sql.StudentTaskImpl;
+import no.glv.android.stdntworkflow.sql.SubjectTypeBean;
 import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
@@ -585,6 +586,14 @@ public class DataHandler {
 		}
 
 		throw new IllegalStateException( "Error loading SubjectType with ID: " + id );
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public SubjectType createSubjectType() {
+		return new SubjectTypeBean();
 	}
 
 	/**

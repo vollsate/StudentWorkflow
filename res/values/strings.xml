@@ -147,7 +147,7 @@
     <string name="subjectType.TV.new">Opprett ny</string>
     <string name="subjectType.TV.name">Navn</string>
     <string name="subjectType.TV.desc">Beskrivelse</string>
-    <string name="subjectType.TV.type">Tema</string>
+    <string name="subjectType.TV.type">Velg oppgavetype</string>
     <string name="subjectType.BTN.create">Opprett oppgavetype</string>
     
 </resources>
