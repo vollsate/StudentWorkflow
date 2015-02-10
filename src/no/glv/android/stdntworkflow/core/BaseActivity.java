@@ -103,11 +103,11 @@ public class BaseActivity extends Activity {
 	 * @param taskName
 	 * @param intent
 	 */
-	public static void PutTaskNameExtra( String taskName, Intent intent ) {
+	public static void PutTaskNameExtra( Integer taskName, Intent intent ) {
 		if ( intent == null )
 			return;
 
-		intent.putExtra( Task.EXTRA_TASKNAME, taskName );
+		intent.putExtra( Task.EXTRA_TASKNAME, taskName.intValue() );
 	}
 
 	/**
@@ -115,11 +115,11 @@ public class BaseActivity extends Activity {
 	 * @param intent
 	 * @return
 	 */
-	public static String GetTaskNameExtra( Intent intent ) {
+	public static Integer GetTaskNameExtra( Intent intent ) {
 		if ( intent == null )
 			return null;
 
-		return intent.getStringExtra( Task.EXTRA_TASKNAME );
+		return intent.getIntExtra( Task.EXTRA_TASKNAME, 0 );
 	}
 
 	/**

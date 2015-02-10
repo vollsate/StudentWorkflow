@@ -40,7 +40,7 @@ import android.widget.TextView;
  * @author GleVoll
  *
  */
-public class InstalledClassesFragment extends InstalledDataFragment implements OnStudentClassChangeListener {
+public class InstalledClassesFragment extends InstalledDataFragment<String> implements OnStudentClassChangeListener {
 
 	/**  */
 	public static final String INST_STATE_CLASS_NAMES = BaseValues.EXTRA_BASEPARAM + "names";

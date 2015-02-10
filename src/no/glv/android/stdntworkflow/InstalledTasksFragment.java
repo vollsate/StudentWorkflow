@@ -59,7 +59,7 @@ import android.widget.Toast;
  * @author GleVoll
  *
  */
-public class InstalledTasksFragment extends InstalledDataFragment implements OnTasksChangedListener,
+public class InstalledTasksFragment extends InstalledDataFragment<Integer> implements OnTasksChangedListener,
 		Task.OnTaskChangeListener {
 
 	/**  */
@@ -71,7 +71,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	private TaskViewConfig config;
 
 	/** A list of all the task names to display */
-	private ArrayList<String> taskNames;
+	private ArrayList<Integer> mTasks;
 
 	/** A list of the counters */
 	private List<TextView> mPendingCounters;
@@ -86,7 +86,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 		if ( savedInstanceState != null ) {
 			config = (TaskViewConfig) savedInstanceState.getSerializable( PARAM_CONFIG );
-			taskNames = savedInstanceState.getStringArrayList( INST_STATE_TASK_NAMES );
+			mTasks = savedInstanceState.getIntegerArrayList( INST_STATE_TASK_NAMES );
 		}
 		else {
 			config = (TaskViewConfig) getArguments().getSerializable( PARAM_CONFIG );
@@ -95,7 +95,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 
 		// Add a listener to every task, so we get informed when students hand
 		// in or is removed from the task itself.
-		for ( String name : taskNames ) {
+		for ( Integer name : mTasks ) {
 			Task t = dataHandler.getTask( name );
 			t.addOnTaskChangeListener( this );
 		}
@@ -111,9 +111,9 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	private void sortTaskNames() {
 		List<Task> tasks = dataHandler.getTasks( config.taskState );
 		Collections.sort( tasks, new DataComparator.TaskComparator( config.sortBy ) );
-		taskNames = new ArrayList<String>();
+		mTasks = new ArrayList<Integer>();
 		for ( Task t : tasks )
-			taskNames.add( t.getName() );
+			mTasks.add( t.getID() );
 	}
 
 	@Override
@@ -126,12 +126,12 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 		super.onSaveInstanceState( outState );
 
 		outState.putSerializable( PARAM_CONFIG, config );
-		outState.putStringArrayList( INST_STATE_TASK_NAMES, taskNames );
+		outState.putIntegerArrayList( INST_STATE_TASK_NAMES, mTasks );
 	}
 
 	@Override
 	public void onDestroy() {
-		for ( String name : taskNames ) {
+		for ( Integer name : mTasks ) {
 			Task t = dataHandler.getTask( name );
 			t.removeOnTaskChangeListener( this );
 		}
@@ -146,30 +146,31 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	}
 
 	@Override
-	public List<String> getNames() {
+	public List<Integer> getNames() {
 		if ( isModified() ) {
 			sortTaskNames();
 		}
 
-		return taskNames;
+		return mTasks;
 	}
 
 	@Override
 	public int getRowLayoutID() {
 		return R.layout.row_installed_task;
 	}
-
+	
 	@Override
-	protected View buildRow( final String name, int pos ) {
+	protected View buildRow( final Integer taskID, int pos ) {
 		ViewGroup vg = (ViewGroup) inflateView( getRowLayoutID() );
-		Task task = dataHandler.getTask( name );
+		Task task = dataHandler.getTask( taskID );
+		String name = dataHandler.getTaskDisplayName( task );
 
 		LinearLayout ll = (LinearLayout) vg.findViewById( R.id.LL_task_rowData );
 		ll.setOnClickListener( new View.OnClickListener() {
 
 			@Override
 			public void onClick( View v ) {
-				Intent intent = createIntent( name, getActivity() );
+				Intent intent = createIntent( taskID, getActivity() );
 				if ( intent != null )
 					startActivity( intent );
 			}
@@ -280,7 +281,7 @@ public class InstalledTasksFragment extends InstalledDataFragment implements OnT
 	}
 
 	@Override
-	public Intent createIntent( String name, Context context ) {
+	public Intent createIntent( Integer name, Context context ) {
 		return TaskActivity.CreateActivityIntent( name, context );
 	}
 

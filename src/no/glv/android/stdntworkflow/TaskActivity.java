@@ -103,7 +103,7 @@ public class TaskActivity extends BaseTabActivity {
 		return R.id.VP_task_pager;
 	}
 
-	String getTaskName() {
+	Integer getTaskName() {
 		return GetTaskNameExtra( getIntent() );
 	}
 
@@ -135,6 +135,7 @@ public class TaskActivity extends BaseTabActivity {
 
 			case R.id.task_action_close:
 				getDataHandler().closeTask( mTask );
+				finish();
 				return true;
 
 			default:
@@ -214,7 +215,7 @@ public class TaskActivity extends BaseTabActivity {
 		int iTyp = getDataHandler().convertTypeToID( type );
 
 		Date date = getDateFromString( newDate );
-		String oldName = mTask.getName();
+		int oldID = mTask.getID();
 
 		mTask.setName( newName );
 		mTask.setDescription( newDesc );
@@ -222,7 +223,7 @@ public class TaskActivity extends BaseTabActivity {
 		mTask.setSubject( iSub );
 		mTask.setType( iTyp );
 
-		getDataHandler().updateTask( mTask, oldName ).notifyTaskUpdate( mTask );
+		getDataHandler().updateTask( mTask, oldID ).notifyTaskUpdate( mTask );
 	}
 
 	@Override
@@ -352,7 +353,7 @@ public class TaskActivity extends BaseTabActivity {
 		 */
 		protected Task getTask() {
 			if ( task == null ) {
-				String taskName = ( (TaskActivity) getBaseTabActivity() ).getTaskName();
+				Integer taskName = ( (TaskActivity) getBaseTabActivity() ).getTaskName();
 				task = getDataHandler().getTask( taskName );
 			}
 
@@ -665,9 +666,9 @@ public class TaskActivity extends BaseTabActivity {
 		return stdTasks;
 	}
 
-	static final Intent CreateActivityIntent( String taskName, Context ctx ) {
+	static final Intent CreateActivityIntent( Integer taskName, Context ctx ) {
 		Intent intent = new Intent( ctx, TaskActivity.class );
-		BaseActivity.PutTaskNameExtra( taskName, intent );
+		PutTaskNameExtra( taskName, intent );
 
 		return intent;
 	}

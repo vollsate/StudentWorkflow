@@ -16,13 +16,13 @@ import android.view.ViewGroup;
  * @author GleVoll
  *
  */
-public abstract class InstalledDataFragment extends ViewGroupAdapter {
+public abstract class InstalledDataFragment<T> extends ViewGroupAdapter {
 
 	public static final String PARAM_CONFIG = BaseValues.EXTRA_BASEPARAM + "config";
 	
 	public abstract int getViewGruopLayoutID();
 
-	public abstract List<String> getNames();
+	public abstract List<T> getNames();
 
 	protected abstract DataConfig getConfig();
 		
@@ -34,19 +34,19 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 	 * @param rootView The root {@link ViewGroup} to add the individual rows to.
 	 */
 	protected void doCreateView( ViewGroup rootView ) {		
-		final List<String> list = getNames();
+		final List<T> list = getNames();
 
 		for ( int i = 0; i < list.size(); i++ ) {
 			if ( getConfig().showCount > 0 && i >= getConfig().showCount )
 				break;
-			String name = list.get( i );
+			T name = list.get( i );
 
 			View row = buildRow( name, i );
 			rootView.addView( row );
 		}
 	}
 
-	protected abstract View buildRow( final String name, int pos );
+	protected abstract View buildRow( final T name, int pos );
 
 	public abstract int getRowLayoutID();
 
@@ -57,7 +57,7 @@ public abstract class InstalledDataFragment extends ViewGroupAdapter {
 	 * @param context
 	 * @return
 	 */
-	public abstract Intent createIntent( String name, Context context );
+	public abstract Intent createIntent( T name, Context context );
 
 	/**
 	 * 

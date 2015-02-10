@@ -4,9 +4,8 @@ import java.util.Date;
 
 /**
  * Represents the bridge between the {@link Task} and the {@link Student}. A
- * StudentTask will
- * keep track of weather the student has executed the task, and at what date the
- * task was executed.
+ * StudentTask will keep track of weather the student has executed the task, and
+ * at what date the task was executed.
  * 
  * @author GleVoll
  *
@@ -22,12 +21,21 @@ public interface StudentTask {
 	/** The student handed in the task later than the expiration date */
 	public static final int MODE_LATE = 8;
 
+	/** PK in database */
 	public int getID();
 
-	public void setID( int id );
-
+	/**
+	 * Get the Student ID. This is the link to the {@link Student} instance
+	 * that is a member of this a task.
+	 * 
+	 * @return
+	 */
 	public String getIdent();
 
+	/**
+	 * The name of the task this Studenttask is a member of.
+	 * @return
+	 */
 	public String getTaskName();
 
 	public Date getHandInDate();
@@ -39,7 +47,7 @@ public interface StudentTask {
 	public void handIn( int mode );
 
 	public int getMode();
-	
+
 	public String getModeAsString();
 
 	public Student getStudent();
@@ -47,10 +55,9 @@ public interface StudentTask {
 	public void setStudent( Student std );
 
 	public void setTaskName( String name );
-	
+
 	public int getTaskID();
-	
-	
+
 	public void setTaskID( int id );
 
 	public String toSimpleString();

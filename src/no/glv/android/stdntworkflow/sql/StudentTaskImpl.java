@@ -69,7 +69,10 @@ public class StudentTaskImpl implements StudentTask {
 		return ID;
 	}
 
-	@Override
+	/**
+	 * Set the PK from the database
+	 * @param id
+	 */
 	public void setID( int id ) {
 		this.ID = id;
 	}

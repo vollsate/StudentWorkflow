@@ -215,7 +215,7 @@ public class NewTaskActivity extends BaseActivity implements OnClickListener, On
 		task.markAsCommitted();
 
 		String msg = getResources().getString( R.string.newTask_added_toast );
-		msg = msg.replace( "{task}", task.getName() );
+		msg = msg.replace( "{task}", getDataHandler().getTaskDisplayName( task ) );
 		Toast.makeText( this, msg, Toast.LENGTH_LONG ).show();
 
 		finish();

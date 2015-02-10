@@ -207,7 +207,7 @@ class StudentTaskTbl {
 	private static int InsertOneST( StudentTask task, SQLiteDatabase db ) {
 		long rowNum = db.insert( TBL_NAME, null, StudentTaskValues( task ) );
 
-		task.setID( (int) rowNum );
+		( (StudentTaskImpl)task).setID( (int) rowNum );
 		return (int) rowNum;
 	}
 

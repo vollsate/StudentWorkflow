@@ -99,7 +99,7 @@ public class TaskViewActivity extends BaseTabActivity {
 			iv.setImageDrawable( getResources().getDrawable( R.drawable.ic_task_off ) );
 		}
 
-		DataHandler.GetInstance().updateTask( t, null ).notifyTaskUpdate( t );
+		DataHandler.GetInstance().updateTask( t, 0 ).notifyTaskUpdate( t );
 
 	}
 

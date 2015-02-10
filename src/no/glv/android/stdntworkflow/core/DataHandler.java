@@ -80,7 +80,7 @@ public class DataHandler {
 	private TreeMap<String, StudentClass> stdClasses;
 
 	/** All the loaded tasks from the database */
-	private TreeMap<String, Task> tasks;
+	private TreeMap<Integer, Task> tasks;
 
 	private TreeMap<String, SubjectType> mTaskSubjects;
 	private TreeMap<String, SubjectType> mTaskTypes;
@@ -216,7 +216,7 @@ public class DataHandler {
 	 */
 	private void initiateMaps() {
 		stdClasses = new TreeMap<String, StudentClass>();
-		tasks = new TreeMap<String, Task>();
+		tasks = new TreeMap<Integer, Task>();
 
 		mTaskSubjects = new TreeMap<String, SubjectType>();
 		mTaskTypes = new TreeMap<String, SubjectType>();
@@ -248,7 +248,7 @@ public class DataHandler {
 
 			task.addStudentTasks( stdTasks );
 			task.markAsCommitted();
-			tasks.put( task.getName(), task );
+			tasks.put( Integer.valueOf( task.getID() ), task );
 		}
 
 		return list;
@@ -648,7 +648,12 @@ public class DataHandler {
 	 * @return A List of names of all the Tasks loaded
 	 */
 	public List<String> getTaskNames() {
-		return new ArrayList<String>( tasks.keySet() );
+		ArrayList<String> list = new ArrayList<String>( tasks.size() );
+		for ( Task t : tasks.values() ) {
+			list.add( t.getName() );
+		}
+		
+		return list;
 	}
 
 	/**
@@ -718,7 +723,19 @@ public class DataHandler {
 	 * @return The actual task, or NULL if not found
 	 */
 	public Task getTask( String name ) {
-		return tasks.get( name );
+		Task task = null;
+		for ( Task t : tasks.values() ) {
+			if ( t.getName().equalsIgnoreCase( name ) ) {
+				task = t;
+				break;
+			}	
+		}
+		
+		return task;
+	}
+	
+	public Task getTask( Integer id ) {
+		return tasks.get( id );
 	}
 
 	/**
@@ -739,19 +756,24 @@ public class DataHandler {
 		if ( task.getName() == null )
 			throw new NullPointerException( "Name of task cannot be NULL!" );
 
-		if ( tasks.containsKey( task.getName() ) )
-			throw new IllegalArgumentException( "Task " + task.getName()
-					+ " already exists" );
-
 		if ( db.insertTask( task ) ) {
 			List<StudentTask> stds = db.loadStudentsInTask( task );
 			setUpStudentTask( task, stds );
 			task.addStudentTasks( stds );
 
-			tasks.put( task.getName(), task );
+			tasks.put( Integer.valueOf( task.getID() ), task );
 		}
 
 		return this;
+	}
+	
+	public String getTaskDisplayName( Task task ) {
+		String name = task.getName();
+		if ( name == null || name.length() == 0 ) {
+			name = getSubjectType( task.getSubject() ).getName();
+		}
+
+		return name;
 	}
 
 	public void handInTask( Task t, StudentTask st ) {
@@ -768,15 +790,15 @@ public class DataHandler {
 	 * @param task
 	 * @param oldName
 	 */
-	public DataHandler updateTask( Task task, String oldName ) {
+	public DataHandler updateTask( Task task, Integer oldID ) {
 		Log.d( TAG, "Updating task: " + task.getName() );
 
 		if ( !db.updateTask( task ) )
 			throw new IllegalStateException( "Failed to update Task: " + task.getName() );
 
-		if ( oldName != null ) {
-			tasks.remove( oldName );
-			tasks.put( task.getName(), task );
+		if ( oldID != null ) {
+			tasks.remove( Integer.valueOf( oldID ) );
+			tasks.put( Integer.valueOf( task.getID() ), task );
 		}
 
 		return this;
