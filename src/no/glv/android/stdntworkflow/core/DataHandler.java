@@ -754,13 +754,12 @@ public class DataHandler {
 		return this;
 	}
 
-	public void handInTask( Task t, StudentTask st, boolean handin ) {
-		if ( handin )
+	public void handInTask( Task t, StudentTask st ) {
+		if ( ! st.isHandedIn() )
 			t.handIn( st.getIdent() );
 		else
 			t.handIn( st.getIdent(), Task.HANDIN_CANCEL );
 
-		updateTask( t, null );
 		notifyTaskChange( t, OnTasksChangedListener.MODE_UPD );
 	}
 

@@ -230,8 +230,18 @@ public class TaskImpl implements Task {
 				return false;
 		}
 
+		markAsUpdated( stdTask );
 		notifyChange( OnTaskChangeListener.MODE_STD_HANDIN );
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param st
+	 */
+	private void markAsUpdated( StudentTask st ) {
+		mModifiedStudents.put( st.getIdent(), st );
+		mModified = true;
 	}
 
 	@Override

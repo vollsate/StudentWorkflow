@@ -156,12 +156,12 @@ public class TaskActivity extends BaseTabActivity {
 	}
 
 	/**
-     * Adds a student to the Task.
-     * 
-     * <p>
-     * Uses the {@link AddStudentsToTaskFragment} to add any students
-     * that the task has either deleted, or not added.
-     */
+	 * Adds a student to the Task.
+	 * 
+	 * <p>
+	 * Uses the {@link AddStudentsToTaskFragment} to add any students that the
+	 * task has either deleted, or not added.
+	 */
 	private void addStudent() {
 		Bundle args = new Bundle();
 		args.putString( Task.EXTRA_TASKNAME, mTask.getName() );
@@ -384,7 +384,8 @@ public class TaskActivity extends BaseTabActivity {
 	// ------------------------------------------------------------------------
 
 	/**
-	 * A placeholder fragment containing a simple view.
+	 * Shows all the studens in this task. Will allow for adding, deletion and
+	 * hand in of students.
 	 */
 	public static class TaskClassesFragment extends BaseTabFragment {
 
@@ -409,14 +410,12 @@ public class TaskActivity extends BaseTabActivity {
 		@Override
 		public void onDestroy() {
 			mTask.removeOnTaskChangeListener( adapter );
-
 			super.onDestroy();
 		}
 
 		@Override
 		public void onResume() {
 			super.onResume();
-
 			adapter.setTask( mTask );
 		}
 
@@ -424,9 +423,6 @@ public class TaskActivity extends BaseTabActivity {
 		public void onSaveInstanceState( Bundle outState ) {
 			super.onSaveInstanceState( outState );
 			outState.putString( Task.EXTRA_TASKNAME, mTask.getName() );
-
-			// outState.putSerializable(
-			// StudentListAdapter.class.getSimpleName(), adapter );
 		}
 
 		@Override
@@ -562,7 +558,7 @@ public class TaskActivity extends BaseTabActivity {
 			holder.imgInfoView.setOnClickListener( new View.OnClickListener() {
 
 				@Override
-				public void onClick( View v ) {					
+				public void onClick( View v ) {
 					StudentTask stdTask = (StudentTask) v.getTag();
 					StdInfoActivity.StartActivity( getContext(), stdTask.getStudent() );
 				}
@@ -615,7 +611,7 @@ public class TaskActivity extends BaseTabActivity {
 					if ( stdTask.isHandedIn() == isChecked )
 						return;
 
-					DataHandler.GetInstance().handInTask( mTask, stdTask, isChecked );
+					DataHandler.GetInstance().handInTask( mTask, stdTask );
 				}
 			} );
 

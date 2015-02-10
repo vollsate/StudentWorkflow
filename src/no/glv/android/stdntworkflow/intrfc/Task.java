@@ -178,7 +178,15 @@ public interface Task extends Serializable {
 	public boolean handIn( String ident );
 
 	/**
-	 * Hand in a students task with a specific mode.
+	 * Hand in a students task with a specific mode. Any listener on the
+	 * task will be called. The possible modes of hand in are:
+	 * <ul>
+	 * <li>Task{@link #HANDIN_DATE}
+	 * <li>Task{@link #HANDIN_CANCEL}
+	 * </ul>
+	 * 
+	 * <p>
+	 * The system also has other hand in modes, but these are not yet implemented.
 	 * 
 	 * @param ident The student ID.
 	 * @param mode The mode.

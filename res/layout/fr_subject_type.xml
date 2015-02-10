@@ -88,9 +88,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:gravity="top"
                     android:background="@drawable/custom_edittext"
                     android:ellipsize="start"
+                    android:gravity="top"
                     android:hint="@string/subjectType.TV.desc"
                     android:minLines="2" />
             </LinearLayout>
@@ -126,6 +126,48 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/subjectType.BTN.create" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/TV.header2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/subjectType.TV.new" />
+
+            <TextView
+                style="@style/TV.std"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/subjectType.TV.new" />
+
+            <Spinner
+                android:id="@+id/SP.subjectType.installed"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:entries="@array/subjectTypes_titles"
+                android:gravity="top"
+                android:hint="@string/subjectType.TV.type"
+                android:spinnerMode="dialog" />
+
+            <!-- Fragment container for the systems installed subject types -->
+            <FrameLayout
+                android:id="@+id/subjectType.installed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Fragment container for the systems custom subject types -->
+            <FrameLayout
+                android:id="@+id/subjectType.custom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>
