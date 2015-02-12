@@ -7,6 +7,10 @@ import java.util.Date;
  * StudentTask will keep track of weather the student has executed the task, and
  * at what date the task was executed.
  * 
+ * <p>
+ * A comment may be useful if there are a specific message to remember about a
+ * certain hand in.
+ * 
  * @author GleVoll
  *
  */
@@ -21,12 +25,25 @@ public interface StudentTask {
 	/** The student handed in the task later than the expiration date */
 	public static final int MODE_LATE = 8;
 
+	/**
+	 * Gets the comment related to this students task.
+	 * 
+	 * @return
+	 */
+	public String getComment();
+
+	/**
+	 * 
+	 * @param comment The comment to set on this students task.
+	 */
+	public void setComment( String comment );
+
 	/** PK in database */
 	public int getID();
 
 	/**
-	 * Get the Student ID. This is the link to the {@link Student} instance
-	 * that is a member of this a task.
+	 * Get the Student ID. This is the link to the {@link Student} instance that
+	 * is a member of this a task.
 	 * 
 	 * @return
 	 */
@@ -34,6 +51,7 @@ public interface StudentTask {
 
 	/**
 	 * The name of the task this Studenttask is a member of.
+	 * 
 	 * @return
 	 */
 	public String getTaskName();

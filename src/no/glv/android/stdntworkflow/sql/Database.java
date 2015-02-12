@@ -105,17 +105,10 @@ public class Database extends SQLiteOpenHelper {
 		SubjectTypeTbl.DropTable( db );
 	}
 
+	/**
+	 * 
+	 */
 	public void cleanupDB() {
-		List<Task> tasks = TaskTbl.loadAllTasks( getReadableDatabase() );
-		List<String> names = StudentTaskTbl.FindAllTaskNames( getReadableDatabase() );
-
-		for ( Task t : tasks ) {
-			if ( names.contains( t.getName() ) ) {
-				names.remove( t.getName() );
-			}
-		}
-
-		
 	}
 
 	// --------------------------------------------------------------------------------------------------------

@@ -13,11 +13,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-class StudentTaskTbl {
+class StudentTaskTbl_orig {
 
-	private static final String TAG = StudentTaskTbl.class.getSimpleName();
+	private static final String TAG = StudentTaskTbl_orig.class.getSimpleName();
 
-	public static final String TBL_NAME = "stdntsk";
+	public static final String TBL_NAME = "nstdntsk";
 
 	public static final String COL_ID = "_ID";
 	public static final int COL_ID_ID = 0;
@@ -35,13 +35,7 @@ class StudentTaskTbl {
 	public static final String COL_MODE = "mode";
 	public static final int COL_MODE_ID = 4;
 
-	public static final String COL_COMMENT = "comment";
-	public static final int COL_COMMENT_ID = 5;
-
-	/**
-	 * 
-	 */
-	private StudentTaskTbl() {
+	private StudentTaskTbl_orig() {
 	}
 
 	/**
@@ -54,8 +48,7 @@ class StudentTaskTbl {
 				+ COL_TASK + " INTEGER NOT NULL, "
 				+ COL_IDENT + " TEXT NOT NULL, "
 				+ COL_DATE + " LONG, "
-				+ COL_MODE + " LONG NOT NULL, "
-				+ COL_COMMENT + " TEXT)";
+				+ COL_MODE + " LONG NOT NULL)";
 
 		Log.v( TAG, "Executing SQL: " + sql );
 		db.execSQL( sql );
@@ -73,9 +66,6 @@ class StudentTaskTbl {
 	}
 
 	/**
-	 * Loads all the unique task names stored in the database. 
-	 * 
-	 * <p>Used to keep track of the database.
 	 * 
 	 * @param db
 	 * @return
@@ -184,8 +174,6 @@ class StudentTaskTbl {
 		int id = cursor.getInt( COL_ID_ID );
 		int task = cursor.getInt( COL_TASK_ID );
 		String ident = cursor.getString( COL_IDENT_ID );
-		String comment = cursor.getString( COL_COMMENT_ID );
-		
 		long dateL = cursor.getLong( COL_DATE_ID );
 		int mode = cursor.getInt( COL_MODE_ID );
 		Date date = null;
@@ -194,7 +182,6 @@ class StudentTaskTbl {
 
 		StudentTaskImpl impl = new StudentTaskImpl( ident, task, mode, date );
 		impl.setID( id );
-		impl.setComment( comment );
 
 		return impl;
 	}
@@ -293,7 +280,6 @@ class StudentTaskTbl {
 		cv.put( COL_DATE, dateL );
 
 		cv.put( COL_MODE, task.getMode() );
-		cv.put( COL_COMMENT, task.getComment() );
 
 		return cv;
 	}

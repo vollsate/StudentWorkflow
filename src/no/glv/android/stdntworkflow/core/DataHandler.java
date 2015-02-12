@@ -175,12 +175,11 @@ public class DataHandler {
 			sManager.setBoolPref( PREF_SUBJECTTYPE, true );
 		}
 
-		cleanupDB();
+		//cleanupDB();
 	}
 
 	public void cleanupDB() {
-		db.cleanupDB();
-
+		//db.cleanupDB();
 	}
 
 	/**

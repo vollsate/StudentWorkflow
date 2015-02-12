@@ -21,7 +21,9 @@ public class StudentTaskImpl implements StudentTask {
 	private String mTask;
 	private String mIdent;
 	private Student student;
-	
+
+	private String mComment;
+
 	private int taskID;
 
 	/**
@@ -45,23 +47,39 @@ public class StudentTaskImpl implements StudentTask {
 		this( ident, -1, mode, date );
 		this.mTask = task;
 	}
-	
-	
+
+	/**
+	 * 
+	 * @param ident
+	 * @param task
+	 * @param mode
+	 * @param date
+	 */
 	public StudentTaskImpl( String ident, int task, int mode, Date date ) {
 		this.mIdent = ident;
 		this.taskID = task;
 		this.mode = mode;
 		this.handinDate = date;
 	}
-	
+
+	@Override
+	public String getComment() {
+		return mComment;
+	}
+
+	@Override
+	public void setComment( String comment ) {
+		mComment = comment;
+	}
+
 	@Override
 	public int getTaskID() {
 		return taskID;
 	}
-	
+
 	@Override
 	public void setTaskID( int id ) {
-		this.taskID = id;	
+		this.taskID = id;
 	}
 
 	@Override
@@ -71,6 +89,7 @@ public class StudentTaskImpl implements StudentTask {
 
 	/**
 	 * Set the PK from the database
+	 * 
 	 * @param id
 	 */
 	public void setID( int id ) {
@@ -142,7 +161,7 @@ public class StudentTaskImpl implements StudentTask {
 	public int getMode() {
 		return mode;
 	}
-	
+
 	@Override
 	public String getModeAsString() {
 		switch ( mode ) {

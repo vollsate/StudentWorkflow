@@ -38,7 +38,7 @@ public class SubjectTypesFragment extends BaseFragment {
 				
 				int id = h.spSubjType.getSelectedItemPosition() + 1;
 				switch ( id ) {
-					case SubjectType.TYPE_SUBJECT:						
+					case SubjectType.TYPE_SUBJECT:
 						break;
 
 					case SubjectType.TYPE_TYPE:
