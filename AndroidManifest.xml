@@ -42,6 +42,7 @@
         </activity>
         <activity
             android:name=".TaskActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_task"
             android:parentActivityName=".MainActivity" >
         </activity>
