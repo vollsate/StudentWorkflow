@@ -408,6 +408,7 @@ public class TaskActivity extends BaseTabActivity {
 			adapter.setTask( mTask );
 			// listView.setAdapter( adapter );
 			exListView.setAdapter( adapter );
+			exListView.setDescendantFocusability( ViewGroup.FOCUS_AFTER_DESCENDANTS );
 			return rootView;
 		}
 
