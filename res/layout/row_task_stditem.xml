@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/ET.task.stditem.comment"
+        style="@style/ET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_edittext"
+        android:gravity="start"
+        android:hint="Kommentar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:layout_marginTop="10dp">
+
+        <TextView
+            style="@style/TV.std.bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/task_date" />
+
+        <Button
+            android:id="@+id/BTN.task.date"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/task.marginLeft"
+            android:layout_marginStart="@dimen/task.marginLeft"
+            android:background="@drawable/calendar"
+            android:text="Button" />
+
+        <EditText
+            android:id="@+id/ET.task.stditem.date"
+            style="@style/ET.L"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/custom_edittext"
+            android:focusable="true"
+            android:inputType="text" 
+            android:hint="@string/task_date"/>
+    </LinearLayout>
+
+</LinearLayout>
