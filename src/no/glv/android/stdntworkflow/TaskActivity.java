@@ -1,6 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -34,13 +33,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -395,7 +396,8 @@ public class TaskActivity extends BaseTabActivity {
 
 		@Override
 		public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-			ListView listView = getListView( R.id.LV_task_students );
+			// ListView listView = getListView( R.id.LV_task_students );
+			ExpandableListView exListView = (ExpandableListView) rootView.findViewById( R.id.LV_task_students );
 			mTask = getDataHandler().getTask( ( (TaskActivity) getBaseTabActivity() ).getTaskName() );
 
 			if ( adapter == null ) {
@@ -404,7 +406,8 @@ public class TaskActivity extends BaseTabActivity {
 			}
 
 			adapter.setTask( mTask );
-			listView.setAdapter( adapter );
+			// listView.setAdapter( adapter );
+			exListView.setAdapter( adapter );
 			return rootView;
 		}
 
@@ -439,26 +442,24 @@ public class TaskActivity extends BaseTabActivity {
 	}
 
 	/**
+	 * The {@link ExpandableListAdapter} that shows the {@link StudentTask}s
+	 * that are involved in this {@link Task}.
 	 * 
 	 * @author GleVoll
 	 *
 	 */
-	static class StudentListAdapter extends ArrayAdapter<StudentTask> implements Serializable,
-			Task.OnTaskChangeListener {
-
-		/** TaskActivity.java */
-		private static final long serialVersionUID = 1L;
+	static class StudentListAdapter extends BaseExpandableListAdapter implements
+			Task.OnTaskChangeListener, OnDateSetListener {
 
 		private Task mTask;
+		private List<StudentTask> stList;
+		private Context mContext;
+
+		private ViewGroup parent;
 
 		public StudentListAdapter( Context ctx, List<StudentTask> stdList ) {
-			super( ctx, R.layout.row_task_stdlist, stdList );
-		}
-
-		@Override
-		protected void finalize() throws Throwable {
-			mTask.removeOnTaskChangeListener( this );
-			super.finalize();
+			this.stList = stdList;
+			mContext = ctx;
 		}
 
 		/**
@@ -467,7 +468,6 @@ public class TaskActivity extends BaseTabActivity {
 		 */
 		public void setTask( Task task ) {
 			this.mTask = task;
-			mTask.addOnTaskChangeListener( this );
 		}
 
 		@Override
@@ -475,7 +475,14 @@ public class TaskActivity extends BaseTabActivity {
 			update();
 		}
 
-		@Override
+		public StudentTask getItem( int pos ) {
+			return stList.get( pos );
+		}
+
+		public Context getContext() {
+			return mContext;
+		}
+
 		public View getView( int position, View convertView, ViewGroup parent ) {
 			StudentTask stdTask = getItem( position );
 			Student std = stdTask.getStudent();
@@ -630,8 +637,111 @@ public class TaskActivity extends BaseTabActivity {
 		 * 
 		 */
 		public void update() {
-			clear();
-			addAll( BuildStudentList( mTask ) );
+			stList.clear();
+			stList.addAll( BuildStudentList( mTask ) );
+			notifyDataSetChanged();
+		}
+
+		@Override
+		public int getGroupCount() {
+			return stList.size();
+		}
+
+		@Override
+		public int getChildrenCount( int groupPosition ) {
+			return 1;
+		}
+
+		@Override
+		public Object getGroup( int groupPosition ) {
+			return getItem( groupPosition );
+		}
+
+		@Override
+		public Object getChild( int groupPosition, int childPosition ) {
+			return getItem( groupPosition );
+		}
+
+		@Override
+		public long getGroupId( int groupPosition ) {
+			return groupPosition;
+		}
+
+		@Override
+		public long getChildId( int groupPosition, int childPosition ) {
+			return childPosition;
+		}
+
+		@Override
+		public boolean hasStableIds() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public View getGroupView( int groupPosition, boolean isExpanded, View convertView, ViewGroup parent ) {
+			View view = getView( groupPosition, convertView, parent );
+			return view;
+		}
+
+		@Override
+		public View getChildView( int groupPosition, int childPosition, boolean isLastChild, View convertView,
+				ViewGroup parent ) {
+
+			StudentTask st = getItem( groupPosition );
+			this.parent = parent;
+			final Task task = DataHandler.GetInstance().getTask( st.getTaskID() );
+
+			if ( convertView == null ) {
+				final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
+						Context.LAYOUT_INFLATER_SERVICE );
+				convertView = inflater.inflate( R.layout.row_task_stditem, parent, false );
+
+				Button btn = (Button) convertView.findViewById( R.id.BTN_task_date );
+				btn.setOnClickListener( new View.OnClickListener() {
+
+					@Override
+					public void onClick( View v ) {
+						DatePickerDialogHelper.OpenDatePickerDialog( task.getDate(), getContext(),
+								StudentListAdapter.this,
+								false, true );
+
+					}
+				} );
+
+			}
+
+			// Set the comment, if any
+			if ( st.getComment() != null && st.getComment().length() > 0 ) {
+				EditText etComment = (EditText) convertView.findViewById( R.id.ET_task_stditem_comment );
+				etComment.setText( st.getComment() );
+			}
+
+			// Set the date, if handed in
+			if ( st.isHandedIn() ) {
+				EditText etData = (EditText) convertView.findViewById( R.id.ET_task_stditem_date );
+				etData.setText( Utils.GetDateAsString( st.getHandInDate() ) );
+			}
+
+			return convertView;
+		}
+
+		public void onDateSet( DatePicker view, int year, int monthOfYear, int dayOfMonth ) {
+			Calendar cal = Calendar.getInstance();
+			cal.set( year, monthOfYear, dayOfMonth );
+			mTask.setDate( cal.getTime() );
+
+			// getEditText( R.id.ET_task_date ).setText(
+			// BaseActivity.GetDateAsString( task.getDate() ) );
+			EditText et = (EditText) parent.findViewById( R.id.ET_task_stditem_date );
+			et.setText( BaseActivity.GetDateAsString( mTask.getDate() ) );
+			mTask.notifyChange( OnTaskChangeListener.MODE_DATE_CHANGE );
+		}
+
+		@Override
+		public boolean isChildSelectable( int groupPosition, int childPosition ) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 
 	}

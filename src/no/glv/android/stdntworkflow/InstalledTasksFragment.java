@@ -307,7 +307,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
 	}
 	
 	@Override
-	public void onTaskChange( int mode ) {
+	public void onTasksChange( int mode ) {
 		switch ( mode ) {
 			case OnTaskChangeListener.MODE_TASK_SORT:
 				invalidateView();

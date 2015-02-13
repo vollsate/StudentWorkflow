@@ -1,5 +1,12 @@
 package no.glv.android.stdntworkflow.intrfc;
 
+/**
+ * Represents a phone number. There are three diffent types of numbers: home
+ * number, work and mobile.
+ * 
+ * @author glevoll
+ *
+ */
 public interface Phone {
 
 	public static final int MOBIL = 1;

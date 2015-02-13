@@ -2,6 +2,17 @@ package no.glv.android.stdntworkflow.intrfc;
 
 import java.util.List;
 
+/**
+ * Represents a students parent. A parent has a name, mail and one or more
+ * {@link Phone} numbers.
+ * 
+ * <p>
+ * The app distinguishes between primary and secondary parent through the
+ * {@link #getType()} function.
+ * 
+ * @author glevoll
+ *
+ */
 public interface Parent {
 
 	public static final int PRIMARY = 1;

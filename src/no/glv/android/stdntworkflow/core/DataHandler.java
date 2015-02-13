@@ -175,11 +175,11 @@ public class DataHandler {
 			sManager.setBoolPref( PREF_SUBJECTTYPE, true );
 		}
 
-		//cleanupDB();
+		// cleanupDB();
 	}
 
 	public void cleanupDB() {
-		//db.cleanupDB();
+		// db.cleanupDB();
 	}
 
 	/**
@@ -586,7 +586,7 @@ public class DataHandler {
 
 		throw new IllegalStateException( "Error loading SubjectType with ID: " + id );
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -651,7 +651,7 @@ public class DataHandler {
 		for ( Task t : tasks.values() ) {
 			list.add( t.getName() );
 		}
-		
+
 		return list;
 	}
 
@@ -727,12 +727,12 @@ public class DataHandler {
 			if ( t.getName().equalsIgnoreCase( name ) ) {
 				task = t;
 				break;
-			}	
+			}
 		}
-		
+
 		return task;
 	}
-	
+
 	public Task getTask( Integer id ) {
 		return tasks.get( id );
 	}
@@ -765,7 +765,7 @@ public class DataHandler {
 
 		return this;
 	}
-	
+
 	public String getTaskDisplayName( Task task ) {
 		String name = task.getName();
 		if ( name == null || name.length() == 0 ) {
@@ -776,7 +776,7 @@ public class DataHandler {
 	}
 
 	public void handInTask( Task t, StudentTask st ) {
-		if ( ! st.isHandedIn() )
+		if ( !st.isHandedIn() )
 			t.handIn( st.getIdent() );
 		else
 			t.handIn( st.getIdent(), Task.HANDIN_CANCEL );
@@ -894,7 +894,7 @@ public class DataHandler {
 	public void notifyTaskSettingsChange() {
 		Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() ) {
-			it.next().onTaskChange( OnTaskChangeListener.MODE_TASK_SORT );
+			it.next().onTasksChange( OnTaskChangeListener.MODE_TASK_SORT );
 		}
 	}
 
@@ -908,7 +908,7 @@ public class DataHandler {
 
 		Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
 		while ( it.hasNext() )
-			it.next().onTaskChange( mode );
+			it.next().onTasksChange( mode );
 	}
 
 	/**
@@ -1147,6 +1147,7 @@ public class DataHandler {
 	public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
 		return null;
 	}
+
 	/**
 	 * 
 	 * @param bean
@@ -1299,13 +1300,23 @@ public class DataHandler {
 	}
 
 	/**
+	 * Used as a callback by the {@link DataHandler} when there is a change to
+	 * the set of loaded tasks. Use the {@link Task.OnTaskChangeListener} to
+	 * get a callback for an specific {@link Task} instance.
+	 * 
+	 * <p>
+	 * Called when a task is added, deleted og closed, or opened.
 	 * 
 	 * @author GleVoll
 	 *
 	 */
 	public static interface OnTasksChangedListener extends OnChangeListener {
 
-		public void onTaskChange( int mode );
+		/**
+		 * 
+		 * @param mode 
+		 */
+		public void onTasksChange( int mode );
 	}
 
 	/**

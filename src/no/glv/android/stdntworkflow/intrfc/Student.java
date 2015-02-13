@@ -2,6 +2,13 @@ package no.glv.android.stdntworkflow.intrfc;
 
 import java.util.List;
 
+/**
+ * Represents a student. A student is a member of a class, and involved in
+ * one or more {@link Task}s.
+ * 
+ * @author glevoll
+ *
+ */
 public interface Student {
 
 	public static final String EXTRA_IDENT = BaseValues.EXTRA_BASEPARAM + "Ident";
