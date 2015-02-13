@@ -111,9 +111,10 @@ public final class R {
         public static final int navdrawer_list_selector=0x7f020027;
         public static final int ok=0x7f020028;
         public static final int row_stdinfo=0x7f020029;
-        public static final int student=0x7f02002a;
-        public static final int task_on_off=0x7f02002b;
-        public static final int textview_bg_line=0x7f02002c;
+        public static final int save=0x7f02002a;
+        public static final int student=0x7f02002b;
+        public static final int task_on_off=0x7f02002c;
+        public static final int textview_bg_line=0x7f02002d;
     }
     public static final class id {
         public static final int BTN_info_update=0x7f0b0069;
@@ -131,7 +132,7 @@ public final class R {
         public static final int BTN_task_update=0x7f0b0081;
         public static final int CB_newTask_addClass=0x7f0b008f;
         public static final int CB_newTask_addStudent=0x7f0b0091;
-        public static final int CB_task_stdlist=0x7f0b0097;
+        public static final int CB_task_stdlist=0x7f0b009a;
         public static final int ET_info_LastName=0x7f0b003c;
         public static final int ET_info_adr=0x7f0b0042;
         public static final int ET_info_birth=0x7f0b0040;
@@ -157,6 +158,8 @@ public final class R {
         public static final int ET_task_date=0x7f0b007c;
         public static final int ET_task_desc=0x7f0b0075;
         public static final int ET_task_name=0x7f0b0072;
+        public static final int ET_task_stditem_comment=0x7f0b0098;
+        public static final int ET_task_stditem_date=0x7f0b0099;
         public static final int FR_allTasks_container=0x7f0b0029;
         public static final int FR_closedTasks_container=0x7f0b002a;
         public static final int FR_installedClasses_container=0x7f0b001e;
@@ -173,6 +176,7 @@ public final class R {
         public static final int IV_info_work_p1call=0x7f0b0054;
         public static final int IV_info_work_p2call=0x7f0b0065;
         public static final int IV_task_openOrClosed=0x7f0b008b;
+        public static final int IV_task_stditem_save=0x7f0b0097;
         public static final int LL_classList_rowData=0x7f0b0086;
         public static final int LL_installedClasses=0x7f0b0017;
         public static final int LL_installedTasks=0x7f0b001b;
@@ -225,7 +229,7 @@ public final class R {
         public static final int TV_installedTasks=0x7f0b001f;
         public static final int TV_loadClassHeader=0x7f0b002d;
         public static final int TV_loadData_fileName=0x7f0b008e;
-        public static final int TV_main_taskName=0x7f0b009e;
+        public static final int TV_main_taskName=0x7f0b00a1;
         public static final int TV_maininfo=0x7f0b001d;
         public static final int TV_newTask_className=0x7f0b0090;
         public static final int TV_newTask_date=0x7f0b0008;
@@ -247,38 +251,38 @@ public final class R {
         public static final int TV_task_header=0x7f0b006f;
         public static final int TV_task_name=0x7f0b0071;
         public static final int TV_task_pendingCount=0x7f0b007f;
-        public static final int TV_task_stdlist_class=0x7f0b009a;
-        public static final int TV_task_stdlist_handinDate=0x7f0b009d;
-        public static final int TV_task_stdlist_ident=0x7f0b0099;
-        public static final int TV_task_stdlist_name=0x7f0b0098;
+        public static final int TV_task_stdlist_class=0x7f0b009d;
+        public static final int TV_task_stdlist_handinDate=0x7f0b00a0;
+        public static final int TV_task_stdlist_ident=0x7f0b009c;
+        public static final int TV_task_stdlist_name=0x7f0b009b;
         public static final int TV_task_studentCount=0x7f0b007e;
         public static final int VP_stdInfo_pager=0x7f0b000d;
         public static final int VP_task_pager=0x7f0b0010;
         public static final int VP_taskview_pager=0x7f0b0011;
-        public static final int action_settings=0x7f0b009f;
-        public static final int action_std_upd=0x7f0b00a5;
+        public static final int action_settings=0x7f0b00a2;
+        public static final int action_std_upd=0x7f0b00a8;
         public static final int activity_main=0x7f0b001c;
         public static final int checkBox1=0x7f0b0012;
         public static final int checkBox2=0x7f0b0013;
         public static final int container=0x7f0b0000;
         public static final int counter=0x7f0b0085;
-        public static final int delete=0x7f0b009c;
+        public static final int delete=0x7f0b009f;
         public static final int drawer_layout=0x7f0b0001;
         public static final int frame_container=0x7f0b0002;
         public static final int icon=0x7f0b0083;
-        public static final int info=0x7f0b009b;
+        public static final int info=0x7f0b009e;
         public static final int list_slidermenu=0x7f0b0003;
-        public static final int menu_deleteClass=0x7f0b00a0;
-        public static final int menu_listDB=0x7f0b00a4;
-        public static final int menu_newTask=0x7f0b00a1;
-        public static final int menu_overflow=0x7f0b00a2;
-        public static final int menu_resetDB=0x7f0b00a3;
-        public static final int menu_stdList_sort=0x7f0b00a6;
-        public static final int menu_stdList_sort_firstNameAsc=0x7f0b00a8;
-        public static final int menu_stdList_sort_lastNameAsc=0x7f0b00a7;
-        public static final int menu_stdlist_delete=0x7f0b00ab;
-        public static final int menu_stdlist_mail=0x7f0b00aa;
-        public static final int menu_stdlist_sms=0x7f0b00a9;
+        public static final int menu_deleteClass=0x7f0b00a3;
+        public static final int menu_listDB=0x7f0b00a7;
+        public static final int menu_newTask=0x7f0b00a4;
+        public static final int menu_overflow=0x7f0b00a5;
+        public static final int menu_resetDB=0x7f0b00a6;
+        public static final int menu_stdList_sort=0x7f0b00a9;
+        public static final int menu_stdList_sort_firstNameAsc=0x7f0b00ab;
+        public static final int menu_stdList_sort_lastNameAsc=0x7f0b00aa;
+        public static final int menu_stdlist_delete=0x7f0b00ae;
+        public static final int menu_stdlist_mail=0x7f0b00ad;
+        public static final int menu_stdlist_sms=0x7f0b00ac;
         public static final int section_label=0x7f0b002c;
         public static final int student_listview=0x7f0b000e;
         public static final int subjectType_custom=0x7f0b0028;
@@ -287,11 +291,11 @@ public final class R {
         public static final int tab2=0x7f0b006a;
         public static final int tab3=0x7f0b006b;
         public static final int task=0x7f0b0095;
-        public static final int task_action_Delete=0x7f0b00ad;
-        public static final int task_action_Update=0x7f0b00ac;
-        public static final int task_action_addClass=0x7f0b00af;
-        public static final int task_action_addStudent=0x7f0b00ae;
-        public static final int task_action_close=0x7f0b00b0;
+        public static final int task_action_Delete=0x7f0b00b0;
+        public static final int task_action_Update=0x7f0b00af;
+        public static final int task_action_addClass=0x7f0b00b2;
+        public static final int task_action_addStudent=0x7f0b00b1;
+        public static final int task_action_close=0x7f0b00b3;
         public static final int title=0x7f0b0084;
     }
     public static final class layout {
@@ -334,9 +338,10 @@ public final class R {
         public static final int row_newtask_addclasses=0x7f030024;
         public static final int row_newtask_students=0x7f030025;
         public static final int row_stdclass_list=0x7f030026;
-        public static final int row_task_stdlist=0x7f030027;
-        public static final int row_tasks_list=0x7f030028;
-        public static final int stdinfo_tab_stdinfo=0x7f030029;
+        public static final int row_task_stditem=0x7f030027;
+        public static final int row_task_stdlist=0x7f030028;
+        public static final int row_tasks_list=0x7f030029;
+        public static final int stdinfo_tab_stdinfo=0x7f03002a;
     }
     public static final class menu {
         public static final int global=0x7f0a0000;
@@ -377,18 +382,18 @@ public final class R {
          */
         public static final int app_name=0x7f080002;
         public static final int cancel=0x7f080001;
-        public static final int cat_classlist_sortBy_title=0x7f08008d;
-        public static final int cat_classlist_sortBy_title_desc=0x7f08008e;
-        public static final int cat_mainView_showExpiredDate_desc=0x7f080093;
-        public static final int cat_main_googleAccount_title=0x7f08008c;
-        public static final int cat_main_googleAccount_title_desc=0x7f08008b;
-        public static final int cat_main_googleAccount_value=0x7f08008a;
+        public static final int cat_classlist_sortBy_title=0x7f08008e;
+        public static final int cat_classlist_sortBy_title_desc=0x7f08008f;
+        public static final int cat_mainView_showExpiredDate_desc=0x7f080094;
+        public static final int cat_main_googleAccount_title=0x7f08008d;
+        public static final int cat_main_googleAccount_title_desc=0x7f08008c;
+        public static final int cat_main_googleAccount_value=0x7f08008b;
         /**  CAT MAIN VIEW 
          */
-        public static final int cat_mainview_header=0x7f080091;
-        public static final int cat_mainview_showexpireddate=0x7f080092;
-        public static final int cat_task_sortBy_title=0x7f08008f;
-        public static final int cat_task_sortBy_title_desc=0x7f080090;
+        public static final int cat_mainview_header=0x7f080092;
+        public static final int cat_mainview_showexpireddate=0x7f080093;
+        public static final int cat_task_sortBy_title=0x7f080090;
+        public static final int cat_task_sortBy_title_desc=0x7f080091;
         public static final int def=0x7f080003;
         public static final int hello_world=0x7f08003a;
         public static final int info_desc=0x7f080020;
@@ -414,27 +419,27 @@ public final class R {
         public static final int newTask_header=0x7f080049;
         public static final int newTask_name=0x7f08004a;
         public static final int ok=0x7f080000;
-        public static final int pref_default_display_name=0x7f080080;
-        public static final int pref_description_social_recommendations=0x7f08007e;
+        public static final int pref_default_display_name=0x7f080081;
+        public static final int pref_description_social_recommendations=0x7f08007f;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f080082;
+        public static final int pref_header_data_sync=0x7f080083;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f08007c;
+        public static final int pref_header_general=0x7f08007d;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f080085;
-        public static final int pref_ringtone_silent=0x7f080088;
-        public static final int pref_title_add_friends_to_messages=0x7f080081;
-        public static final int pref_title_display_name=0x7f08007f;
-        public static final int pref_title_new_message_notifications=0x7f080086;
-        public static final int pref_title_ringtone=0x7f080087;
-        public static final int pref_title_social_recommendations=0x7f08007d;
-        public static final int pref_title_sync_frequency=0x7f080083;
-        public static final int pref_title_system_sync_settings=0x7f080084;
-        public static final int pref_title_vibrate=0x7f080089;
+        public static final int pref_header_notifications=0x7f080086;
+        public static final int pref_ringtone_silent=0x7f080089;
+        public static final int pref_title_add_friends_to_messages=0x7f080082;
+        public static final int pref_title_display_name=0x7f080080;
+        public static final int pref_title_new_message_notifications=0x7f080087;
+        public static final int pref_title_ringtone=0x7f080088;
+        public static final int pref_title_social_recommendations=0x7f08007e;
+        public static final int pref_title_sync_frequency=0x7f080084;
+        public static final int pref_title_system_sync_settings=0x7f080085;
+        public static final int pref_title_vibrate=0x7f08008a;
         public static final int stdInfo_adr=0x7f080039;
         public static final int stdInfo_birth=0x7f080038;
         public static final int stdInfo_call_desc=0x7f080046;
@@ -472,15 +477,15 @@ public final class R {
         public static final int stdlist_menu_sort_firstname_asc=0x7f080024;
         public static final int stdlist_menu_sort_lastname_asc=0x7f080023;
         public static final int students=0x7f080010;
-        public static final int subjectType_BTN_create=0x7f08007a;
-        public static final int subjectType_TV_desc=0x7f080078;
-        public static final int subjectType_TV_name=0x7f080077;
-        public static final int subjectType_TV_new=0x7f080076;
-        public static final int subjectType_TV_type=0x7f080079;
-        public static final int subjectType_info=0x7f080075;
+        public static final int subjectType_BTN_create=0x7f08007b;
+        public static final int subjectType_TV_desc=0x7f080079;
+        public static final int subjectType_TV_name=0x7f080078;
+        public static final int subjectType_TV_new=0x7f080077;
+        public static final int subjectType_TV_type=0x7f08007a;
+        public static final int subjectType_info=0x7f080076;
         /**  SUBJECT TYPES 
          */
-        public static final int subjectType_title=0x7f080074;
+        public static final int subjectType_title=0x7f080075;
         public static final int task_delete_msg=0x7f080054;
         public static final int task_delete_title=0x7f080055;
         public static final int task_class_added=0x7f08006b;
@@ -503,10 +508,11 @@ public final class R {
         public static final int task_name=0x7f080058;
         public static final int task_pending=0x7f080063;
         public static final int task_pending_count=0x7f080067;
-        public static final int task_st_subjects_defaultDesc=0x7f080098;
-        public static final int task_st_types_defaultDesc=0x7f080099;
+        public static final int task_st_subjects_defaultDesc=0x7f080099;
+        public static final int task_st_types_defaultDesc=0x7f08009a;
         public static final int task_std_delete_msg=0x7f080060;
         public static final int task_std_delete_title=0x7f08005f;
+        public static final int task_stditem_saved=0x7f080074;
         public static final int task_student_added=0x7f08006a;
         public static final int task_student_count=0x7f080066;
         public static final int task_student_deleted=0x7f080069;
@@ -516,13 +522,13 @@ public final class R {
         public static final int task_tab_section2=0x7f080062;
         public static final int task_title=0x7f080056;
         public static final int task_type=0x7f08005b;
-        public static final int taskview_tab_close_title=0x7f080096;
-        public static final int taskview_tab_expire_title=0x7f080097;
-        public static final int taskview_tab_open_title=0x7f080095;
-        public static final int taskview_title=0x7f080094;
+        public static final int taskview_tab_close_title=0x7f080097;
+        public static final int taskview_tab_expire_title=0x7f080098;
+        public static final int taskview_tab_open_title=0x7f080096;
+        public static final int taskview_title=0x7f080095;
         public static final int title_activity_home=0x7f08006d;
         public static final int title_activity_new_task=0x7f08001c;
-        public static final int title_activity_settings=0x7f08007b;
+        public static final int title_activity_settings=0x7f08007c;
         public static final int title_activity_task=0x7f08003b;
         public static final int title_section1=0x7f08006e;
         public static final int title_section2=0x7f08006f;

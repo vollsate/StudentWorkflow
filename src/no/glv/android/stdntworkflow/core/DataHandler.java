@@ -804,15 +804,20 @@ public class DataHandler {
 	}
 
 	/**
+	 * Deletes a {@link Task} from the systems DB. After deletion, the system
+	 * will notify through the {@link DataHandler.OnTasksChangedListener} with
+	 * the flag {@link OnTasksChangedListener#MODE_DEL}.
 	 * 
-	 * @param name
-	 * @return
+	 * <p>Any students engaged in this task, will automatically be deleted.
+	 * 
+	 * @param task The {@link Task} instance to delete.
+	 * @return <tt>TRUE</tt> if successful.
 	 */
 	public boolean deleteTask( Task task ) {
 		if ( db.deleteTask( task ) ) {
 			db.deleteStudentTasks( task.getStudentsInTask() );
 
-			tasks.remove( task.getName() );
+			tasks.remove( task.getID() );
 			notifyTaskDelete( task );
 			return true;
 		}
@@ -1301,8 +1306,8 @@ public class DataHandler {
 
 	/**
 	 * Used as a callback by the {@link DataHandler} when there is a change to
-	 * the set of loaded tasks. Use the {@link Task.OnTaskChangeListener} to
-	 * get a callback for an specific {@link Task} instance.
+	 * the set of loaded tasks. Use the {@link Task.OnTaskChangeListener} to get
+	 * a callback for an specific {@link Task} instance.
 	 * 
 	 * <p>
 	 * Called when a task is added, deleted og closed, or opened.
@@ -1314,7 +1319,7 @@ public class DataHandler {
 
 		/**
 		 * 
-		 * @param mode 
+		 * @param mode
 		 */
 		public void onTasksChange( int mode );
 	}

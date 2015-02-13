@@ -123,7 +123,7 @@ public interface Task extends Serializable {
 	 * @return The current state of the task
 	 */
 	public int getState();
-	
+
 	/**
 	 * 
 	 * @return
@@ -178,15 +178,16 @@ public interface Task extends Serializable {
 	public boolean handIn( String ident );
 
 	/**
-	 * Hand in a students task with a specific mode. Any listener on the
-	 * task will be called. The possible modes of hand in are:
+	 * Hand in a students task with a specific mode. Any listener on the task
+	 * will be called. The possible modes of hand in are:
 	 * <ul>
 	 * <li>Task{@link #HANDIN_DATE}
 	 * <li>Task{@link #HANDIN_CANCEL}
 	 * </ul>
 	 * 
 	 * <p>
-	 * The system also has other hand in modes, but these are not yet implemented.
+	 * The system also has other hand in modes, but these are not yet
+	 * implemented.
 	 * 
 	 * @param ident The student ID.
 	 * @param mode The mode.
@@ -212,6 +213,14 @@ public interface Task extends Serializable {
 	 * updating is lost when this is called.
 	 */
 	public void markAsCommitted();
+
+	/**
+	 * Mark a certain {@link StudentTask} instance as updated. This method will
+	 * force a store in the DB if commited through the {@link DataHandler}.
+	 * 
+	 * @param st
+	 */
+	public void markAsUpdated( StudentTask st );
 
 	/**
 	 * This list will contain only students who has recently been added to the
@@ -449,7 +458,7 @@ public interface Task extends Serializable {
 		public static final int MODE_CLS_ADD = 108;
 		public static final int MODE_CLS_DEL = 109;
 		public static final int MODE_CLS_UPD = 110;
-		
+
 		public static final int MODE_TASK_SORT = 111;
 
 		/**

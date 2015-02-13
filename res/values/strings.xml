@@ -138,6 +138,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     
+    <string name="task_stditem_saved">Lagret</string>
+    
     <!-- SUBJECT TYPES -->
     <string name="subjectType.title">Oppgavetyper</string>
     <string name="subjectType.info">Applikasjonen har en del forskjellige oppgavetyper installert. Hvis du ønsker å utvide 

@@ -458,6 +458,11 @@ public class TaskActivity extends BaseTabActivity {
 
 		private ViewGroup parent;
 
+		/**
+		 * 
+		 * @param ctx
+		 * @param stdList
+		 */
 		public StudentListAdapter( Context ctx, List<StudentTask> stdList ) {
 			this.stList = stdList;
 			mContext = ctx;
@@ -476,14 +481,30 @@ public class TaskActivity extends BaseTabActivity {
 			update();
 		}
 
+		/**
+		 * 
+		 * @param pos
+		 * @return
+		 */
 		public StudentTask getItem( int pos ) {
 			return stList.get( pos );
 		}
 
+		/**
+		 * 
+		 * @return
+		 */
 		public Context getContext() {
 			return mContext;
 		}
 
+		/**
+		 * 
+		 * @param position
+		 * @param convertView
+		 * @param parent
+		 * @return
+		 */
 		public View getView( int position, View convertView, ViewGroup parent ) {
 			StudentTask stdTask = getItem( position );
 			Student std = stdTask.getStudent();
@@ -675,7 +696,6 @@ public class TaskActivity extends BaseTabActivity {
 
 		@Override
 		public boolean hasStableIds() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -709,31 +729,60 @@ public class TaskActivity extends BaseTabActivity {
 
 					}
 				} );
-
+				
+				ViewItemHolder itemHolder = new ViewItemHolder();
+				convertView.setTag( itemHolder );
 			}
+			
+			ViewItemHolder holder = (ViewItemHolder) convertView.getTag();
+			holder.studentTask = st;
 
 			// Set the comment, if any
+			EditText etComment = (EditText) convertView.findViewById( R.id.ET_task_stditem_comment );
 			if ( st.getComment() != null && st.getComment().length() > 0 ) {
-				EditText etComment = (EditText) convertView.findViewById( R.id.ET_task_stditem_comment );
 				etComment.setText( st.getComment() );
 			}
+			else {
+				etComment.setText( "" );
+			}
+			holder.etComment = etComment;
 
 			// Set the date, if handed in
+			EditText etDate = (EditText) convertView.findViewById( R.id.ET_task_stditem_date );
 			if ( st.isHandedIn() ) {
-				EditText etData = (EditText) convertView.findViewById( R.id.ET_task_stditem_date );
-				etData.setText( Utils.GetDateAsString( st.getHandInDate() ) );
+				etDate.setText( Utils.GetDateAsString( st.getHandInDate() ) );
 			}
-
+			holder.etDate = etDate;
+			
+			ImageView imgSave = (ImageView) convertView.findViewById( R.id.IV_task_stditem_save );
+			imgSave.setTag( holder );
+			imgSave.setOnClickListener( new View.OnClickListener() {
+				
+				@Override
+				public void onClick( View v ) {
+					ViewItemHolder holder = (ViewItemHolder) v.getTag();
+					StudentTask st = holder.studentTask;
+					
+					st.setComment( holder.etComment.getText().toString() );
+					task.markAsUpdated( st );
+					task.notifyChange( OnTaskChangeListener.MODE_STD_UPD );
+					DataHandler.GetInstance().commitStudentsTasks( task );
+					
+					Toast.makeText( getContext(), R.string.task_stditem_saved, Toast.LENGTH_SHORT ).show();
+				}
+			} );
+			
 			return convertView;
 		}
 
+		/**
+		 * 
+		 */
 		public void onDateSet( DatePicker view, int year, int monthOfYear, int dayOfMonth ) {
 			Calendar cal = Calendar.getInstance();
 			cal.set( year, monthOfYear, dayOfMonth );
 			mTask.setDate( cal.getTime() );
 
-			// getEditText( R.id.ET_task_date ).setText(
-			// BaseActivity.GetDateAsString( task.getDate() ) );
 			EditText et = (EditText) parent.findViewById( R.id.ET_task_stditem_date );
 			et.setText( BaseActivity.GetDateAsString( mTask.getDate() ) );
 			mTask.notifyChange( OnTaskChangeListener.MODE_DATE_CHANGE );
@@ -741,7 +790,6 @@ public class TaskActivity extends BaseTabActivity {
 
 		@Override
 		public boolean isChildSelectable( int groupPosition, int childPosition ) {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -763,6 +811,19 @@ public class TaskActivity extends BaseTabActivity {
 		ImageView imgDeleteView;
 		CheckBox chkBox;
 
+	}
+	
+	/**
+	 * 
+	 * @author glevoll
+	 *
+	 */
+	static class ViewItemHolder {
+		int id;
+		
+		EditText etComment;
+		EditText etDate;
+		StudentTask studentTask;
 	}
 
 	/**

@@ -239,7 +239,7 @@ public class TaskImpl implements Task {
 	 * 
 	 * @param st
 	 */
-	private void markAsUpdated( StudentTask st ) {
+	public void markAsUpdated( StudentTask st ) {
 		mModifiedStudents.put( st.getIdent(), st );
 		mModified = true;
 	}
