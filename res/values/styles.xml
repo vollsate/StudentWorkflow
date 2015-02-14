@@ -54,9 +54,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="TV.std.L.blue" parent="TV.standard">
-        <item name="android:textSize">20sp</item>
+    <style name="TV.std.L.bold" parent="TV.std.L">
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TV.std.L.blue" parent="TV.std.L.bold">
         <item name="android:textColor">#33b5e5</item>
     </style>
 

@@ -15,7 +15,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_weight="10"
             android:padding="5dp"
             android:src="@drawable/save" />
 
@@ -53,8 +52,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/task.marginLeft"
             android:layout_marginStart="@dimen/task.marginLeft"
-            android:background="@drawable/calendar"
-            android:text="Button" />
+            android:background="@drawable/calendar"/>
 
         <EditText
             android:id="@+id/ET.task.stditem.date"
@@ -67,5 +65,5 @@
             android:hint="@string/task_date"
             android:inputType="text" />
     </LinearLayout>
-
+    
 </LinearLayout>

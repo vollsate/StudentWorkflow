@@ -161,7 +161,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
 	
 	@Override
 	protected View buildRow( final Integer taskID, int pos ) {
-		ViewGroup vg = (ViewGroup) inflateView( getRowLayoutID() );
+		ViewGroup vg = inflateViewGroup( getRowLayoutID() );
 		Task task = dataHandler.getTask( taskID );
 		String name = dataHandler.getTaskDisplayName( task );
 

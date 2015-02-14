@@ -78,6 +78,7 @@
         android:layout_alignLeft="@id/ET.info.p2Name"
         android:layout_alignStart="@id/ET.info.p2Name"
         android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_toEndOf="@id/TV.info.p2Mail"
         android:layout_toRightOf="@id/TV.info.p2Mail"
         android:hint="@string/stdinfo_mail"

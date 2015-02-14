@@ -37,7 +37,7 @@ public abstract class InstalledDataFragment<T> extends ViewGroupAdapter {
 		final List<T> list = getNames();
 
 		for ( int i = 0; i < list.size(); i++ ) {
-			if ( getConfig().showCount > 0 && i >= getConfig().showCount )
+			if ( getConfig() != null && getConfig().showCount > 0 && i >= getConfig().showCount )
 				break;
 			T name = list.get( i );
 

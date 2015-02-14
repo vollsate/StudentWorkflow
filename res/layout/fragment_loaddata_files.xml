@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20sp"
         
-        android:text="Cancel" />
+        android:text="@string/cancel" />
 
     <ProgressBar
         android:id="@+id/PB.newclass.indeterminate"

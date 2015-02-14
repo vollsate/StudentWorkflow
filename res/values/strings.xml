@@ -24,7 +24,9 @@
 
     <!-- LOAD DATA -->
 
-    <string name="loadData.installing.msg">Installerer klasse {class}</string>
+	<string name="loadData.loadFile.title">Les inn fra fil</string>
+	<string name="loadData.loadExcel.title">Les inn fra Excel</string>
+	<string name="loadData.installing.msg">Installerer klasse {class}</string>
     <string name="loadData.excel.title">Velg klasse ..</string>
     <string name="loadData.csv.title">Velg klasse ..</string>
     <string name="loadDataInfo.title">Installere ny klasse</string>
@@ -146,6 +148,8 @@
         
         Alle oppgavetyper er i to kategorier: \n\t\t1) Fag/ skole og \n\t\t2) Tema.\n\n</string>
     <string name="subjectType.TV.installed">Installerte oppgavetyper</string>
+    <string name="subjectType.TV.system">Systemets</string>
+    <string name="subjectType.TV.custom">Dine egne</string>
     <string name="subjectType.TV.new">Opprett ny</string>
     <string name="subjectType.TV.name">Navn</string>
     <string name="subjectType.TV.desc">Beskrivelse</string>

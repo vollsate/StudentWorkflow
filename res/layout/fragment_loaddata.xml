@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Last inn fra fil" />
+            android:text="@string/loadData.loadFile.title" />
 
         <Button
             android:id="@+id/BTN.loadExcel"
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Last inn fra Excel" />
+            android:text="@string/loadData.loadExcel.title" />
     </LinearLayout>
 
 </ScrollView>

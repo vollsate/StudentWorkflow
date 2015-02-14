@@ -113,7 +113,7 @@ public abstract class ViewGroupAdapter extends BaseFragment {
 	public View inflateView( int id ) {
 		return inflater.inflate( id, rootView, false );
 	}
-
+	
 	/**
 	 * 
 	 * @param id

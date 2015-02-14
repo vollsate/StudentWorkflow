@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/IV.subtype.delete"
+        android:layout_alignParentRight="true"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/delete" />
+
+       <TextView
+        android:id="@+id/TV.subtype.type"
+        style="@style/TV.std.M"
+        android:layout_toLeftOf="@+id/IV.subtype.delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:hint="@string/def" />
+
+    
+    <TextView
+        android:id="@+id/TV.subtype.name"
+        style="@style/TV.std.bold.blue"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:hint="@string/def" />
+
+    <TextView
+        android:id="@+id/TV.subtype.desc"
+        style="@style/TV.std.S"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/TV.subtype.name"
+        android:layout_alignRight="@+id/TV.subtype.type"
+        android:layout_below="@+id/TV.subtype.name"
+        android:layout_marginTop="5sp"
+        android:hint="@string/def" />
+
+</RelativeLayout>

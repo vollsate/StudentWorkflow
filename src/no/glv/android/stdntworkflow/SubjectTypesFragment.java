@@ -64,8 +64,14 @@ public class SubjectTypesFragment extends BaseFragment {
 		Utils.SetupSpinner( sp, new ArrayList<String>( dataHandler.getSubjectNames() ), null, getActivity() );
 		sp = (Spinner) rootView.findViewById( R.id.SP_task_type );
 		Utils.SetupSpinner( sp, new ArrayList<String>( dataHandler.getTypeNames() ), null, getActivity() );
+		
+		startInstalledSubjectTypes();
 
 		return rootView;
+	}
+	
+	private void startInstalledSubjectTypes() {
+		InstalledSubjectTypesFragment.StartFragment( getFragmentManager(), R.id.FR_installedSubjectTypes );
 	}
 
 	/**

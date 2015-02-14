@@ -52,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -99,6 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -140,10 +142,11 @@
                 android:text="@string/subjectType.TV.installed" />
 
             <TextView
-                style="@style/TV.std"
+                style="@style/TV.std.L.bold"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/subjectType.TV.new" />
+                android:text="@string/subjectType.TV.system" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -164,6 +167,18 @@
                     android:layout_weight="1"
                     android:entries="@array/task_types" />
             </LinearLayout>
+
+            <TextView
+                style="@style/TV.std.L.bold"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/subjectType.TV.custom" />
+
+            <FrameLayout
+                android:id="@+id/FR.installedSubjectTypes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <!-- Fragment container for the systems installed subject types -->
 

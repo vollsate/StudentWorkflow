@@ -549,6 +549,14 @@ public class DataHandler {
 	public Collection<SubjectType> getSubjects() {
 		return mTaskSubjects.values();
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Collection<SubjectType> getTypes() {
+		return mTaskTypes.values();
+	}
 
 	/**
 	 * 
@@ -589,7 +597,7 @@ public class DataHandler {
 
 		throw new IllegalStateException( "Error loading SubjectType with ID: " + id );
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -614,18 +622,15 @@ public class DataHandler {
 		boolean success = db.insertSubjectType( st );		
 		if ( success ) {
 			Map subType = null;
+			int id = st.getID();
 			
-			switch ( st.getID() ) {
-				case SubjectType.TYPE_SUBJECT:
-					subType = mTaskSubjects;
-					break;
-
-				case SubjectType.TYPE_TYPE:
-					subType = mTaskTypes;
-					break;
-
+			if ( ( id & SubjectType.TYPE_SUBJECT ) == SubjectType.TYPE_SUBJECT ) {
+				subType = mTaskSubjects;				
 			}
-			
+			else if ( ( id & SubjectType.TYPE_TYPE ) == SubjectType.TYPE_TYPE ) {
+				subType = mTaskTypes;
+			}
+						
 			subType.put( st.getName(), st );
 		}
 
