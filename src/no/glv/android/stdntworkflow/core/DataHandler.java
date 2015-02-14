@@ -92,6 +92,7 @@ public class DataHandler {
 	// Listeners
 	private HashMap<String, OnTasksChangedListener> taskChangeListeners;
 	private HashMap<String, OnStudentClassChangeListener> stdClassChangeListeners;
+	private HashMap<String, OnSubjectTypesListener> subjectTypeListeners;
 
 	/**
 	 * 
@@ -204,6 +205,7 @@ public class DataHandler {
 	private void initiateListeners() {
 		stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
 		taskChangeListeners = new HashMap<String, DataHandler.OnTasksChangedListener>( 2 );
+		subjectTypeListeners = new HashMap<String, DataHandler.OnSubjectTypesListener>( 2 );
 	}
 
 	/**
@@ -531,7 +533,8 @@ public class DataHandler {
 	private void loadSubjectTypes() {
 		List<SubjectType> list = db.loadSubjectTypes();
 		for ( SubjectType st : list ) {
-			if ( st.getType() == SubjectType.TYPE_SUBJECT )
+			int type = st.getType();
+			if ( ( type & SubjectType.TYPE_SUBJECT ) == SubjectType.TYPE_SUBJECT )
 				mTaskSubjects.put( st.getName(), st );
 			else
 				mTaskTypes.put( st.getName(), st );
@@ -596,6 +599,40 @@ public class DataHandler {
 	}
 
 	/**
+	 * Adds a new SubjectType to the system. The new {@link SubjectType} will be
+	 * installed in the DataBase and any listeners for the change in
+	 * subjecttypes will be called.
+	 * 
+	 * @param st
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public boolean addSubjectType( SubjectType st ) {
+		if ( st == null )
+			return false;
+
+		boolean success = db.insertSubjectType( st );		
+		if ( success ) {
+			Map subType = null;
+			
+			switch ( st.getID() ) {
+				case SubjectType.TYPE_SUBJECT:
+					subType = mTaskSubjects;
+					break;
+
+				case SubjectType.TYPE_TYPE:
+					subType = mTaskTypes;
+					break;
+
+			}
+			
+			subType.put( st.getName(), st );
+		}
+
+		return success;
+	}
+
+	/**
 	 * Converts the name of an {@link SubjectType} to the ID it is stored with
 	 * in the Database.
 	 * 
@@ -629,6 +666,28 @@ public class DataHandler {
 
 		SubjectType st = map.get( name );
 		return st.getID();
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public void registerSubjectTypeListener( OnSubjectTypesListener listener ) {
+		unregisterOnSubjectTypeListener( listener );
+
+		String name = listener.getClass().getName();
+		subjectTypeListeners.put( name, listener );		
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public void unregisterOnSubjectTypeListener( OnSubjectTypesListener listener ) {
+		String name = listener.getClass().getSimpleName();
+		
+		if ( subjectTypeListeners.containsKey( name ) )
+			subjectTypeListeners.remove( name );
 	}
 
 	// --------------------------------------------------------------------------------------------------------
@@ -808,7 +867,8 @@ public class DataHandler {
 	 * will notify through the {@link DataHandler.OnTasksChangedListener} with
 	 * the flag {@link OnTasksChangedListener#MODE_DEL}.
 	 * 
-	 * <p>Any students engaged in this task, will automatically be deleted.
+	 * <p>
+	 * Any students engaged in this task, will automatically be deleted.
 	 * 
 	 * @param task The {@link Task} instance to delete.
 	 * @return <tt>TRUE</tt> if successful.
@@ -1302,6 +1362,22 @@ public class DataHandler {
 		public static final int MODE_UPD = 4;
 
 		public static final int MODE_CLS = 8;
+	}
+
+	/**
+	 * Called by the system when a {@link SubjectType} is either added, updated
+	 * or deleted from the system.
+	 * 
+	 * @author glevoll
+	 *
+	 */
+	public static interface OnSubjectTypesListener extends OnChangeListener {
+
+		/**
+		 * 
+		 * @param mode
+		 */
+		public void onSubjectTypeChange( int mode );
 	}
 
 	/**

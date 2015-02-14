@@ -24,6 +24,10 @@ public interface SubjectType {
 	public static final int TYPE_CUSTOM = 4;
 
 	public int getID();
+	
+	public boolean isSystemSpecific();
+	
+	public boolean isCustomSpecific();
 
 	public String getName();
 

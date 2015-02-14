@@ -137,7 +137,7 @@
                 style="@style/TV.header2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/subjectType.TV.new" />
+                android:text="@string/subjectType.TV.installed" />
 
             <TextView
                 style="@style/TV.std"
@@ -145,28 +145,39 @@
                 android:layout_height="wrap_content"
                 android:text="@string/subjectType.TV.new" />
 
-            <Spinner
-                android:id="@+id/SP.subjectType.installed"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:entries="@array/subjectTypes_titles"
-                android:gravity="top"
-                android:hint="@string/subjectType.TV.type"
-                android:spinnerMode="dialog" />
+                android:orientation="horizontal" >
+
+                <Spinner
+                    android:id="@+id/SP.task.subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/task_types" />
+
+                <Spinner
+                    android:id="@+id/SP.task.type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/task_types" />
+            </LinearLayout>
 
             <!-- Fragment container for the systems installed subject types -->
+
             <FrameLayout
                 android:id="@+id/subjectType.installed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <!-- Fragment container for the systems custom subject types -->
+
             <FrameLayout
                 android:id="@+id/subjectType.custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
         </LinearLayout>
     </LinearLayout>
 

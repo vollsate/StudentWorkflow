@@ -228,7 +228,7 @@ public class Database extends SQLiteOpenHelper {
 		if ( retVal == -1 )
 			throw new SQLException( "Error inserting SubjectType: " + st.toString() );
 
-		return retVal == 1;
+		return retVal >= 1;
 	}
 
 	/**

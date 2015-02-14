@@ -2,9 +2,9 @@ package no.glv.android.stdntworkflow.core;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.R;
@@ -22,17 +22,20 @@ public class Utils {
 
 	/**
 	 * 
-	 * @param resource
-	 * @param spinner
-	 * @param data
-	 * @param selected
+	 * @param spinner The {@link Spinner} to setup
+	 * @param data The data used to populate the spinner
+	 * @param selected The default selected item
+	 * @param ctx The context to use for the adapter.
 	 */
-	public static void SetupSpinner( Spinner spinner, ArrayList<String> data, String selected, Context ctx ) {
+	public static void SetupSpinner( Spinner spinner, List<String> data, String selected, Context ctx ) {
 		// Set the proper SubjectTypes to the spinners
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>( ctx, android.R.layout.simple_spinner_dropdown_item,
 				data );
 		spinner.setAdapter( adapter );
-		spinner.setSelection( data.indexOf( selected ) );
+		if ( selected == null )
+			spinner.setSelection( 0 );
+		else
+			spinner.setSelection( data.indexOf( selected ) );
 	}
 
 	/**
@@ -110,6 +113,5 @@ public class Utils {
 			return null;
 		}
 	}
-
 
 }

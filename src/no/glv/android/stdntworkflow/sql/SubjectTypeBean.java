@@ -4,6 +4,7 @@ import no.glv.android.stdntworkflow.intrfc.SubjectType;
 
 public class SubjectTypeBean implements SubjectType {
 
+	/** The row in the database */
 	int _id;
 
 	private String mName;
@@ -13,6 +14,22 @@ public class SubjectTypeBean implements SubjectType {
 	@Override
 	public int getID() {
 		return _id;
+	}
+
+	@Override
+	public boolean isCustomSpecific() {
+		if ( _id > mType )
+			return true;
+
+		return false;
+	}
+
+	@Override
+	public boolean isSystemSpecific() {
+		if ( _id < TYPE_CUSTOM )
+			return true;
+
+		return false;
 	}
 
 	@Override
