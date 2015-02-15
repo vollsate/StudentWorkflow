@@ -10,6 +10,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+/**
+ * Represents a {@link SubjectType} instance in the database.
+ * 
+ * @author glevoll
+ *
+ */
 class SubjectTypeTbl implements BaseColumns {
 
 	private static final String TAG = SubjectTypeTbl.class.getSimpleName();
@@ -39,8 +45,7 @@ class SubjectTypeTbl implements BaseColumns {
 	 * 
 	 * DO NOT CLOSE THE SQLiteDatabase
 	 * 
-	 * @param db
-	 *            Do not close!
+	 * @param db Do not close!
 	 */
 	static void CreateTable( SQLiteDatabase db ) {
 		String sql = "CREATE TABLE " + TBL_NAME + "("
@@ -61,12 +66,13 @@ class SubjectTypeTbl implements BaseColumns {
 	}
 
 	/**
+	 * Loads all known {@link SubjectType} found in the database.
 	 * 
-	 * @param stdClass
 	 * @param db
-	 * @return
+	 * @return A list of every known {@link SubjectType} or an empty list if
+	 *         something fails
 	 */
-	public static List<SubjectType> LoadSubjectTypes( SQLiteDatabase db ) {
+	public static List<SubjectType> LoadAll( SQLiteDatabase db ) {
 		List<SubjectType> list = new ArrayList<SubjectType>();
 
 		String sql = "SELECT * FROM " + TBL_NAME;
@@ -90,6 +96,15 @@ class SubjectTypeTbl implements BaseColumns {
 		return list;
 	}
 
+	/**
+	 * Creates a {@link SubjectType} instance from an SQL cursor object.
+	 * 
+	 * <p>
+	 * NB! The cursor will NOT be closed
+	 * 
+	 * @param cursor
+	 * @return
+	 */
 	private static SubjectType CreateFromCursor( Cursor cursor ) {
 		SubjectTypeBean st = new SubjectTypeBean();
 
@@ -102,19 +117,34 @@ class SubjectTypeTbl implements BaseColumns {
 	}
 
 	/**
+	 * Inserts one {@link SubjectType} instance in the database.
 	 * 
-	 * @param std
-	 * @param db
-	 *            Is closed after use
+	 * <p>
+	 * The row number will be the ID, and may be retrieved through the
+	 * {@link SubjectType#getID()}.
+	 * 
+	 * @param st
+	 * @param db The SQL database will be closed
+	 * 
+	 * @return The row number of the newly created {@link SubjectType}.
 	 */
 	public static long Insert( SubjectType st, SQLiteDatabase db ) {
 		return Insert( st, db, true );
 	}
 
+	/**
+	 * Inserts a list of {@link SubjectType} instances.
+	 * 
+	 * @param list
+	 * @param db
+	 * @return The number of rows inserted in the database.
+	 */
 	public static long Insert( List<SubjectType> list, SQLiteDatabase db ) {
 		int count = 0;
 		for ( SubjectType st : list ) {
-			count += (int) Insert( st, db, false );
+			long retVal = Insert( st, db, false );
+			if ( retVal > 0 )
+				count++;
 		}
 
 		db.close();
@@ -122,18 +152,26 @@ class SubjectTypeTbl implements BaseColumns {
 	}
 
 	/**
+	 * Insert one {@link SubjectType} instance. The rownumber will be set as the
+	 * ID of the {@link SubjectType}.
 	 * 
 	 * @param st
 	 * @param db
-	 * @param close
-	 * @return
+	 * @param close Weather or not to close the DB connection
+	 * 
+	 * @return The row number in the database.
 	 */
 	private static long Insert( SubjectType st, SQLiteDatabase db, boolean close ) {
-		ContentValues stValues = STValues( st );
+		ContentValues stValues = SQLValues( st );
 
+		// retVal will be row number or -1 if error
 		long retVal = db.insert( TBL_NAME, null, stValues );
-		( (SubjectTypeBean)st)._id = (int)retVal;
-		
+		if ( retVal == -1 ) {
+			Log.e( TAG, "Failed to insert SubjectTyoe: " + st.getName() );
+		}
+		else
+			( (SubjectTypeBean) st )._id = (int) retVal;
+
 		if ( close )
 			db.close();
 
@@ -143,16 +181,19 @@ class SubjectTypeTbl implements BaseColumns {
 	/**
 	 * 
 	 * @param st
-	 * @param db
-	 *            Is closed after use
+	 * @param db Is closed after use
 	 * 
 	 * @return 1 if successful, 0 otherwise
 	 */
 	public static int Update( SubjectType st, SQLiteDatabase db ) {
-		String sqlFiler = COL_NAME + " = ?";
-		ContentValues cv = STValues( st );
+		String sqlFiler = COL_ID + " = ?";
+		ContentValues cv = SQLValues( st );
 
+		// retVal will be 1 if success, 0 otherwise
 		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { String.valueOf( st.getID() ) } );
+		if ( retVal == 0 )
+			Log.e( TAG, "Error updating SubjecType#name = " + st.getName() );
+		
 		db.close();
 
 		return retVal;
@@ -160,28 +201,32 @@ class SubjectTypeTbl implements BaseColumns {
 
 	/**
 	 * 
-	 * @param ident
+	 * @param id The row number of the SubjectType
 	 * @param db
 	 */
 	public static int Delete( int id, SQLiteDatabase db ) {
 		String sqlFilter = COL_NAME + " = ?";
+		
+		// retVal will be rows deleted, or 0
 		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { String.valueOf( id ) } );
+		if ( retVal == 0 ) {
+			Log.e( TAG, "Error deleting SubjectType#ID = " + id );
+		}
+		
 		db.close();
 
 		return retVal;
 	}
 
 	/**
+	 * Creates a SQL insert object from a {@link SubjectType}.
 	 * 
 	 * @param st
 	 * @return
 	 */
-	private static ContentValues STValues( SubjectType st ) {
+	private static ContentValues SQLValues( SubjectType st ) {
 		ContentValues cv = new ContentValues();
 
-		int id = st.getID();
-		if ( id > 0 )
-			cv.put( COL_ID, id );
 		cv.put( COL_NAME, st.getName() );
 		cv.put( COL_DESC, st.getDescription() );
 		cv.put( COL_TYPE, st.getType() );
