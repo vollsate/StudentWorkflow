@@ -24,9 +24,9 @@
 
     <!-- LOAD DATA -->
 
-	<string name="loadData.loadFile.title">Les inn fra fil</string>
-	<string name="loadData.loadExcel.title">Les inn fra Excel</string>
-	<string name="loadData.installing.msg">Installerer klasse {class}</string>
+    <string name="loadData.loadFile.title">Les inn fra fil</string>
+    <string name="loadData.loadExcel.title">Les inn fra Excel</string>
+    <string name="loadData.installing.msg">Installerer klasse {class}</string>
     <string name="loadData.excel.title">Velg klasse ..</string>
     <string name="loadData.csv.title">Velg klasse ..</string>
     <string name="loadDataInfo.title">Installere ny klasse</string>
@@ -59,6 +59,17 @@
     <string name="stdlist.del.done.msg">Klassen er slettet: {class}</string>
     <string name="stdlist.mail.body">Din melding</string>
     <string name="stdlist.mail.subject">Ditt emne</string>
+
+    <string name="stdList.stditem.class">Klasse: </string>
+    <string-array name="stdList_classes">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>-</item>
+        </string-array>
 
     <!-- STUDENT INFO -->
 
@@ -155,8 +166,7 @@
     <string name="subjectType.TV.desc">Beskrivelse</string>
     <string name="subjectType.TV.type">Velg oppgavetype</string>
     <string name="subjectType.BTN.create">Opprett oppgavetype</string>
-    
     <string name="subjectType.added">Oppgavetype lagt til</string>
     <string name="subjectType.added.err">ERROR: \n\nKunne ikke legge til Oppgavetype!</string>
-    
+
 </resources>

@@ -24,8 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 /**
@@ -37,7 +38,7 @@ import android.widget.Toast;
  *
  */
 public class StdClassListActivity extends Activity implements OnClickListener,
-		AdapterView.OnItemClickListener, OnVerifySendSMSListener {
+		AdapterView.OnItemClickListener, OnVerifySendSMSListener, OnLongClickListener {
 
 	private static final String TAG = StdClassListActivity.class.getSimpleName();
 
@@ -70,11 +71,9 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 		title = title.replace( CLASS_REPLACE, stdClass.getName() );
 		setTitle( title );
 
-		ListView listView = (ListView) findViewById( R.id.student_listview );
+		ExpandableListView listView = (ExpandableListView) findViewById( R.id.student_listview );
 		adapter = new StudentListAdapter( this, stdClass.getStudents() );
 		listView.setAdapter( adapter );
-
-		listView.setOnItemClickListener( this );
 	}
 
 	@Override
@@ -101,6 +100,11 @@ public class StdClassListActivity extends Activity implements OnClickListener,
      */
 	public void onClick( View v ) {
 		Log.d( TAG, "onClick: " + v );
+	}
+	
+	@Override
+	public boolean onLongClick( View v ) {
+		return false;
 	}
 
 	@Override
