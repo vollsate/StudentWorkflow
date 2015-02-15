@@ -1234,7 +1234,7 @@ public class DataHandler {
 		if ( ln.length() >= 4 )
 			ln = ln.substring( 0, 4 );
 
-		String year = bean.getBirth();
+		String year = Utils.GetDateAsString( bean.getBirth() );
 		year = year.substring( year.length() - 2, year.length() );
 
 		ident = year + fn + ln;

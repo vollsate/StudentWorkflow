@@ -103,7 +103,7 @@ class StudentTbl implements BaseColumns {
 		bean.setGrade( cursor.getString( COL_GRADE_ID ) );
 		bean.setFirstName( cursor.getString( COL_FNAME_ID ) );
 		bean.setLastName( cursor.getString( COL_LNAME_ID ) );
-		bean.setBirth( cursor.getString( COL_BIRTH_ID ) );
+		bean.setBirth( DBUtils.ConvertStringToDate( cursor.getString( COL_BIRTH_ID ), null ) );
 		bean.setAdress( cursor.getString( COL_ADR_ID ) );
 		bean.setPostalCode( cursor.getString( COL_POSTALCODE_ID ) );
 		bean.setPhone( cursor.getString( COL_PHONE_ID ) );
@@ -169,7 +169,7 @@ class StudentTbl implements BaseColumns {
 		cv.put( COL_GRADE, std.getGrade() );
 		cv.put( COL_FNAME, std.getFirstName() );
 		cv.put( COL_LNAME, std.getLastName() );
-		cv.put( COL_BIRTH, std.getBirth() );
+		cv.put( COL_BIRTH, DBUtils.ConvertToString( std.getBirth() ) );
 		cv.put( COL_ADR, std.getAdress() );
 		cv.put( COL_POSTALCODE, std.getPostalCode() );
 		cv.put( COL_PHONE, std.getPhone() );

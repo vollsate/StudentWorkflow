@@ -166,7 +166,7 @@ public class ExcelReader extends AsyncTask<Void, Integer, List<String>> {
 
 		std.setFirstName( row.nextCell().getStringCellValue() );
 		std.setLastName( row.nextCell().getStringCellValue() );
-		std.setBirth( BaseActivity.GetDateAsString( row.nextCell().getDateCellValue() ) );
+		std.setBirth( row.nextCell().getDateCellValue() );
 		std.setAdress( row.nextCell().getStringCellValue() );
 		
 		std.setIdent( DataHandler.CreateStudentIdent( std ) );

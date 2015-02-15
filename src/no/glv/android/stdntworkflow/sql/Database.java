@@ -33,6 +33,9 @@ public class Database extends SQLiteOpenHelper {
 
 	public static final String DB_NAME = "stdwrkflw";
 
+	/**
+	 * The singleton instance used to prevent more than one instance
+	 */
 	private static Database instance;
 
 	/**
@@ -213,7 +216,7 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	public List<SubjectType> loadSubjectTypes() {
-		return SubjectTypeTbl.LoadSubjectTypes( getReadableDatabase() );
+		return SubjectTypeTbl.LoadAll( getReadableDatabase() );
 	}
 
 	/**

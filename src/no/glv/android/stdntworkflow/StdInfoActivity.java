@@ -468,7 +468,7 @@ public class StdInfoActivity extends BaseActivity implements ActionBar.TabListen
 			editText.setText( bean.getIdent() );
 
 			editText = (EditText) rootView.findViewById( R.id.ET_info_birth );
-			editText.setText( bean.getBirth() );
+			editText.setText( Utils.GetDateAsString( bean.getBirth() ) );
 
 			editText = (EditText) rootView.findViewById( R.id.ET_info_pc );
 			editText.setText( bean.getPostalCode() );

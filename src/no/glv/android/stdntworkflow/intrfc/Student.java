@@ -1,10 +1,13 @@
 package no.glv.android.stdntworkflow.intrfc;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Represents a student. A student is a member of a class, and involved in
  * one or more {@link Task}s.
+ * 
+ * <p>
  * 
  * @author glevoll
  *
@@ -24,9 +27,9 @@ public interface Student {
 
 	public void setLastName( String lName );
 
-	public String getBirth();
+	public Date getBirth();
 
-	public void setBirth( String val );
+	public void setBirth( Date val );
 
 	public String getAdress();
 

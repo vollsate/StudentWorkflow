@@ -20,8 +20,7 @@ public class DBUtils implements BaseValues {
 	/**
 	 * 
 	 * @param sql
-	 * @param db
-	 *            Is NOT closed!
+	 * @param db Is NOT closed!
 	 * @return
 	 */
 	public static final boolean ExecuteSQL( String sql, SQLiteDatabase db ) {
@@ -40,12 +39,33 @@ public class DBUtils implements BaseValues {
 	/**
 	 * 
 	 * @param date
+	 * @param pattern
+	 * @return
+	 */
+	public static String ConvertToString( Date date, String pattern ) {
+		SimpleDateFormat simpleDF = sdf;
+		if ( pattern != null )
+			simpleDF = new SimpleDateFormat( pattern, Locale.getDefault() );
+
+		return simpleDF.format( date );
+	}
+	
+	/**
+	 * 
+	 * @param date
 	 * @return
 	 */
 	public static String ConvertToString( Date date ) {
-		return sdf.format( date );
+		return ConvertToString( date, null );
 	}
 
+	/**
+	 * 
+	 * @param date
+	 * @param pattern The patter to use. May be null, and default pattern from
+	 *            {@link BaseValues#DATE_PATTERN} will be used
+	 * @return
+	 */
 	public static Date ConvertStringToDate( String date, String pattern ) {
 		SimpleDateFormat simpleDF = sdf;
 		if ( pattern != null )

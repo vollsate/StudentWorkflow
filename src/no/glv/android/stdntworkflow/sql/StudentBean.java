@@ -1,15 +1,11 @@
 package no.glv.android.stdntworkflow.sql;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Student;
-import android.util.Log;
 
 /**
  * 
@@ -17,8 +13,6 @@ import android.util.Log;
  *
  */
 public class StudentBean implements Student {
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat( BaseValues.DATE_PATTERN, Locale.getDefault() );
 
 	public String mIdent;
 
@@ -74,12 +68,8 @@ public class StudentBean implements Student {
 	}
 
 	@Override
-	public String getBirth() {
-		return sdf.format( birth );
-
-		// return java.text.DateFormat.getDateInstance().format( birth );
-		// return birth.toString(); //DateFormat.format( "", birth ).toString():
-
+	public Date getBirth() {
+		return birth;
 	}
 
 	@Override
@@ -94,10 +84,6 @@ public class StudentBean implements Student {
 
 	public String getGrade() {
 		return grade;
-	}
-
-	public String birhtToString() {
-		return sdf.format( birth );
 	}
 
 	public void setFullName( String fullName ) {
@@ -122,13 +108,8 @@ public class StudentBean implements Student {
 	}
 
 	@Override
-	public void setBirth( String val ) {
-		try {
-			birth = sdf.parse( val );
-		}
-		catch ( Exception e ) {
-			Log.e( getClass().getSimpleName(), "Error parsing date: " + val, e );
-		}
+	public void setBirth( Date val ) {
+		this.birth = val;
 	}
 
 	@Override

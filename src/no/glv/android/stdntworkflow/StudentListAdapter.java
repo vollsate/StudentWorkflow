@@ -4,6 +4,7 @@ import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.SettingsManager;
+import no.glv.android.stdntworkflow.core.Utils;
 import no.glv.android.stdntworkflow.intrfc.Student;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -63,7 +64,7 @@ public class StudentListAdapter extends ArrayAdapter<Student> {
 			holder.textView.setText( student.getFirstName() );
 
 		holder.identText.setText( student.getIdent() );
-		holder.birthText.setText( student.getBirth() );
+		holder.birthText.setText( Utils.GetDateAsString( student.getBirth() ) );
 
 /*
 		if ( position % 2 == 0 )
