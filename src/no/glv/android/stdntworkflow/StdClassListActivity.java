@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
@@ -73,6 +74,7 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 
 		ExpandableListView listView = (ExpandableListView) findViewById( R.id.student_listview );
 		adapter = new StudentListAdapter( this, stdClass.getStudents() );
+		listView.setDescendantFocusability( ViewGroup.FOCUS_AFTER_DESCENDANTS );
 		listView.setAdapter( adapter );
 	}
 

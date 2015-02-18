@@ -59,8 +59,8 @@
     <string name="stdlist.del.done.msg">Klassen er slettet: {class}</string>
     <string name="stdlist.mail.body">Din melding</string>
     <string name="stdlist.mail.subject">Ditt emne</string>
-
     <string name="stdList.stditem.class">Klasse: </string>
+
     <string-array name="stdList_classes">
         <item>A</item>
         <item>B</item>
@@ -68,7 +68,7 @@
         <item>D</item>
         <item>E</item>
         <item>F</item>
-        <item>-</item>
+        <item></item>
         </string-array>
 
     <!-- STUDENT INFO -->
