@@ -36,7 +36,7 @@
         style="@style/ET.stdInfo"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/TV.info.p2Name"
+        android:layout_alignBaseline="@+id/TV.info.p2Name"
         android:layout_marginLeft="15sp"
         android:layout_marginStart="15sp"
         android:layout_toEndOf="@id/TV.info.p2Name"
