@@ -1,13 +1,14 @@
 package no.glv.android.stdntworkflow.sql;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * A static class that works towards a SQLite database. Takes care of loading,

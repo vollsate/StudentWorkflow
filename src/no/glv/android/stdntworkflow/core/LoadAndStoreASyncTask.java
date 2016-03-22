@@ -1,7 +1,8 @@
 package no.glv.android.stdntworkflow.core;
 
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.os.AsyncTask;
+
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 public class LoadAndStoreASyncTask extends AsyncTask<String, Void, StudentClass> {
 

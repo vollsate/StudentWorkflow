@@ -1,12 +1,12 @@
 package no.glv.android.stdntworkflow.core;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.widget.DatePicker;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class DatePickerDialogHelper {
 

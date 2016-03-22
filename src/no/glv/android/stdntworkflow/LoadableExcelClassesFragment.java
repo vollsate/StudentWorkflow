@@ -1,15 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.ExcelReader;
-import no.glv.android.stdntworkflow.core.ExcelReader.OnExcelWorkbookLoadedListener;
-import no.glv.android.stdntworkflow.core.LoadAndStoreASyncTask;
-import no.glv.android.stdntworkflow.core.LoadAndStoreASyncTask.OnStudentClassStoredListener;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +11,17 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.ExcelReader;
+import no.glv.android.stdntworkflow.core.ExcelReader.OnExcelWorkbookLoadedListener;
+import no.glv.android.stdntworkflow.core.LoadAndStoreASyncTask;
+import no.glv.android.stdntworkflow.core.LoadAndStoreASyncTask.OnStudentClassStoredListener;
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 public class LoadableExcelClassesFragment extends LoadableFilesFragment implements OnExcelWorkbookLoadedListener,
 		OnStudentClassStoredListener {

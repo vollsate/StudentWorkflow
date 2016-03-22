@@ -1,12 +1,13 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import java.util.List;
+
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * A specific fragment that shows any classes connected to a task.

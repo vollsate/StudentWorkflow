@@ -1,15 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DialogFragmentBase;
-import no.glv.android.stdntworkflow.intrfc.Student;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.intrfc.StudentTask;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -25,6 +15,17 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * 

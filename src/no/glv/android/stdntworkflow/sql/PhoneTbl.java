@@ -1,14 +1,15 @@
 package no.glv.android.stdntworkflow.sql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.intrfc.Phone;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.intrfc.Phone;
 
 class PhoneTbl implements BaseColumns {
 

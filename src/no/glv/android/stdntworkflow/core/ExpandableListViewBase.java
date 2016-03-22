@@ -1,12 +1,12 @@
 package no.glv.android.stdntworkflow.core;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+
+import java.util.List;
 
 /**
  * Represents an {@link ExpandableListView} where the child of an item is more

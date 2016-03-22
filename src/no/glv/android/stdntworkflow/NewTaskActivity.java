@@ -1,17 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
-import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
-import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
-import no.glv.android.stdntworkflow.core.Utils;
-import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
-import no.glv.android.stdntworkflow.intrfc.Student;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +12,19 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
+import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DatePickerDialogHelper;
+import no.glv.android.stdntworkflow.core.Utils;
+import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * Creates a new Task.

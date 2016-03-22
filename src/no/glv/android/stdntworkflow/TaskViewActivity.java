@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
 import no.glv.android.stdntworkflow.core.BaseTabActivity;
 import no.glv.android.stdntworkflow.core.DataComparator;

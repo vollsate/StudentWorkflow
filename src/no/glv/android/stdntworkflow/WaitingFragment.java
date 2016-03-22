@@ -1,10 +1,11 @@
 package no.glv.android.stdntworkflow;
 
-import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
 
 public class WaitingFragment extends DialogFragmentBase {
 	

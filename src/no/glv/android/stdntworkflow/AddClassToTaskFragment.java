@@ -1,16 +1,17 @@
 package no.glv.android.stdntworkflow;
 
+import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
+
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 public class AddClassToTaskFragment extends ViewGroupAdapter {
 

@@ -1,5 +1,11 @@
 package no.glv.android.stdntworkflow.core;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,11 +16,6 @@ import java.util.Locale;
 import no.glv.android.stdntworkflow.R;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.Phone;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 public class Utils {
 

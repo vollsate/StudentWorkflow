@@ -1,12 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DataComparator;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -19,6 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DataComparator;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataHandler.OnStudentClassChangeListener;
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 /**
  * This will list any installed class in the system. It may be installed as a

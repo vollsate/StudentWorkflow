@@ -1,14 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DialogFragmentBase;
-import no.glv.android.stdntworkflow.intrfc.Student;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -24,6 +15,16 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * A dialog that will list every known student added to the task. The user may

@@ -1,5 +1,11 @@
 package no.glv.android.stdntworkflow.sql;
 
+import android.content.Context;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,11 +17,6 @@ import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import no.glv.android.stdntworkflow.intrfc.Task;
-import android.content.Context;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * The main entry point into the database. This will keep only one instance, and
@@ -232,6 +233,13 @@ public class Database extends SQLiteOpenHelper {
 			throw new SQLException( "Error inserting SubjectType: " + st.toString() );
 
 		return retVal >= 1;
+	}
+
+
+	public boolean deleteSubjectType( SubjectType st ) {
+		int retVal = SubjectTypeTbl.Delete( st.getID(), getWritableDatabase() );
+
+		return retVal >=1;
 	}
 
 	/**

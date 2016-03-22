@@ -1,8 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.TreeMap;
-
-import no.glv.android.stdntworkflow.core.DataHandler;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -13,6 +10,10 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+
+import java.util.TreeMap;
+
+import no.glv.android.stdntworkflow.core.DataHandler;
 
 public class PrefFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 	

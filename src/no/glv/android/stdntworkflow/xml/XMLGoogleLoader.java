@@ -1,13 +1,13 @@
 package no.glv.android.stdntworkflow.xml;
 
+import android.util.Xml;
+
+import org.xmlpull.v1.XmlPullParser;
+
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.xmlpull.v1.XmlPullParser;
-
-import android.util.Xml;
 
 public class XMLGoogleLoader {
 
