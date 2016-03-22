@@ -18,18 +18,14 @@ public class SubjectTypeBean implements SubjectType {
 
 	@Override
 	public boolean isCustomSpecific() {
-		if ( _id > mType )
-			return true;
+		return _id > mType;
 
-		return false;
 	}
 
 	@Override
 	public boolean isSystemSpecific() {
-		if ( _id < TYPE_CUSTOM )
-			return true;
+		return _id < TYPE_CUSTOM;
 
-		return false;
 	}
 
 	@Override
