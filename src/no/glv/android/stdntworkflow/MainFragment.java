@@ -1,11 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.io.File;
-
-import no.glv.android.stdntworkflow.InstalledClassesFragment.ClassViewConfig;
-import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
-import no.glv.android.stdntworkflow.core.BaseFragment;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.io.File;
+
+import no.glv.android.stdntworkflow.InstalledClassesFragment.ClassViewConfig;
+import no.glv.android.stdntworkflow.InstalledTasksFragment.TaskViewConfig;
+import no.glv.android.stdntworkflow.core.BaseFragment;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * Main fragment that shows the first page. This fragment will list all the

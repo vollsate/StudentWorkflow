@@ -1,13 +1,14 @@
 package no.glv.android.stdntworkflow.sql;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DBUtils implements BaseValues {
 

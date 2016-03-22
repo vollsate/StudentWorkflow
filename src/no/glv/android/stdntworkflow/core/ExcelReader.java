@@ -1,5 +1,13 @@
 package no.glv.android.stdntworkflow.core;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,14 +22,6 @@ import no.glv.android.stdntworkflow.sql.ParentBean;
 import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-import android.content.Context;
-import android.os.AsyncTask;
 
 /**
  * 

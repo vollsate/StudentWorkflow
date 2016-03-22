@@ -1,14 +1,15 @@
 package no.glv.android.stdntworkflow.sql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.intrfc.SubjectType;
 
 /**
  * Represents a {@link SubjectType} instance in the database.
@@ -167,7 +168,7 @@ class SubjectTypeTbl implements BaseColumns {
 		// retVal will be row number or -1 if error
 		long retVal = db.insert( TBL_NAME, null, stValues );
 		if ( retVal == -1 ) {
-			Log.e( TAG, "Failed to insert SubjectTyoe: " + st.getName() );
+			Log.e( TAG, "Failed to insert SubjectType: " + st.getName() );
 		}
 		else
 			( (SubjectTypeBean) st )._id = (int) retVal;
@@ -205,7 +206,7 @@ class SubjectTypeTbl implements BaseColumns {
 	 * @param db
 	 */
 	public static int Delete( int id, SQLiteDatabase db ) {
-		String sqlFilter = COL_NAME + " = ?";
+		String sqlFilter = COL_ID + " = ?";
 		
 		// retVal will be rows deleted, or 0
 		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { String.valueOf( id ) } );

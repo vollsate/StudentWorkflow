@@ -136,12 +136,10 @@ public abstract class ViewGroupAdapter extends BaseFragment {
 		manager.beginTransaction().add( id, adapter ).commit();
 	}
 
+
 	/**
-	 * 
-	 * @param inflater
-	 * @param container
-	 * @param savedInstanceState
-	 * @return
+	 *
+	 * @param rootView
 	 */
 	protected abstract void doCreateView( ViewGroup rootView );
 

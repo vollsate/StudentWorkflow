@@ -1,18 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataComparator;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import no.glv.android.stdntworkflow.intrfc.StudentTask;
-import no.glv.android.stdntworkflow.intrfc.Task;
-import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -27,6 +14,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataComparator;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DataHandler.OnTasksChangedListener;
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.StudentTask;
+import no.glv.android.stdntworkflow.intrfc.Task;
+import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
 
 /**
  * This class will show any installed tasks in the system. You may specify

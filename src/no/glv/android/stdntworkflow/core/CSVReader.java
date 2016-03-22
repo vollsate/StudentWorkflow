@@ -1,5 +1,9 @@
 package no.glv.android.stdntworkflow.core;
 
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,9 +21,6 @@ import no.glv.android.stdntworkflow.sql.ParentBean;
 import no.glv.android.stdntworkflow.sql.PhoneBean;
 import no.glv.android.stdntworkflow.sql.StudentBean;
 import no.glv.android.stdntworkflow.sql.StudentClassImpl;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.util.Log;
 
 public class CSVReader extends AsyncTask<String, Void, StudentClass> {
 	

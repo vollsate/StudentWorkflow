@@ -1,14 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.intrfc.Student;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -24,6 +15,16 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.AddedStudentsToTaskFragment.OnStudentsVerifiedListener;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * Used mainly by TaskActivity to add classes to the {@link Task} if needed.

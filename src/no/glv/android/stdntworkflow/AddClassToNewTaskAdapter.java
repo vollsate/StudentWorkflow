@@ -1,10 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
-import no.glv.android.stdntworkflow.intrfc.Task;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
+import no.glv.android.stdntworkflow.intrfc.Task;
 
 /**
  * This adapter will display all the students in a class, with a checkbox. The

@@ -1,13 +1,14 @@
 package no.glv.android.stdntworkflow.sql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 class StudentClassTbl {
 

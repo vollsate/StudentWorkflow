@@ -1,13 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DialogFragmentBase;
-import no.glv.android.stdntworkflow.intrfc.Parent;
-import no.glv.android.stdntworkflow.intrfc.Phone;
-import no.glv.android.stdntworkflow.intrfc.Student;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -16,6 +8,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
+import no.glv.android.stdntworkflow.intrfc.Parent;
+import no.glv.android.stdntworkflow.intrfc.Phone;
+import no.glv.android.stdntworkflow.intrfc.Student;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 /**
  * A dialog that can either send SMS to one {@link Phone} object or to an entire

@@ -1,9 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.ArrayList;
-
-import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -18,6 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+
+import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends BaseActivity {

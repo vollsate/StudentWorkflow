@@ -1,12 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.ExpandableListViewBase;
-import no.glv.android.stdntworkflow.core.SettingsManager;
-import no.glv.android.stdntworkflow.core.Utils;
-import no.glv.android.stdntworkflow.intrfc.Student;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +14,14 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.ExpandableListViewBase;
+import no.glv.android.stdntworkflow.core.SettingsManager;
+import no.glv.android.stdntworkflow.core.Utils;
+import no.glv.android.stdntworkflow.intrfc.Student;
 
 /**
  * This Adapter will list all the student in a given StudentClass. This class

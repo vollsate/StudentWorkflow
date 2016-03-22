@@ -1,7 +1,5 @@
 package no.glv.android.stdntworkflow.core;
 
-import java.util.Locale;
-
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -17,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 /**
  * A base class for handling the creation and management of different TABS

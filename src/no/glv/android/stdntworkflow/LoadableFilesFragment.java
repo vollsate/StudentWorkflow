@@ -1,12 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-
-import no.glv.android.stdntworkflow.core.CSVReader;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.DialogFragmentBase;
-import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -21,6 +14,14 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.List;
+
+import no.glv.android.stdntworkflow.core.CSVReader;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.DialogFragmentBase;
+import no.glv.android.stdntworkflow.intrfc.BaseValues;
+import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
 public class LoadableFilesFragment extends DialogFragmentBase {
 

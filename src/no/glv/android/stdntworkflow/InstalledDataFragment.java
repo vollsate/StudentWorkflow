@@ -1,15 +1,16 @@
 package no.glv.android.stdntworkflow;
 
+import android.content.Context;
+import android.content.Intent;
+import android.view.View;
+import android.view.ViewGroup;
+
 import java.io.Serializable;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler.OnChangeListener;
 import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
-import android.content.Context;
-import android.content.Intent;
-import android.view.View;
-import android.view.ViewGroup;
 
 /**
  * 
@@ -61,7 +62,6 @@ public abstract class InstalledDataFragment<T> extends ViewGroupAdapter {
 
 	/**
 	 * 
-	 * @param name
 	 * @param mode
 	 */
 	public void onDataChange( int mode ) {

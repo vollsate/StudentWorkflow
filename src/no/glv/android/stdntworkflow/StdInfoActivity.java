@@ -1,16 +1,5 @@
 package no.glv.android.stdntworkflow;
 
-import java.util.List;
-import java.util.Locale;
-
-import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
-import no.glv.android.stdntworkflow.core.BaseActivity;
-import no.glv.android.stdntworkflow.core.DataHandler;
-import no.glv.android.stdntworkflow.core.SettingsManager;
-import no.glv.android.stdntworkflow.core.Utils;
-import no.glv.android.stdntworkflow.intrfc.Parent;
-import no.glv.android.stdntworkflow.intrfc.Phone;
-import no.glv.android.stdntworkflow.intrfc.Student;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -30,6 +19,18 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
+import java.util.Locale;
+
+import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
+import no.glv.android.stdntworkflow.core.BaseActivity;
+import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.SettingsManager;
+import no.glv.android.stdntworkflow.core.Utils;
+import no.glv.android.stdntworkflow.intrfc.Parent;
+import no.glv.android.stdntworkflow.intrfc.Phone;
+import no.glv.android.stdntworkflow.intrfc.Student;
 
 @SuppressWarnings("deprecation")
 public class StdInfoActivity extends BaseActivity implements ActionBar.TabListener, OnVerifySendSMSListener {
