@@ -25,13 +25,11 @@ import static no.glv.android.stdntworkflow.R.id.BTN_subjectType_create;
  */
 public class SubjectTypesFragment extends BaseFragment {
 
-    private View rootView;
-    private Holder holder;
+    private Holder holder = new Holder();
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-        rootView = inflater.inflate( R.layout.fr_subject_type, container, false );
-        holder = new Holder();
+        View rootView = inflater.inflate( R.layout.fr_subject_type, container, false );
 
         holder.etName = ( EditText ) rootView.findViewById( R.id.ET_subjectType_name );
         holder.etDesc = ( EditText ) rootView.findViewById( R.id.ET_subjectType_desc );
