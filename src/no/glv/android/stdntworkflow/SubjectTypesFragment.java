@@ -25,6 +25,9 @@ import static no.glv.android.stdntworkflow.R.id.BTN_subjectType_create;
  */
 public class SubjectTypesFragment extends BaseFragment {
 
+    /**
+     * Private inner class to hold the views used
+     */
     private Holder holder = new Holder();
 
     @Override
@@ -59,6 +62,10 @@ public class SubjectTypesFragment extends BaseFragment {
                 }
                 Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();
 
+                h.etDesc.setText( "" );
+                h.etName.setText( "" );
+                h.spSubjType.setSelection( 0 );
+
                 Utils.FragmentDetachAttach( SubjectTypesFragment.this );
             }
         } );
@@ -69,13 +76,9 @@ public class SubjectTypesFragment extends BaseFragment {
         sp = ( Spinner ) rootView.findViewById( R.id.SP_task_type );
         Utils.SetupSpinner( sp, new ArrayList<String>( dataHandler.getTypeNames() ), null, getActivity() );
 
-        startInstalledSubjectTypes();
+        InstalledSubjectTypesFragment.StartFragment( getFragmentManager(), R.id.FR_installedSubjectTypes );
 
         return rootView;
-    }
-
-    private void startInstalledSubjectTypes() {
-        InstalledSubjectTypesFragment.StartFragment( getFragmentManager(), R.id.FR_installedSubjectTypes );
     }
 
     /**
