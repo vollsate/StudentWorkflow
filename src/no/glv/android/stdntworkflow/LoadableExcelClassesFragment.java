@@ -23,7 +23,7 @@ import no.glv.android.stdntworkflow.core.LoadAndStoreASyncTask.OnStudentClassSto
 import no.glv.android.stdntworkflow.intrfc.BaseValues;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 
-public class LoadableExcelClassesFragment extends LoadableFilesFragment implements OnExcelWorkbookLoadedListener,
+public class LoadableExcelClassesFragment extends LoadClassFromFileFragment implements OnExcelWorkbookLoadedListener,
 		OnStudentClassStoredListener {
 
 	public static final String PARAM_FILENAME = BaseValues.EXTRA_BASEPARAM + "fileName";

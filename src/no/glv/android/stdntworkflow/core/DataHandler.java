@@ -87,8 +87,14 @@ public class DataHandler {
      */
     private TreeMap<Integer, Task> tasks;
 
-    private TreeMap<String, SubjectType> mTaskSubjects;
-    private TreeMap<String, SubjectType> mTaskTypes;
+    /**
+     * A map of all the SUBJECT SubjectType installed on the system
+     */
+    private TreeMap<String, SubjectType> installedSubjects;
+    /**
+     * A map of all the THEME SubjectType installed on the system
+     */
+    private TreeMap<String, SubjectType> installedThemes;
 
     /**
      * Singleton instance
@@ -107,8 +113,8 @@ public class DataHandler {
      *                               called first!
      */
     public static final DataHandler GetInstance() {
-        if (!isInitiated)
-            throw new IllegalStateException("DataHandler not inititated");
+        if ( !isInitiated )
+            throw new IllegalStateException( "DataHandler not inititated" );
 
         return instance;
     }
@@ -138,12 +144,12 @@ public class DataHandler {
      * @param app
      * @return The singleton instance.
      */
-    public static final DataHandler Init(Application app) {
-        if (isInitiated)
+    public static final DataHandler Init( Application app ) {
+        if ( isInitiated )
             return instance;
 
-        if (instance == null)
-            instance = new DataHandler(new Database(app), app);
+        if ( instance == null )
+            instance = new DataHandler( new Database( app ), app );
 
         instance.loadStudentClasses();
         instance.loadTasks();
@@ -166,20 +172,20 @@ public class DataHandler {
      * @param db
      * @param app
      */
-    private DataHandler(Database db, Application app) {
+    private DataHandler( Database db, Application app ) {
         this.db = db;
 
         mApp = app;
-        sManager = new SettingsManager(app);
+        sManager = new SettingsManager( app );
         initiateMaps();
         initiateListeners();
 
         // Check to see if the SubjectTypes are installed, and if
         // not - install them
-        boolean loadSubTypes = sManager.getBoolPref(PREF_SUBJECTTYPE, false);
-        if (!loadSubTypes) {
+        boolean loadSubTypes = sManager.getBoolPref( PREF_SUBJECTTYPE, false );
+        if ( !loadSubTypes ) {
             initSubjectTypes();
-            sManager.setBoolPref(PREF_SUBJECTTYPE, true);
+            sManager.setBoolPref( PREF_SUBJECTTYPE, true );
         }
 
         // cleanupDB();
@@ -194,39 +200,39 @@ public class DataHandler {
      * caution.
      */
     public void resetDB() {
-        Log.d(TAG, "resetting database");
+        Log.d( TAG, "resetting database" );
 
         db.runCreate();
         initiateMaps();
         initSubjectTypes();
         loadSubjectTypes();
 
-        notifyStudentClassChange(null, OnStudentClassChangeListener.MODE_DEL);
-        notifyTaskChange(null, OnTasksChangedListener.MODE_DEL);
+        notifyStudentClassChange( null, OnStudentClassChangeListener.MODE_DEL );
+        notifyTaskChange( null, OnTasksChangedListener.MODE_DEL );
     }
 
     /**
      * Will initiate all the listener maps.
      */
     private void initiateListeners() {
-        stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>(2);
-        taskChangeListeners = new HashMap<String, DataHandler.OnTasksChangedListener>(2);
-        subjectTypeListeners = new HashMap<String, DataHandler.OnSubjectTypesListener>(2);
+        stdClassChangeListeners = new HashMap<String, DataHandler.OnStudentClassChangeListener>( 2 );
+        taskChangeListeners = new HashMap<String, DataHandler.OnTasksChangedListener>( 2 );
+        subjectTypeListeners = new HashMap<String, DataHandler.OnSubjectTypesListener>( 2 );
     }
 
     /**
      * Will initiate the Maps used to contain the DB. Called initially from the
      * constructor.
      * <p>
-     * If {@link resetDB} is called, all the Maps will be reset by an invocation
+     * If {@link Database#cleanupDB()} is called, all the Maps will be reset by an invocation
      * of this method.
      */
     private void initiateMaps() {
         stdClasses = new TreeMap<String, StudentClass>();
         tasks = new TreeMap<Integer, Task>();
 
-        mTaskSubjects = new TreeMap<String, SubjectType>();
-        mTaskTypes = new TreeMap<String, SubjectType>();
+        installedSubjects = new TreeMap<String, SubjectType>();
+        installedThemes = new TreeMap<String, SubjectType>();
     }
 
     /**
@@ -247,15 +253,15 @@ public class DataHandler {
         List<Task> list = db.loadTasks();
 
         Iterator<Task> it = list.iterator();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             Task task = it.next();
-            List<StudentTask> stdTasks = db.loadStudentsInTask(task);
+            List<StudentTask> stdTasks = db.loadStudentsInTask( task );
             // Make sure the StudentTask is properly set up.
-            setUpStudentTask(task, stdTasks);
+            setUpStudentTask( task, stdTasks );
 
-            task.addStudentTasks(stdTasks);
+            task.addStudentTasks( stdTasks );
             task.markAsCommitted();
-            tasks.put(Integer.valueOf(task.getID()), task);
+            tasks.put( Integer.valueOf( task.getID() ), task );
         }
 
         return list;
@@ -270,18 +276,18 @@ public class DataHandler {
      * @param task     The task the StudentTask instance is connected to.
      * @param stdTasks
      */
-    private void setUpStudentTask(Task task, List<StudentTask> stdTasks) {
-        for (StudentTask stdTask : stdTasks) {
-            stdTask.setStudent(getStudentById(stdTask.getIdent()));
-            stdTask.setTaskName(task.getName());
+    private void setUpStudentTask( Task task, List<StudentTask> stdTasks ) {
+        for ( StudentTask stdTask : stdTasks ) {
+            stdTask.setStudent( getStudentById( stdTask.getIdent() ) );
+            stdTask.setTaskName( task.getName() );
 
             String stdClass = stdTask.getStudent().getStudentClass();
-            task.addClassName(stdClass);
+            task.addClassName( stdClass );
         }
 
         // Sort the list
         int sortType = getSettingsManager().getStudentClassSortType();
-        Collections.sort(stdTasks, new DataComparator.StudentTaskComparator(sortType));
+        Collections.sort( stdTasks, new DataComparator.StudentTaskComparator( sortType ) );
     }
 
     /**
@@ -292,10 +298,10 @@ public class DataHandler {
         List<StudentClass> list = db.loadStudentClasses();
 
         Iterator<StudentClass> it = list.iterator();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             StudentClass stdClass = it.next();
-            populateStudentClass(stdClass);
-            stdClasses.put(stdClass.getName(), stdClass);
+            populateStudentClass( stdClass );
+            stdClasses.put( stdClass.getName(), stdClass );
         }
 
         return list;
@@ -310,16 +316,16 @@ public class DataHandler {
      *
      * @param stdClass
      */
-    private void populateStudentClass(StudentClass stdClass) {
-        List<Student> stList = db.loadStudentsFromClass(stdClass.getName());
-        Collections.sort(stList, new DataComparator.StudentComparator());
+    private void populateStudentClass( StudentClass stdClass ) {
+        List<Student> stList = db.loadStudentsFromClass( stdClass.getName() );
+        Collections.sort( stList, new DataComparator.StudentComparator() );
 
-        stdClass.addAll(stList);
+        stdClass.addAll( stList );
 
         Iterator<Student> stds = stdClass.getStudents().iterator();
-        while (stds.hasNext()) {
+        while ( stds.hasNext() ) {
             Student student = stds.next();
-            populateStudent(student);
+            populateStudent( student );
         }
     }
 
@@ -329,13 +335,13 @@ public class DataHandler {
      *
      * @param student The student to populate
      */
-    private void populateStudent(Student student) {
-        student.addParents(db.loadParents(student.getIdent()));
+    private void populateStudent( Student student ) {
+        student.addParents( db.loadParents( student.getIdent() ) );
 
         Iterator<Parent> parIt = student.getParents().iterator();
-        while (parIt.hasNext()) {
+        while ( parIt.hasNext() ) {
             Parent parent = parIt.next();
-            parent.addPhones(db.loadPhone(parent.getStudentID(), parent.getID()));
+            parent.addPhones( db.loadPhone( parent.getStudentID(), parent.getID() ) );
         }
     }
 
@@ -365,28 +371,28 @@ public class DataHandler {
             ExcelWriter writer = new ExcelWriter();
 
             // Add all the classes
-            writer.addStudentClasses(loadStudentClasses());
+            writer.addStudentClasses( loadStudentClasses() );
 
             // Add all tasks
             List<Task> tasks = loadTasks();
-            writer.addTasks(tasks);
+            writer.addTasks( tasks );
 
             // Add all students in task
             List<StudentTask> sts = new LinkedList<StudentTask>();
-            for (Task t : tasks) {
-                List<StudentTask> list = db.loadStudentsInTask(t);
-                setUpStudentTask(t, list);
+            for ( Task t : tasks ) {
+                List<StudentTask> list = db.loadStudentsInTask( t );
+                setUpStudentTask( t, list );
 
-                sts.addAll(list);
+                sts.addAll( list );
             }
-            writer.addStudentTasks(db.loadAllStudentTask());
+            writer.addStudentTasks( db.loadAllStudentTask() );
 
-            return writer.writeToFile("stdwrkflw.xls");
-        } catch (Exception e) {
-            Log.e(TAG, "Error writin to Excel file", e);
+            return writer.writeToFile( "stdwrkflw.xls" );
+        } catch ( Exception e ) {
+            Log.e( TAG, "Error writin to Excel file", e );
         }
 
-        Log.v(TAG, db.loadAllStudentTask().toString());
+        Log.v( TAG, db.loadAllStudentTask().toString() );
         return null;
     }
 
@@ -394,7 +400,7 @@ public class DataHandler {
     public Map<String, List> getAllData() {
         HashMap<String, List> entireDB = new HashMap<String, List>();
 
-        entireDB.put("parents", db.loadParents(null));
+        entireDB.put( "parents", db.loadParents( null ) );
 
         return entireDB;
     }
@@ -420,13 +426,13 @@ public class DataHandler {
      * @param ident The Student ID. See {@link Student} for more info.
      * @return The requested {@link Student} or NULL.
      */
-    public Student getStudentById(String ident) {
+    public Student getStudentById( String ident ) {
         Student std = null;
 
         Iterator<String> it = stdClasses.keySet().iterator();
-        while (it.hasNext()) {
-            std = getStudentById(it.next(), ident);
-            if (std != null)
+        while ( it.hasNext() ) {
+            std = getStudentById( it.next(), ident );
+            if ( std != null )
                 break;
         }
 
@@ -444,14 +450,14 @@ public class DataHandler {
      * @param ident        The unique ID of the student.
      * @return The {@link Student} instance, or NULL.
      */
-    public Student getStudentById(String stdClassName, String ident) {
-        if (stdClassName == null || ident == null)
+    public Student getStudentById( String stdClassName, String ident ) {
+        if ( stdClassName == null || ident == null )
             return null;
 
         Student std = null;
 
-        StudentClass stdClass = stdClasses.get(stdClassName);
-        std = stdClass.getStudentByIdent(ident);
+        StudentClass stdClass = stdClasses.get( stdClassName );
+        std = stdClass.getStudentByIdent( ident );
 
         return std;
     }
@@ -462,20 +468,18 @@ public class DataHandler {
      * if the student ID itself is modified. If not, this parameter may be null.
      * <p>
      * <p>
-     * Remember to call {@link DataHandler#notifyStudentUpdate(Student)} to
-     * inform any listeners about the change.
      *
      * @param std      The {@link Student} instance to update.
      * @param oldIdent The original ID of the student.
      * @return true if successful
      */
-    public boolean updateStudent(Student std, String oldIdent) {
+    public boolean updateStudent( Student std, String oldIdent ) {
         int retVal = 0;
         try {
-            retVal = db.updateStudent(std, oldIdent);
+            retVal = db.updateStudent( std, oldIdent );
             // notifyStudentUpdate( std );
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to update student: " + std.getIdent(), e);
+        } catch ( Exception e ) {
+            Log.e( TAG, "Failed to update student: " + std.getIdent(), e );
         }
 
         return retVal > 0;
@@ -497,33 +501,33 @@ public class DataHandler {
      */
     private void initSubjectTypes() {
         // Get the default arrays
-        String[] subjects = mApp.getResources().getStringArray(R.array.task_subjects);
-        String[] types = mApp.getResources().getStringArray(R.array.task_types);
-        String defDesc = mApp.getResources().getString(R.string.task_st_subjects_defaultDesc);
+        String[] subjects = mApp.getResources().getStringArray( R.array.task_subjects );
+        String[] types = mApp.getResources().getStringArray( R.array.task_types );
+        String defDesc = mApp.getResources().getString( R.string.task_st_subjects_defaultDesc );
         LinkedList<SubjectType> list = new LinkedList<SubjectType>();
 
-        for (String s : subjects) {
+        for ( String s : subjects ) {
             SubjectType st = db.createSubjectType();
-            st.setDescription(defDesc);
-            st.setName(s);
-            st.setType(SubjectType.TYPE_SUBJECT);
+            st.setDescription( defDesc );
+            st.setName( s );
+            st.setType( SubjectType.TYPE_SUBJECT );
 
-            list.add(st);
+            list.add( st );
         }
 
-        for (String s : types) {
+        for ( String s : types ) {
             SubjectType st = db.createSubjectType();
-            st.setDescription(defDesc);
-            st.setName(s);
-            st.setType(SubjectType.TYPE_TYPE);
+            st.setDescription( defDesc );
+            st.setName( s );
+            st.setType( SubjectType.TYPE_THEME );
 
-            list.add(st);
+            list.add( st );
         }
 
         try {
-            db.insertSubjectTypes(list);
-        } catch (Exception e) {
-            Log.e(TAG, "Error initiating SubjectTypes", e);
+            db.insertSubjectTypes( list );
+        } catch ( Exception e ) {
+            Log.e( TAG, "Error initiating SubjectTypes", e );
         }
     }
 
@@ -533,12 +537,12 @@ public class DataHandler {
      */
     private void loadSubjectTypes() {
         List<SubjectType> list = db.loadSubjectTypes();
-        for (SubjectType st : list) {
+        for ( SubjectType st : list ) {
             int type = st.getType();
-            if ((type & SubjectType.TYPE_SUBJECT) == SubjectType.TYPE_SUBJECT)
-                mTaskSubjects.put(st.getName(), st);
+            if ( ( type & SubjectType.TYPE_SUBJECT ) == SubjectType.TYPE_SUBJECT )
+                installedSubjects.put( st.getName(), st );
             else
-                mTaskTypes.put(st.getName(), st);
+                installedThemes.put( st.getName(), st );
         }
     }
 
@@ -548,28 +552,28 @@ public class DataHandler {
      * @return
      */
     public Collection<SubjectType> getSubjects() {
-        return mTaskSubjects.values();
+        return installedSubjects.values();
     }
 
     /**
      * @return
      */
     public Collection<SubjectType> getTypes() {
-        return mTaskTypes.values();
+        return installedThemes.values();
     }
 
     /**
      * @return
      */
     public Collection<String> getSubjectNames() {
-        return mTaskSubjects.keySet();
+        return installedSubjects.keySet();
     }
 
     /**
      * @return
      */
     public Collection<String> getTypeNames() {
-        return mTaskTypes.keySet();
+        return installedThemes.keySet();
     }
 
     /**
@@ -580,18 +584,18 @@ public class DataHandler {
      * @return
      * @throws IllegalStateException if the {@link SubjectType} is not found.
      */
-    public SubjectType getSubjectType(int id) {
-        for (SubjectType st : mTaskSubjects.values()) {
-            if (st.getID() == id)
+    public SubjectType getSubjectType( int id ) {
+        for ( SubjectType st : installedSubjects.values() ) {
+            if ( st.getID() == id )
                 return st;
         }
 
-        for (SubjectType st : mTaskTypes.values()) {
-            if (st.getID() == id)
+        for ( SubjectType st : installedThemes.values() ) {
+            if ( st.getID() == id )
                 return st;
         }
 
-        throw new IllegalStateException("Error loading SubjectType with ID: " + id);
+        throw new IllegalStateException( "Error loading SubjectType with ID: " + id );
     }
 
     /**
@@ -601,6 +605,7 @@ public class DataHandler {
      * @return
      */
     public SubjectType createSubjectType() {
+        SubjectTypeBean bean = new SubjectTypeBean();
         return new SubjectTypeBean();
     }
 
@@ -612,41 +617,59 @@ public class DataHandler {
      * @param st
      * @return
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public boolean addSubjectType(SubjectType st) {
-        if (st == null)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public boolean addSubjectType( SubjectType st ) {
+        if ( st == null )
             return false;
 
-        boolean success = db.insertSubjectType(st);
-        if (success) {
+        boolean success = db.insertSubjectType( st );
+        if ( success ) {
             Map subType = null;
-            int id = st.getID();
+            int id = st.getType();
 
-            if ((id & SubjectType.TYPE_SUBJECT) == SubjectType.TYPE_SUBJECT) {
-                subType = mTaskSubjects;
-            } else if ((id & SubjectType.TYPE_TYPE) == SubjectType.TYPE_TYPE) {
-                subType = mTaskTypes;
+            if ( ( id & SubjectType.TYPE_SUBJECT ) == SubjectType.TYPE_SUBJECT ) {
+                subType = installedSubjects;
+            } else if ( ( id & SubjectType.TYPE_THEME ) == SubjectType.TYPE_THEME ) {
+                subType = installedThemes;
             }
 
-            subType.put(st.getName(), st);
+            subType.put( st.getName(), st );
         }
 
         return success;
     }
 
     /**
+     * @param st
+     * @return
+     */
+    public boolean checkSubjectType( SubjectType st ) {
+        String name = st.getName();
+
+        if ( name == null || name.length() == 0 )
+            return false;
+        if ( installedSubjects.containsKey( st.getName() ) )
+            return false;
+        if ( installedThemes.containsKey( st.getName() ) )
+            return false;
+
+        return true;
+    }
+
+    /**
      * Deletes a specified <code>SubjectType</code>
+     *
      * @param st
      * @return <code>true</code> if successful
      */
     public boolean deleteSubjectType( SubjectType st ) {
         boolean success = db.deleteSubjectType( st );
 
-        if (success ) {
-            if ( mTaskSubjects.containsKey( st.getName() ))
-                mTaskSubjects.remove( st.getName() );
+        if ( success ) {
+            if ( installedSubjects.containsKey( st.getName() ) )
+                installedSubjects.remove( st.getName() );
             else
-                mTaskTypes.remove( st.getName() );
+                installedThemes.remove( st.getName() );
         }
 
         return success;
@@ -659,16 +682,16 @@ public class DataHandler {
      * @param name Name of the {@link SubjectType} to look for.
      * @return -1 if the subject is not found.
      */
-    public int convertSubjectToID(String name) {
-        return convertSubjectTypeToID(mTaskSubjects, name);
+    public int convertSubjectToID( String name ) {
+        return convertSubjectTypeToID( installedSubjects, name );
     }
 
     /**
      * @param name
      * @return
      */
-    public int convertTypeToID(String name) {
-        return convertSubjectTypeToID(mTaskTypes, name);
+    public int convertTypeToID( String name ) {
+        return convertSubjectTypeToID( installedThemes, name );
     }
 
     /**
@@ -679,32 +702,32 @@ public class DataHandler {
      * @param name
      * @return
      */
-    private int convertSubjectTypeToID(Map<String, SubjectType> map, String name) {
-        if (!map.containsKey(name))
+    private int convertSubjectTypeToID( Map<String, SubjectType> map, String name ) {
+        if ( !map.containsKey( name ) )
             return -1;
 
-        SubjectType st = map.get(name);
+        SubjectType st = map.get( name );
         return st.getID();
     }
 
     /**
      * @param listener
      */
-    public void registerSubjectTypeListener(OnSubjectTypesListener listener) {
-        unregisterOnSubjectTypeListener(listener);
+    public void registerSubjectTypeListener( OnSubjectTypesListener listener ) {
+        unregisterOnSubjectTypeListener( listener );
 
         String name = listener.getClass().getName();
-        subjectTypeListeners.put(name, listener);
+        subjectTypeListeners.put( name, listener );
     }
 
     /**
      * @param listener
      */
-    public void unregisterOnSubjectTypeListener(OnSubjectTypesListener listener) {
+    public void unregisterOnSubjectTypeListener( OnSubjectTypesListener listener ) {
         String name = listener.getClass().getSimpleName();
 
-        if (subjectTypeListeners.containsKey(name))
-            subjectTypeListeners.remove(name);
+        if ( subjectTypeListeners.containsKey( name ) )
+            subjectTypeListeners.remove( name );
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -723,9 +746,9 @@ public class DataHandler {
      * @return A List of names of all the Tasks loaded
      */
     public List<String> getTaskNames() {
-        ArrayList<String> list = new ArrayList<String>(tasks.size());
-        for (Task t : tasks.values()) {
-            list.add(t.getName());
+        ArrayList<String> list = new ArrayList<String>( tasks.size() );
+        for ( Task t : tasks.values() ) {
+            list.add( t.getName() );
         }
 
         return list;
@@ -740,19 +763,19 @@ public class DataHandler {
      * @return A List of every task in the system where the tasks state matches
      * the flag
      */
-    public List<String> getTaskNames(int flag) {
+    public List<String> getTaskNames( int flag ) {
         List<String> tasks = new ArrayList<String>();
 
-        for (Task t : this.tasks.values()) {
+        for ( Task t : this.tasks.values() ) {
             int state = t.getState();
-            if ((state & flag) == Task.TASK_STATE_OPEN) {
-                tasks.add(t.getName());
+            if ( ( state & flag ) == Task.TASK_STATE_OPEN ) {
+                tasks.add( t.getName() );
             }
-            if ((state & flag) == Task.TASK_STATE_CLOSED) {
-                tasks.add(t.getName());
+            if ( ( state & flag ) == Task.TASK_STATE_CLOSED ) {
+                tasks.add( t.getName() );
             }
-            if ((state & flag) == Task.TASK_STATE_EXPIRED) {
-                tasks.add(t.getName());
+            if ( ( state & flag ) == Task.TASK_STATE_EXPIRED ) {
+                tasks.add( t.getName() );
             }
         }
 
@@ -763,28 +786,28 @@ public class DataHandler {
      * @return Any {@link Task} loaded by the system.
      */
     public List<Task> getTasks() {
-        return new ArrayList<Task>(tasks.values());
+        return new ArrayList<Task>( tasks.values() );
     }
 
     /**
      * @param flag
      * @return
      */
-    public List<Task> getTasks(int flag) {
+    public List<Task> getTasks( int flag ) {
         List<Task> ts = new LinkedList<Task>();
 
-        for (Task t : tasks.values()) {
+        for ( Task t : tasks.values() ) {
             int state = t.getState();
             boolean add = false;
-            if ((flag & state) == Task.TASK_STATE_OPEN)
+            if ( ( flag & state ) == Task.TASK_STATE_OPEN )
                 add = true;
-            if ((flag & state) == Task.TASK_STATE_CLOSED)
+            if ( ( flag & state ) == Task.TASK_STATE_CLOSED )
                 add = true;
-            if ((flag & state) == Task.TASK_STATE_EXPIRED)
+            if ( ( flag & state ) == Task.TASK_STATE_EXPIRED )
                 add = true;
 
-            if (add)
-                ts.add(t);
+            if ( add )
+                ts.add( t );
         }
 
         return ts;
@@ -794,10 +817,10 @@ public class DataHandler {
      * @param name Name of {@link Task} to find.
      * @return The actual task, or NULL if not found
      */
-    public Task getTask(String name) {
+    public Task getTask( String name ) {
         Task task = null;
-        for (Task t : tasks.values()) {
-            if (t.getName().equalsIgnoreCase(name)) {
+        for ( Task t : tasks.values() ) {
+            if ( t.getName().equalsIgnoreCase( name ) ) {
                 task = t;
                 break;
             }
@@ -806,8 +829,8 @@ public class DataHandler {
         return task;
     }
 
-    public Task getTask(Integer id) {
-        return tasks.get(id);
+    public Task getTask( Integer id ) {
+        return tasks.get( id );
     }
 
     /**
@@ -816,60 +839,60 @@ public class DataHandler {
      * {@link Task}.
      * <p>
      * <p>
-     * Remember to call the {@link DataHandler#updateTask(Task, String)} after
+     * Remember to call the {@link DataHandler#updateTask(Task, Integer)} after
      * calling this!
      *
      * @param task
      */
-    public DataHandler addTask(Task task) {
-        if (task == null)
-            throw new NullPointerException("Task to add cannot be NULL!");
+    public DataHandler addTask( Task task ) {
+        if ( task == null )
+            throw new NullPointerException( "Task to add cannot be NULL!" );
 
-        if (task.getName() == null)
-            throw new NullPointerException("Name of task cannot be NULL!");
+        if ( task.getName() == null )
+            throw new NullPointerException( "Name of task cannot be NULL!" );
 
-        if (db.insertTask(task)) {
-            List<StudentTask> stds = db.loadStudentsInTask(task);
-            setUpStudentTask(task, stds);
-            task.addStudentTasks(stds);
+        if ( db.insertTask( task ) ) {
+            List<StudentTask> stds = db.loadStudentsInTask( task );
+            setUpStudentTask( task, stds );
+            task.addStudentTasks( stds );
 
-            tasks.put(Integer.valueOf(task.getID()), task);
+            tasks.put( Integer.valueOf( task.getID() ), task );
         }
 
         return this;
     }
 
-    public String getTaskDisplayName(Task task) {
+    public String getTaskDisplayName( Task task ) {
         String name = task.getName();
-        if (name == null || name.length() == 0) {
-            name = getSubjectType(task.getSubject()).getName();
+        if ( name == null || name.length() == 0 ) {
+            name = getSubjectType( task.getSubject() ).getName();
         }
 
         return name;
     }
 
-    public void handInTask(Task t, StudentTask st) {
-        if (!st.isHandedIn())
-            t.handIn(st.getIdent());
+    public void handInTask( Task t, StudentTask st ) {
+        if ( !st.isHandedIn() )
+            t.handIn( st.getIdent() );
         else
-            t.handIn(st.getIdent(), Task.HANDIN_CANCEL);
+            t.handIn( st.getIdent(), Task.HANDIN_CANCEL );
 
-        notifyTaskChange(t, OnTasksChangedListener.MODE_UPD);
+        notifyTaskChange( t, OnTasksChangedListener.MODE_UPD );
     }
 
     /**
      * @param task
-     * @param oldName
+     * @param oldID
      */
-    public DataHandler updateTask(Task task, Integer oldID) {
-        Log.d(TAG, "Updating task: " + task.getName());
+    public DataHandler updateTask( Task task, Integer oldID ) {
+        Log.d( TAG, "Updating task: " + task.getName() );
 
-        if (!db.updateTask(task))
-            throw new IllegalStateException("Failed to update Task: " + task.getName());
+        if ( !db.updateTask( task ) )
+            throw new IllegalStateException( "Failed to update Task: " + task.getName() );
 
-        if (oldID != null) {
-            tasks.remove(Integer.valueOf(oldID));
-            tasks.put(Integer.valueOf(task.getID()), task);
+        if ( oldID != null ) {
+            tasks.remove( Integer.valueOf( oldID ) );
+            tasks.put( Integer.valueOf( task.getID() ), task );
         }
 
         return this;
@@ -886,12 +909,12 @@ public class DataHandler {
      * @param task The {@link Task} instance to delete.
      * @return <tt>TRUE</tt> if successful.
      */
-    public boolean deleteTask(Task task) {
-        if (db.deleteTask(task)) {
-            db.deleteStudentTasks(task.getStudentsInTask());
+    public boolean deleteTask( Task task ) {
+        if ( db.deleteTask( task ) ) {
+            db.deleteStudentTasks( task.getStudentsInTask() );
 
-            tasks.remove(task.getID());
-            notifyTaskDelete(task);
+            tasks.remove( task.getID() );
+            notifyTaskDelete( task );
             return true;
         }
 
@@ -902,19 +925,19 @@ public class DataHandler {
      * @param name
      * @return
      */
-    public boolean closeTask(String name) {
-        return closeTask(getTask(name));
+    public boolean closeTask( String name ) {
+        return closeTask( getTask( name ) );
     }
 
     /**
      * @param task
      * @return
      */
-    public boolean closeTask(Task task) {
-        task.setState(Task.TASK_STATE_CLOSED);
+    public boolean closeTask( Task task ) {
+        task.setState( Task.TASK_STATE_CLOSED );
 
-        boolean succes = db.updateTask(task);
-        notifyTaskChange(task, OnChangeListener.MODE_CLS);
+        boolean succes = db.updateTask( task );
+        notifyTaskChange( task, OnChangeListener.MODE_CLS );
 
         return succes;
     }
@@ -924,27 +947,27 @@ public class DataHandler {
      *
      * @param task
      */
-    public void commitTask(Task task) {
-        db.insertTask(task);
+    public void commitTask( Task task ) {
+        db.insertTask( task );
     }
 
     /**
      * @param task
      */
-    public void commitStudentsTasks(Task task) {
+    public void commitStudentsTasks( Task task ) {
         List<StudentTask> list = task.getUpdatedStudents();
-        if (list != null && !list.isEmpty()) {
-            db.updateStudentTasks(list);
+        if ( list != null && !list.isEmpty() ) {
+            db.updateStudentTasks( list );
         }
 
         list = task.getRemovedStudents();
-        if (list != null && !list.isEmpty()) {
-            db.deleteStudentTasks(list);
+        if ( list != null && !list.isEmpty() ) {
+            db.deleteStudentTasks( list );
         }
 
         list = task.getAddedStudents();
-        if (list != null && !list.isEmpty()) {
-            db.insertStudentTasks(list);
+        if ( list != null && !list.isEmpty() ) {
+            db.insertStudentTasks( list );
         }
 
         task.notifyChange();
@@ -957,9 +980,9 @@ public class DataHandler {
     public void commitTasks() {
         Iterator<Task> it = tasks.values().iterator();
 
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             Task task = it.next();
-            commitTask(task);
+            commitTask( task );
         }
     }
 
@@ -968,63 +991,62 @@ public class DataHandler {
      */
     public void notifyTaskSettingsChange() {
         Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
-        while (it.hasNext()) {
-            it.next().onTasksChange(OnTaskChangeListener.MODE_TASK_SORT);
+        while ( it.hasNext() ) {
+            it.next().onTasksChange( OnTaskChangeListener.MODE_TASK_SORT );
         }
     }
 
     /**
      * @param newTask
      */
-    private void notifyTaskChange(Task newTask, int mode) {
-        if (taskChangeListeners.isEmpty())
+    private void notifyTaskChange( Task newTask, int mode ) {
+        if ( taskChangeListeners.isEmpty() )
             return;
 
         Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
-        while (it.hasNext())
-            it.next().onTasksChange(mode);
+        while ( it.hasNext() )
+            it.next().onTasksChange( mode );
     }
 
     /**
      * @param newTask
      */
-    public void notifyTaskAdd(Task newTask) {
-        notifyTaskChange(newTask, OnTasksChangedListener.MODE_ADD);
+    public void notifyTaskAdd( Task newTask ) {
+        notifyTaskChange( newTask, OnTasksChangedListener.MODE_ADD );
     }
 
     /**
-     *
      * @param oldTask
      */
-    public void notifyTaskDelete(Task oldTask) {
-        notifyTaskChange(oldTask, OnTasksChangedListener.MODE_DEL);
+    public void notifyTaskDelete( Task oldTask ) {
+        notifyTaskChange( oldTask, OnTasksChangedListener.MODE_DEL );
     }
 
     /**
      * @param task
      */
-    public void notifyTaskUpdate(Task task) {
-        notifyTaskChange(task, OnTasksChangedListener.MODE_UPD);
+    public void notifyTaskUpdate( Task task ) {
+        notifyTaskChange( task, OnTasksChangedListener.MODE_UPD );
     }
 
     /**
      * @param listener
      */
-    public void registerOnTaskChangeListener(OnTasksChangedListener listener) {
-        unregisterOnTaskChangeListener(listener);
+    public void registerOnTaskChangeListener( OnTasksChangedListener listener ) {
+        unregisterOnTaskChangeListener( listener );
 
         String name = listener.getClass().getName();
-        taskChangeListeners.put(name, listener);
+        taskChangeListeners.put( name, listener );
     }
 
     /**
      * @param listener
      */
-    public void unregisterOnTaskChangeListener(OnTasksChangedListener listener) {
+    public void unregisterOnTaskChangeListener( OnTasksChangedListener listener ) {
         String name = listener.getClass().getName();
 
-        if (taskChangeListeners.containsKey(name))
-            taskChangeListeners.remove(name);
+        if ( taskChangeListeners.containsKey( name ) )
+            taskChangeListeners.remove( name );
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -1045,13 +1067,13 @@ public class DataHandler {
      * @param stdClass The {@link StudentClass} to check.
      * @return true if removable
      */
-    public boolean isStudentClassRemovable(StudentClass stdClass) {
+    public boolean isStudentClassRemovable( StudentClass stdClass ) {
         boolean deletable = true;
 
         Iterator<Task> it = tasks.values().iterator();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             Task t = it.next();
-            if (t.getClasses().contains(stdClass.getName())) {
+            if ( t.getClasses().contains( stdClass.getName() ) ) {
                 deletable = false;
             }
         }
@@ -1066,14 +1088,14 @@ public class DataHandler {
      * @param stdClass
      * @return A list of names, or an empty list
      */
-    public List<String> getStudentClassInvolvedInTask(StudentClass stdClass) {
+    public List<String> getStudentClassInvolvedInTask( StudentClass stdClass ) {
         LinkedList<String> list = new LinkedList<String>();
 
         Iterator<Task> it = tasks.values().iterator();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             Task t = it.next();
-            if (t.getClasses().contains(stdClass.getName())) {
-                list.add(t.getName());
+            if ( t.getClasses().contains( stdClass.getName() ) ) {
+                list.add( t.getName() );
             }
         }
 
@@ -1084,35 +1106,35 @@ public class DataHandler {
      * @return
      */
     public ArrayList<String> getStudentClassNames() {
-        return new ArrayList<String>(stdClasses.keySet());
+        return new ArrayList<String>( stdClasses.keySet() );
     }
 
     /**
      * @param name
      * @return
      */
-    public StudentClass getStudentClass(String name) {
-        return stdClasses.get(name);
+    public StudentClass getStudentClass( String name ) {
+        return stdClasses.get( name );
     }
 
     /**
      * @param stdClass
      */
-    public void addStudentClass(StudentClass stdClass) {
-        db.insertStudentClass(stdClass);
-        stdClasses.put(stdClass.getName(), stdClass);
+    public void addStudentClass( StudentClass stdClass ) {
+        db.insertStudentClass( stdClass );
+        stdClasses.put( stdClass.getName(), stdClass );
     }
 
     /**
      * @param name
      * @return
      */
-    public DataHandler deleteStudentClass(String name) {
-        if (!stdClasses.containsKey(name) || stdClassHasTasks(name))
+    public DataHandler deleteStudentClass( String name ) {
+        if ( !stdClasses.containsKey( name ) || stdClassHasTasks( name ) )
             return this;
 
-        StudentClass stdcClass = stdClasses.remove(name);
-        db.deleteStdClass(stdcClass);
+        StudentClass stdcClass = stdClasses.remove( name );
+        db.deleteStdClass( stdcClass );
 
         return this;
     }
@@ -1121,11 +1143,11 @@ public class DataHandler {
      * @param stdClassName
      * @return
      */
-    public boolean stdClassHasTasks(String stdClassName) {
+    public boolean stdClassHasTasks( String stdClassName ) {
         Iterator<Task> it = tasks.values().iterator();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             Task task = it.next();
-            if (task.getClasses().contains(stdClassName))
+            if ( task.getClasses().contains( stdClassName ) )
                 return true;
         }
 
@@ -1135,61 +1157,60 @@ public class DataHandler {
     /**
      * @param stdClass
      */
-    private void notifyStudentClassChange(StudentClass stdClass, int mode) {
-        if (stdClassChangeListeners.isEmpty())
+    private void notifyStudentClassChange( StudentClass stdClass, int mode ) {
+        if ( stdClassChangeListeners.isEmpty() )
             return;
 
         Iterator<OnStudentClassChangeListener> it = stdClassChangeListeners.values().iterator();
-        while (it.hasNext())
-            it.next().onStudentClassUpdate(stdClass, mode);
+        while ( it.hasNext() )
+            it.next().onStudentClassUpdate( stdClass, mode );
     }
 
     /**
      * @param stdClass
      */
-    public void notifyStudentClassAdd(StudentClass stdClass) {
-        notifyStudentClassChange(stdClass, OnStudentClassChangeListener.MODE_ADD);
+    public void notifyStudentClassAdd( StudentClass stdClass ) {
+        notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_ADD );
     }
 
     /**
      * @param stdClass
      */
-    public void notifyStudentClassDel(StudentClass stdClass) {
-        notifyStudentClassChange(stdClass, OnStudentClassChangeListener.MODE_DEL);
+    public void notifyStudentClassDel( StudentClass stdClass ) {
+        notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_DEL );
     }
 
     /**
      * @param stdClass
      */
-    public void notifyStudentClassUpdate(StudentClass stdClass) {
-        notifyStudentClassChange(stdClass, OnStudentClassChangeListener.MODE_UPD);
+    public void notifyStudentClassUpdate( StudentClass stdClass ) {
+        notifyStudentClassChange( stdClass, OnStudentClassChangeListener.MODE_UPD );
     }
 
     /**
      * @param listener
      */
-    public void addOnStudentClassChangeListener(OnStudentClassChangeListener listener) {
+    public void addOnStudentClassChangeListener( OnStudentClassChangeListener listener ) {
         String name = listener.getClass().getName();
 
-        if (stdClassChangeListeners.containsKey(name))
-            stdClassChangeListeners.remove(name);
+        if ( stdClassChangeListeners.containsKey( name ) )
+            stdClassChangeListeners.remove( name );
 
-        stdClassChangeListeners.put(name, listener);
+        stdClassChangeListeners.put( name, listener );
     }
 
     /**
-     * @param ctx
      * @return
      */
     public List<String> getFilesFromDownloadDir() {
         List<String> list = new ArrayList<String>();
 
-        File externalDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File externalDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS );
         File[] files = externalDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
+        for ( int i = 0; i < files.length; i++ ) {
             File f = files[i];
-            if (f.isFile() && f.getName().endsWith(STDCLASS_FILE_SUFFIX))
-                list.add(f.getName());
+            if ( f.isFile() && f.getName().endsWith( STDCLASS_FILE_SUFFIX ) )
+                list.add( f.getName() );
         }
 
         return list;
@@ -1203,7 +1224,7 @@ public class DataHandler {
      * @return A ready formatted StudentClass instance
      * @throws IOException if any I/O error occurs
      */
-    public static StudentClass LoadStudentClassFromDownloadDir(Context ctx, String fileName) throws IOException {
+    public static StudentClass LoadStudentClassFromDownloadDir( Context ctx, String fileName ) throws IOException {
         return null;
     }
 
@@ -1211,27 +1232,27 @@ public class DataHandler {
      * @param bean
      * @return A new Ident
      */
-    static String CreateStudentIdent(Student bean) {
+    static String CreateStudentIdent( Student bean ) {
         String ident = null;
 
         String fn = bean.getFirstName();
-        if (fn.length() >= 3)
-            fn = fn.substring(0, 3);
+        if ( fn.length() >= 3 )
+            fn = fn.substring( 0, 3 );
 
         String ln = bean.getLastName();
-        if (ln.length() >= 4)
-            ln = ln.substring(0, 4);
+        if ( ln.length() >= 4 )
+            ln = ln.substring( 0, 4 );
 
-        String year = Utils.GetDateAsString(bean.getBirth());
-        year = year.substring(year.length() - 2, year.length());
+        String year = Utils.GetDateAsString( bean.getBirth() );
+        year = year.substring( year.length() - 2, year.length() );
 
         ident = year + fn + ln;
-        ident = ident.replace('æ', 'e');
-        ident = ident.replace('ø', 'o');
-        ident = ident.replace('å', 'a');
+        ident = ident.replace( 'æ', 'e' );
+        ident = ident.replace( 'ø', 'o' );
+        ident = ident.replace( 'å', 'a' );
 
-        Log.d(TAG, "Creating ident: " + ident);
-        return ident.toLowerCase(Locale.getDefault());
+        Log.d( TAG, "Creating ident: " + ident );
+        return ident.toLowerCase( Locale.getDefault() );
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -1249,29 +1270,29 @@ public class DataHandler {
      * @param stds
      * @param append
      */
-    public static void WriteStudentInTasks(Context ctx, HashMap<String, StudentTaskImpl> stds, boolean append) {
-        if (studentInTasks == null)
+    public static void WriteStudentInTasks( Context ctx, HashMap<String, StudentTaskImpl> stds, boolean append ) {
+        if ( studentInTasks == null )
             return;
 
         FileOutputStream fos;
         BufferedWriter buff;
 
         try {
-            fos = ctx.openFileOutput(STUDENT_IN_TASK_FILENAME, Context.MODE_PRIVATE);
-            buff = new BufferedWriter(new OutputStreamWriter(fos));
+            fos = ctx.openFileOutput( STUDENT_IN_TASK_FILENAME, Context.MODE_PRIVATE );
+            buff = new BufferedWriter( new OutputStreamWriter( fos ) );
 
             Iterator<String> it = studentInTasks.keySet().iterator();
-            while (it.hasNext()) {
-                StudentTaskImpl std = studentInTasks.get(it.next());
-                String data = CreateStringFromStudentsInTasks(std);
+            while ( it.hasNext() ) {
+                StudentTaskImpl std = studentInTasks.get( it.next() );
+                String data = CreateStringFromStudentsInTasks( std );
 
-                buff.write(data);
+                buff.write( data );
                 buff.newLine();
             }
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Cannot write " + STUDENT_IN_TASK_FILENAME, e);
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failure writing data to " + STUDENT_IN_TASK_FILENAME, ioe);
+        } catch ( FileNotFoundException e ) {
+            Log.e( TAG, "Cannot write " + STUDENT_IN_TASK_FILENAME, e );
+        } catch ( IOException ioe ) {
+            Log.e( TAG, "Failure writing data to " + STUDENT_IN_TASK_FILENAME, ioe );
         }
     }
 
@@ -1279,7 +1300,7 @@ public class DataHandler {
      * @param std
      * @return
      */
-    private static String CreateStringFromStudentsInTasks(StudentTaskImpl std) {
+    private static String CreateStringFromStudentsInTasks( StudentTaskImpl std ) {
         StringBuffer sb = new StringBuffer();
         /*
          * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size =
@@ -1306,7 +1327,7 @@ public class DataHandler {
      */
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
             return true;
         }
         return false;
@@ -1317,7 +1338,7 @@ public class DataHandler {
      */
     public static boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+        if ( Environment.MEDIA_MOUNTED.equals( state ) || Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
             return true;
         }
         return false;
@@ -1363,7 +1384,7 @@ public class DataHandler {
         /**
          * @param mode
          */
-        public void onSubjectTypeChange(int mode);
+        public void onSubjectTypeChange( int mode );
     }
 
     /**
@@ -1381,7 +1402,7 @@ public class DataHandler {
         /**
          * @param mode
          */
-        public void onTasksChange(int mode);
+        public void onTasksChange( int mode );
     }
 
     /**
@@ -1389,7 +1410,7 @@ public class DataHandler {
      */
     public static interface OnStudentClassChangeListener extends OnChangeListener {
 
-        public void onStudentClassUpdate(StudentClass stdClass, int mode);
+        public void onStudentClassUpdate( StudentClass stdClass, int mode );
     }
 
 }

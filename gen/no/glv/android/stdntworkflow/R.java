@@ -333,7 +333,7 @@ public final class R {
         public static final int fr_tasks_closed=0x7f030012;
         public static final int fr_tasks_open=0x7f030013;
         public static final int fragment_home=0x7f030014;
-        public static final int fragment_loaddata=0x7f030015;
+        public static final int fragment_newclass =0x7f030015;
         public static final int fragment_loaddata_files=0x7f030016;
         public static final int fragment_navigation_drawer=0x7f030017;
         public static final int fragment_new_task=0x7f030018;

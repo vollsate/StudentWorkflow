@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A dialog that will list every known student added to the task. The user may
- * choose to remove certain students from the list, if needed.
+ * A base for creating custom simple dialogs.
+ *
+ * <p>
+ *     An implementation must provide the following data: <code>getRootViewID</code> to the XML file
+ * </p>
  * 
  * @author GleVoll
  *
@@ -50,7 +53,7 @@ public abstract class DialogFragmentBase extends DialogFragment {
 
 	/**
 	 * 
-	 * @return
+	 * @return the datahandler
 	 */
 	protected DataHandler getDataHander() {
 		return DataHandler.GetInstance();

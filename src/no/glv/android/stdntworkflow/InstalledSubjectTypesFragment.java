@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import no.glv.android.stdntworkflow.core.DataHandler;
+import no.glv.android.stdntworkflow.core.Utils;
 import no.glv.android.stdntworkflow.intrfc.SubjectType;
 
 public class InstalledSubjectTypesFragment extends InstalledDataFragment<SubjectType> {
@@ -31,7 +32,7 @@ public class InstalledSubjectTypesFragment extends InstalledDataFragment<Subject
     }
 
     @Override
-    public int getViewGruopLayoutID() {
+    public int getViewGroupLayoutID() {
         return R.layout.fr_installed_subjecttypes;
     }
 
@@ -71,8 +72,8 @@ public class InstalledSubjectTypesFragment extends InstalledDataFragment<Subject
         TextView tvtype = ( TextView ) viewGroup.findViewById( R.id.TV_subtype_type );
 
         tvName.setText( st.getName() );
-        tvDesc.setText( st.getDescription() );
-        tvtype.setText( "" );
+        tvDesc.setText( st.getDescription() != null ? " " : st.getDescription() );
+        tvtype.setText( Utils.GetSubjectType( st ) );
 
         ImageView ivDelete = ( ImageView ) viewGroup.findViewById( R.id.IV_subtype_delete );
         ivDelete.setTag( st );
@@ -92,7 +93,9 @@ public class InstalledSubjectTypesFragment extends InstalledDataFragment<Subject
                     public void onClick( DialogInterface dialog, int which ) {
                         // Delete and finish
                         dataHandler.deleteSubjectType( subtype );
-                        notifyDataSetChanged();
+                        //notifyDataSetChanged();
+
+                        Utils.FragmentDetachAttach( InstalledSubjectTypesFragment.this);
                     }
                 } );
 

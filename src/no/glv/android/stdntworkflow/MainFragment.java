@@ -57,9 +57,9 @@ public class MainFragment extends BaseFragment {
 	}
 
 	/**
+	 * Will start the fragment that displays all the currently open tasks.
 	 * 
-	 * @param inState
-	 * @return
+	 * @param inState The saved instance bundle
 	 */
 	private void startInstalledTasksFR( Bundle inState ) {
 		TaskViewConfig config = new TaskViewConfig();
@@ -75,9 +75,9 @@ public class MainFragment extends BaseFragment {
 	}
 
 	/**
+     * Will start the fragment showing the currently installed classes.
 	 * 
-	 * @param inState
-	 * @return
+	 * @param inState The saved instance bundle
 	 */
 	private void startInstalledClassesFR( Bundle inState ) {
 		ClassViewConfig config = new ClassViewConfig();

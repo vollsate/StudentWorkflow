@@ -77,7 +77,7 @@ public class InstalledClassesFragment extends InstalledDataFragment<String> impl
 	}
 
 	@Override
-	public int getViewGruopLayoutID() {
+	public int getViewGroupLayoutID() {
 		return R.layout.fr_installedclasses;
 	}
 

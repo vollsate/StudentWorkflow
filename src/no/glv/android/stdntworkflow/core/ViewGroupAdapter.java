@@ -27,7 +27,7 @@ public abstract class ViewGroupAdapter extends BaseFragment {
 	 * 
 	 * @return
 	 */
-	public abstract int getViewGruopLayoutID();
+	public abstract int getViewGroupLayoutID();
 
 	/**
 	 * 
@@ -59,10 +59,10 @@ public abstract class ViewGroupAdapter extends BaseFragment {
 		Log.i( TAG, "onCreateView()" );
 
 		try {
-			rootView = (ViewGroup) inflater.inflate( getViewGruopLayoutID(), container, false );
+			rootView = (ViewGroup) inflater.inflate( getViewGroupLayoutID(), container, false );
 		}
 		catch ( Exception e ) {
-			rootView = (ViewGroup) container.findViewById( getViewGruopLayoutID() );
+			rootView = (ViewGroup) container.findViewById( getViewGroupLayoutID() );
 		}
 
 		if ( rootView == null ) {

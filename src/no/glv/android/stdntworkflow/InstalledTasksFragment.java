@@ -142,7 +142,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
 	}
 
 	@Override
-	public int getViewGruopLayoutID() {
+	public int getViewGroupLayoutID() {
 		return R.layout.fr_installedtasks;
 	}
 

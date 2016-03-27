@@ -21,7 +21,7 @@ public abstract class InstalledDataFragment<T> extends ViewGroupAdapter {
 
 	public static final String PARAM_CONFIG = BaseValues.EXTRA_BASEPARAM + "config";
 	
-	public abstract int getViewGruopLayoutID();
+	public abstract int getViewGroupLayoutID();
 
 	public abstract List<T> getNames();
 

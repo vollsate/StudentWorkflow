@@ -72,7 +72,7 @@ public class BaseActivity extends Activity {
 
 	/**
 	 * 
-	 * @param studentClass
+	 * @param stdClass
 	 * @param intent
 	 */
 	public static void PutStudentClassExtra( String stdClass, Intent intent ) {
@@ -126,7 +126,6 @@ public class BaseActivity extends Activity {
 	/**
 	 * 
 	 * @param std
-	 * @param stdClass
 	 * @param intent
 	 */
 	public static void PutIdentExtra( Student std, Intent intent ) {

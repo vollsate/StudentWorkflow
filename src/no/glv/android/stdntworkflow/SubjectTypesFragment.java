@@ -29,45 +29,47 @@ public class SubjectTypesFragment extends BaseFragment {
     private Holder holder;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fr_subject_type, container, false);
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+        rootView = inflater.inflate( R.layout.fr_subject_type, container, false );
         holder = new Holder();
 
-        holder.etName = (EditText) rootView.findViewById(R.id.ET_subjectType_name);
-        holder.etDesc = (EditText) rootView.findViewById(R.id.ET_subjectType_desc);
-        holder.spSubjType = (Spinner) rootView.findViewById(R.id.SP_subjectType_type);
+        holder.etName = ( EditText ) rootView.findViewById( R.id.ET_subjectType_name );
+        holder.etDesc = ( EditText ) rootView.findViewById( R.id.ET_subjectType_desc );
+        holder.spSubjType = ( Spinner ) rootView.findViewById( R.id.SP_subjectType_type );
 
 
         // Installes the button and functionality for installing new SubjectTypes
-        Button btnCreate = (Button) rootView.findViewById(BTN_subjectType_create);
-        btnCreate.setTag(holder);
-        btnCreate.setOnClickListener(new View.OnClickListener() {
+        Button btnCreate = ( Button ) rootView.findViewById( BTN_subjectType_create );
+        btnCreate.setTag( holder );
+        btnCreate.setOnClickListener( new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
-                Holder h = (Holder) v.getTag();
+            public void onClick( View v ) {
+                Holder h = ( Holder ) v.getTag();
 
                 SubjectType st = dataHandler.createSubjectType();
 
-                st.setName(h.etName.getText().toString());
-                st.setDescription(h.etDesc.getText().toString());
+                st.setName( h.etName.getText().toString() );
+                st.setDescription( h.etDesc.getText().toString() );
                 int id = h.spSubjType.getSelectedItemPosition() + 1;
-                st.setType(id | SubjectType.TYPE_CUSTOM);
+                st.setType( id | SubjectType.TYPE_CUSTOM );
 
-                boolean success = dataHandler.addSubjectType(st);
-                String msg = getResources().getString(R.string.subjectType_added);
-                if (!success) {
-                    msg = getResources().getString(R.string.subjectType_added_err);
+                boolean success = dataHandler.addSubjectType( st );
+                String msg = getResources().getString( R.string.subjectType_added );
+                if ( !success ) {
+                    msg = getResources().getString( R.string.subjectType_added_err );
                 }
-                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                Toast.makeText( getActivity(), msg, Toast.LENGTH_LONG ).show();
+
+                Utils.FragmentDetachAttach( SubjectTypesFragment.this );
             }
-        });
+        } );
 
         // Setup spinners
-        Spinner sp = (Spinner) rootView.findViewById(R.id.SP_task_subject);
-        Utils.SetupSpinner(sp, new ArrayList<String>(dataHandler.getSubjectNames()), null, getActivity());
-        sp = (Spinner) rootView.findViewById(R.id.SP_task_type);
-        Utils.SetupSpinner(sp, new ArrayList<String>(dataHandler.getTypeNames()), null, getActivity());
+        Spinner sp = ( Spinner ) rootView.findViewById( R.id.SP_task_subject );
+        Utils.SetupSpinner( sp, new ArrayList<String>( dataHandler.getSubjectNames() ), null, getActivity() );
+        sp = ( Spinner ) rootView.findViewById( R.id.SP_task_type );
+        Utils.SetupSpinner( sp, new ArrayList<String>( dataHandler.getTypeNames() ), null, getActivity() );
 
         startInstalledSubjectTypes();
 
@@ -75,7 +77,7 @@ public class SubjectTypesFragment extends BaseFragment {
     }
 
     private void startInstalledSubjectTypes() {
-        InstalledSubjectTypesFragment.StartFragment(getFragmentManager(), R.id.FR_installedSubjectTypes);
+        InstalledSubjectTypesFragment.StartFragment( getFragmentManager(), R.id.FR_installedSubjectTypes );
     }
 
     /**
