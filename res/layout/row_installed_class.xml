@@ -50,7 +50,7 @@
 
     <View
         style="@style/divider"
-        android:layout_height="2sp"
+        android:layout_height="2dp"
         android:background="?android:attr/listDividerAlertDialog" />
 
 </LinearLayout>

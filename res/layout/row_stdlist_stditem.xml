@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
+            android:paddingTop="5dp"
             android:text="@string/stdList.stditem.class" />
 
         <Spinner
@@ -35,11 +36,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/TV.stdList.stditem.class"
+            android:layout_alignParentTop="true"
             android:entries="@array/stdList_classes"
             android:paddingLeft="10dp" />
 
         <LinearLayout
             android:id="@+id/LL.ex"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/SP.stdList.stditem.classes"
