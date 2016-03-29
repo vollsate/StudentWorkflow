@@ -50,7 +50,7 @@ public class AddClassToTaskFragment extends ViewGroupAdapter {
 
 	@Override
 	protected void doCreateView( ViewGroup rootView ) {
-		mClasses = dataHandler.getStudentClassNames();
+		mClasses = dataHandler.getInstalledClassNames();
 
 		for ( int i = 0; i < mClasses.size(); i++ ) {
 			ViewGroup myView = inflateViewGroup( R.layout.row_newtask_addclasses );

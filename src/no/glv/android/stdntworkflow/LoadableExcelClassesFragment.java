@@ -130,7 +130,7 @@ public class LoadableExcelClassesFragment extends LoadClassFromFileFragment impl
 		List<String> list = new LinkedList<String>();
 
 		for ( String name : reader.getAvailableClasses() ) {
-			if ( !DataHandler.GetInstance().getStudentClassNames().contains( name ) )
+			if ( !DataHandler.GetInstance().getInstalledClassNames().contains( name ) )
 				list.add( name );
 		}
 

@@ -119,7 +119,7 @@ public class AddClassesToTaskFragment extends AddStudentsToTaskFragment implemen
 	 */
 	protected List<StudentClass> createClassList() {
 		DataHandler dataHandler = DataHandler.GetInstance();
-		List<String> classNames = dataHandler.getStudentClassNames();
+		List<String> classNames = dataHandler.getInstalledClassNames();
 		List<StudentClass> stdClasses = new LinkedList<StudentClass>();
 		List<String> classesInTask = mTask.getClasses();
 

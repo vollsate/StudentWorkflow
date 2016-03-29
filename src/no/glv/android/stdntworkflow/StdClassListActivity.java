@@ -39,11 +39,12 @@ import no.glv.android.stdntworkflow.intrfc.StudentClass;
  * @author GleVoll
  *
  */
-public class StdClassListActivity extends Activity implements OnClickListener,
+public class StdClassListActivity extends BaseActivity implements OnClickListener,
 		AdapterView.OnItemClickListener, OnVerifySendSMSListener, OnLongClickListener {
 
 	private static final String TAG = StdClassListActivity.class.getSimpleName();
 
+	/** Used to replace text from an EditText **/
 	private static final String CLASS_REPLACE = "{klasse}";
 
 	/**  */
@@ -65,8 +66,6 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_stdclass_list );
 
-		Log.d( TAG, "onCreate()" );
-
 		stdClass = BaseActivity.GetStudentClassExtra( this.getIntent() );
 
 		String title = getResources().getString( R.string.activity_stdlist_title );
@@ -79,6 +78,14 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 		listView.setAdapter( adapter );
 	}
 
+	/**
+	 * Callback from the <code>StudentListAdapter</code> when a specific row (Student) is clicked.
+	 *
+	 * @param parent
+	 * @param view
+	 * @param position The number of the student in the list
+	 * @param id
+	 */
 	@Override
 	public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
 		Student std = stdClass.getStudents().get( position );
@@ -126,12 +133,12 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 				break;
 
 			case R.id.menu_stdList_sort_firstNameAsc:
-				DataHandler.GetInstance().getSettingsManager().sortByFirstNameAsc( stdClass.getName() );
+				dataHandler.getSettingsManager().sortByFirstNameAsc( stdClass.getName() );
 				update();
 				return true;
 
 			case R.id.menu_stdList_sort_lastNameAsc:
-				DataHandler.GetInstance().getSettingsManager().sortByLastNameAsc( stdClass.getName() );
+				dataHandler.getSettingsManager().sortByLastNameAsc( stdClass.getName() );
 				update();
 				return true;
 
@@ -141,7 +148,6 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 
 			case R.id.menu_stdlist_sms:
 				sendSMS();
-				;
 				return true;
 
 		}
@@ -174,11 +180,8 @@ public class StdClassListActivity extends Activity implements OnClickListener,
      */
 	private void sendMail() {
 		ArrayList<String> list = new ArrayList<String>();
-		Iterator<Student> stds = stdClass.getStudents().iterator();
 
-		while ( stds.hasNext() ) {
-			Student std = stds.next();
-
+		for ( Student std : stdClass.getStudents() ) {
 			for ( int i = 0; i < std.getParents().size(); i++ ) {
 				Parent par = std.getParents().get( i );
 				if ( par.getMail() != null )
@@ -244,7 +247,7 @@ public class StdClassListActivity extends Activity implements OnClickListener,
 				public void onClick( DialogInterface dialog, int which ) {
 					String msg = getResources().getString( R.string.stdlist_del_done_msg ).replace( "{class}",
 							stdClass.getName() );
-					DataHandler.GetInstance().deleteStudentClass( stdClass.getName() ).notifyStudentClassDel( stdClass );
+					dataHandler.deleteStudentClass( stdClass.getName() ).notifyStudentClassDel( stdClass );
 					Toast.makeText( StdClassListActivity.this, msg, Toast.LENGTH_LONG ).show();
 					finish();
 				}

@@ -20,7 +20,7 @@ import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
 
 /**
- * The entrypoint to the Application.
+ * The entry point to the Application.
  * <p>
  * <p>This will load the <code>MainFragment</code>.</p>
  */
@@ -45,10 +45,6 @@ public class MainActivity extends BaseActivity {
 
     // slide menu items
     private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
-
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -62,13 +58,13 @@ public class MainActivity extends BaseActivity {
         navMenuTitles = getResources().getStringArray( R.array.nav_drawer_items );
 
         // nav drawer icons from resources
-        navMenuIcons = getResources()
+        TypedArray navMenuIcons = getResources()
                 .obtainTypedArray( R.array.nav_drawer_icons );
 
         mDrawerLayout = ( DrawerLayout ) findViewById( R.id.drawer_layout );
         mDrawerList = ( ListView ) findViewById( R.id.list_slidermenu );
 
-        navDrawerItems = new ArrayList<NavDrawerItem>();
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
         int index = 0;
 
         // adding nav drawer items to array
@@ -88,7 +84,7 @@ public class MainActivity extends BaseActivity {
         mDrawerList.setOnItemClickListener( new SlideMenuClickListener() );
 
         // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter( getApplicationContext(),
+        NavDrawerListAdapter adapter = new NavDrawerListAdapter( getApplicationContext(),
                 navDrawerItems );
         mDrawerList.setAdapter( adapter );
 

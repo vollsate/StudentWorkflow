@@ -388,7 +388,7 @@ public class TaskActivity extends BaseTabActivity {
     // ------------------------------------------------------------------------
 
     /**
-     * Shows all the studens in this task. Will allow for adding, deletion and
+     * Shows all the students in this task. Will allow for adding, deletion and
      * hand-in of students.
      */
     public static class TaskStudentsFragment extends BaseTabFragment {
@@ -521,12 +521,13 @@ public class TaskActivity extends BaseTabActivity {
             holder.identTV.setTag( stdTask );
             holder.classTV.setTag( stdTask );
             holder.handinDateTV.setTag( stdTask );
-            holder.imgInfoView.setTag( stdTask );
+
             holder.imgDeleteView.setTag( stdTask );
             if ( stdTask.isHandedIn() )
                 holder.imgDeleteView.setVisibility( View.INVISIBLE );
             else
                 holder.imgDeleteView.setVisibility( View.VISIBLE );
+
             holder.chkBox.setTag( stdTask );
 
             holder.id = position;
@@ -579,6 +580,7 @@ public class TaskActivity extends BaseTabActivity {
             View myView = inflater.inflate( R.layout.row_task_stdlist, parent, false );
             ViewHolder holder = new ViewHolder();
 
+            /*
             holder.imgInfoView = BaseActivity.GetImageView( myView, R.id.info );
             holder.imgInfoView.setOnClickListener( new View.OnClickListener() {
 
@@ -588,6 +590,7 @@ public class TaskActivity extends BaseTabActivity {
                     StdInfoActivity.StartActivity( getContext(), stdTask.getStudent() );
                 }
             } );
+            */
 
             holder.imgDeleteView = BaseActivity.GetImageView( myView, R.id.delete );
             holder.imgDeleteView.setOnClickListener( new View.OnClickListener() {
@@ -799,7 +802,7 @@ public class TaskActivity extends BaseTabActivity {
         TextView identTV;
         TextView classTV;
         TextView handinDateTV;
-        ImageView imgInfoView;
+       // ImageView imgInfoView;
         ImageView imgDeleteView;
         CheckBox chkBox;
 

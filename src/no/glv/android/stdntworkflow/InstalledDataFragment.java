@@ -47,22 +47,24 @@ public abstract class InstalledDataFragment<T> extends ViewGroupAdapter {
 		}
 	}
 
+    /**
+     *
+     * @param name The name signaling the row to build
+     * @param pos The position in the list
+     * @return The row as a View
+     */
 	protected abstract View buildRow( final T name, int pos );
 
 	public abstract int getRowLayoutID();
 
 	/**
 	 * Get the intent for an onClick event in this Fragment.
-	 * 
-	 * @param name
-	 * @param context
-	 * @return
-	 */
+	 **/
 	public abstract Intent createIntent( T name, Context context );
 
 	/**
 	 * 
-	 * @param mode
+	 * @param mode Flag for the type of change that has changed
 	 */
 	public void onDataChange( int mode ) {
 		switch ( mode ) {

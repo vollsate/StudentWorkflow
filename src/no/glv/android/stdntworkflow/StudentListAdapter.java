@@ -26,239 +26,224 @@ import no.glv.android.stdntworkflow.intrfc.Student;
 /**
  * This Adapter will list all the student in a given StudentClass. This class
  * will load a XML layout row: row_student_list.
- * 
+ * <p>
  * This list MUST display the first name of every student, and the
- * 
- * 
- * @author GleVoll
  *
+ * @author GleVoll
  */
+@SuppressWarnings("deprecation")
 public class StudentListAdapter extends ExpandableListViewBase<Student> {
 
-	/**  */
-	@SuppressWarnings("unused")
-	private static final String TAG = StudentListAdapter.class.getSimpleName();
+    /**  */
+    @SuppressWarnings("unused")
+    private static final String TAG = StudentListAdapter.class.getSimpleName();
 
-	private SettingsManager mSettingsManager;
-	
-	private String[] values;
+    private SettingsManager mSettingsManager;
 
-	/**
-	 * 
-	 * @param context
-	 * @param objects
-	 */
-	public StudentListAdapter( Context context, List<Student> objects ) {
-		super(context, objects);
-		
-		mSettingsManager = DataHandler.GetInstance().getSettingsManager();
-		values = context.getResources().getStringArray( R.array.stdList_classes );
-	}
+    /**
+     * A-F. Not used or stored anywhere as of yet.
+     **/
+    private String[] baseClassNames;
 
-	/**
-	 * 
-	 */
-	public View getView( int position, View convertView, ViewGroup parent, boolean isExpanded ) {
-		Student student = getItem( position );
+    /**
+     * @param context
+     * @param objects
+     */
+    public StudentListAdapter( Context context, List<Student> objects ) {
+        super( context, objects );
 
-		if ( convertView == null )
-			convertView = createView( parent, student, position, isExpanded );
+        mSettingsManager = DataHandler.GetInstance().getSettingsManager();
+        baseClassNames = context.getResources().getStringArray( R.array.stdList_classes );
+    }
 
-		if ( position % 2 == 0 )
-			convertView.setBackgroundColor( getContext().getResources().getColor(
-					R.color.task_stdlist_dark ) );
-		else
-			convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
+    /**
+     *
+     */
+    public View getView( int position, View convertView, ViewGroup parent, boolean isExpanded ) {
+        Student student = getItem( position );
 
-		ViewHolder holder = (ViewHolder) convertView.getTag();
-		holder.imgTaskView.setTag( student );
-		holder.id = position;
+        if ( convertView == null )
+            convertView = createView( parent, student, position, isExpanded );
 
-		if ( mSettingsManager.isShowFullname() )
-			holder.textView.setText( student.getFirstName() + " "
-					+ student.getLastName() );
-		else
-			holder.textView.setText( student.getFirstName() );
+        if ( position % 2 == 0 )
+            convertView.setBackgroundColor( getContext().getResources().getColor(
+                    R.color.task_stdlist_dark ) );
+        else
+            convertView.setBackgroundColor( getContext().getResources().getColor( R.color.task_stdlist_light ) );
 
-		holder.identText.setText( student.getIdent() );
-		holder.birthText.setText( Utils.GetDateAsString( student.getBirth() ) );
+        ViewHolder holder = ( ViewHolder ) convertView.getTag();
+        holder.imgTaskView.setTag( student );
+        holder.id = position;
 
-		return convertView;
-	}
+        if ( mSettingsManager.isShowFullname() )
+            holder.textView.setText( student.getFirstName() + " "
+                    + student.getLastName() );
+        else
+            holder.textView.setText( student.getFirstName() );
 
-	/**
-	 * 
-	 * @param context
-	 * @param parent
-	 * @return
-	 */
-	private View createView( final ViewGroup parent, final Student student, final int groupPos, final boolean isExpanded ) {
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		View myView = inflater.inflate( R.layout.row_stdclass_list, parent, false );
+        holder.identText.setText( student.getIdent() );
+        holder.birthText.setText( Utils.GetDateAsString( student.getBirth() ) );
+
+        return convertView;
+    }
+
+    /**
+     * @param parent
+     * @param student
+     * @param groupPos
+     * @param isExpanded
+     * @return
+     */
+    private View createView( final ViewGroup parent, final Student student, final int groupPos, final boolean isExpanded ) {
+        LayoutInflater inflater = ( LayoutInflater ) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View myView = inflater.inflate( R.layout.row_stdclass_list, parent, false );
+
+        ViewHolder holder = new ViewHolder();
+
+        ImageView imgTaskView = ( ImageView ) myView.findViewById( R.id.task );
+        imgTaskView.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick( View v ) {
+                Toast.makeText( getContext(), "Will implement individual StudentTask soon..", Toast.LENGTH_LONG )
+                        .show();
+            }
+        } );
+
+        TextView textView = ( TextView ) myView.findViewById( R.id.TV_stdlist_name );
+        textView.setTag( student );
+        holder.textView = textView;
+
+        textView = ( TextView ) myView.findViewById( R.id.TV_stdlist_ident );
+        holder.identText = textView;
+
+        textView = ( TextView ) myView.findViewById( R.id.TV_stdlist_birth );
+        holder.birthText = textView;
+
+        holder.imgTaskView = imgTaskView;
+
+        myView.setTag( holder );
+
+        return myView;
+    }
+
+    static class ViewHolder {
+        int id;
+
+        TextView textView;
+        TextView identText;
+        TextView birthText;
+        ImageView imgTaskView;
+
+    }
+
+    @Override
+    public View getGroupView( final int groupPosition, final boolean isExpanded, View convertView, final ViewGroup parent ) {
+        View view = getView( groupPosition, convertView, parent, isExpanded );
+
+        RelativeLayout ll = ( RelativeLayout ) view.findViewById( R.id.LL_stdList_container );
+        ll.setOnLongClickListener( new OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick( View v ) {
+                Student std = getItem( groupPosition );
+                StdInfoActivity.StartActivity( getContext(), std );
+
+                return true;
+            }
+        } );
+
+        ll.setOnClickListener( new OnClickListener() {
+
+            @Override
+            public void onClick( View v ) {
+                if ( !isExpanded )
+                    ( ( ExpandableListView ) parent ).expandGroup( groupPosition );
+                else
+                    ( ( ExpandableListView ) parent ).collapseGroup( groupPosition );
+            }
+        } );
+
+        return view;
+    }
+
+    /**
+     * @param parent
+     * @return
+     */
+    private View createChildView( ViewGroup parent ) {
+        LayoutInflater inflater = ( LayoutInflater ) getContext().getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE );
+        View convertView = inflater.inflate( R.layout.row_stdlist_stditem, parent, false );
+
+        StudentItemHolder holder = new StudentItemHolder();
+        convertView.setTag( holder );
+
+        return convertView;
+    }
 
 
-		ViewHolder holder = new ViewHolder();
+    @Override
+    public View getChildView( int groupPosition, int childPosition, boolean isLastChild, View convertView,
+                              ViewGroup parent ) {
+        if ( convertView == null ) {
+            convertView = createChildView( parent );
+        }
 
-		ImageView imgTaskView = (ImageView) myView.findViewById( R.id.task );
-		imgTaskView.setOnClickListener( new View.OnClickListener() {
+        final Student st = getItem( groupPosition );
+        final StudentItemHolder holder = ( StudentItemHolder ) convertView.getTag();
+        holder.spClass = ( Spinner ) convertView.findViewById( R.id.SP_stdList_stditem_classes );
+        holder.st = st;
 
-			@Override
-			public void onClick( View v ) {
-				Toast.makeText( getContext(), "Will implement individual StudentTask soon..", Toast.LENGTH_LONG )
-						.show();
-			}
-		} );
+        if ( st.getGrade() != null && st.getGrade().length() > 0 ) {
+            int sel = ( int ) st.getGrade().charAt( 0 );
+            holder.spClass.setSelection( sel - ( int ) 'A' );
+        } else {
+            holder.spClass.setSelection( baseClassNames.length - 1 );
+        }
 
-		ImageView ivInfo = (ImageView) myView.findViewById( R.id.info );
-		ivInfo.setOnClickListener( new View.OnClickListener() {
+        ImageView ivSave = ( ImageView ) convertView.findViewById( R.id.IV_stdList_stditem_save );
+        ivSave.setOnClickListener( new View.OnClickListener() {
 
-			@Override
-			public void onClick( View v ) {
-				StdInfoActivity.StartActivity( getContext(), student );
-			}
-		} );
+            @Override
+            public void onClick( View v ) {
+                String g = holder.spClass.getSelectedItem().toString();
+                holder.st.setGrade( g );
 
-		TextView textView = (TextView) myView.findViewById( R.id.TV_stdlist_name );
-		textView.setTag( student );
-		holder.textView = textView;
+                DataHandler.GetInstance().updateStudent( st, null );
+                Toast.makeText( getContext(), "Saved", Toast.LENGTH_SHORT ).show();
+            }
+        } );
 
-		textView = (TextView) myView.findViewById( R.id.TV_stdlist_ident );
-		holder.identText = textView;
+        holder.spClass.setOnItemSelectedListener( new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected( AdapterView<?> parent, View view, int position, long id ) {
+                String grade = holder.spClass.getSelectedItem().toString();
+                Student student = holder.st;
+                if ( student.getGrade() == null ) {
+                    student.setGrade( grade );
+                } else if ( position > 0 && !st.getGrade().equals( grade ) ) {
+                    st.setGrade( grade );
+                    DataHandler.GetInstance().updateStudent( st, null );
+                }
+            }
 
-		textView = (TextView) myView.findViewById( R.id.TV_stdlist_birth );
-		holder.birthText = textView;
+            @Override
+            public void onNothingSelected( AdapterView<?> parent ) {
+            }
 
-		holder.imgTaskView = imgTaskView;
+        } );
 
-		myView.setTag( holder );
+        return convertView;
+    }
 
-		return myView;
-	}
+    /**
+     * @author glevoll
+     */
+    static class StudentItemHolder {
 
-	static class ViewHolder {
-		int id;
-
-		TextView textView;
-		TextView identText;
-		TextView birthText;
-		ImageView imgTaskView;
-
-	}
-
-	@Override
-	public View getGroupView( final int groupPosition, final boolean isExpanded, View convertView, final ViewGroup parent ) {
-		View view = getView( groupPosition, convertView, parent, isExpanded );
-
-		RelativeLayout ll = (RelativeLayout) view.findViewById( R.id.LL_stdList_container );
-		ll.setOnLongClickListener( new OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick( View v ) {
-				Student std = getItem( groupPosition );
-				StdInfoActivity.StartActivity( getContext(), std );
-				
-				return true;
-			}
-		} );
-
-		ll.setOnClickListener( new OnClickListener() {
-			
-			@Override
-			public void onClick( View v ) {
-				if ( ! isExpanded )
-					( (ExpandableListView) parent).expandGroup( groupPosition );
-				else 
-					( (ExpandableListView) parent).collapseGroup( groupPosition );
-			}
-		} );
-
-		return view;
-	}
-	
-	/**
-	 * 
-	 * @param groupPosition
-	 * @param parent
-	 * @param st
-	 * @return
-	 */
-	private View createChildView( ViewGroup parent ) {
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-				Context.LAYOUT_INFLATER_SERVICE );
-		View convertView = inflater.inflate( R.layout.row_stdlist_stditem, parent, false );
-		
-		StudentItemHolder holder = new StudentItemHolder();
-		convertView.setTag( holder );
-		
-		return convertView;
-	}
-	
-
-	@Override
-	public View getChildView( int groupPosition, int childPosition, boolean isLastChild, View convertView,
-			ViewGroup parent ) {
-		if ( convertView == null ) {
-			convertView = createChildView( parent );
-		}
-		
-		final Student st = getItem( groupPosition );
-		final StudentItemHolder holder = (StudentItemHolder) convertView.getTag();
-		holder.spClass = (Spinner) convertView.findViewById( R.id.SP_stdList_stditem_classes );
-		holder.st = st;
-
-		if ( st.getGrade() != null && st.getGrade().length() > 0 ) {
-			int sel = (int) st.getGrade().charAt( 0 );
-			holder.spClass.setSelection( sel - (int) 'A' );
-		}
-		else {
-			holder.spClass.setSelection( values.length - 1 );
-		}
-		
-		ImageView ivSave = (ImageView) convertView.findViewById( R.id.IV_stdList_stditem_save );
-		ivSave.setOnClickListener( new View.OnClickListener() {
-
-			@Override
-			public void onClick( View v ) {
-				String g = holder.spClass.getSelectedItem().toString();
-				holder.st.setGrade( g );
-				
-				DataHandler.GetInstance().updateStudent( st, null );
-				Toast.makeText( getContext(), "Saved", Toast.LENGTH_SHORT ).show();
-			}
-		} );
-
-		holder.spClass.setOnItemSelectedListener( new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected( AdapterView<?> parent, View view, int position, long id ) {
-				String grade = holder.spClass.getSelectedItem().toString();
-				Student student = holder.st;
-				if ( student.getGrade() == null ) {
-					student.setGrade( grade );
-				}
-				else if ( position > 0 && !st.getGrade().equals( grade ) ) {					
-					st.setGrade( grade );
-					DataHandler.GetInstance().updateStudent( st, null );
-				}
-			}
-
-			@Override
-			public void onNothingSelected( AdapterView<?> parent ) {
-			}
-
-		} );
-
-		return convertView;
-	}
-
-	/**
-	 * 
-	 * @author glevoll
-	 *
-	 */
-	static class StudentItemHolder {
-
-		Spinner spClass;
-		Student st;
-	}
+        Spinner spClass;
+        Student st;
+    }
 
 }

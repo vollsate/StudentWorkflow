@@ -68,7 +68,7 @@ public class DataHandler {
     private static String STDCLASS_FILE_SUFFIX = ".csv";
 
     /**
-     * A map of all the tasks the students are involved in
+     * A map of all the installedTasks the students are involved in
      */
     private static HashMap<String, StudentTaskImpl> studentInTasks;
 
@@ -80,12 +80,12 @@ public class DataHandler {
     /**
      * All the loaded classes from the database
      */
-    private TreeMap<String, StudentClass> stdClasses;
+    private TreeMap<String, StudentClass> installedClasses;
 
     /**
-     * All the loaded tasks from the database
+     * All the loaded installedTasks from the database
      */
-    private TreeMap<Integer, Task> tasks;
+    private TreeMap<Integer, Task> installedTasks;
 
     /**
      * A map of all the SUBJECT SubjectType installed on the system
@@ -138,7 +138,7 @@ public class DataHandler {
      * properly or an {@link IllegalStateException} is thrown.
      * <p>
      * <p>
-     * Any open tasks will be loaded, and every known {@link StudentClass} will
+     * Any open installedTasks will be loaded, and every known {@link StudentClass} will
      * be loaded.
      *
      * @param app
@@ -228,15 +228,15 @@ public class DataHandler {
      * of this method.
      */
     private void initiateMaps() {
-        stdClasses = new TreeMap<String, StudentClass>();
-        tasks = new TreeMap<Integer, Task>();
+        installedClasses = new TreeMap<String, StudentClass>();
+        installedTasks = new TreeMap<Integer, Task>();
 
         installedSubjects = new TreeMap<String, SubjectType>();
         installedThemes = new TreeMap<String, SubjectType>();
     }
 
     /**
-     * Loads the tasks from the DB and and initialize every task with it's
+     * Loads the installedTasks from the DB and and initialize every task with it's
      * corresponding {@link StudentTask} instance.
      * <p>
      * The loadStudentClasses() metod MUST be called first.
@@ -261,7 +261,7 @@ public class DataHandler {
 
             task.addStudentTasks( stdTasks );
             task.markAsCommitted();
-            tasks.put( Integer.valueOf( task.getID() ), task );
+            installedTasks.put( Integer.valueOf( task.getID() ), task );
         }
 
         return list;
@@ -301,7 +301,7 @@ public class DataHandler {
         while ( it.hasNext() ) {
             StudentClass stdClass = it.next();
             populateStudentClass( stdClass );
-            stdClasses.put( stdClass.getName(), stdClass );
+            installedClasses.put( stdClass.getName(), stdClass );
         }
 
         return list;
@@ -373,7 +373,7 @@ public class DataHandler {
             // Add all the classes
             writer.addStudentClasses( loadStudentClasses() );
 
-            // Add all tasks
+            // Add all installedTasks
             List<Task> tasks = loadTasks();
             writer.addTasks( tasks );
 
@@ -429,7 +429,7 @@ public class DataHandler {
     public Student getStudentById( String ident ) {
         Student std = null;
 
-        Iterator<String> it = stdClasses.keySet().iterator();
+        Iterator<String> it = installedClasses.keySet().iterator();
         while ( it.hasNext() ) {
             std = getStudentById( it.next(), ident );
             if ( std != null )
@@ -456,7 +456,7 @@ public class DataHandler {
 
         Student std = null;
 
-        StudentClass stdClass = stdClasses.get( stdClassName );
+        StudentClass stdClass = installedClasses.get( stdClassName );
         std = stdClass.getStudentByIdent( ident );
 
         return std;
@@ -746,8 +746,8 @@ public class DataHandler {
      * @return A List of names of all the Tasks loaded
      */
     public List<String> getTaskNames() {
-        ArrayList<String> list = new ArrayList<String>( tasks.size() );
-        for ( Task t : tasks.values() ) {
+        ArrayList<String> list = new ArrayList<String>( installedTasks.size() );
+        for ( Task t : installedTasks.values() ) {
             list.add( t.getName() );
         }
 
@@ -755,18 +755,18 @@ public class DataHandler {
     }
 
     /**
-     * Finds any tasks that matches the flag. The flag must be one of the states
+     * Finds any installedTasks that matches the flag. The flag must be one of the states
      * a {@link Task} may be in: <tt>TASK_STATE_OPEN</tt>,
      * <tt>TASK_STATE_CLOSED</tt> or <tt>TASK_STATE_EXPIRED</tt> or any
      * combination of the them.
      *
-     * @return A List of every task in the system where the tasks state matches
+     * @return A List of every task in the system where the installedTasks state matches
      * the flag
      */
     public List<String> getTaskNames( int flag ) {
         List<String> tasks = new ArrayList<String>();
 
-        for ( Task t : this.tasks.values() ) {
+        for ( Task t : this.installedTasks.values() ) {
             int state = t.getState();
             if ( ( state & flag ) == Task.TASK_STATE_OPEN ) {
                 tasks.add( t.getName() );
@@ -785,8 +785,8 @@ public class DataHandler {
     /**
      * @return Any {@link Task} loaded by the system.
      */
-    public List<Task> getTasks() {
-        return new ArrayList<Task>( tasks.values() );
+    public List<Task> getInstalledTasks() {
+        return new ArrayList<Task>( installedTasks.values() );
     }
 
     /**
@@ -796,7 +796,7 @@ public class DataHandler {
     public List<Task> getTasks( int flag ) {
         List<Task> ts = new LinkedList<Task>();
 
-        for ( Task t : tasks.values() ) {
+        for ( Task t : installedTasks.values() ) {
             int state = t.getState();
             boolean add = false;
             if ( ( flag & state ) == Task.TASK_STATE_OPEN )
@@ -819,7 +819,7 @@ public class DataHandler {
      */
     public Task getTask( String name ) {
         Task task = null;
-        for ( Task t : tasks.values() ) {
+        for ( Task t : installedTasks.values() ) {
             if ( t.getName().equalsIgnoreCase( name ) ) {
                 task = t;
                 break;
@@ -830,7 +830,7 @@ public class DataHandler {
     }
 
     public Task getTask( Integer id ) {
-        return tasks.get( id );
+        return installedTasks.get( id );
     }
 
     /**
@@ -856,7 +856,7 @@ public class DataHandler {
             setUpStudentTask( task, stds );
             task.addStudentTasks( stds );
 
-            tasks.put( Integer.valueOf( task.getID() ), task );
+            installedTasks.put( Integer.valueOf( task.getID() ), task );
         }
 
         return this;
@@ -891,8 +891,8 @@ public class DataHandler {
             throw new IllegalStateException( "Failed to update Task: " + task.getName() );
 
         if ( oldID != null ) {
-            tasks.remove( Integer.valueOf( oldID ) );
-            tasks.put( Integer.valueOf( task.getID() ), task );
+            installedTasks.remove( Integer.valueOf( oldID ) );
+            installedTasks.put( Integer.valueOf( task.getID() ), task );
         }
 
         return this;
@@ -913,7 +913,7 @@ public class DataHandler {
         if ( db.deleteTask( task ) ) {
             db.deleteStudentTasks( task.getStudentsInTask() );
 
-            tasks.remove( task.getID() );
+            installedTasks.remove( task.getID() );
             notifyTaskDelete( task );
             return true;
         }
@@ -978,7 +978,7 @@ public class DataHandler {
      *
      */
     public void commitTasks() {
-        Iterator<Task> it = tasks.values().iterator();
+        Iterator<Task> it = installedTasks.values().iterator();
 
         while ( it.hasNext() ) {
             Task task = it.next();
@@ -987,7 +987,7 @@ public class DataHandler {
     }
 
     /**
-     * Called when some changes are made to the tasks.
+     * Called when some changes are made to the installedTasks.
      */
     public void notifyTaskSettingsChange() {
         Iterator<OnTasksChangedListener> it = taskChangeListeners.values().iterator();
@@ -1070,7 +1070,7 @@ public class DataHandler {
     public boolean isStudentClassRemovable( StudentClass stdClass ) {
         boolean deletable = true;
 
-        Iterator<Task> it = tasks.values().iterator();
+        Iterator<Task> it = installedTasks.values().iterator();
         while ( it.hasNext() ) {
             Task t = it.next();
             if ( t.getClasses().contains( stdClass.getName() ) ) {
@@ -1082,7 +1082,7 @@ public class DataHandler {
     }
 
     /**
-     * Returns a list of strings containing the names of all the tasks the
+     * Returns a list of strings containing the names of all the installedTasks the
      * {@link StudentClass} is involved in.
      *
      * @param stdClass
@@ -1091,7 +1091,7 @@ public class DataHandler {
     public List<String> getStudentClassInvolvedInTask( StudentClass stdClass ) {
         LinkedList<String> list = new LinkedList<String>();
 
-        Iterator<Task> it = tasks.values().iterator();
+        Iterator<Task> it = installedTasks.values().iterator();
         while ( it.hasNext() ) {
             Task t = it.next();
             if ( t.getClasses().contains( stdClass.getName() ) ) {
@@ -1105,8 +1105,8 @@ public class DataHandler {
     /**
      * @return
      */
-    public ArrayList<String> getStudentClassNames() {
-        return new ArrayList<String>( stdClasses.keySet() );
+    public ArrayList<String> getInstalledClassNames() {
+        return new ArrayList<String>( installedClasses.keySet() );
     }
 
     /**
@@ -1114,7 +1114,7 @@ public class DataHandler {
      * @return
      */
     public StudentClass getStudentClass( String name ) {
-        return stdClasses.get( name );
+        return installedClasses.get( name );
     }
 
     /**
@@ -1122,7 +1122,7 @@ public class DataHandler {
      */
     public void addStudentClass( StudentClass stdClass ) {
         db.insertStudentClass( stdClass );
-        stdClasses.put( stdClass.getName(), stdClass );
+        installedClasses.put( stdClass.getName(), stdClass );
     }
 
     /**
@@ -1130,10 +1130,10 @@ public class DataHandler {
      * @return
      */
     public DataHandler deleteStudentClass( String name ) {
-        if ( !stdClasses.containsKey( name ) || stdClassHasTasks( name ) )
+        if ( !installedClasses.containsKey( name ) || stdClassHasTasks( name ) )
             return this;
 
-        StudentClass stdcClass = stdClasses.remove( name );
+        StudentClass stdcClass = installedClasses.remove( name );
         db.deleteStdClass( stdcClass );
 
         return this;
@@ -1144,7 +1144,7 @@ public class DataHandler {
      * @return
      */
     public boolean stdClassHasTasks( String stdClassName ) {
-        Iterator<Task> it = tasks.values().iterator();
+        Iterator<Task> it = installedTasks.values().iterator();
         while ( it.hasNext() ) {
             Task task = it.next();
             if ( task.getClasses().contains( stdClassName ) )
@@ -1389,7 +1389,7 @@ public class DataHandler {
 
     /**
      * Used as a callback by the {@link DataHandler} when there is a change to
-     * the set of loaded tasks. Use the {@link Task.OnTaskChangeListener} to get
+     * the set of loaded installedTasks. Use the {@link Task.OnTaskChangeListener} to get
      * a callback for an specific {@link Task} instance.
      * <p>
      * <p>
