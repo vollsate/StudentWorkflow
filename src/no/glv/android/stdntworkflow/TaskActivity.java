@@ -45,6 +45,7 @@ import no.glv.android.stdntworkflow.intrfc.StudentTask;
 import no.glv.android.stdntworkflow.intrfc.SubjectType;
 import no.glv.android.stdntworkflow.intrfc.Task;
 import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
+import no.glv.android.stdntworkflow.intrfc.TaskController;
 import no.glv.android.stdntworkflow.sql.DBUtils;
 
 /**
@@ -56,20 +57,29 @@ import no.glv.android.stdntworkflow.sql.DBUtils;
  *
  * @author GleVoll
  */
-public class TaskActivity extends BaseTabActivity {
+public class TaskActivity extends BaseTabActivity implements TaskController {
 
     private BaseTabFragment[] fragments;
     TaskStudentsFragment classesFragment;
     TaskInfoFragment infoFragment;
 
+    /** The task this activity shows */
     Task mTask;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
 
-        mTask = getDataHandler().getTask( getTaskName() );
+        getTask();
         setTitle( mTask.getName() );
+    }
+
+    @Override
+    public Task getTask() {
+        if ( mTask == null )
+            mTask = getDataHandler().getTask( getTaskName() );
+
+        return mTask;
     }
 
     @Override
@@ -104,7 +114,8 @@ public class TaskActivity extends BaseTabActivity {
         return R.id.VP_task_pager;
     }
 
-    Integer getTaskName() {
+    @Override
+    public Integer getTaskName() {
         return GetTaskNameExtra( getIntent() );
     }
 
@@ -253,8 +264,6 @@ public class TaskActivity extends BaseTabActivity {
         if ( mTask.isModified() ) {
             getDataHandler().commitStudentsTasks( mTask );
         }
-
-        mTask.markAsCommitted();
     }
 
     // ------------------------------------------------------------------------
@@ -308,10 +317,10 @@ public class TaskActivity extends BaseTabActivity {
                 }
             } );
 
-            Spinner sp = ( Spinner ) getSinner( R.id.SP_task_subject );
+            Spinner sp = getSinner( R.id.SP_task_subject );
             SubjectType st = DataHandler.GetInstance().getSubjectType( task.getSubject() );
             Utils.SetupSpinner( sp, getSubjectNames(), st.getName(), getActivity() );
-            sp = ( Spinner ) getSinner( R.id.SP_task_type );
+            sp = getSinner( R.id.SP_task_type );
             st = DataHandler.GetInstance().getSubjectType( task.getType() );
             Utils.SetupSpinner( sp, getTypesNames(), st.getName(), getActivity() );
 
@@ -354,13 +363,8 @@ public class TaskActivity extends BaseTabActivity {
         /**
          * @return
          */
-        protected Task getTask() {
-            if ( task == null ) {
-                Integer taskName = ( ( TaskActivity ) getBaseTabActivity() ).getTaskName();
-                task = getDataHandler().getTask( taskName );
-            }
-
-            return task;
+        private Task getTask() {
+            return ( ( TaskController ) getActivity() ).getTask();
         }
 
         @Override
@@ -400,7 +404,7 @@ public class TaskActivity extends BaseTabActivity {
         public View doCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
             // ListView listView = getListView( R.id.LV_task_students );
             ExpandableListView exListView = ( ExpandableListView ) rootView.findViewById( R.id.LV_task_students );
-            mTask = getDataHandler().getTask( ( ( TaskActivity ) getBaseTabActivity() ).getTaskName() );
+            mTask = ( ( TaskController ) getActivity() ).getTask();
 
             if ( adapter == null ) {
                 adapter = new StudentListAdapter( getActivity(), BuildStudentList( mTask ) );
