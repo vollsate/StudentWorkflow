@@ -44,6 +44,9 @@ class StudentTbl implements BaseColumns {
     public static final String COL_PHONE = "phone";
     public static final int COL_PHONE_ID = 8;
 
+    public static final String COL_STRENGTH = "strength";
+    public static final int COL_STRENGTH_ID = 9;
+
     private StudentTbl() {
     }
 
@@ -64,7 +67,8 @@ class StudentTbl implements BaseColumns {
                 + COL_BIRTH + " TEXT, "
                 + COL_ADR + " TEXT, "
                 + COL_POSTALCODE + " TEXT, "
-                + COL_PHONE + " TEXT)";
+                + COL_PHONE + " TEXT, "
+                + COL_STRENGTH + " TEXT)";
 
         DBUtils.ExecuteSQL( sql, db );
     }
@@ -109,6 +113,7 @@ class StudentTbl implements BaseColumns {
         bean.setAdress( cursor.getString( COL_ADR_ID ) );
         bean.setPostalCode( cursor.getString( COL_POSTALCODE_ID ) );
         bean.setPhone( cursor.getString( COL_PHONE_ID ) );
+        bean.setStrength( cursor.getInt( COL_STRENGTH_ID ) );
 
         return bean;
     }
@@ -171,6 +176,7 @@ class StudentTbl implements BaseColumns {
         cv.put( COL_ADR, student.getAdress() );
         cv.put( COL_POSTALCODE, student.getPostalCode() );
         cv.put( COL_PHONE, student.getPhone() );
+        cv.put( COL_STRENGTH, student.getStrength() );
 
         return cv;
     }
