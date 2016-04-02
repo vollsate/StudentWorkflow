@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_navdrawer );
+        setContentView( R.layout.navdrawer_container );
         DataHandler.Init( getApplication() );
 
         mTitle = mDrawerTitle = getTitle();
@@ -68,16 +68,9 @@ public class MainActivity extends BaseActivity {
         int index = 0;
 
         // adding nav drawer items to array
-        // Home
-        navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
-        // Classes
-        navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
-        // Tasks
-        navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
-        // Subject and types
-        navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
-        // Settings
-        navDrawerItems.add( new NavDrawerItem( navMenuTitles[index], navMenuIcons.getResourceId( index++, -1 ) ) );
+        for ( int i=0 ; i<navMenuTitles.length ; i++ ) {
+            navDrawerItems.add( new NavDrawerItem( navMenuTitles[i], navMenuIcons.getResourceId( i, -1 ) ) );
+        }
 
         navMenuIcons.recycle();
 

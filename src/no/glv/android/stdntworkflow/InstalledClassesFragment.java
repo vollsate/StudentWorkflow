@@ -25,7 +25,7 @@ import no.glv.android.stdntworkflow.intrfc.StudentClass;
  * fragment in any container with the ID: <tt>fr.installedClasses</tt>
  * <p>
  * <p>
- *
+ * <p>
  * The fragment task a {@link DataConfig} parameter to be used to control the
  * layout and view of the class. The following parameters may be used:
  * <blockquote>
@@ -75,7 +75,7 @@ public class InstalledClassesFragment extends InstalledDataFragment<String> impl
      * Builds one particular row with an installed class.
      *
      * @param name Name of
-     * @param pos The position in the list of classes
+     * @param pos  The position in the list of classes
      * @return The newly built row
      */
     protected View buildRow( final String name, int pos ) {
@@ -114,9 +114,8 @@ public class InstalledClassesFragment extends InstalledDataFragment<String> impl
      * Starts the <code>Activity</code> that displays the specific installed student class. Caused by a click on the
      * row.
      *
-     * @param name Name of class to display.
+     * @param name    Name of class to display.
      * @param context The context used to start the activity
-     *
      * @return The <code>Intent</code> created.
      */
     @Override

@@ -11,6 +11,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ import no.glv.android.stdntworkflow.intrfc.Student;
  * @author GleVoll
  */
 @SuppressWarnings("deprecation")
-public class StudentListAdapter extends ExpandableListViewBase<Student> {
+public class StudentListAdapter extends ExpandableListViewBase<Student> implements View.OnClickListener {
 
     /**  */
     @SuppressWarnings("unused")
@@ -46,24 +47,23 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
     private String[] baseClassNames;
 
     /**
-     * @param context
-     * @param objects
+     * @param students List of students to view
      */
-    public StudentListAdapter( Context context, List<Student> objects ) {
-        super( context, objects );
+    public StudentListAdapter( Context context, List<Student> students ) {
+        super( context, students );
 
         mSettingsManager = DataHandler.GetInstance().getSettingsManager();
         baseClassNames = context.getResources().getStringArray( R.array.stdList_classes );
     }
 
     /**
-     *
+     * Gets the upper view (not the expanded). Will alter the background color of every other row
      */
     public View getView( int position, View convertView, ViewGroup parent, boolean isExpanded ) {
         Student student = getItem( position );
 
         if ( convertView == null )
-            convertView = createView( parent, student, position, isExpanded );
+            convertView = createConvertView( parent, student, position, isExpanded );
 
         if ( position % 2 == 0 )
             convertView.setBackgroundColor( getContext().getResources().getColor(
@@ -88,13 +88,9 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
     }
 
     /**
-     * @param parent
-     * @param student
-     * @param groupPos
-     * @param isExpanded
-     * @return
+     * Creates the convert view if needed.
      */
-    private View createView( final ViewGroup parent, final Student student, final int groupPos, final boolean isExpanded ) {
+    private View createConvertView( final ViewGroup parent, final Student student, final int groupPos, final boolean isExpanded ) {
         LayoutInflater inflater = ( LayoutInflater ) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View myView = inflater.inflate( R.layout.row_stdclass_list, parent, false );
 
@@ -168,8 +164,8 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
     }
 
     /**
-     * @param parent
-     * @return
+     * @param parent Parent view
+     * @return New view (The expanded view)
      */
     private View createChildView( ViewGroup parent ) {
         LayoutInflater inflater = ( LayoutInflater ) getContext().getSystemService(
@@ -201,20 +197,11 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
         } else {
             holder.spClass.setSelection( baseClassNames.length - 1 );
         }
-
+/*
         ImageView ivSave = ( ImageView ) convertView.findViewById( R.id.IV_stdList_stditem_save );
-        ivSave.setOnClickListener( new View.OnClickListener() {
-
-            @Override
-            public void onClick( View v ) {
-                String g = holder.spClass.getSelectedItem().toString();
-                holder.st.setGrade( g );
-
-                DataHandler.GetInstance().updateStudent( st, null );
-                Toast.makeText( getContext(), "Saved", Toast.LENGTH_SHORT ).show();
-            }
-        } );
-
+        ivSave.setTag( holder );
+        ivSave.setOnClickListener( this );
+*/
         holder.spClass.setOnItemSelectedListener( new OnItemSelectedListener() {
             @Override
             public void onItemSelected( AdapterView<?> parent, View view, int position, long id ) {
@@ -222,7 +209,7 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
                 Student student = holder.st;
                 if ( student.getGrade() == null ) {
                     student.setGrade( grade );
-                } else if ( position > 0 && !st.getGrade().equals( grade ) ) {
+                } else if ( /* position > 0 && */ !st.getGrade().equals( grade ) ) {
                     st.setGrade( grade );
                     DataHandler.GetInstance().updateStudent( st, null );
                 }
@@ -234,7 +221,28 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
 
         } );
 
+        SeekBar seekBar = (SeekBar) convertView.findViewById( R.id.SB_stdList_stditem_strength );
+        holder.sbStrength = seekBar;
+        seekBar.getProgress();
+
         return convertView;
+    }
+
+    /**
+     * Method served to execute when the imgage Save is clicked. Not in use as of now
+     */
+    @Override
+    public void onClick( View v ) {
+        StudentItemHolder holder = ( StudentItemHolder ) v.getTag();
+        String g = holder.spClass.getSelectedItem().toString();
+        holder.st.setGrade( g );
+
+        updateStudent( holder.st );
+        Toast.makeText( getContext(), "Saved", Toast.LENGTH_SHORT ).show();
+    }
+
+    private void updateStudent( Student student ) {
+        DataHandler.GetInstance().updateStudent( student, null );
     }
 
     /**
@@ -243,6 +251,7 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> {
     static class StudentItemHolder {
 
         Spinner spClass;
+        SeekBar sbStrength;
         Student st;
     }
 
