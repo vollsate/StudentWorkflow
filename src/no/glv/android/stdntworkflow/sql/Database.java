@@ -198,7 +198,7 @@ public class Database extends SQLiteOpenHelper {
      * @return 1 of successfull 0 otherwise
      */
     public int updateStudent( Student student, String oldIdent ) {
-        if ( !student.getIdent().equals( oldIdent ) )
+        if ( oldIdent!= null && !student.getIdent().equals( oldIdent ) )
             removeStudent( oldIdent );
 
         Log.d( TAG, "Updating student: " + student.getIdent() );
