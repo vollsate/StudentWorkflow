@@ -9,163 +9,153 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.glv.android.stdntworkflow.core.DatabaseException;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 
+/**
+ * Handles all SQL queries about Parent
+ */
 class ParentTbl implements BaseColumns {
 
-	private static final String TAG = ParentTbl.class.getSimpleName();
+    private static final String TAG = ParentTbl.class.getSimpleName();
 
-	public static final String TBL_NAME = "parent";
+    public static final String TBL_NAME = "parent";
 
-	// String (student ident)
-	public static final String COL_ID = "_id";
-	public static final int COL_ID_ID = 0;
+    public static final String COL_ID = "_id";
+    public static final int COL_ID_ID = 0;
 
-	public static final String COL_STDID = "stdid";
-	public static final int COL_STDID_ID = 1;
+    // String (student ident)
+    public static final String COL_STDID = "stdid";
+    public static final int COL_STDID_ID = 1;
 
-	public static final String COL_FNAME = "fname";
-	public static final int COL_FNAME_ID = 2;
+    public static final String COL_FNAME = "fname";
+    public static final int COL_FNAME_ID = 2;
 
-	public static final String COL_LNAME = "lname";
-	public static final int COL_LNAME_ID = 3;
+    public static final String COL_LNAME = "lname";
+    public static final int COL_LNAME_ID = 3;
 
-	public static final String COL_MAIL = "mail";
-	public static final int COL_MAIL_ID = 4;
+    public static final String COL_MAIL = "mail";
+    public static final int COL_MAIL_ID = 4;
 
-	public static final String COL_TYPE = "type";
-	public static final int COL_TYPE_ID = 5;
+    public static final String COL_TYPE = "type";
+    public static final int COL_TYPE_ID = 5;
 
-	private ParentTbl() {
-	}
+    private ParentTbl() {
+    }
 
-	/**
-	 * Called as part of initiation of the entire DATABASE.
-	 * 
-	 * DO NOT CLOSE THE SQLiteDatabase
-	 * 
-	 * @param db
-	 *            Do not close!
-	 */
-	static void CreateTableSQL( SQLiteDatabase db ) {
-		String sql = "CREATE TABLE " + TBL_NAME + "("
-				+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ COL_STDID + " TEXT NOT NULL, "
-				+ COL_FNAME + " TEXT, "
-				+ COL_LNAME + " TEXT, "
-				+ COL_MAIL + " TEXT, "
-				+ COL_TYPE + " INTEGER)";
+    /**
+     * Called as part of initiation of the entire DATABASE.
+     * <p>
+     * DO NOT CLOSE THE SQLiteDatabase
+     *
+     * @param db Do not close!
+     */
+    static void CreateTableSQL( SQLiteDatabase db ) {
+        String sql = "CREATE TABLE " + TBL_NAME + "("
+                + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COL_STDID + " TEXT NOT NULL, "
+                + COL_FNAME + " TEXT, "
+                + COL_LNAME + " TEXT, "
+                + COL_MAIL + " TEXT, "
+                + COL_TYPE + " INTEGER)";
 
-		DBUtils.ExecuteSQL( sql, db );
-	}
+        DBUtils.ExecuteSQL( sql, db );
+    }
 
-	public static void DropTable( SQLiteDatabase db ) {
-		String sql = "DROP TABLE IF EXISTS " + TBL_NAME;
+    public static void DropTable( SQLiteDatabase db ) {
+        String sql = "DROP TABLE IF EXISTS " + TBL_NAME;
 
-		Log.v( TAG, "Executing SQL: " + sql );
-		db.execSQL( sql );
-	}
+        Log.v( TAG, "Executing SQL: " + sql );
+        db.execSQL( sql );
+    }
 
-	/**
-	 * Load the parent to a specific student ID. If ident is null, loads every
-	 * parent.
-	 * 
-	 * @param ident
-	 *            The student id to look for. May be null.
-	 * @param db
-	 * @return
-	 */
-	public static List<Parent> LoadParent( String ident, SQLiteDatabase db ) {
-		List<Parent> list = new ArrayList<Parent>();
+    /**
+     * Load the parent to a specific student ID. If studentID is null, loads every
+     * parent.
+     *
+     * @param studentID The student id to look for. May be null.
+     * @param db        The database to query
+     * @return List of all parents connected to the student ID, or every known parent.
+     */
+    public static List<Parent> LoadParent( String studentID, SQLiteDatabase db ) {
+        List<Parent> list = new ArrayList<Parent>();
 
-		String sql = "SELECT * FROM " + TBL_NAME;
-		if ( ident != null )
-			sql += " WHERE " + COL_STDID + " = ?";
+        String sql = "SELECT * FROM " + TBL_NAME;
+        if ( studentID != null )
+            sql += " WHERE " + COL_STDID + " = ?";
 
-		Cursor cursor = db.rawQuery( sql, new String[] { ident } );
-		cursor.moveToFirst();
-		while ( !cursor.isAfterLast() ) {
-			list.add( CreateFromCursor( cursor ) );
-			cursor.moveToNext();
-		}
+        Cursor cursor = db.rawQuery( sql, new String[]{ studentID } );
+        cursor.moveToFirst();
+        while ( !cursor.isAfterLast() ) {
+            list.add( CreateFromCursor( cursor ) );
+            cursor.moveToNext();
+        }
 
-		cursor.close();
-		db.close();
+        cursor.close();
+        db.close();
 
-		return list;
-	}
+        return list;
+    }
 
-	private static Parent CreateFromCursor( Cursor cursor ) {
-		Parent parent = new ParentBean( cursor.getString( COL_ID_ID ), cursor.getInt( COL_TYPE_ID ) );
+    private static Parent CreateFromCursor( Cursor cursor ) {
+        Parent parent = new ParentBean( cursor.getString( COL_ID_ID ), cursor.getInt( COL_TYPE_ID ) );
 
-		parent.setFirstName( cursor.getString( COL_FNAME_ID ) );
-		parent.setStudentID( cursor.getString( COL_STDID_ID ) );
-		parent.setLastName( cursor.getString( COL_LNAME_ID ) );
-		parent.setMail( cursor.getString( COL_MAIL_ID ) );
+        parent.setFirstName( cursor.getString( COL_FNAME_ID ) );
+        parent.setStudentID( cursor.getString( COL_STDID_ID ) );
+        parent.setLastName( cursor.getString( COL_LNAME_ID ) );
+        parent.setMail( cursor.getString( COL_MAIL_ID ) );
 
-		return parent;
-	}
+        return parent;
+    }
 
-	/**
-	 * 
-	 * @param std
-	 * @param db
-	 */
-	public static long InsertParent( Parent parent, SQLiteDatabase db ) {
-		ContentValues parentValues = ParentValues( parent );
+    /**
+     * Attempts to insert a parent into the database. If an error occurs, a <code>DatabaseException</code> will be
+     * thrown.
+     *
+     * @param parent The parent to insert
+     * @param db     The database to update
+     * @return The number of rows updated
+     */
+    public static long InsertParent( Parent parent, SQLiteDatabase db ) {
+        ContentValues parentValues = ParentValues( parent );
 
-		long retVal = db.insert( TBL_NAME, null, parentValues );
-		parent.setID( String.valueOf( retVal ) );
-		db.close();
+        long retVal = db.insert( TBL_NAME, null, parentValues );
+        if ( retVal == -1 )
+            throw new DatabaseException( "Error inserting parent: " + parent.toString() );
 
-		return retVal;
-	}
+        parent.setID( String.valueOf( retVal ) ); // Set the row number as the ID
+        db.close();
 
-	/**
-	 * 
-	 * @param parent
-	 * @param db
-	 *            Is closed after use
-	 * 
-	 * @return 1 if successful, 0 otherwise
-	 */
-	public static int UpdateParent( Parent parent, SQLiteDatabase db ) {
-		String sqlFiler = COL_STDID + " = ?";
-		ContentValues cv = ParentValues( parent );
+        return retVal;
+    }
 
-		int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[] { parent.getID() } );
-		db.close();
+    /**
+     * @param parent The parent to update
+     * @param db     Is closed after use
+     * @return 1 if successful, 0 otherwise
+     */
+    public static int UpdateParent( Parent parent, SQLiteDatabase db ) {
+        String sqlFiler = COL_STDID + " = ?";
+        ContentValues cv = ParentValues( parent );
 
-		return retVal;
-	}
+        int retVal = db.update( TBL_NAME, cv, sqlFiler, new String[]{ parent.getID() } );
+        db.close();
 
-	/**
-	 * 
-	 * @param ident
-	 * @param db
-	 */
-	public static int DeletePhone( String ident, SQLiteDatabase db ) {
-		String sqlFilter = COL_STDID + " = ?";
-		int retVal = db.delete( TBL_NAME, sqlFilter, new String[] { ident } );
-		db.close();
+        return retVal;
+    }
 
-		return retVal;
-	}
+    /**
+     *
+     */
+    private static ContentValues ParentValues( Parent parent ) {
+        ContentValues cv = new ContentValues();
 
-	/**
-	 * 
-	 * @param parent
-	 * @return
-	 */
-	private static ContentValues ParentValues( Parent parent ) {
-		ContentValues cv = new ContentValues();
+        cv.put( COL_STDID, parent.getStudentID() );
+        cv.put( COL_FNAME, parent.getFirstName() );
+        cv.put( COL_LNAME, parent.getLastName() );
+        cv.put( COL_MAIL, parent.getMail() );
+        cv.put( COL_TYPE, parent.getType() );
 
-		cv.put( COL_STDID, parent.getStudentID() );
-		cv.put( COL_FNAME, parent.getFirstName() );
-		cv.put( COL_LNAME, parent.getLastName() );
-		cv.put( COL_MAIL, parent.getMail() );
-		cv.put( COL_TYPE, parent.getType() );
-
-		return cv;
-	}
+        return cv;
+    }
 }
