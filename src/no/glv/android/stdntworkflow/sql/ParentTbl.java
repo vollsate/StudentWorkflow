@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.glv.android.stdntworkflow.core.DatabaseException;
+import no.glv.android.stdntworkflow.core.DBException;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 
 /**
@@ -121,7 +121,7 @@ class ParentTbl implements BaseColumns {
 
         long retVal = db.insert( TBL_NAME, null, parentValues );
         if ( retVal == -1 )
-            throw new DatabaseException( "Error inserting parent: " + parent.toString() );
+            throw new DBException( "Error inserting parent: " + parent.toString() );
 
         parent.setID( String.valueOf( retVal ) ); // Set the row number as the ID
         db.close();
