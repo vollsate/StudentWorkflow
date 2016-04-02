@@ -8,155 +8,164 @@ import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Student;
 
 /**
- * 
  * @author GleVoll
- *
  */
 public class StudentBean implements Student {
 
-	public String mIdent;
+    public String mIdent;
 
-	public String fName;
-	public String lName;
-	public String bYear;
-	public Date birth;
+    public String fName;
+    public String lName;
+    public String bYear;
+    public Date birth;
 
-	public String adress;
-	public String postalCode;
-	public String grade;
+    public String adress;
+    public String postalCode;
+    public String grade;
+    public int strength;
 
-	public String mPhone;
+    public String mPhone;
 
-	private String studentClass;
+    private String studentClass;
 
-	private List<Parent> parents;
+    private List<Parent> parents;
 
-	private StudentBean() {
-		parents = new ArrayList<Parent>( 2 );
-	}
+    private StudentBean() {
+        parents = new ArrayList<Parent>( 2 );
+    }
 
-	public StudentBean( String stdClass ) {
-		this();
-		this.studentClass = stdClass;
-	}
+    public StudentBean( String stdClass ) {
+        this();
+        this.studentClass = stdClass;
+    }
 
-	@Override
-	public String getFirstName() {
-		return fName;
-	}
+    @Override
+    public String getFirstName() {
+        return fName;
+    }
 
-	public void setFirstName( String nn ) {
-		this.fName = nn;
-	}
+    public void setFirstName( String nn ) {
+        this.fName = nn;
+    }
 
-	public void setLastName( String nn ) {
-		this.lName = nn;
-	}
+    public void setLastName( String nn ) {
+        this.lName = nn;
+    }
 
-	public void setIdent( String nn ) {
-		this.mIdent = nn;
-	}
+    public void setIdent( String nn ) {
+        this.mIdent = nn;
+    }
 
-	@Override
-	public String getBirthYear() {
-		return bYear;
-	}
+    @Override
+    public String getBirthYear() {
+        return bYear;
+    }
 
-	@Override
-	public String getLastName() {
-		return lName;
-	}
+    @Override
+    public String getLastName() {
+        return lName;
+    }
 
-	@Override
-	public Date getBirth() {
-		return birth;
-	}
+    @Override
+    public Date getBirth() {
+        return birth;
+    }
 
-	@Override
-	public String getAdress() {
-		return adress;
-	}
+    @Override
+    public String getAdress() {
+        return adress;
+    }
 
-	@Override
-	public String getPostalCode() {
-		return postalCode;
-	}
+    @Override
+    public String getPostalCode() {
+        return postalCode;
+    }
 
-	public String getGrade() {
-		return grade;
-	}
+    public String getGrade() {
+        return grade;
+    }
 
-	public void setFullName( String fullName ) {
-		String[] name = fullName.split( "," );
+    public void setFullName( String fullName ) {
+        String[] name = fullName.split( "," );
 
-		lName = name[0].trim();
-		fName = name[1].trim();
-	}
+        lName = name[0].trim();
+        fName = name[1].trim();
+    }
 
-	@Override
-	public String getStudentClass() {
-		return studentClass;
-	}
+    @Override
+    public String getStudentClass() {
+        return studentClass;
+    }
 
-	@Override
-	public String getIdent() {
-		return mIdent;
-	}
+    @Override
+    public String getIdent() {
+        return mIdent;
+    }
 
-	public String toString() {
-		return "Student IDENT: " + mIdent;
-	}
+    public String toString() {
+        return "Student IDENT: " + mIdent;
+    }
 
-	@Override
-	public void setBirth( Date val ) {
-		this.birth = val;
-	}
+    @Override
+    public void setBirth( Date val ) {
+        this.birth = val;
+    }
 
-	@Override
-	public void setAdress( String val ) {
-		adress = val;
-	}
+    @Override
+    public void setAdress( String val ) {
+        adress = val;
+    }
 
-	@Override
-	public void setPostalCode( String val ) {
-		postalCode = val;
-	}
+    @Override
+    public void setPostalCode( String val ) {
+        postalCode = val;
+    }
 
-	@Override
-	public void setGrade( String val ) {
-		grade = val;
-	}
+    @Override
+    public void setGrade( String val ) {
+        grade = val;
+    }
 
-	@Override
-	public void setStudentClass( String val ) {
-		studentClass = val;
-	}
+    @Override
+    public void setStrength( int val ) {
+        strength = val;
+    }
 
-	@Override
-	public List<Parent> getParents() {
-		return parents;
-	}
+    @Override
+    public int getStrength() {
+        return strength;
+    }
 
-	@Override
-	public void addParent( Parent parent ) {
-		if ( parent == null )
-			return;
+    @Override
+    public void setStudentClass( String val ) {
+        studentClass = val;
+    }
 
-		parents.add( parent );
-	}
+    @Override
+    public List<Parent> getParents() {
+        return parents;
+    }
 
-	@Override
-	public void addParents( List<Parent> parents ) {
-		this.parents.addAll( parents );
-	}
+    @Override
+    public void addParent( Parent parent ) {
+        if ( parent == null )
+            return;
 
-	@Override
-	public String getPhone() {
-		return mPhone;
-	}
+        parents.add( parent );
+    }
 
-	@Override
-	public void setPhone( String val ) {
-		this.mPhone = val;
-	}
+    @Override
+    public void addParents( List<Parent> parents ) {
+        this.parents.addAll( parents );
+    }
+
+    @Override
+    public String getPhone() {
+        return mPhone;
+    }
+
+    @Override
+    public void setPhone( String val ) {
+        this.mPhone = val;
+    }
 }
