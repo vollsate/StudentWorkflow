@@ -124,4 +124,7 @@ public class ParentBean implements Parent {
 		this.id = id;
 	}
 
+	public String toString() {
+		return "parentID=" + id + ", studentID=" + studentID;
+	}
 }
