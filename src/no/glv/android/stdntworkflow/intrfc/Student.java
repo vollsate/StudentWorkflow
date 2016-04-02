@@ -6,60 +6,65 @@ import java.util.List;
 /**
  * Represents a student. A student is a member of a class, and involved in
  * one or more {@link Task}s.
- * 
  * <p>
- * 
- * @author glevoll
+ * <p>
  *
+ * @author glevoll
  */
 public interface Student {
 
-	public static final String EXTRA_IDENT = BaseValues.EXTRA_BASEPARAM + "Ident";
-	public static final String EXTRA_STUDENTNAME = BaseValues.EXTRA_BASEPARAM + "StudentName";
+    public static final String EXTRA_IDENT = BaseValues.EXTRA_BASEPARAM + "Ident";
+    public static final String EXTRA_STUDENTNAME = BaseValues.EXTRA_BASEPARAM + "StudentName";
 
-	public String getFirstName();
+    public String getFirstName();
 
-	public void setFirstName( String fName );
+    public void setFirstName( String fName );
 
-	public String getBirthYear();
+    public String getBirthYear();
 
-	public String getLastName();
+    public String getLastName();
 
-	public void setLastName( String lName );
+    public void setLastName( String lName );
 
-	public Date getBirth();
+    public Date getBirth();
 
-	public void setBirth( Date val );
+    public void setBirth( Date val );
 
-	public String getAdress();
+    public String getAdress();
 
-	public void setAdress( String val );
+    public void setAdress( String val );
 
-	public String getPostalCode();
+    public String getPostalCode();
 
-	public void setPostalCode( String val );
+    public void setPostalCode( String val );
 
-	public String getPhone();
+    public String getPhone();
 
-	public void setPhone( String val );
+    public void setPhone( String val );
 
-	public String getGrade();
+    public String getGrade();
 
-	public void setGrade( String val );
+    public void setGrade( String val );
 
-	public String getStudentClass();
+    public void setStrength( int val );
 
-	public void setStudentClass( String val );
+    public int getStrength();
 
-	/** @return The unique identity used on It's Learning and Google */
-	public String getIdent();
+    public String getStudentClass();
 
-	public void setIdent( String val );
+    public void setStudentClass( String val );
 
-	public List<Parent> getParents();
+    /**
+     * @return The unique identity used on It's Learning and Google
+     */
+    public String getIdent();
 
-	public void addParent( Parent parent );
+    public void setIdent( String val );
 
-	public void addParents( List<Parent> parents );
+    public List<Parent> getParents();
+
+    public void addParent( Parent parent );
+
+    public void addParents( List<Parent> parents );
 
 }
