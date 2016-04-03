@@ -223,7 +223,28 @@ public class StudentListAdapter extends ExpandableListViewBase<Student> implemen
 
         SeekBar seekBar = (SeekBar) convertView.findViewById( R.id.SB_stdList_stditem_strength );
         holder.sbStrength = seekBar;
-        seekBar.getProgress();
+        seekBar.setProgress( holder.st.getStrength() );
+        seekBar.setTag( holder );
+        seekBar.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged( SeekBar seekBar, int progress, boolean fromUser ) {
+            }
+
+            @Override
+            public void onStartTrackingTouch( SeekBar seekBar ) {
+            }
+
+            @Override
+            public void onStopTrackingTouch( SeekBar seekBar ) {
+                StudentItemHolder holder = ( StudentItemHolder ) seekBar.getTag();
+                int progress = seekBar.getProgress();
+
+                if ( holder.st.getStrength() != progress ) {
+                    DataHandler.GetInstance().updateStudent( holder.st, null );
+                    holder.st.setStrength( progress );
+                }
+            }
+        } );
 
         return convertView;
     }
