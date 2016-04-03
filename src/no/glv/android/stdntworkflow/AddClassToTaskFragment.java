@@ -13,73 +13,76 @@ import no.glv.android.stdntworkflow.core.ViewGroupAdapter;
 import no.glv.android.stdntworkflow.intrfc.StudentClass;
 import no.glv.android.stdntworkflow.intrfc.Task;
 
+/**
+ *
+ */
 public class AddClassToTaskFragment extends ViewGroupAdapter {
 
-	private List<String> mClasses;
-	private Task mTask;
+    private List<String> mClasses;
+    private Task mTask;
 
-	@Override
-	public int getViewGroupLayoutID() {
-		return R.layout.fr_installedclasses;
-	}
+    @Override
+    public int getViewGroupLayoutID() {
+        return R.layout.fr_installedclasses;
+    }
 
-	Task getTask( Bundle args ) {
-		if ( mTask == null ) {
-			if ( args == null )
-				args = getArguments();
+    Task getTask( Bundle args ) {
+        if ( mTask == null ) {
+            if ( args == null )
+                args = getArguments();
 
-			mTask = (Task) args.getSerializable( Task.EXTRA_TASKNAME );
-		}
+            mTask = ( Task ) args.getSerializable( Task.EXTRA_TASKNAME );
+        }
 
-		return mTask;
-	}
+        return mTask;
+    }
 
-	@Override
-	public void onCreate( Bundle savedInstanceState ) {
-		super.onCreate( savedInstanceState );
+    @Override
+    public void onCreate( Bundle savedInstanceState ) {
+        super.onCreate( savedInstanceState );
 
-		mTask = getTask( savedInstanceState );
-	}
+        mTask = getTask( savedInstanceState );
+    }
 
-	@Override
-	public void onSaveInstanceState( Bundle outState ) {
-		super.onSaveInstanceState( outState );
+    @Override
+    public void onSaveInstanceState( Bundle outState ) {
+        super.onSaveInstanceState( outState );
 
-		outState.putSerializable( Task.EXTRA_TASKNAME, mTask );
-	}
+        outState.putSerializable( Task.EXTRA_TASKNAME, mTask );
+    }
 
-	@Override
-	protected void doCreateView( ViewGroup rootView ) {
-		mClasses = dataHandler.getInstalledClassNames();
+    @Override
+    protected void doCreateView( ViewGroup rootView ) {
+        mClasses = dataHandler.getInstalledClassNames();
 
-		for ( int i = 0; i < mClasses.size(); i++ ) {
-			ViewGroup myView = inflateViewGroup( R.layout.row_newtask_addclasses );
-			buildRow( myView, i );
+        for ( int i = 0; i < mClasses.size(); i++ ) {
+            ViewGroup myView = inflateViewGroup( R.layout.row_newtask_addclasses );
+            buildRow( myView, i );
 
-			rootView.addView( myView );
-		}
-	}
+            rootView.addView( myView );
+        }
+    }
 
-	protected void buildRow( ViewGroup parent, int position ) {
-		TextView textView = (TextView) parent.findViewById( R.id.TV_newTask_className );
-		textView.setText( mClasses.get( position ) );
+    protected void buildRow( ViewGroup parent, int position ) {
+        TextView textView = ( TextView ) parent.findViewById( R.id.TV_newTask_className );
+        textView.setText( mClasses.get( position ) );
 
-		CheckBox chBox = (CheckBox) parent.findViewById( R.id.CB_newTask_addClass );
-		chBox.setTag( mClasses.get( position ) );
-		chBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
+        CheckBox chBox = ( CheckBox ) parent.findViewById( R.id.CB_newTask_addClass );
+        chBox.setTag( mClasses.get( position ) );
+        chBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-				String name = (String) buttonView.getTag();
-				StudentClass stdcClass = DataHandler.GetInstance().getStudentClass( name );
+            @Override
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                String name = ( String ) buttonView.getTag();
+                StudentClass stdcClass = DataHandler.GetInstance().getStudentClass( name );
 
-				if ( isChecked )
-					mTask.addClass( stdcClass );
-				else
-					mTask.removeClass( stdcClass );
-			}
-		} );
+                if ( isChecked )
+                    mTask.addClass( stdcClass );
+                else
+                    mTask.removeClass( stdcClass );
+            }
+        } );
 
-	}
+    }
 
 }

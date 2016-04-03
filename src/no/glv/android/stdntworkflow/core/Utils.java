@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -129,6 +130,10 @@ public class Utils {
         if ( ( type & SubjectType.TYPE_THEME ) == SubjectType.TYPE_THEME ) return "TEMA";
 
         return "FAG";
+    }
+
+    public static void DisplayToast( Context context, String text ) {
+        Toast.makeText( context, text, Toast.LENGTH_SHORT ).show();
     }
 
 }
