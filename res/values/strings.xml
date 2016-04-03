@@ -35,7 +35,7 @@
     <string name="action_writeToLocal">Lagre</string>
     <string name="BTN.loadNewClass.text">Installer ny klasse</string>
     <string name="BTN.loadNewTask.text">Lag en ny oppgave</string>
-    <string name="TV.task.info.text">        Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en 
+    <string name="TV.task.info.text">Her lager du en ny oppgave. Husk å koble oppgaven opp mot en eller flere klasser, samt å gi en
         korrekt innleveringsdato.
 </string>
     <string name="title_activity_new_task">Lag en ny oppgave</string>
@@ -101,6 +101,8 @@
 
     <!-- NEW TASK -->
 
+    <string name="newTask.missingname.toast">Navn kan ikke være tomt!</string>
+    <string name="newTask.missingclass.toast">Du må legge til minst én klasse</string>
     <string name="newTask.added.toast">Ny oppgave [{task}] lagt til!</string>
     <string name="newTask.addStudents.msg">Legg til studenter ..</string>
     <string name="newTask.header">Ny oppgave</string>
