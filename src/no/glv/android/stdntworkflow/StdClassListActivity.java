@@ -1,6 +1,8 @@
 package no.glv.android.stdntworkflow;
 
-import android.app.Activity;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -17,11 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import no.glv.android.stdntworkflow.SendSMSDialog.OnVerifySendSMSListener;
 import no.glv.android.stdntworkflow.core.BaseActivity;
 import no.glv.android.stdntworkflow.core.DataHandler;
