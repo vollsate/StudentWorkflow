@@ -65,7 +65,6 @@ public class MainActivity extends BaseActivity {
         mDrawerList = ( ListView ) findViewById( R.id.list_slidermenu );
 
         ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
-        int index = 0;
 
         // adding nav drawer items to array
         for ( int i=0 ; i<navMenuTitles.length ; i++ ) {
