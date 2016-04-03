@@ -609,7 +609,6 @@ public class DataHandler {
      * @return
      */
     public SubjectType createSubjectType() {
-        SubjectTypeBean bean = new SubjectTypeBean();
         return new SubjectTypeBean();
     }
 
