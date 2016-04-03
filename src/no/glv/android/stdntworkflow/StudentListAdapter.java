@@ -32,7 +32,6 @@ import no.glv.android.stdntworkflow.intrfc.Student;
  *
  * @author GleVoll
  */
-@SuppressWarnings("deprecation")
 public class StudentListAdapter extends ExpandableListViewBase<Student> implements View.OnClickListener {
 
     /**  */
