@@ -7,15 +7,13 @@
         <item>Oppgaver</item>
         <item>Fag og oppgavetyper</item>
         <item>Instillinger</item>
-        <item>Instillinger</item>
-        </string-array> 
+    </string-array>
     <string-array name="nav_drawer_icons">
         <item>@drawable/student</item>
         <item>@drawable/ic_action_group</item>
         <item>@drawable/ic_action_task</item>
         <item>@drawable/student</item>
         <item>@drawable/ic_action_settings</item>
-        <item>@drawable/ic_action_settings</item>
-        </string-array>
+    </string-array>
 
 </resources>

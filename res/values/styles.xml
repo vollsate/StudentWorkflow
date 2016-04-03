@@ -2,7 +2,11 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
+
+
+
     -->
 
     <style name="newAppBaseTheme" parent="@style/CustomActionBarTheme"></style>
@@ -65,7 +69,7 @@
     <style name="ET" parent="TV.standard">
         <item name="android:gravity">left</item>
         <item name="android:padding">5dp</item>
-        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
         <item name="android:textColor">#000000</item>
         <item name="android:background">#FFFFFF</item>
     </style>
