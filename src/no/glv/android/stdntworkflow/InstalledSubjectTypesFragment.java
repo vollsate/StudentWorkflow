@@ -81,7 +81,7 @@ public class InstalledSubjectTypesFragment extends InstalledDataFragment<Subject
 
             @Override
             public void onClick( View v ) {
-                SubjectType subtype = ( SubjectType ) v.getTag();
+                final SubjectType subtype = ( SubjectType ) v.getTag();
                 AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
 
                 builder.setTitle( getResources().getString( R.string.task_delete_title ) );

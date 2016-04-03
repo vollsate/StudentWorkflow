@@ -115,6 +115,7 @@ class TaskTbl {
     private static Task CreateFromCursor( Cursor cursor ) {
         TaskImpl task = new TaskImpl( cursor.getInt( COL_ID_ID ) );
 
+        task.setID( cursor.getInt( COL_ID_ID ) );
         task.setName( cursor.getString( COL_NAME_ID ) );
         task.setDescription( cursor.getString( COL_DESC_ID ) );
         task.setDate( new Date( cursor.getLong( COL_DATE_ID ) ) );

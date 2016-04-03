@@ -110,7 +110,7 @@ public class DataHandler {
     /**
      * @return
      * @throws IllegalStateException if {@link #Init(Application)} has not been
-     *                               called first!
+     *             called first!
      */
     public static final DataHandler GetInstance() {
         if ( !isInitiated )
@@ -138,7 +138,8 @@ public class DataHandler {
      * properly or an {@link IllegalStateException} is thrown.
      * <p>
      * <p>
-     * Any open installedTasks will be loaded, and every known {@link StudentClass} will
+     * Any open installedTasks will be loaded, and every known
+     * {@link StudentClass} will
      * be loaded.
      *
      * @param app
@@ -224,7 +225,8 @@ public class DataHandler {
      * Will initiate the Maps used to contain the DB. Called initially from the
      * constructor.
      * <p>
-     * If {@link Database#cleanupDB()} is called, all the Maps will be reset by an invocation
+     * If {@link Database#cleanupDB()} is called, all the Maps will be reset by
+     * an invocation
      * of this method.
      */
     private void initiateMaps() {
@@ -236,7 +238,8 @@ public class DataHandler {
     }
 
     /**
-     * Loads the installedTasks from the DB and and initialize every task with it's
+     * Loads the installedTasks from the DB and and initialize every task with
+     * it's
      * corresponding {@link StudentTask} instance.
      * <p>
      * The loadStudentClasses() metod MUST be called first.
@@ -273,7 +276,7 @@ public class DataHandler {
      * <p>
      * The complete list will be sorted by the default listing: ident ascending.
      *
-     * @param task     The task the StudentTask instance is connected to.
+     * @param task The task the StudentTask instance is connected to.
      * @param stdTasks
      */
     private void setUpStudentTask( Task task, List<StudentTask> stdTasks ) {
@@ -396,7 +399,7 @@ public class DataHandler {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings( "rawtypes" )
     public Map<String, List> getAllData() {
         HashMap<String, List> entireDB = new HashMap<String, List>();
 
@@ -447,7 +450,7 @@ public class DataHandler {
      * If any of the parameters is null, null will be returned.
      *
      * @param stdClassName The class to look for a student in.
-     * @param ident        The unique ID of the student.
+     * @param ident The unique ID of the student.
      * @return The {@link Student} instance, or NULL.
      */
     public Student getStudentById( String stdClassName, String ident ) {
@@ -469,7 +472,7 @@ public class DataHandler {
      * <p>
      * <p>
      *
-     * @param std      The {@link Student} instance to update.
+     * @param std The {@link Student} instance to update.
      * @param oldIdent The original ID of the student.
      * @return true if successful
      */
@@ -599,7 +602,8 @@ public class DataHandler {
     }
 
     /**
-     * Creates a new SubjectType bean. The new bean is not stored in any registrey.
+     * Creates a new SubjectType bean. The new bean is not stored in any
+     * registrey.
      * You need to register the new bean with <code>createSubjectType</code>
      *
      * @return
@@ -617,7 +621,7 @@ public class DataHandler {
      * @param st
      * @return
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
     public boolean addSubjectType( SubjectType st ) {
         if ( st == null )
             return false;
@@ -755,13 +759,15 @@ public class DataHandler {
     }
 
     /**
-     * Finds any installedTasks that matches the flag. The flag must be one of the states
+     * Finds any installedTasks that matches the flag. The flag must be one of
+     * the states
      * a {@link Task} may be in: <tt>TASK_STATE_OPEN</tt>,
      * <tt>TASK_STATE_CLOSED</tt> or <tt>TASK_STATE_EXPIRED</tt> or any
      * combination of the them.
      *
-     * @return A List of every task in the system where the installedTasks state matches
-     * the flag
+     * @return A List of every task in the system where the installedTasks state
+     *         matches
+     *         the flag
      */
     public List<String> getTaskNames( int flag ) {
         List<String> tasks = new ArrayList<String>();
@@ -952,7 +958,7 @@ public class DataHandler {
     }
 
     /**
-     * @param task
+     * @param task The task containing Students to be written to the database
      */
     public void commitStudentsTasks( Task task ) {
         List<StudentTask> list = task.getUpdatedStudents();
@@ -1082,7 +1088,8 @@ public class DataHandler {
     }
 
     /**
-     * Returns a list of strings containing the names of all the installedTasks the
+     * Returns a list of strings containing the names of all the installedTasks
+     * the
      * {@link StudentClass} is involved in.
      *
      * @param stdClass
@@ -1304,11 +1311,11 @@ public class DataHandler {
         StringBuffer sb = new StringBuffer();
         /*
          * sb.append( std.getIdent() ).append( STUDENT_IN_TASK_SEP ); int size =
-		 * std.getEngagedTasks().size() - 1; for ( int i = 0; i < size; i++ ) {
-		 * sb.append( std.getEngagedTasks().get( i ) ).append(
-		 * STUDENT_IN_TASK_DELIM ); } sb.append( std.getEngagedTasks().get( size
-		 * ) );
-		 */
+         * std.getEngagedTasks().size() - 1; for ( int i = 0; i < size; i++ ) {
+         * sb.append( std.getEngagedTasks().get( i ) ).append(
+         * STUDENT_IN_TASK_DELIM ); } sb.append( std.getEngagedTasks().get( size
+         * ) );
+         */
         return sb.toString();
     }
 
@@ -1389,7 +1396,8 @@ public class DataHandler {
 
     /**
      * Used as a callback by the {@link DataHandler} when there is a change to
-     * the set of loaded installedTasks. Use the {@link Task.OnTaskChangeListener} to get
+     * the set of loaded installedTasks. Use the
+     * {@link Task.OnTaskChangeListener} to get
      * a callback for an specific {@link Task} instance.
      * <p>
      * <p>

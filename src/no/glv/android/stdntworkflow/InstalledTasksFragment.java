@@ -59,8 +59,8 @@ import no.glv.android.stdntworkflow.intrfc.Task.OnTaskChangeListener;
  *
  * @author GleVoll
  */
-public class InstalledTasksFragment extends InstalledDataFragment<Integer> implements OnTasksChangedListener,
-        Task.OnTaskChangeListener {
+public class InstalledTasksFragment extends InstalledDataFragment<Integer>
+        implements OnTasksChangedListener, Task.OnTaskChangeListener {
 
     /**  */
     public static final String INST_STATE_TASK_NAMES = BaseValues.EXTRA_BASEPARAM + "taskNames";
@@ -91,10 +91,10 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
         mHandinCounters = new LinkedList<TextView>();
 
         if ( savedInstanceState != null ) {
-            config = ( TaskViewConfig ) savedInstanceState.getSerializable( PARAM_CONFIG );
+            config = (TaskViewConfig) savedInstanceState.getSerializable( PARAM_CONFIG );
             mTasks = savedInstanceState.getIntegerArrayList( INST_STATE_TASK_NAMES );
         } else {
-            config = ( TaskViewConfig ) getArguments().getSerializable( PARAM_CONFIG );
+            config = (TaskViewConfig) getArguments().getSerializable( PARAM_CONFIG );
             sortTaskNames();
         }
 
@@ -170,7 +170,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
         Task task = dataHandler.getTask( taskID );
         String name = dataHandler.getTaskDisplayName( task );
 
-        LinearLayout ll = ( LinearLayout ) vg.findViewById( R.id.LL_task_rowData );
+        LinearLayout ll = (LinearLayout) vg.findViewById( R.id.LL_task_rowData );
         ll.setOnClickListener( new View.OnClickListener() {
 
             @Override
@@ -183,7 +183,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
 
         // Weather or not to show the ON/OFF button.
         // this to allow for opening/closing a task.
-        ImageView iv = ( ImageView ) vg.findViewById( R.id.IV_task_openOrClosed );
+        ImageView iv = (ImageView) vg.findViewById( R.id.IV_task_openOrClosed );
         if ( config.showOnOffButton ) {
             iv.setTag( task );
             if ( task.getState() == Task.TASK_STATE_OPEN )
@@ -195,7 +195,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
         }
 
         // Set the Student pending counter, if needed
-        TextView tvCountPending = ( TextView ) vg.findViewById( R.id.TV_task_counterPending );
+        TextView tvCountPending = (TextView) vg.findViewById( R.id.TV_task_counterPending );
         if ( !config.showCounterPending ) {
             tvCountPending.setVisibility( View.GONE );
         } else {
@@ -205,7 +205,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
 
                 @Override
                 public void onClick( View v ) {
-                    Task t = ( Task ) v.getTag();
+                    Task t = (Task) v.getTag();
                     int pivot = t.getStudentsPendingCount();
                     int i = 0;
 
@@ -226,7 +226,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
         }
 
         // Set the Student hand in counter, if needed
-        TextView tvCountHandin = ( TextView ) vg.findViewById( R.id.TV_task_counterHandin );
+        TextView tvCountHandin = (TextView) vg.findViewById( R.id.TV_task_counterHandin );
         if ( !config.showCounterHandin ) {
             tvCountHandin.setVisibility( View.GONE );
         } else {
@@ -236,11 +236,11 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
         }
 
         // Set the name and add a click listener
-        TextView tvName = ( TextView ) vg.findViewById( R.id.TV_task_name );
+        TextView tvName = (TextView) vg.findViewById( R.id.TV_task_name );
         tvName.setText( name );
 
         // Weather or not to show the expired date.
-        TextView tvDate = ( TextView ) vg.findViewById( R.id.TV_task_date );
+        TextView tvDate = (TextView) vg.findViewById( R.id.TV_task_date );
         if ( config.showExpiredDate ) {
             String dateStr = BaseActivity.GetDateAsString( task.getDate() );
             tvDate.setText( dateStr );
@@ -253,34 +253,42 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
         }
 
         // Weather or not to show the tasks description
-        TextView tvDesc = ( TextView ) vg.findViewById( R.id.TV_task_desc );
+        TextView tvDesc = (TextView) vg.findViewById( R.id.TV_task_desc );
         TextView tvSubjectType = (TextView) vg.findViewById( R.id.TV_task_subjecttype );
         if ( !config.showDescription ) {
             tvDesc.setVisibility( View.GONE );
+            tvSubjectType.setVisibility( View.GONE );
         } else {
             String desc = task.getDesciption();
-            if ( desc.length() > 100 ) {
-                desc = desc.substring( 0, 30 ) + "...";
+            if ( desc == null || desc.length() == 0 ) {
+                tvDesc.setVisibility( View.GONE );
             }
-            tvDesc.setText( desc );
+
+            else {
+                if ( desc.length() > 100 ) {
+                    desc = desc.substring( 0, 30 ) + "...";
+                }
+                tvDesc.setText( desc );
+            }
 
             // Set the subject and type
             String type = dataHandler.getSubjectType( task.getType() ).getName();
             String subject = dataHandler.getSubjectType( task.getSubject() ).getName();
-            tvSubjectType.setText("[" + subject + "/" + type + "]" );
+            tvSubjectType.setText( "[" + subject + "/" + type + "]" );
         }
 
         return vg;
+
     }
 
     private void updateCounter() {
         for ( TextView tvCounter : mPendingCounters ) {
-            Task task = ( Task ) tvCounter.getTag();
+            Task task = (Task) tvCounter.getTag();
             tvCounter.setText( "" + task.getStudentsPendingCount() );
         }
 
         for ( TextView tvCounter : mHandinCounters ) {
-            Task task = ( Task ) tvCounter.getTag();
+            Task task = (Task) tvCounter.getTag();
             tvCounter.setText( "" + task.getStudentsHandedInCount() );
         }
     }
@@ -298,29 +306,29 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
     @Override
     public void onTaskChange( Task newTask, int mode ) {
         switch ( mode ) {
-            case OnTaskChangeListener.MODE_STD_HANDIN:
-            case OnTaskChangeListener.MODE_STD_ADD:
-            case OnTaskChangeListener.MODE_STD_DEL:
-                updateCounter();
-                // notifyDataSetChanged();
-                break;
+        case OnTaskChangeListener.MODE_STD_HANDIN:
+        case OnTaskChangeListener.MODE_STD_ADD:
+        case OnTaskChangeListener.MODE_STD_DEL:
+            updateCounter();
+            // notifyDataSetChanged();
+            break;
 
-            default:
-                onDataChange( mode );
-                break;
+        default:
+            onDataChange( mode );
+            break;
         }
     }
 
     @Override
     public void onTasksChange( int mode ) {
         switch ( mode ) {
-            case OnTaskChangeListener.MODE_TASK_SORT:
-                invalidateView();
-                break;
+        case OnTaskChangeListener.MODE_TASK_SORT:
+            invalidateView();
+            break;
 
-            default:
-                onDataChange( mode );
-                break;
+        default:
+            onDataChange( mode );
+            break;
         }
     }
 
@@ -330,8 +338,7 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer> imple
 
         int showCount = config.showCount;
         if ( showCount < 0 ) {
-            showCount = DataHandler.GetInstance().getSettingsManager()
-                    .getShowCount();
+            showCount = DataHandler.GetInstance().getSettingsManager().getShowCount();
         }
 
         args.putSerializable( InstalledTasksFragment.PARAM_CONFIG, config );

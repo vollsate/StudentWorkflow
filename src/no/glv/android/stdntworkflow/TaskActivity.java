@@ -73,6 +73,13 @@ public class TaskActivity extends BaseTabActivity implements TaskController {
         getTask();
         setTitle( mTask.getName() );
     }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+        updateTask();
+    }
 
     @Override
     public Task getTask() {
@@ -135,10 +142,6 @@ public class TaskActivity extends BaseTabActivity implements TaskController {
 
             case R.id.task_action_addClass:
                 addClass();
-                return true;
-
-            case R.id.task_action_Update:
-                updateTask();
                 return true;
 
             case R.id.task_action_Delete:

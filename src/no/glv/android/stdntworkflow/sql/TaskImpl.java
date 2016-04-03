@@ -349,6 +349,7 @@ public class TaskImpl implements Task {
                                                                      * no
 																	 * handinDate
 																	 */ );
+        stdTask.setTaskID( this._id );
 
         // Make sure to update the removed students, if the user makes a mistake
         // ..
