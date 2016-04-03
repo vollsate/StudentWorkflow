@@ -1,14 +1,12 @@
 package no.glv.android.stdntworkflow.sql;
 
+import java.util.List;
+
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import java.util.Iterator;
-import java.util.List;
-
 import no.glv.android.stdntworkflow.core.DBException;
 import no.glv.android.stdntworkflow.intrfc.Parent;
 import no.glv.android.stdntworkflow.intrfc.Phone;
