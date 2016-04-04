@@ -313,7 +313,7 @@ public final class R {
     }
     public static final class layout {
         public static final int activity_load_data=0x7f030000;
-        public static final int activity_navdrawer=0x7f030001;
+        public static final int navdrawer_container =0x7f030001;
         public static final int activity_new=0x7f030002;
         public static final int activity_new_task=0x7f030003;
         public static final int activity_std_info=0x7f030004;
@@ -345,7 +345,7 @@ public final class R {
         public static final int fragment_task_info=0x7f03001e;
         public static final int fragment_task_info_upd=0x7f03001f;
         public static final int fragment_task_students=0x7f030020;
-        public static final int nav_drawer_item=0x7f030021;
+        public static final int navdrawer_item =0x7f030021;
         public static final int row_installed_class=0x7f030022;
         public static final int row_installed_task=0x7f030023;
         public static final int row_loaddata_files=0x7f030024;

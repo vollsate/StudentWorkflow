@@ -93,7 +93,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="20"
                     android:ellipsize="marquee"
                     android:hint="Task name"
                     android:paddingBottom="5sp"
@@ -117,6 +116,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|clip_horizontal|start"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                style="@style/TV.std.S"
                 android:gravity="start"
                 android:hint="Task subject type"/>
         </LinearLayout>

@@ -364,7 +364,7 @@ public class TaskActivity extends BaseTabActivity implements TaskController {
         }
 
         /**
-         * @return
+         *
          */
         private Task getTask() {
             return ( ( TaskController ) getActivity() ).getTask();

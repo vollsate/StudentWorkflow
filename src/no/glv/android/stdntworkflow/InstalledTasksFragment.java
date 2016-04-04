@@ -278,7 +278,6 @@ public class InstalledTasksFragment extends InstalledDataFragment<Integer>
         }
 
         return vg;
-
     }
 
     private void updateCounter() {
